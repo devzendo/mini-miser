@@ -24,6 +24,7 @@ import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.version.Version;
 
 public class MainFrame {
@@ -31,9 +32,11 @@ public class MainFrame {
 
 	private JFrame mainFrame;
 	private ActionListener exitAL;
+    private final SpringLoader springLoader;
 
-	public MainFrame(ArrayList<String> argList) throws AppException {
+	public MainFrame(SpringLoader springLoader, ArrayList<String> argList) throws AppException {
 		super();
+        this.springLoader = springLoader;
 		// Process command line
 		for (int i = 0; i < argList.size(); i++) {
 			myLogger.debug("arg " + i + " = '" + argList.get(i) + "'");
