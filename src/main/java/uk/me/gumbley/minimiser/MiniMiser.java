@@ -12,7 +12,7 @@ import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.MainFrame;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
-import uk.me.gumbley.minimiser.springloader.SpringLoaderImpl;
+import uk.me.gumbley.minimiser.springloader.SpringLoaderFactory;
 
 
 public class MiniMiser {
@@ -54,7 +54,7 @@ public class MiniMiser {
     private static SpringLoader initSpringLoader() {
         // Now load up Spring...
         long startSpring = System.currentTimeMillis();
-        SpringLoader sl = SpringLoaderImpl.initialise("uk/me/gumbley/minimiser/MiniMiser.xml");
+        SpringLoader sl = SpringLoaderFactory.initialise("uk/me/gumbley/minimiser/MiniMiser.xml");
         long stopSpring = System.currentTimeMillis();
         long springElapsed = stopSpring - startSpring;
         myLogger.debug("SpringLoader initialised in " + StringUtils.translateTimeDuration(springElapsed));
