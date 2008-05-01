@@ -3,7 +3,9 @@ package uk.me.gumbley.minimiser.persistence;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-public class TestAccessFactory extends LoggerTestCase {
+import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+
+public class TestAccessFactory extends LoggingTestCase {
     @Test(expected=BadPasswordException.class)
     public void testBadPasswordFailsToLoad() throws Exception {
 //        SpringLoader sl = getSpringLoader();
