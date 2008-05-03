@@ -9,6 +9,7 @@
 	<configs>
 		<config>src/main/java/uk/me/gumbley/minimiser/springloader/SpringLoader.xml</config>
 		<config>src/main/java/uk/me/gumbley/minimiser/MiniMiser.xml</config>
+		<config>src/test/java/uk/me/gumbley/minimiser/persistence/PersistenceTestCase.xml</config>
 	</configs>
 	<configSets>
 	</configSets>
