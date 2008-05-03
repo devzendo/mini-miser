@@ -1,15 +1,32 @@
 package uk.me.gumbley.minimiser.persistence;
 
-public class AccessFactoryImpl implements AccessFactory {
+/**
+ * The default implementation of the AccessFactory.
+ * 
+ * @author matt
+ *
+ */
+public final class AccessFactoryImpl implements AccessFactory {
 
-    public AccessFactoryImpl(final JdbcAccess ja, final HibernateAccess ha) {
-        // TODO Auto-generated constructor stub
+    private final JdbcAccess jdbcAccess;
+    private final HibernateAccess hibernateAccess;
+
+    /**
+     * Create the factory for database access
+     * @param jdbcAcc a delegate object for low level operations
+     * @param hibernateAcc a delegate object for high-level access
+     */
+    public AccessFactoryImpl(final JdbcAccess jdbcAcc, final HibernateAccess hibernateAcc) {
+        this.jdbcAccess = jdbcAcc;
+        this.hibernateAccess = hibernateAcc;
     }
 
-    public MigratableDatabase openMigratableDatabase(String directory, String password)
+    /**
+     * {@inheritDoc}
+     */
+    public MigratableDatabase openMigratableDatabase(final String databasePath, final String password)
             throws BadPasswordException {
-        // TODO Auto-generated method stub
-        return null;
+        return jdbcAccess.openDatabase(databasePath, password);
     }
 
 }
