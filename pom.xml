@@ -47,7 +47,25 @@
       <artifactId>spring-context</artifactId>
       <version>2.5.3</version>
     </dependency>
-	
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-dao</artifactId>
+      <version>2.5.3</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>2.5.3</version>
+    </dependency>
+    
+	<dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-hibernate3</artifactId>
+      <version>2.5.3</version>
+    </dependency>
+    
 	<dependency>
       <groupId>com.jgoodies</groupId>
       <artifactId>forms</artifactId>
