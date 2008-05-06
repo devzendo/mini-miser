@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser.persistence;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
+import uk.me.gumbley.minimiser.persistence.impl.AccessFactoryImpl;
+
 /**
  * @author matt
  *

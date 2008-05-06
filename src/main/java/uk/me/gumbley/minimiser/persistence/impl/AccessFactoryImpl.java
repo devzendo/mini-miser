@@ -1,4 +1,11 @@
-package uk.me.gumbley.minimiser.persistence;
+package uk.me.gumbley.minimiser.persistence.impl;
+
+import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.BadPasswordException;
+import uk.me.gumbley.minimiser.persistence.DataAccessException;
+import uk.me.gumbley.minimiser.persistence.HibernateAccess;
+import uk.me.gumbley.minimiser.persistence.JdbcAccess;
+import uk.me.gumbley.minimiser.persistence.MigratableDatabase;
 
 /**
  * The default implementation of the AccessFactory.
@@ -25,7 +32,7 @@ public final class AccessFactoryImpl implements AccessFactory {
      * {@inheritDoc}
      */
     public MigratableDatabase openMigratableDatabase(final String databasePath, final String password)
-            throws BadPasswordException {
+            throws BadPasswordException, DataAccessException {
         return jdbcAccess.openDatabase(databasePath, password);
     }
 

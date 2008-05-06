@@ -4,4 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean id="testConfig" class="uk.me.gumbley.minimiser.config.TestConfig">
 	</bean>
+	
+	<bean id="jdbcAccess" class="uk.me.gumbley.minimiser.persistence.impl.JdbcAccessImpl" />
+	<bean id="hibernateAccess" class="uk.me.gumbley.minimiser.persistence.impl.HibernateAccessImpl" />
 </beans>

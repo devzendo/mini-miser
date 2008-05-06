@@ -25,6 +25,7 @@ public interface AccessFactory {
      * @throws BadPasswordException if the database is encrypted and the
      * supplied password is incorrect, or is null/empty. 
      * This is not thrown if a password is supplied for unencrypted databases.
+     * @throws DataAccessException for any other failures to open the database.
      */
-    MigratableDatabase openMigratableDatabase(String directory, String password) throws BadPasswordException;
+    MigratableDatabase openMigratableDatabase(String directory, String password) throws BadPasswordException, DataAccessException;
 }

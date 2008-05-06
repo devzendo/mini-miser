@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
+import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.config.TestConfig;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderTestCase;
@@ -70,5 +71,18 @@ public class PersistenceTestCase extends SpringLoaderTestCase {
      */
     protected File getDatabaseDirectory() {
         return databaseDirectory;
+    }
+    
+    /**
+     * Obtain the full path to a named directory
+     * @param dbname the name of the database directory e.g. foo
+     * @return the directory, prefixed with the test database directory, e.g.
+     * /home/matt/testdb/foo
+     */
+    protected String getAbsoluteDatabaseDirectory(final String dbname) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(StringUtils.slashTerminate(databaseDirectory.getAbsolutePath()));
+        sb.append(dbname);
+        return sb.toString();
     }
 }
