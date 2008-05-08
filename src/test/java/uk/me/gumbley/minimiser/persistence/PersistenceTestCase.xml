@@ -5,6 +5,19 @@
 	<bean id="testConfig" class="uk.me.gumbley.minimiser.config.TestConfig">
 	</bean>
 	
-	<bean id="jdbcAccess" class="uk.me.gumbley.minimiser.persistence.impl.JdbcAccessImpl" />
+	<bean id="jdbcAccess" class="uk.me.gumbley.minimiser.persistence.impl.JdbcAccessImpl">
+		<constructor-arg ref="springLoader" />
+	</bean>
+	
 	<bean id="hibernateAccess" class="uk.me.gumbley.minimiser.persistence.impl.HibernateAccessImpl" />
-</beans>
+	
+	<!-- Half statically defined here, but the URL and password are dynamic -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		lazy-init="true">
+		<property name="driverClassName"
+		    value="org.h2.Driver" />
+		<property name="username"
+		    value="sa" />
+	</bean>
+	</beans>
