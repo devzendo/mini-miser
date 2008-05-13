@@ -1,0 +1,27 @@
+Schema.txt - About the MiniMiser database schema
+------------------------------------------------
+
+The schema is versioned, such that subsequent revisions of the application will
+be able to upgrade old databases to match what they're expecting to deal with.
+
+It won't be possible to run the app against old format databases without
+upgrading.
+
+There is always a Versions table, which holds versioning information for all
+necessary items. The list of items that are versionable and would have their
+version numbers stored in the Versions table can be found in the
+VersionableEntity class.
+
+The current database schema as understood by this verision of the app can be
+found in the CurrentSchemaVersion class.
+
+Each version of the schema is described below, also see the diagrams in the
+Schema.vX.{jude|png} files. These are produced using Change-Vision's excellent
+JUDE UML modelling tool (Community Edition), and exported to PNG for those who
+don't use this tool.
+
+Version 1
+---------
+Produced by the first versions of the app.
+Contains versioning information, ...
+

@@ -5,12 +5,13 @@
 	<bean id="testConfig" class="uk.me.gumbley.minimiser.config.TestConfig">
 	</bean>
 	
-	<bean id="jdbcAccess" class="uk.me.gumbley.minimiser.persistence.impl.JdbcAccessImpl">
+	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateJdbcAccessImpl">
 		<constructor-arg ref="springLoader" />
 	</bean>
 	
-	<bean id="hibernateAccess" class="uk.me.gumbley.minimiser.persistence.impl.HibernateAccessImpl" />
-	
+	<!-- <bean id="versionDao" class="uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao" />
+	should inject the JdbcTemplate if we had a factory bean? -->
+		
 	<!-- Half statically defined here, but the URL and password are dynamic -->
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"

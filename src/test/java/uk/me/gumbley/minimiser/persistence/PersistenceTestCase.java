@@ -1,6 +1,8 @@
 package uk.me.gumbley.minimiser.persistence;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -58,12 +60,28 @@ public class PersistenceTestCase extends SpringLoaderTestCase {
             if (files == null || files.length == 0) {
                 return;
             }
+            StringBuffer sb = new StringBuffer();
+            sb.append('[');
+            for (String string : files) {
+                sb.append(string);
+                sb.append(',');
+            }
+            sb.deleteCharAt(sb.length()-1);
+            sb.append(']');
             LOGGER.warn(String.format(
-                "Database directory %s contains %d files not cleared up after test",
+                "Database directory %s contains %d files not cleared up after test: %s",
                 databaseDirectory.getAbsoluteFile(),
-                files.length));
+                files.length, sb.toString()));
             Assert.assertEquals(0, files.length);
         }
+    }
+    
+    protected int getNumberOfFilesInDatabaseDirectory() {
+        if (databaseDirectory != null && databaseDirectory.exists()
+                && databaseDirectory.isDirectory()) {
+            return databaseDirectory.list().length;
+        }
+        return -1;
     }
 
     /**
@@ -84,5 +102,36 @@ public class PersistenceTestCase extends SpringLoaderTestCase {
         sb.append(StringUtils.slashTerminate(databaseDirectory.getAbsolutePath()));
         sb.append(dbname);
         return sb.toString();
+    }
+    
+    /**
+     * Delete all files in the test directory that start with dbname
+     * @param dbname the name of the database 
+     */
+    protected void deleteDatabaseFiles(final String dbname) {
+        int count = 0;
+        boolean allGone = true;
+        LOGGER.info(String.format("Deleting database %s files", dbname));
+        if (databaseDirectory != null && databaseDirectory.exists()
+                && databaseDirectory.isDirectory()) {
+            final FileFilter filter = new FileFilter() {
+                public boolean accept(final File pathname) {
+                    LOGGER.debug(String.format("Considering %s", pathname.getAbsolutePath()));
+                    return pathname.isFile() && pathname.getName().startsWith(dbname);
+                }
+            };
+            final File[] dbFiles = databaseDirectory.listFiles(filter);
+            count = dbFiles.length;
+            for (File file : dbFiles) {
+                LOGGER.debug(String.format("Deleting %s", file.getAbsoluteFile()));
+                boolean gone = file.delete();
+                allGone &= gone;
+                if (!gone) {
+                    LOGGER.warn(String.format("Could not delete %s", file.getAbsolutePath()));
+                }
+            }
+        }
+        Assert.assertTrue("No files to delete, when some were expected", count > 0);
+        Assert.assertTrue("Some files failed to delete", allGone);
     }
 }
