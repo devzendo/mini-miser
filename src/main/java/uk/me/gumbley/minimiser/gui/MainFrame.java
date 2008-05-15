@@ -1,134 +1,106 @@
 package uk.me.gumbley.minimiser.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-
 import org.apache.log4j.Logger;
-
+import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.exception.AppException;
-import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.version.Version;
 
+/**
+ * The MiniMiser main Frame - this is the main application start code.
+ * 
+ * @author matt
+ */
 public class MainFrame {
-	private static final Logger myLogger = Logger.getLogger(MainFrame.class);
+    private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
 
-	private JFrame mainFrame;
-	private ActionListener exitAL;
+    private JFrame mainFrame;
+
+    private ActionListener exitAL;
+
+    @SuppressWarnings("unused")
     private final SpringLoader springLoader;
 
-	public MainFrame(SpringLoader springLoader, ArrayList<String> argList) throws AppException {
-		super();
-        this.springLoader = springLoader;
-		// Process command line
-		for (int i = 0; i < argList.size(); i++) {
-			myLogger.debug("arg " + i + " = '" + argList.get(i) + "'");
-		}
-		ThreadCheckingRepaintManager.initialise();
-
-		// Create new Window and exit handler
-		createMainFrame();
-
-		// Menu
+    /**
+     * @param loader the IoC container abstraction
+     * @param argList the command line arguments after logging has been processed
+     * @throws AppException upon fatal application failure
+     */
+    public MainFrame(final SpringLoader loader, 
+            final ArrayList<String> argList)
+            throws AppException {
+        super();
+        this.springLoader = loader;
+        // Process command line
+        for (int i = 0; i < argList.size(); i++) {
+            LOGGER.debug("arg " + i + " = '" + argList.get(i) + "'");
+        }
+        ThreadCheckingRepaintManager.initialise();
+        // Create new Window and exit handler
+        createMainFrame();
+        // Menu
         mainFrame.add(createMenu(), BorderLayout.NORTH);
-
         mainFrame.pack();
         mainFrame.setVisible(true);
-	}
+    }
 
-	private void createMainFrame() {
-		mainFrame = new JFrame(AppName.getAppName() + " v"
-				+ Version.getVersion());
-		mainFrame.setLayout(new BorderLayout());
-		exitAL = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int opt = JOptionPane.showConfirmDialog(mainFrame,
-						"Are you sure you want to exit?", "Confirm exit",
-						JOptionPane.YES_NO_OPTION);
-				// myLogger.info("option returned is " + opt);
-				if (opt == 0) {
-					SwingWorker worker = new SwingWorker() {
-						public Object construct() {
-							myLogger.info("Shutting down...");
-							try {
-								SwingUtilities.invokeAndWait(new Runnable() {
-									public void run() {
-										mainFrame.setCursor(new Cursor(
-												Cursor.WAIT_CURSOR));
-										enableDisableControls(false);
-									}
-								});
-							} catch (InterruptedException e) {
-							} catch (InvocationTargetException e) {
-							}
-							shutdown();
-							try {
-								SwingUtilities.invokeAndWait(new Runnable() {
-									public void run() {
-										mainFrame.setCursor(new Cursor(
-												Cursor.DEFAULT_CURSOR));
-									}
-								});
-							} catch (InterruptedException e) {
-							} catch (InvocationTargetException e) {
-							}
-							return null;
-						}
-					};
-					worker.start();
-				}
-			}
-		};
-		mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		mainFrame.addWindowListener(new WindowListener() {
-			public void windowOpened(WindowEvent e) {
-			}
+    private void createMainFrame() {
+        mainFrame = new JFrame(AppName.getAppName() + " v"
+                + Version.getVersion());
+        mainFrame.setLayout(new BorderLayout());
+        exitAL = new WindowCloseActionListener(mainFrame, new MainFrameFacade() {
+            public void enableDisableControls(final boolean enable) {
+                MainFrame.this.enableDisableControls(enable);
+            }
 
-			public void windowClosing(WindowEvent e) {
-				exitAL.actionPerformed(null);
-			}
+            public void shutdown() {
+                MainFrame.this.shutdown();
+            }
+        });
+        mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        mainFrame.addWindowListener(new WindowListener() {
+            public void windowOpened(final WindowEvent e) {
+            }
 
-			public void windowClosed(WindowEvent e) {
-			}
+            public void windowClosing(final WindowEvent e) {
+                exitAL.actionPerformed(null);
+            }
 
-			public void windowIconified(WindowEvent e) {
-			}
+            public void windowClosed(final WindowEvent e) {
+            }
 
-			public void windowDeiconified(WindowEvent e) {
-			}
+            public void windowIconified(final WindowEvent e) {
+            }
 
-			public void windowActivated(WindowEvent e) {
-			}
+            public void windowDeiconified(final WindowEvent e) {
+            }
 
-			public void windowDeactivated(WindowEvent e) {
-			}
-		});
-	}
+            public void windowActivated(final WindowEvent e) {
+            }
 
-	private JMenuBar createMenu() {
+            public void windowDeactivated(final WindowEvent e) {
+            }
+        });
+    }
+
+    private JMenuBar createMenu() {
         JMenuBar menuBar = new JMenuBar();
-
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('F');
         //
-        
         //
         JMenuItem fileExit = new JMenuItem("Exit");
         fileExit.setMnemonic('x');
@@ -142,29 +114,24 @@ public class MainFrame {
         JMenuItem helpManual = new JMenuItem("Help contents");
         helpMenu.add(helpManual);
         //
-        
         menuBar.add(fileMenu);
         menuBar.add(helpMenu);
         return menuBar;
     }
 
+    private void shutdown() {
+        long start = System.currentTimeMillis();
+        long stop = System.currentTimeMillis();
+        long dur = stop - start;
+        LOGGER.info("Shutdown took " + StringUtils.translateTimeDuration(dur));
+        // give time for the above to be logged
+        ThreadUtils.waitNoInterruption(500);
+        if (mainFrame != null) {
+            mainFrame.dispose();
+        }
+        System.exit(0);
+    }
 
-	private void shutdown() {
-		long start = System.currentTimeMillis();
-		long stop = System.currentTimeMillis();
-		long dur = stop - start;
-		myLogger.info("Shutdown took " + StringUtils.translateTimeDuration(dur));
-		// give time for the above to be logged
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-		}
-		if (mainFrame != null) {
-			mainFrame.dispose();
-		}
-		System.exit(0);
-	}
-
-	private void enableDisableControls(boolean enable) {
-	}
+    private void enableDisableControls(final boolean enable) {
+    }
 }
