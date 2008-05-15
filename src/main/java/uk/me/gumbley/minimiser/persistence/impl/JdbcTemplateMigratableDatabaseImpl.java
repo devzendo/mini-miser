@@ -1,8 +1,10 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
 import java.sql.SQLException;
+import javax.sql.DataSource;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import uk.me.gumbley.minimiser.persistence.MigratableDatabase;
 
 /**
@@ -23,29 +25,32 @@ public class JdbcTemplateMigratableDatabaseImpl implements MigratableDatabase {
     private final String dbPath;
 
     @SuppressWarnings("unused")
-    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
 
     /**
-     * Create a MigratableDatabase using Spring's JdbcTemplate.
+     * Create a MigratableDatabase using Spring's SimpleJdbcTemplate.
      * 
      * @param url the URL to the database
      * @param databasePath the path of the database (for display)
      * @param template the Spring template
+     * @param source the DataSource to use
      */
     public JdbcTemplateMigratableDatabaseImpl(final String url,
-            final String databasePath, final JdbcTemplate template) {
+            final String databasePath, final SimpleJdbcTemplate template,
+            final DataSource source) {
         this.dbURL = url;
         this.dbPath = databasePath;
         this.jdbcTemplate = template;
+        this.dataSource = source;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void close() {
-        // TODO how do we close the JdbcTemplate? WTF?!!
+    public final void close() {
         try {
-            jdbcTemplate.getDataSource().getConnection().close();
+            DataSourceUtils.getConnection(dataSource).close();
         } catch (final SQLException e) {
             LOGGER.warn("Could not close connection:" + e.getMessage(), e);
         }

@@ -56,7 +56,10 @@ public final class StraightJdbcAccess implements AccessFactory {
         }
     }
 
-    public MiniMiserDatabase createDatabase(String databasePath, String password) {
+    /**
+     * {@inheritDoc}
+     */
+    public MiniMiserDatabase createDatabase(final String databasePath, final String password) {
         // TODO Auto-generated method stub perhaps we ditch this class?
         return null;
     }

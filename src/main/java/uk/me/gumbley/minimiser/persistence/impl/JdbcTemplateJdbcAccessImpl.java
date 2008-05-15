@@ -1,10 +1,8 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
 import java.sql.SQLException;
-import org.apache.log4j.Logger;
 import org.h2.constant.ErrorCode;
 import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
@@ -28,8 +26,6 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  *
  */
 public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
-    private static final Logger LOGGER = Logger.getLogger(JdbcTemplateJdbcAccessImpl.class);
-
     private final SpringLoader springLoader;
     
     /**
@@ -45,7 +41,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         private String dbPath;
         private String dbURL;
         private SingleConnectionDataSource dataSource;
-        private JdbcTemplate jdbcTemplate;
+        private SimpleJdbcTemplate jdbcTemplate;
         public DatabaseSetup(final String databasePath, final String password, final boolean allowCreate) {
             if (databasePath == null) {
                 throw new DataAccessResourceFailureException("Null database path");
@@ -71,7 +67,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
             // TODO Spring lossage: I'd use a SimpleJdbcTemplate here, but it
             // doesn't support getDataSource() so we can't close programmatically.
             // See http://forum.springframework.org/archive/index.php/t-9704.html
-            jdbcTemplate = new JdbcTemplate(dataSource);
+            jdbcTemplate = new SimpleJdbcTemplate(dataSource);
         }
         public String getDbPassword() {
             return dbPassword;
@@ -82,7 +78,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         public String getDbURL() {
             return dbURL;
         }
-        public JdbcTemplate getJdbcTemplate() {
+        public SimpleJdbcTemplate getJdbcTemplate() {
             return jdbcTemplate;
         }
         public SingleConnectionDataSource getDataSource() {
@@ -93,7 +89,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
      * {@inheritDoc}
      */
     public MigratableDatabase openMigratableDatabase(final String databasePath, final String password) {
-        DatabaseSetup dbDetails = new DatabaseSetup(databasePath, password, false);
+        DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false);
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
         // but then doesn't pass the error on to me.
@@ -101,7 +97,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         // Spring sql-error-codes.xml.
         // So, I have to check myself. (Obviating one of the reasons I chose Spring!)
         try {
-            dbDetails.getDataSource().getConnection().close();
+            dbSetup.getDataSource().getConnection().close();
         } catch (SQLException e) {
             if (e.getErrorCode() == ErrorCode.DATABASE_NOT_FOUND_1) {
                 throw new DataAccessResourceFailureException(String.format("Database at %s not found", databasePath));
@@ -111,7 +107,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
                 String.format("Possible database not found - SQL Error Code %d",
                     e.getErrorCode()), "", e);
         }
-        return new JdbcTemplateMigratableDatabaseImpl(dbDetails.getDbURL(), dbDetails.getDbPath(), dbDetails.getJdbcTemplate());
+        return new JdbcTemplateMigratableDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
     }
 
     /**
@@ -119,18 +115,18 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
      */
     public MiniMiserDatabase createDatabase(final String databasePath, final String password) {
         // create the database
-        DatabaseSetup dbDetails = new DatabaseSetup(databasePath, password, true);
-        createTables(dbDetails);
-        populateTables(dbDetails);
-        return new JdbcTemplateMiniMiserDatabaseImpl(dbDetails.getDbURL(), dbDetails.getDbPath(), dbDetails.getJdbcTemplate());
+        DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true);
+        createTables(dbSetup);
+        populateTables(dbSetup);
+        return new JdbcTemplateMiniMiserDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
     }
 
+    // TODO move this to VersionsDao?
     private void createTables(final DatabaseSetup dbDetails) {
-        JdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
+        SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
         
-        jdbcTemplate.execute("CREATE TABLE Versions("
-            + "id INT PRIMARY KEY,"
-            + "entity VARCHAR(40),"
+        jdbcTemplate.getJdbcOperations().execute("CREATE TABLE Versions("
+            + "entity VARCHAR(40) PRIMARY KEY,"
             + "version VARCHAR(40)"
             + ")");
         

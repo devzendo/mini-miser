@@ -84,32 +84,40 @@ public final class TestMigratableDatabase extends PersistenceTestCase {
      */
     @Test
     public void testCreateDatabase() {
-        LOGGER.info("*** testCreateDatabase");
+        LOGGER.info("*** testCreateDatabase start");
+        final String dbName = "testcreate";
         // should we be able to create this db?
-        String dbDir = getAbsoluteDatabaseDirectory("testcreate");
-        Assert.assertFalse(new File(dbDir).exists());
+        // TODO my assumption about the databse directory + dbname was wrong
+        // i thought it'd create a dir for the db, but dbName is just the
+        // prefix of th efiles in the parent dir
+        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
         // create it...
-        MiniMiserDatabase mmData = accessFactory.createDatabase(dbDir, "");
+        LOGGER.info("... creating");
+        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "");
         try {
-            LOGGER.info("*** created");
+            LOGGER.info("... created");
             // was something created?
-            int numberOfFilesInDatabaseDirectory = getNumberOfFilesInDatabaseDirectory();
-            Assert.assertTrue(String.format("There are %d files in the dir, this should be positive", numberOfFilesInDatabaseDirectory), numberOfFilesInDatabaseDirectory > 0);
-            LOGGER.info("*** testing version");
+            final int numberOfFilesInDatabaseDirectory = getNumberOfFilesInDatabaseDirectory();
+            Assert.assertTrue(
+                String.format("There are %d files in the dir, this should be positive",
+                    numberOfFilesInDatabaseDirectory),
+                    numberOfFilesInDatabaseDirectory > 0);
+            LOGGER.info(String.format("... %s file(s) in dir, testing version", numberOfFilesInDatabaseDirectory));
             // is it correct?
             Version version = mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
+            LOGGER.info(String.format("... version returned from db should be null - it is %s", version));
             Assert.assertNotNull(version);
             Assert.assertEquals(VersionableEntity.SCHEMA_VERSION, version.getEntity());
             Assert.assertEquals(CurrentSchemaVersion.CURRENT_SCHEMA_VERSION, version.getVersion());
-            // FUTURE TODO: ensure the complete design of the static data populated
+            // Here, ensure the complete design of the static data populated
             // in the database is checked for consistency here.
-            // tidy up
-            // TODO WTF?
+            LOGGER.info("... done");
         } finally {
-            LOGGER.info("*** closing");
-            mmData.close();
-            LOGGER.info("*** closed");
-            deleteDatabaseFiles("testcreate");
+            // tidy up
+            LOGGER.info("... tidying up");
+            deleteWithClosureCheck(dbName, mmData);
+            LOGGER.info("*** testCreateDatabase done");
         }
     }
 }

@@ -7,30 +7,50 @@ package uk.me.gumbley.minimiser.persistence.domain;
  *
  */
 public class Version {
-    private final String entity;
-    private final String version;
+    private String entityName;
+    private String versionDesc;
+
+    /**
+     * Construct an empty Version
+     */
+    public Version() {
+    }
+    
+    /**
+     * @param entity the entity name (PK) of this versionable entity
+     */
+    public void setEntity(final String entity) {
+        this.entityName = entity;
+    }
+
+    /**
+     * @param version the version description of this versionable entity
+     */
+    public void setVersion(final String version) {
+        this.versionDesc = version;
+    }
 
     /**
      * Construct a new Version domain object
-     * @param ent the entity name
-     * @param ver its version
+     * @param entity the entity name
+     * @param version its version
      */
-    public Version(final String ent, final String ver) {
-        this.entity = ent;
-        this.version = ver;
+    public Version(final String entity, final String version) {
+        this.entityName = entity;
+        this.versionDesc = version;
     }
     
     /**
      * @return an identifier for a versionable entity.
      */
     public String getEntity() {
-        return entity;
+        return entityName;
     }
 
     /**
      * @return the version string for this versionable entity
      */
     public String getVersion() {
-        return version;
+        return versionDesc;
     }
 }

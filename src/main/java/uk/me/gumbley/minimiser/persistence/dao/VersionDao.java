@@ -21,6 +21,7 @@ public interface VersionDao {
      * Find a Version for a given entity
      * @param entity the name of the entity whose version should be found 
      * @return a Version for a versionable entity.
+     * @throws DataAccessException on database failures
      */
     Version findVersion(String entity) throws DataAccessException;
 
@@ -28,6 +29,7 @@ public interface VersionDao {
      * Store a specific Version
      *  
      * @param version the version to store
+     * @throws DataAccessException on database failures
      */
     void persistVersion(Version version) throws DataAccessException;
 }
