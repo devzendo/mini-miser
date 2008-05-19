@@ -14,6 +14,7 @@ import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
+import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
  * A JdbcAccess that uses Spring's JdbcTemplate.
@@ -53,7 +54,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
             dbPassword = (password == null) ? "" : password;
             dbURL = dbPassword.length() == 0 ?
                     String.format("jdbc:h2:%s", dbPath) :
-                    String.format("jdbc:h2:%s;CIPHER=AES");
+                    String.format("jdbc:h2:%s;CIPHER=AES", dbPath);
             if (!allowCreate) {
                 dbURL += ";IFEXISTS=TRUE";
             }
@@ -137,8 +138,10 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         // create a JdbcTemplate from a programmatically created
         // DataSource.
         VersionDao versionDao = new JdbcTemplateVersionDao(dbDetails.getJdbcTemplate());
-        Version version = new Version(VersionableEntity.SCHEMA_VERSION, CurrentSchemaVersion.CURRENT_SCHEMA_VERSION);
-        versionDao.persistVersion(version);
+        Version schemaVersion = new Version(VersionableEntity.SCHEMA_VERSION, CurrentSchemaVersion.CURRENT_SCHEMA_VERSION);
+        versionDao.persistVersion(schemaVersion);
+        Version appVersion = new Version(VersionableEntity.APPLICATION_VERSION, AppVersion.getVersion());
+        versionDao.persistVersion(appVersion);
     }
 }
 

@@ -17,7 +17,7 @@ import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
-import uk.me.gumbley.minimiser.version.Version;
+import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
  * The MiniMiser main Frame - this is the main application start code.
@@ -59,7 +59,7 @@ public class MainFrame {
 
     private void createMainFrame() {
         mainFrame = new JFrame(AppName.getAppName() + " v"
-                + Version.getVersion());
+                + AppVersion.getVersion());
         mainFrame.setLayout(new BorderLayout());
         exitAL = new WindowCloseActionListener(mainFrame, new MainFrameFacade() {
             public void enableDisableControls(final boolean enable) {

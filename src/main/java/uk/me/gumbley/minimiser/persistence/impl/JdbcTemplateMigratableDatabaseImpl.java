@@ -27,6 +27,7 @@ public class JdbcTemplateMigratableDatabaseImpl implements MigratableDatabase {
     @SuppressWarnings("unused")
     private final SimpleJdbcTemplate jdbcTemplate;
     private final DataSource dataSource;
+    private volatile boolean isClosed = true;
 
     /**
      * Create a MigratableDatabase using Spring's SimpleJdbcTemplate.
@@ -43,12 +44,17 @@ public class JdbcTemplateMigratableDatabaseImpl implements MigratableDatabase {
         this.dbPath = databasePath;
         this.jdbcTemplate = template;
         this.dataSource = source;
+        isClosed = false;
     }
 
     /**
      * {@inheritDoc}
      */
     public final void close() {
+        if (isClosed) {
+            return;
+        }
+        isClosed = true;
         try {
             DataSourceUtils.getConnection(dataSource).close();
         } catch (final SQLException e) {

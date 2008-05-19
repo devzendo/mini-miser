@@ -32,4 +32,12 @@ public interface VersionDao {
      * @throws DataAccessException on database failures
      */
     void persistVersion(Version version) throws DataAccessException;
+
+    /**
+     * Check for existence of a specific verison
+     * @param entity the name of an entity that should be checked for existence
+     * @return true if it exists, false if not
+     * @throws DataAccessException on database failures
+     */
+    boolean exists(String entity) throws DataAccessException;
 }

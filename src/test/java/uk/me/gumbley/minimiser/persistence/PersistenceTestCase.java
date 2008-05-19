@@ -2,6 +2,9 @@ package uk.me.gumbley.minimiser.persistence;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -214,5 +217,88 @@ public class PersistenceTestCase extends SpringLoaderTestCase {
      */
     protected final void suppressEmptyCheck() {
         this.suppressEmptyCheck = true;
+    }
+
+    /**
+     * @param dbName the database name to check for randomness
+     * @return true if it looks random, false if not
+     */
+    protected boolean doesDatabaseLookRandom(final String dbName) {
+        final List<File> dbFiles = getDatabaseFiles(dbName);
+        boolean atLeastOneFileToCheck = false;
+        boolean random = true;
+        for (File file : dbFiles) {
+            // skip small files e.g. lock files are ~ 99 bytes.
+            // even an empty db has files around 128KB.
+            if (random && file.isFile() && file.length() > 1024) {
+                atLeastOneFileToCheck = true;
+                LOGGER.debug(String.format("Checking randomness of %s", file.getAbsoluteFile()));
+                final boolean isFileRandom = isRandom(file);
+                LOGGER.debug(String.format("%s is %srandom", file.getAbsolutePath(), isFileRandom ? "" : "NOT "));
+                random &= isFileRandom;
+            }
+        }
+        final boolean randomnessResult = atLeastOneFileToCheck && random;
+        LOGGER.debug(String.format("Randomness of %s is %s", dbName, randomnessResult));
+        return randomnessResult;
+    }
+
+    private boolean isRandom(final File file) {
+        try {
+            long hist[] = new long[256];
+            long size = file.length();
+            final InputStream is = new FileInputStream(file);
+            try {
+                final byte[] buf = new byte[512];
+                int nread = 0;
+                byte last = 0;
+                do {
+                    nread = is.read(buf);
+                    if (nread != -1) {
+                        for (int i = 0; i < nread; i++) {
+                            int rand = buf[i] & 0x00ff;
+                            hist[rand]++;
+                        }
+                    }
+                } while (nread != -1);
+            } finally {
+                is.close();
+            }
+            // need 75% of the data in the file to be within 20% of size/256
+            final double bytesPerfectlyEquallyDistributed = size / 256;
+            final double twentyPercent = (bytesPerfectlyEquallyDistributed * 0.2);
+            final double upperTolerance = bytesPerfectlyEquallyDistributed + twentyPercent; 
+            final double lowerTolerance = bytesPerfectlyEquallyDistributed - twentyPercent; 
+            //LOGGER.debug(String.format("[%f, %f, %f]", lowerTolerance, bytesPerfectlyEquallyDistributed, upperTolerance));
+            int numWithinTolerance = 0;
+            for (int i = 0; i < 256; i++) {
+                boolean withinTolerance = (hist[i] >= (long)lowerTolerance && hist[i] <= (long)upperTolerance);
+                //LOGGER.debug(String.format("Byte 0x%02X, count %d %swithin tolerance", i, hist[i], withinTolerance ? " " : "NOT "));
+                if (withinTolerance) {
+                    numWithinTolerance++;
+                }
+            }
+            double randomness = (double)numWithinTolerance/256.0;
+            //LOGGER.debug(String.format("Randomness is %f", randomness));
+            return randomness >= 0.75;
+        } catch (final IOException e) {
+            LOGGER.warn(String.format("IOException checking randomness: %s", e.getMessage()));
+            return false;
+        }
+    }
+
+    private List<File> getDatabaseFiles(final String dbName) {
+        final List<File> dbFiles = new ArrayList<File>();
+        if (databaseDirectory != null && databaseDirectory.exists()
+                && databaseDirectory.isDirectory()) {
+            final FileFilter filter = new FileFilter() {
+                public boolean accept(final File pathname) {
+                    LOGGER.debug(String.format("Considering %s", pathname.getAbsolutePath()));
+                    return pathname.isFile() && pathname.getName().startsWith(dbName);
+                }
+            };
+            dbFiles.addAll(Arrays.asList(databaseDirectory.listFiles(filter)));
+        }
+        return dbFiles;
     }
 }

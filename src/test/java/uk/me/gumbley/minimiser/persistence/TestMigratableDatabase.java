@@ -6,9 +6,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
+import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.version.AppVersion;
 
 
 /**
@@ -18,6 +20,8 @@ import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
  *
  */
 public final class TestMigratableDatabase extends PersistenceTestCase {
+    private static final String SQUEAMISH_OSSIFRAGE = "Squeamish Ossifrage";
+
     private static final Logger LOGGER = Logger
             .getLogger(TestMigratableDatabase.class);
     
@@ -80,11 +84,11 @@ public final class TestMigratableDatabase extends PersistenceTestCase {
     }
     
     /**
-     * Test creation of a database
+     * Test creation of a non-encrypted database
      */
     @Test
-    public void testCreateDatabase() {
-        LOGGER.info("*** testCreateDatabase start");
+    public void testCreatePlaintextDatabase() {
+        LOGGER.info("*** testCreatePlaintextDatabase start");
         final String dbName = "testcreate";
         // should we be able to create this db?
         // TODO my assumption about the databse directory + dbname was wrong
@@ -95,6 +99,12 @@ public final class TestMigratableDatabase extends PersistenceTestCase {
         // create it...
         LOGGER.info("... creating");
         final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "");
+        final boolean shouldBeRandom = false;
+        checkInvariantsForCreatedDatabase(dbName, mmData, shouldBeRandom);
+        LOGGER.info("*** testCreatePlaintextDatabase done");
+    }
+
+    private void checkInvariantsForCreatedDatabase(final String dbName, final MiniMiserDatabase mmData, final boolean shouldBeRandom) {
         try {
             LOGGER.info("... created");
             // was something created?
@@ -105,19 +115,40 @@ public final class TestMigratableDatabase extends PersistenceTestCase {
                     numberOfFilesInDatabaseDirectory > 0);
             LOGGER.info(String.format("... %s file(s) in dir, testing version", numberOfFilesInDatabaseDirectory));
             // is it correct?
-            Version version = mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
-            LOGGER.info(String.format("... version returned from db should be null - it is %s", version));
-            Assert.assertNotNull(version);
-            Assert.assertEquals(VersionableEntity.SCHEMA_VERSION, version.getEntity());
-            Assert.assertEquals(CurrentSchemaVersion.CURRENT_SCHEMA_VERSION, version.getVersion());
+            Version dbVersion = mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
+            LOGGER.info(String.format("... schema version returned from db should be null - it is %s", dbVersion));
+            Assert.assertNotNull(dbVersion);
+            Assert.assertEquals(VersionableEntity.SCHEMA_VERSION, dbVersion.getEntity());
+            Assert.assertEquals(CurrentSchemaVersion.CURRENT_SCHEMA_VERSION, dbVersion.getVersion());
+            //
+            Version appVersion = mmData.getVersionDao().findVersion(VersionableEntity.APPLICATION_VERSION);
+            LOGGER.info(String.format("... application version returned from db should be null - it is %s", appVersion));
+            Assert.assertNotNull(dbVersion);
+            Assert.assertEquals(VersionableEntity.APPLICATION_VERSION, appVersion.getEntity());
+            Assert.assertEquals(AppVersion.getVersion(), appVersion.getVersion());
             // Here, ensure the complete design of the static data populated
             // in the database is checked for consistency here.
             LOGGER.info("... done");
         } finally {
             // tidy up
             LOGGER.info("... tidying up");
+            boolean random = doesDatabaseLookRandom(dbName);
             deleteWithClosureCheck(dbName, mmData);
-            LOGGER.info("*** testCreateDatabase done");
+            Assert.assertEquals(shouldBeRandom, random);
         }
+    }
+
+    /**
+     * Test creation of an encrypted database
+     */
+    @Test
+    public void testCreateEncryptedDatabase() {
+        LOGGER.info("*** testCreateEncryptedDatabase start");
+        final String dbName = "encrypted";
+        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, SQUEAMISH_OSSIFRAGE);
+        final boolean shouldBeRandom = true;
+        checkInvariantsForCreatedDatabase(dbName, mmData, shouldBeRandom);
+        LOGGER.info("*** testCreateEncryptedDatabase done");
     }
 }

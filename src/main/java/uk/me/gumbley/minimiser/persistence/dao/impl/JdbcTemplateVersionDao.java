@@ -59,4 +59,14 @@ public final class JdbcTemplateVersionDao implements VersionDao {
                 new Object[] {version.getVersion(), version.getEntity()});
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean exists(final String entity) throws DataAccessException {
+        int count = this.jdbcTemplate.queryForInt(
+            "select count(0) from Versions where entity = ?",
+            new Object[]{entity});
+        return count == 1;
+    }
 }

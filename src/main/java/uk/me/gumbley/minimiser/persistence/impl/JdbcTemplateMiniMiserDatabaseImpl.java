@@ -1,11 +1,13 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
@@ -47,9 +49,11 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
      * {@inheritDoc}
      */
     public void close() {
+        if (isClosed) {
+            return;
+        }
         isClosed = true;
         try {
-//            DataSourceUtils.getConnection(jdbcTemplate.getDataSource()).close();
             DataSourceUtils.getConnection(dataSource).close();
         } catch (final CannotGetJdbcConnectionException e) {
             LOGGER.warn("Can't get JDBC Connection on close: " + e.getMessage(), e);
