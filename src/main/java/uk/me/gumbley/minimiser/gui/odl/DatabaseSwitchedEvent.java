@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui;
+package uk.me.gumbley.minimiser.gui.odl;
 
 /**
  * A database has been opened and automatically switched to, or the user has

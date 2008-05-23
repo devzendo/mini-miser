@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui;
+package uk.me.gumbley.minimiser.gui.odl;
 
 /**
  * Something has happened to a specific database, this is the notification you

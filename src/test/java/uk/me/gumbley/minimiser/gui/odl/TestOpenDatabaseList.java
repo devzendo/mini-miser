@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui;
+package uk.me.gumbley.minimiser.gui.odl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +8,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseClosedEvent;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseEvent;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseListEmptyEvent;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseOpenedEvent;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseSwitchedEvent;
+import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 
 
@@ -48,7 +55,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void openDatabaseFiresListener() {
-        final Observer<DatabaseEvent> obs = EasyMock.createMock(Observer.class);
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
         obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent("testdb")));
         obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("testdb")));
         EasyMock.replay(obs);
@@ -211,7 +218,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         list.addOpenedDatabase(new DatabaseDescriptor("testdb"));
         list.addOpenedDatabase(new DatabaseDescriptor("securedb"));
         
-        final Observer<DatabaseEvent> obs = EasyMock.createMock(Observer.class);
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
         obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent("testdb")));
         obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("securedb")));
         EasyMock.replay(obs);
