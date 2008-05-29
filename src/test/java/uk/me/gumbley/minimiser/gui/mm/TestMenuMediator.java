@@ -14,6 +14,10 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
  * @author matt
  *
  */
+/**
+ * @author matt
+ *
+ */
 public class TestMenuMediator extends LoggingTestCase {
     private MenuMediator menuMediator;
     private StubMenu stubMenu;
@@ -69,6 +73,66 @@ public class TestMenuMediator extends LoggingTestCase {
         openDatabaseList.removeClosedDatabase(databaseDescriptor1);
         Assert.assertTrue(stubMenu.isCloseEnabled());
         openDatabaseList.removeClosedDatabase(databaseDescriptor2);
+        Assert.assertFalse(stubMenu.isCloseEnabled());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void testEmptySwitchList() {
+        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 0);
+        Assert.assertNull(stubMenu.getCurrentDatabase());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void testPopulatedSwitchList() {
+        final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
+        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
+        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 1);
+        Assert.assertEquals("one", stubMenu.getCurrentDatabase());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void testSwitchOnOpenNew() {
+        final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
+        final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
+        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
+        openDatabaseList.addOpenedDatabase(databaseDescriptor2);
+        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 2);
+        Assert.assertEquals("two", stubMenu.getCurrentDatabase());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void testSwitchBackOnClose() {
+        final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
+        final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
+        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
+        openDatabaseList.addOpenedDatabase(databaseDescriptor2);
+        openDatabaseList.removeClosedDatabase(databaseDescriptor2);
+        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 1);
+        Assert.assertEquals("one", stubMenu.getCurrentDatabase());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void testNoCurrentWhenLastClosed() {
+        final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
+        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
+        openDatabaseList.removeClosedDatabase(databaseDescriptor1);
+        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 0);
+        Assert.assertNull(stubMenu.getCurrentDatabase());
         Assert.assertFalse(stubMenu.isCloseEnabled());
     }
 }

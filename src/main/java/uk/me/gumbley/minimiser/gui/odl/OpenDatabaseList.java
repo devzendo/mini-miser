@@ -115,4 +115,18 @@ public final class OpenDatabaseList {
         }
         return null;
     }
+
+    /**
+     * Switch to an existing database
+     * @param databaseName the name to switch to
+     */
+    public void switchDatabase(final String databaseName) {
+        for (DatabaseDescriptor descriptor : databaseList) {
+            if (descriptor.getDatabaseName().equals(databaseName)) {
+                LOGGER.info("Switching to " + databaseName);
+                observerList.eventOccurred(new DatabaseSwitchedEvent(databaseName));
+                return;
+            }
+        }
+    }
 }

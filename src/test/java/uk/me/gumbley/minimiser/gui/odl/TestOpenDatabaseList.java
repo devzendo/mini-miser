@@ -8,13 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseClosedEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseListEmptyEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseOpenedEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseSwitchedEvent;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 
 
@@ -257,5 +250,44 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
 
         list.removeClosedDatabase(databaseDescriptorDb2);
         Assert.assertEquals(expectedList, list.getOpenDatabases());
+    }
+    
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSwitchExistingDatabase() {
+        list.addOpenedDatabase(new DatabaseDescriptor("testdb"));
+        list.addOpenedDatabase(new DatabaseDescriptor("securedb"));
+        
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("securedb")));
+        EasyMock.replay(obs);
+        
+        list.addDatabaseEventObserver(obs);
+
+        list.switchDatabase("securedb");
+        
+        EasyMock.verify(obs);
+    }
+
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSwitchNonExistantDatabase() {
+        list.addOpenedDatabase(new DatabaseDescriptor("testdb"));
+        list.addOpenedDatabase(new DatabaseDescriptor("securedb"));
+        
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        EasyMock.replay(obs);
+
+        list.addDatabaseEventObserver(obs);
+
+        list.switchDatabase("wazoo");
+        
+        EasyMock.verify(obs);
     }
 }

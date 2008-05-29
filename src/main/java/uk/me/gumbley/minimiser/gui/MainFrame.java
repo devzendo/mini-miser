@@ -1,14 +1,15 @@
 package uk.me.gumbley.minimiser.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
@@ -16,6 +17,9 @@ import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.mm.Menu;
+import uk.me.gumbley.minimiser.gui.mm.MenuMediator;
+import uk.me.gumbley.minimiser.gui.mm.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
@@ -53,8 +57,15 @@ public class MainFrame {
         createMainFrame();
         // Menu
         mainFrame.add(createMenu(), BorderLayout.NORTH);
+        mainFrame.add(createBlankPanel(), BorderLayout.CENTER);
         mainFrame.pack();
         mainFrame.setVisible(true);
+    }
+
+    private Component createBlankPanel() {
+        JPanel blankPanel = new JPanel();
+        blankPanel.setPreferredSize(new Dimension(640, 480));
+        return blankPanel;
     }
 
     private void createMainFrame() {
@@ -97,26 +108,14 @@ public class MainFrame {
     }
 
     private JMenuBar createMenu() {
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic('F');
-        //
-        //
-        JMenuItem fileExit = new JMenuItem("Exit");
-        fileExit.setMnemonic('x');
-        fileExit.addActionListener(exitAL);
-        fileMenu.add(fileExit);
-        //
-        // ---
-        //
-        JMenu helpMenu = new JMenu("Help");
-        //
-        JMenuItem helpManual = new JMenuItem("Help contents");
-        helpMenu.add(helpManual);
-        //
-        menuBar.add(fileMenu);
-        menuBar.add(helpMenu);
-        return menuBar;
+        LOGGER.info("Getting the menu");
+        final Menu menu = springLoader.getBean("menu", Menu.class);
+        LOGGER.info("Got the menu");
+        menu.addMenuActionListener(MenuIdentifier.FileExit, exitAL);
+        // wire up dependencies
+        springLoader.getBean("menuMediator", MenuMediator.class);
+        LOGGER.info("Menu dependencies wired");
+        return menu.getMenuBar();
     }
 
     private void shutdown() {

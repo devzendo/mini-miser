@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.gui.mm;
 
+import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseClosedEvent;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseEvent;
@@ -15,6 +16,8 @@ import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
  *
  */
 public final class MenuMediatorImpl implements MenuMediator {
+    private static final Logger LOGGER = Logger
+            .getLogger(MenuMediatorImpl.class);
     private final Menu menu;
     private final OpenDatabaseList openDatabaseList;
     
@@ -24,10 +27,12 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @param odl the open database list
      */
     public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl) {
+        LOGGER.info("initialising MenuMediatorImpl");
         menu = leMenu;
         openDatabaseList = odl;
         initialiseMenu();
         wireAdapters();
+        LOGGER.info("initialised MenuMediatorImpl");
     }
 
     private void initialiseMenu() {
@@ -35,7 +40,10 @@ public final class MenuMediatorImpl implements MenuMediator {
     }
 
     private void wireAdapters() {
+        // ODL -> menu and panels
         openDatabaseList.addDatabaseEventObserver(new DatabaseEventObserver());
+        // menu -> ODL (which'll talk back to the menu)
+        menu.addDatabaseSwitchObserver(new DatabaseSwitchObserver());
     }
     
     /**
@@ -50,16 +58,35 @@ public final class MenuMediatorImpl implements MenuMediator {
          */
         public void eventOccurred(final DatabaseEvent event) {
             if (event instanceof DatabaseListEmptyEvent) {
-                //menu.enableCloseMenu(false);
+                menu.emptyDatabaseList();
             } else if (event instanceof DatabaseClosedEvent) {
-                menu.enableCloseMenu(false); // TODO WOZERE won't DTRT with multiple open, then close one
+                DatabaseClosedEvent dce = (DatabaseClosedEvent) event;
+                menu.enableCloseMenu(openDatabaseList.getNumberOfDatabases() > 0);
+                menu.removeDatabase(dce.getDatabaseName());
             } else if (event instanceof DatabaseOpenedEvent) {
+                DatabaseOpenedEvent doe = (DatabaseOpenedEvent) event;
                 menu.enableCloseMenu(true);
+                menu.addDatabase(doe.getDatabaseName());
             } else if (event instanceof DatabaseSwitchedEvent) {
-                
+                DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) event;
+                menu.switchDatabase(dse.getDatabaseName());
             } else {
                 throw new IllegalStateException("Unexpected a " + event.getClass().getSimpleName());
             }
+        }
+    }
+    
+    /**
+     * Adapts between window menu changes and open database switching
+     * @author matt
+     *
+     */
+    public class DatabaseSwitchObserver implements Observer<WindowMenuChoice> {
+        /**
+         * {@inheritDoc}
+         */
+        public void eventOccurred(final WindowMenuChoice windowMenuChoice) {
+            openDatabaseList.switchDatabase(windowMenuChoice.getDatabaseName());
         }
     }
 }
