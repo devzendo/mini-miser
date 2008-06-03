@@ -14,10 +14,47 @@ import uk.me.gumbley.minimiser.gui.mm.MenuMediatorImpl.DatabaseSwitchObserver;
 public interface Menu {
     
     public enum MenuIdentifier {
-        FileNew, FileOpen, FileClose, FileCloseAll, FileImport, FileExport, FileExit,
+        /**
+         * 
+         */
+        FileNew,
+        /**
+         * 
+         */
+        FileOpen,
+        /**
+         * 
+         */
+        FileClose,
+        /**
+         * 
+         */
+        FileCloseAll,
+        /**
+         * 
+         */
+        FileImport,
+        /**
+         * 
+         */
+        FileExport,
+        /**
+         * 
+         */
+        FileExit,
         // Window menu is handled internally by the menu
-        HelpWelcome, HelpAbout, HelpContents
-        
+        /**
+         * 
+         */
+        HelpWelcome,
+        /**
+         * 
+         */
+        HelpAbout,
+        /**
+         * 
+         */
+        HelpContents
     }
     
     /**

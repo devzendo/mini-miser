@@ -3,7 +3,10 @@ package uk.me.gumbley.minimiser.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -14,7 +17,6 @@ import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.exception.AppException;
-import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.mm.Menu;
@@ -52,7 +54,6 @@ public class MainFrame {
         for (int i = 0; i < argList.size(); i++) {
             LOGGER.debug("arg " + i + " = '" + argList.get(i) + "'");
         }
-        ThreadCheckingRepaintManager.initialise();
         // Create new Window and exit handler
         createMainFrame();
         // Menu
@@ -105,6 +106,32 @@ public class MainFrame {
             public void windowDeactivated(final WindowEvent e) {
             }
         });
+        mainFrame.addComponentListener(new ComponentListener() {
+            public void componentHidden(final ComponentEvent e) {
+            }
+
+            public void componentMoved(final ComponentEvent e) {
+                saveGeometry(mainFrame.getBounds());
+            }
+
+            public void componentResized(final ComponentEvent e) {
+                saveGeometry(mainFrame.getBounds());
+            }
+
+            public void componentShown(final ComponentEvent e) {
+            }
+        });
+    }
+
+    private void saveGeometry(final Rectangle rect) {
+        final String geomStr = String.format("%d,%d,%d,%d",
+                    rect.x, rect.y, rect.width, rect.height);
+        saveGeometryDelayed(geomStr);
+        LOGGER.info(geomStr);
+    }
+    
+    private void saveGeometryDelayed(final String geomStr) {
+        //delayedExecutor.submit
     }
 
     private JMenuBar createMenu() {

@@ -4,7 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- persistence layer -->
-	
 	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateJdbcAccessImpl">
 		<constructor-arg ref="springLoader" />
 	</bean>
@@ -21,7 +20,11 @@
 	</bean>
 	
 	<!-- gui layer -->
-	<bean id="menu" class="uk.me.gumbley.minimiser.gui.mm.MenuImpl" lazy-init="true" />
+	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.mm.MenuWiring" lazy-init="true" />
+	
+	<bean id="menu" class="uk.me.gumbley.minimiser.gui.mm.MenuImpl" lazy-init="true" >
+		<constructor-arg ref="menuWiring" />
+	</bean>
 
 	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.mm.MenuMediatorImpl" lazy-init="true" >
 		<constructor-arg ref="menu" />
@@ -29,4 +32,7 @@
 	</bean>
 	
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />
+
+	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" />
+	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" />
 </beans>

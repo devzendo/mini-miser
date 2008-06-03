@@ -3,17 +3,16 @@ package uk.me.gumbley.minimiser.gui.mm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.gui.mm.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.gui.mm.MenuMediatorImpl.DatabaseSwitchObserver;
 
 /**
@@ -22,40 +21,9 @@ import uk.me.gumbley.minimiser.gui.mm.MenuMediatorImpl.DatabaseSwitchObserver;
  * @author matt
  *
  */
-public class MenuImpl implements Menu {
+public final class MenuImpl implements Menu {
     private List<String> databases;
     private int currentDatabaseIndex;
-    private class MenuDetails {
-        private final JMenuItem menuItem;
-        private ActionListener actionListener;
-
-        public MenuDetails(final JMenuItem menuItem) {
-            this.menuItem = menuItem;
-            this.actionListener = null;
-        }
-
-        /**
-         * @return the actionListener
-         */
-        public ActionListener getActionListener() {
-            return actionListener;
-        }
-
-        /**
-         * @param actionListener the actionListener to set
-         */
-        public void setActionListener(ActionListener actionListener) {
-            this.actionListener = actionListener;
-        }
-
-        /**
-         * @return the menuItem
-         */
-        public JMenuItem getMenuItem() {
-            return menuItem;
-        }
-    }
-    private Map<MenuIdentifier, MenuDetails> menuDetailsMap;
 
     private JMenuBar menuBar;
     private JMenu fileMenu;
@@ -63,14 +31,16 @@ public class MenuImpl implements Menu {
     private JMenu helpMenu;
 
     private ObserverList<WindowMenuChoice> windowMenuChoiceObservers;
+    private final MenuWiring menuWiring;
     
     /**
-     * 
+     * Create the Menu
+     * @param wiring the MenuWiring singleton
      */
-    public MenuImpl() {
+    public MenuImpl(final MenuWiring wiring) {
+        this.menuWiring = wiring;
         databases = new ArrayList<String>();
         currentDatabaseIndex = -1;
-        menuDetailsMap = new HashMap<MenuIdentifier, MenuDetails>();
 
         windowMenuChoiceObservers = new ObserverList<WindowMenuChoice>();
 
@@ -82,6 +52,8 @@ public class MenuImpl implements Menu {
         menuBar.add(fileMenu);
         menuBar.add(windowMenu);
         menuBar.add(helpMenu);
+        
+        enableCloseAllMenu();
     }
 
     private JMenu createWindowMenu() {
@@ -132,22 +104,7 @@ public class MenuImpl implements Menu {
         JMenuItem menuItem = new JMenuItem(menuItemText);
         menuItem.setMnemonic(mnemonic);
         menu.add(menuItem);
-        // adding a level of temporal indirection here so that listeners
-        // can be wired up after the menu has been created
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent e) {
-                synchronized (menuDetailsMap) {
-                    MenuDetails menuDetails = menuDetailsMap.get(menuIdentifier);
-                    ActionListener actionListener = menuDetails.getActionListener();
-                    if (actionListener != null) {
-                        actionListener.actionPerformed(e);
-                    }
-                }
-            }
-        });
-        synchronized (menuDetailsMap) {
-            menuDetailsMap.put(menuIdentifier, new MenuDetails(menuItem));
-        }
+        menuWiring.storeMenuItem(menuIdentifier, menuItem);
     }
 
     /**
@@ -160,10 +117,7 @@ public class MenuImpl implements Menu {
     }
     
     private void enableMenuItem(final MenuIdentifier menuIdentifier, final boolean enabled) {
-        synchronized (menuDetailsMap) {
-            MenuDetails menuDetails = menuDetailsMap.get(menuIdentifier);
-            menuDetails.getMenuItem().setEnabled(enabled);
-        }
+        menuWiring.getMenuItem(menuIdentifier).setEnabled(enabled);
     }
 
     private void buildWindowMenu() {
@@ -185,12 +139,17 @@ public class MenuImpl implements Menu {
         }
     }
 
+    private void enableCloseAllMenu() {
+        enableMenuItem(MenuIdentifier.FileCloseAll, databases.size() != 0);
+    }
+    
     /**
      * {@inheritDoc}
      */
     public void addDatabase(final String dbName) {
         databases.add(dbName);
         buildWindowMenu();
+        enableCloseAllMenu();
     }
 
     /**
@@ -201,6 +160,7 @@ public class MenuImpl implements Menu {
         currentDatabaseIndex = -1;
         buildWindowMenu();
         enableCloseMenu(false);
+        enableCloseAllMenu();
     }
 
     /**
@@ -209,6 +169,7 @@ public class MenuImpl implements Menu {
     public void removeDatabase(final String dbName) {
         databases.remove(dbName);
         buildWindowMenu();
+        enableCloseAllMenu();
     }
 
     /**
@@ -233,12 +194,10 @@ public class MenuImpl implements Menu {
         windowMenuChoiceObservers.addObserver(observer);
     }
 
-    public void addMenuActionListener(MenuIdentifier menuIdentifier, ActionListener actionListener) {
-        synchronized (menuDetailsMap) {
-            MenuDetails menuDetails = menuDetailsMap.get(menuIdentifier);
-            if (menuDetails != null) {
-                menuDetails.setActionListener(actionListener);
-            }
-        }
+    /**
+     * {@inheritDoc}
+     */
+    public void addMenuActionListener(final MenuIdentifier menuIdentifier, final ActionListener actionListener) {
+        menuWiring.setActionListener(menuIdentifier, actionListener);
     }
 }

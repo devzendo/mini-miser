@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.gui.mm;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * The menu mediator controls variable aspects of the menu, such as database

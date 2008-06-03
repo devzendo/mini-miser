@@ -18,8 +18,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
  * @author matt
  *
  */
-public class TestMenuMediator extends LoggingTestCase {
-    private MenuMediator menuMediator;
+public final class TestMenuMediator extends LoggingTestCase {
     private StubMenu stubMenu;
     private OpenDatabaseList openDatabaseList;
 
@@ -30,7 +29,7 @@ public class TestMenuMediator extends LoggingTestCase {
     public void getMediator() {
         stubMenu = new StubMenu();
         openDatabaseList = new OpenDatabaseList();
-        menuMediator = new MenuMediatorImpl(stubMenu, openDatabaseList);
+        new MenuMediatorImpl(stubMenu, openDatabaseList);
     }
     
     /**
