@@ -1,0 +1,4 @@
+wizard deployed to local repository with
+mvn deploy:deploy-file -Durl=http://sirius:8080/archiva/repository/internal -DrepositoryId=internal -DgeneratePom=true 
+-Dfile=wizard.jar -DgroupId=org.netbeans -DartifactId=wizard -Dversion=0.998.1 
+-Dpackaging=jar
