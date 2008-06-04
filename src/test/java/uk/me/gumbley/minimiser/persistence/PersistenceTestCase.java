@@ -16,7 +16,7 @@ import uk.me.gumbley.commoncode.executor.IteratorExecutor;
 import uk.me.gumbley.commoncode.os.OSTypeDetect;
 import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 import uk.me.gumbley.commoncode.string.StringUtils;
-import uk.me.gumbley.minimiser.config.TestConfig;
+import uk.me.gumbley.minimiser.config.TestingConfig;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderTestCase;
 
@@ -41,8 +41,8 @@ public class PersistenceTestCase extends SpringLoaderTestCase {
     public final void testDatabaseDirectoryMustBeAvailable() {
         LOGGER.info(">>> testDatabaseDirectoryMustBeAvailable");
         try {
-            final TestConfig config = getSpringLoader().getBean("testConfig",
-                TestConfig.class);
+            final TestingConfig config = getSpringLoader().getBean("testConfig",
+                TestingConfig.class);
             if (config == null) {
                 final String err = "Could not instantiate TestConfig";
                 LOGGER.error(err);
