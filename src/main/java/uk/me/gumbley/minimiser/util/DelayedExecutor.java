@@ -36,8 +36,9 @@ public final class DelayedExecutor {
     // Note: this comparator imposes orderings that are inconsistent with equals.
     // If it returns 0 for Executables that have the same trigger time,
     // then the TreeSet will say that the Executable is already contained.
-    // TreeSet seems to use this comparator for detecting containment in the
-    // set, rather than equals.
+    // TreeSet uses this comparator for detecting containment in the
+    // set, rather than equals. Therefore, compare equality by checking the
+    // key, and ordering by comparing the trigger time.
     static class ExecutableComparator implements Comparator<Executable> {
         public int compare(final Executable o1, final Executable o2) {
             if (o1.getKey().equals(o2.getKey())) {
@@ -211,15 +212,15 @@ public final class DelayedExecutor {
      */
     public void submit(final String key, final long delay, final Runnable runnable) {
         synchronized (treeSet) {
-        final Executable executable = new Executable(key, delay, runnable);
-//        if (LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Submitted " + executable);
-//        }
-        LOGGER.debug("Tree size before add of " + key + " is " + treeSet.size());
-        LOGGER.debug("hashCode of " + key + " is " + key.hashCode() + " executable's hashcode is " + executable.hashCode());
-LOGGER.debug("Tree already contains " + key + "? " + treeSet.contains(executable));
+        	final Executable executable = new Executable(key, delay, runnable);
+//	        if (LOGGER.isDebugEnabled()) {
+//	            LOGGER.debug("Submitted " + executable);
+//	        }
+//	        LOGGER.debug("Tree size before add of " + key + " is " + treeSet.size());
+//	        LOGGER.debug("hashCode of " + key + " is " + key.hashCode() + " executable's hashcode is " + executable.hashCode());
+//	        LOGGER.debug("Tree already contains " + key + "? " + treeSet.contains(executable));
             treeSet.add(executable);
-            LOGGER.debug("Tree size after add is " + treeSet.size());
+//            LOGGER.debug("Tree size after add is " + treeSet.size());
             executorThread.interrupt();
         }
     }

@@ -1,11 +1,12 @@
 package uk.me.gumbley.minimiser.util;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.util.DelayedExecutor.Executable;
