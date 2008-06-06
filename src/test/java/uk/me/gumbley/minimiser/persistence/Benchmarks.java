@@ -14,7 +14,7 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
  * @author matt
  *
  */
-public final class Benchmarks extends PersistenceTestCase {
+public final class Benchmarks extends PersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(Benchmarks.class);
 

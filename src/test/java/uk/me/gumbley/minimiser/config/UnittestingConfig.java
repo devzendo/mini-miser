@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
  * @author matt
  *
  */
-public class TestingConfig {
-    private static final Logger LOGGER = Logger.getLogger(TestingConfig.class);
+public class UnittestingConfig {
+    private static final Logger LOGGER = Logger.getLogger(UnittestingConfig.class);
     private static final String LOAD_FAILURE = "Could not load test configuration file %s: %s";
     //
     private static final String TESTCONFIG_PROPERTIES = "testconfig.properties";
@@ -27,7 +27,7 @@ public class TestingConfig {
     /**
      * Load up the test properties file. 
      */
-    public TestingConfig() {
+    public UnittestingConfig() {
         props = new Properties();
         try {
             final InputStream inStream = new FileInputStream(TESTCONFIG_PROPERTIES);

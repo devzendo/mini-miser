@@ -19,7 +19,7 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  * @author matt
  *
  */
-public final class TestMigratableDatabase extends PersistenceTestCase {
+public final class TestMigratableDatabase extends PersistenceUnittestCase {
     private static final String SQUEAMISH_OSSIFRAGE = "Squeamish Ossifrage";
 
     private static final Logger LOGGER = Logger

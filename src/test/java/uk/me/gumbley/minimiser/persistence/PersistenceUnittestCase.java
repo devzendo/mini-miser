@@ -16,9 +16,9 @@ import uk.me.gumbley.commoncode.executor.IteratorExecutor;
 import uk.me.gumbley.commoncode.os.OSTypeDetect;
 import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 import uk.me.gumbley.commoncode.string.StringUtils;
-import uk.me.gumbley.minimiser.config.TestingConfig;
+import uk.me.gumbley.minimiser.config.UnittestingConfig;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
-import uk.me.gumbley.minimiser.springloader.SpringLoaderTestCase;
+import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 
 /**
  * All persistence test cases must have a test database directory that must be
@@ -28,9 +28,9 @@ import uk.me.gumbley.minimiser.springloader.SpringLoaderTestCase;
  * @author matt
  */
 @ApplicationContext("uk/me/gumbley/minimiser/persistence/PersistenceTestCase.xml")
-public class PersistenceTestCase extends SpringLoaderTestCase {
+public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
     private static final Logger LOGGER = Logger
-            .getLogger(PersistenceTestCase.class);
+            .getLogger(PersistenceUnittestCase.class);
     private File databaseDirectory;
     private boolean suppressEmptyCheck = false;
 
@@ -41,8 +41,8 @@ public class PersistenceTestCase extends SpringLoaderTestCase {
     public final void testDatabaseDirectoryMustBeAvailable() {
         LOGGER.info(">>> testDatabaseDirectoryMustBeAvailable");
         try {
-            final TestingConfig config = getSpringLoader().getBean("testConfig",
-                TestingConfig.class);
+            final UnittestingConfig config = getSpringLoader().getBean("testConfig",
+                UnittestingConfig.class);
             if (config == null) {
                 final String err = "Could not instantiate TestConfig";
                 LOGGER.error(err);
