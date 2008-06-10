@@ -75,16 +75,9 @@ public class MainFrame {
     }
 
     private void createMainFrame() {
-        // WOZERE - extract method to get the geometry numbers out
-        final String geomStr = prefs.getWindowGeometry();
-        final String[] geomNumStrs = geomStr.split(",");
-        int[] geomNums = new int[geomNumStrs.length];
-        for (int i=0; i< geomNumStrs.length; i++) {
-            geomNums[i] = Integer.parseInt(geomNumStrs[i]);
-        }
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
-        mainFrame.setPreferredSize(new Dimension(geomNums[2], geomNums[3]));
+        setStartingGeometry();
         
         mainFrame.setLayout(new BorderLayout());
         exitAL = new WindowCloseActionListener(mainFrame, new MainFrameFacade() {
@@ -135,6 +128,24 @@ public class MainFrame {
             public void componentShown(final ComponentEvent e) {
             }
         });
+    }
+
+    private void setStartingGeometry() {
+        try {
+            final String geomStr = prefs.getWindowGeometry();
+            LOGGER.debug("Starting geometry is " + geomStr);
+            // x,y,width,height
+            final String[] geomNumStrs = geomStr.split(",");
+            final int[] geomNums = new int[geomNumStrs.length];
+            for (int i = 0; i < geomNumStrs.length; i++) {
+                geomNums[i] = Integer.parseInt(geomNumStrs[i]);
+            }
+            mainFrame.setLocation(geomNums[0], geomNums[1]);
+            mainFrame.setPreferredSize(new Dimension(geomNums[2], geomNums[3]));
+            LOGGER.debug("Starting geometry set");
+        } catch (final NumberFormatException nfe) {
+            LOGGER.warn("Couldn't set starting geometry", nfe);
+        }
     }
 
     private void saveGeometry(final Rectangle rect) {
