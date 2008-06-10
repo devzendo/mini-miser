@@ -33,6 +33,8 @@
 	
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />
 
-	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" />
-	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" />
+	<!-- models, other singletons and utilities -->
+	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" lazy-init="true" />
+	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />
+	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" lazy-init="true" />
 </beans>

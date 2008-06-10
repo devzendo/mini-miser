@@ -1,14 +1,20 @@
 package uk.me.gumbley.minimiser.util;
 
-import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
+import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * Allows Runnables to be enqueued and run after some specified delay.
  * Runnables are submitted with a key, and if many are submitted with the
- * same key, the last one submitted is executed (at the end of the delay).
+ * same key, only the last one submitted is executed (at the end of the delay).
  * 
  * This is useful to prevent firestorms of execution - e.g. window movements
  * causing the current geometry to be stored in prefs.
@@ -19,60 +25,92 @@ import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 public final class DelayedExecutor {
     private static final Logger LOGGER = Logger
             .getLogger(DelayedExecutor.class);
-    private TreeSet<Executable> treeSet;
-    private Thread executorThread;
+    private static final long DEFAULT_EMPTY_TREE_WAIT_TIME = 1000L;
+    private final Object lock;
+    private final Map<String, Executable> existenceLookup;
+    private final SortedMap<Long, Executable> triggerSortedMap;
+    private final Thread executorThread;
+    private final ObserverList<ExecutableReplaced> replacementObservers;
     
     /**
      * Construct the DelayedExecutor and start the execution thread.
      */
     public DelayedExecutor() {
-        ExecutableComparator comparator = new ExecutableComparator();
-        treeSet = new TreeSet<Executable>(comparator);
-        executorThread = new Thread(new DelayedExecutorRunnable());
-        executorThread.setDaemon(true);
-        executorThread.setName("Delayed Executor");
-        executorThread.start();
-    }
-    // Note: this comparator imposes orderings that are inconsistent with equals.
-    // If it returns 0 for Executables that have the same trigger time,
-    // then the TreeSet will say that the Executable is already contained.
-    // TreeSet uses this comparator for detecting containment in the
-    // set, rather than equals. Therefore, compare equality by checking the
-    // key, and ordering by comparing the trigger time.
-    static class ExecutableComparator implements Comparator<Executable> {
-        public int compare(final Executable o1, final Executable o2) {
-            if (o1.getKey().equals(o2.getKey())) {
-                return 0;
-            }
-            if (o1.getTriggerTime() < o2.getTriggerTime()) {
-                return -1;
-            }
-            return 1;
+        lock = new Object();
+        synchronized (lock) {
+            existenceLookup = new HashMap<String, Executable>();
+            triggerSortedMap = new TreeMap<Long, Executable>();
+            replacementObservers = new ObserverList<ExecutableReplaced>();
+            executorThread = new Thread(new Runnable() {
+                public void run() {
+                    while (true) {
+                        investigateFirstExecutable();
+                    }
+                }
+            });
+            executorThread.setDaemon(true);
+            executorThread.setName("Delayed Executor");
         }
     }
-    
-    static class Executable {
-        private final String ekey;
-        private final long edelay;
-        private final long etriggerTime;
-        private final Runnable erunnable;
 
-        public Executable(final String key, final long delay, final Runnable runnable) {
-            this.ekey = key;
-            this.edelay = delay;
-            this.etriggerTime = System.currentTimeMillis() + edelay;
-            this.erunnable = runnable;
-        }
-        
-        public String toString() {
-            return String.format("[%s] delay %d trigger %d", ekey, edelay, etriggerTime);
+    /**
+     * Signals that an Executable has been replaced since it has not been
+     * executed when an submission was made with an identically-named key.
+     * @author matt
+     *
+     */
+    static class ExecutableReplaced implements ObservableEvent {
+        private Executable exec;
+
+        /**
+         * @param executable the executable that has been replaced
+         */
+        public ExecutableReplaced(final Executable executable) {
+            exec = executable;
         }
 
         /**
-         * @return the delay
+         * @return the executable
          */
-        public long getDelay() {
-            return edelay;
+        public Executable getExecutable() {
+            return exec;
+        }
+    }
+
+    /**
+     * Add an observre of replacements, for unit testing.
+     * @param obs the observer
+     */
+    void addExecutableReplacementObserver(final Observer<ExecutableReplaced> obs) {
+        replacementObservers.addObserver(obs);
+    }
+
+    /**
+     * Encapsulates a Runnable, its key and trigger time.
+     * @author matt
+     *
+     */
+    static class Executable {
+        private final String ekey;
+        private final long etriggerTime;
+        private final Runnable erunnable;
+
+        /**
+         * @param key the key
+         * @param triggerTime when this Runnable will run
+         * @param runnable the Runnable
+         */
+        public Executable(final String key, final long triggerTime, final Runnable runnable) {
+            this.ekey = key;
+            this.etriggerTime = triggerTime;
+            this.erunnable = runnable;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        public String toString() {
+            return String.format("[%s] trigger %d", ekey, etriggerTime);
         }
 
         /**
@@ -133,66 +171,46 @@ public final class DelayedExecutor {
         }
     }
     
-    private class DelayedExecutorRunnable implements Runnable {
-        private static final long DEFAULT_EMPTY_TREE_WAIT_TIME = 1000L;
-
-        public void run() {
-            LOGGER.debug("Started DelayedExecutor");
-            while (true) {
-                Executable executable = null;
-                long waitTime = DEFAULT_EMPTY_TREE_WAIT_TIME; 
-                // stay in sync block for as short as possible
-                synchronized (treeSet) {
-                    LOGGER.debug("Tree size in loop is " + treeSet.size());
-                    if (!treeSet.isEmpty()) {
-                        executable = treeSet.first();
-                        long now = System.currentTimeMillis();
-                        final long triggerTime = executable.getTriggerTime();
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug(executable + " now=" + now);
-                        }
-                        if (triggerTime > now) {
-                            waitTime = triggerTime - now; // wait for this first Executable to trigger
-                            executable = null;            // since its time is not yet due
-                            if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("Not yet time; Waiting for " + waitTime + "ms");
-                            }
-                        } else {
-                            if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("Removing " + executable + " (expired " + (now - triggerTime) + " ms ago)");
-                            }
-                            treeSet.remove(executable);   // wake up! time to die! you will be executed
-                            waitTime = 0L;                // don't sleep, go check the tree again
-                        }
-                    } else {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Empty tree");
-                        }
+    private void investigateFirstExecutable() {
+        Executable executable = null;
+        long waitTime = DEFAULT_EMPTY_TREE_WAIT_TIME; 
+        synchronized (lock) {
+            // stay in sync block for as short as possible
+            if (!triggerSortedMap.isEmpty()) {
+                final Long firstTriggerTime = triggerSortedMap.firstKey();
+                executable = triggerSortedMap.get(firstTriggerTime);
+                long now = System.currentTimeMillis();
+                final long triggerTime = executable.getTriggerTime();
+                if (triggerTime > now) {
+                    waitTime = triggerTime - now; // wait for this first Executable to trigger
+                    executable = null;            // since its time is not yet due
+                } else {
+                    final boolean contained = triggerSortedMap.containsKey(firstTriggerTime);
+                    final boolean removed = triggerSortedMap.remove(firstTriggerTime) != null;  // wake up! time to die! you will be executed
+                    if (!removed || !contained) {
+                        LOGGER.warn("!! triggerSortedMap: contained is " + contained + " removed was " + removed);
                     }
-                }
-                if (executable != null) {
-                    try {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug(">>> Executing " + executable);
-                        }
-                        executable.getRunnable().run();
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("<<< Executed " + executable);
-                        }
-                    } catch (final Throwable t) {
-                        LOGGER.warn("Delayed execution caught a " + t.getClass().getSimpleName() + ": " + t.getMessage());
+                    final boolean containedInExistenceLookup = existenceLookup.containsKey(executable.getKey());
+                    final boolean removedFromExistenceLookup = existenceLookup.remove(executable.getKey()) != null;
+                    if (!removedFromExistenceLookup || !containedInExistenceLookup) {
+                        LOGGER.warn("!! existenceLookup: contained is " + containedInExistenceLookup + " removed was " + removedFromExistenceLookup);
                     }
-                }
-                if (waitTime > 0) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Waiting for " + waitTime + "ms");
-                    }
-                    ThreadUtils.waitNoInterruption(waitTime);
+                    waitTime = 0L;                // don't sleep, go check the tree again
                 }
             }
+        } // lock
+        if (executable != null) {
+            try {
+                executable.getRunnable().run();
+            } catch (final Throwable t) {
+                LOGGER.warn("Delayed execution caught a " + t.getClass().getSimpleName() + ": " + t.getMessage());
+            }
+        }
+        if (waitTime > 0) {
+            ThreadUtils.waitNoInterruption(waitTime);
         }
     }
-
+    
     /**
      * Submit a Runnable for execution after a given delay. If a Runnable
      * with the same key is already scheduled for execution, cancel its
@@ -211,17 +229,44 @@ public final class DelayedExecutor {
      * @param runnable the Runnable to execute.
      */
     public void submit(final String key, final long delay, final Runnable runnable) {
-        synchronized (treeSet) {
-        	final Executable executable = new Executable(key, delay, runnable);
-//	        if (LOGGER.isDebugEnabled()) {
-//	            LOGGER.debug("Submitted " + executable);
-//	        }
-//	        LOGGER.debug("Tree size before add of " + key + " is " + treeSet.size());
-//	        LOGGER.debug("hashCode of " + key + " is " + key.hashCode() + " executable's hashcode is " + executable.hashCode());
-//	        LOGGER.debug("Tree already contains " + key + "? " + treeSet.contains(executable));
-            treeSet.add(executable);
-//            LOGGER.debug("Tree size after add is " + treeSet.size());
+        synchronized (lock) {
+            if (!executorThread.isAlive()) {
+                executorThread.start();
+            }
+            if (existenceLookup.containsKey(key)) {
+                final Executable oldExec = existenceLookup.remove(key);
+                // notify of replacement - for unit tests
+                replacementObservers.eventOccurred(new ExecutableReplaced(oldExec));
+                triggerSortedMap.remove(oldExec.getTriggerTime());
+            }
+            // Ensure uniqueness of the key of the trigger map
+            long newTriggerTime = System.currentTimeMillis() + delay;
+            while (triggerSortedMap.containsKey(newTriggerTime)) {
+                newTriggerTime++;
+            }
+            final Executable executable = new Executable(key, newTriggerTime, runnable);
+            existenceLookup.put(key, executable);
+            triggerSortedMap.put(newTriggerTime, executable);
             executorThread.interrupt();
         }
+    }
+
+    /**
+     * Submit a Runnable to run on the Swing Event Thread.
+     * @see submit
+     * 
+     * @param key an identifier to define repeated instances of the same type
+     * of Runnable
+     * @param delay the delay after which this Runnable will be executed (unless
+     * replaced). If 0, the Runnable should execute immediately.
+     * @param runnable the Runnable to execute.
+     */
+    public void submitGui(final String key, final long delay, final Runnable runnable) {
+        submit(key, delay, new Runnable() {
+            public void run() {
+                // WOZERE this was dying - killing event thread - might be junit tho?
+                SwingUtilities.invokeLater(runnable);
+            }
+        });
     }
 }

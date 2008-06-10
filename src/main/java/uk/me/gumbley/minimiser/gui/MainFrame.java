@@ -22,7 +22,10 @@ import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.mm.Menu;
 import uk.me.gumbley.minimiser.gui.mm.MenuMediator;
 import uk.me.gumbley.minimiser.gui.mm.Menu.MenuIdentifier;
+import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
+import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
@@ -34,11 +37,10 @@ public class MainFrame {
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
 
     private JFrame mainFrame;
-
     private ActionListener exitAL;
-
-    @SuppressWarnings("unused")
     private final SpringLoader springLoader;
+    private final DelayedExecutor delayedExecutor;
+    private final Prefs prefs;
 
     /**
      * @param loader the IoC container abstraction
@@ -54,6 +56,9 @@ public class MainFrame {
         for (int i = 0; i < argList.size(); i++) {
             LOGGER.debug("arg " + i + " = '" + argList.get(i) + "'");
         }
+        delayedExecutor = springLoader.getBean("delayedExecutor", DelayedExecutor.class);
+        prefs = springLoader.getBean("prefs", Prefs.class);
+
         // Create new Window and exit handler
         createMainFrame();
         // Menu
@@ -70,8 +75,17 @@ public class MainFrame {
     }
 
     private void createMainFrame() {
+        // WOZERE - extract method to get the geometry numbers out
+        final String geomStr = prefs.getWindowGeometry();
+        final String[] geomNumStrs = geomStr.split(",");
+        int[] geomNums = new int[geomNumStrs.length];
+        for (int i=0; i< geomNumStrs.length; i++) {
+            geomNums[i] = Integer.parseInt(geomNumStrs[i]);
+        }
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
+        mainFrame.setPreferredSize(new Dimension(geomNums[2], geomNums[3]));
+        
         mainFrame.setLayout(new BorderLayout());
         exitAL = new WindowCloseActionListener(mainFrame, new MainFrameFacade() {
             public void enableDisableControls(final boolean enable) {
@@ -126,14 +140,14 @@ public class MainFrame {
     private void saveGeometry(final Rectangle rect) {
         final String geomStr = String.format("%d,%d,%d,%d",
                     rect.x, rect.y, rect.width, rect.height);
-        saveGeometryDelayed(geomStr);
+        delayedExecutor.submit("savegeometry", 250L, new Runnable() {
+            public void run() {
+                prefs.setWindowGeometry(geomStr);
+            }
+        });
         LOGGER.info(geomStr);
     }
     
-    private void saveGeometryDelayed(final String geomStr) {
-        //delayedExecutor.submit
-    }
-
     private JMenuBar createMenu() {
         LOGGER.info("Getting the menu");
         final Menu menu = springLoader.getBean("menu", Menu.class);
