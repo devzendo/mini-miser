@@ -26,6 +26,11 @@
 		<constructor-arg ref="menuWiring" />
 	</bean>
 
+	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.mm.MenuBuilder" lazy-init="true" >
+		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="springLoader" />
+	</bean>
+
 	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.mm.MenuMediatorImpl" lazy-init="true" >
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="openDatabaseList" />
@@ -33,6 +38,9 @@
 	
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />
 
+    <!-- menu action listeners -->
+	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.mm.al.FileNewActionListener" lazy-init="true" />
+    
 	<!-- models, other singletons and utilities -->
 	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" lazy-init="true" />
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />

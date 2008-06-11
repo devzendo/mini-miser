@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.exception.AppException;
@@ -17,6 +19,7 @@ import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderFactory;
 import uk.me.gumbley.minimiser.version.AppVersion;
+import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
 /**
  * The start of the application, parsescommand line for logging, and constructs
@@ -97,13 +100,23 @@ public final class MiniMiser {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 try {
+                    makeBeautiful();
                     new MainFrame(springLoader, finalArgList);
                 } catch (final AppException e) {
                     LOGGER.fatal(e.getMessage());
                     System.exit(1);
                 }
             }
+
         });
+    }
+    
+    private static void makeBeautiful() {
+        try {
+            UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
+        } catch (final UnsupportedLookAndFeelException e) {
+            LOGGER.warn("Plastic XP look and feel is not supported: " + e.getMessage());
+        }
     }
 
     private static SpringLoader initSpringLoader() {

@@ -20,10 +20,10 @@ import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.mm.Menu;
+import uk.me.gumbley.minimiser.gui.mm.MenuBuilder;
 import uk.me.gumbley.minimiser.gui.mm.MenuMediator;
 import uk.me.gumbley.minimiser.gui.mm.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.prefs.Prefs;
-import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
@@ -167,6 +167,8 @@ public class MainFrame {
         // wire up dependencies
         springLoader.getBean("menuMediator", MenuMediator.class);
         LOGGER.info("Menu dependencies wired");
+        springLoader.getBean("menuBuilder", MenuBuilder.class).build();
+        LOGGER.info("Menu ActionListeners built and wired");
         return menu.getMenuBar();
     }
 
