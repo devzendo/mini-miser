@@ -1,0 +1,26 @@
+MiniMiser - a simple personal finance manager program
+-----------------------------------------------------
+Menu:
+File:
+  New
+  Open
+  Close
+  Import
+  Export
+  Printer setup
+  Print Page
+  Recently Used List
+  Exit
+  
+Edit
+  Cut
+  Copy
+  Paste
+  Preferences
+  
+Accounts:
+  Add account
+  Reconcile
+  Calendar
+  Standing Order List
+  
