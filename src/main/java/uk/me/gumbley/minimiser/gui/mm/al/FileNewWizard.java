@@ -9,11 +9,11 @@ import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 
 public class FileNewWizard {
     public static void startFileNewWizard() {
-        Class[] wizardPages = new Class[] {
-                //FileNewWizardIntroPage.class,
-                //FileNewWizardChooseFolderPage.class,
-                FileNewWizardSecurityOptionPage.class,
+        final Class[] wizardPages = new Class[] {
                 FileNewWizardIntroPage.class,
+                FileNewWizardChooseFolderPage.class,
+                FileNewWizardSecurityOptionPage.class,
+                //FileNewWizardIntroPage.class,
         };
         Wizard wizard = WizardPage.createWizard(wizardPages, WizardResultProducer.NO_OP);
         wizard.show();
