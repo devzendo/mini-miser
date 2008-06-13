@@ -13,6 +13,7 @@ import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
@@ -100,7 +101,7 @@ public final class MiniMiser {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 try {
-                    makeBeautiful();
+                    Beautifier.makeBeautiful();
                     new MainFrame(springLoader, finalArgList);
                 } catch (final AppException e) {
                     LOGGER.fatal(e.getMessage());
@@ -111,14 +112,6 @@ public final class MiniMiser {
         });
     }
     
-    private static void makeBeautiful() {
-        try {
-            UIManager.setLookAndFeel(new PlasticXPLookAndFeel());
-        } catch (final UnsupportedLookAndFeelException e) {
-            LOGGER.warn("Plastic XP look and feel is not supported: " + e.getMessage());
-        }
-    }
-
     private static SpringLoader initSpringLoader() {
         // Now load up Spring...
         long startSpring = System.currentTimeMillis();
