@@ -1,26 +1,42 @@
 package uk.me.gumbley.minimiser.gui.mm.al;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.Border;
+
 import org.netbeans.spi.wizard.WizardPage;
+
+import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.util.PasswordValidator;
 
+/**
+ * File New Wizard - security options
+ * 
+ * @author matt
+ */
 public final class FileNewWizardSecurityOptionPage extends WizardPage {
-    private boolean encrypted;
+    private static final boolean INITIAL_ENCRYPTED = false;
     private JCheckBox encryptCheckBox;
     private JPasswordField passwordField;
     private JPasswordField passwordReentryField;
+    private JLabel passwordLabel;
+    private JLabel passwordReentryLabel;
+    private JLabel helpfulPasswordHints;
+
+    /**
+     * Create the security options wizard page
+     */
     public FileNewWizardSecurityOptionPage() {
-        encrypted = false;
         initComponents();
     }
 
@@ -28,12 +44,12 @@ public final class FileNewWizardSecurityOptionPage extends WizardPage {
         JPanel sizedPanel = FileNewWizard.createNicelySizedPanel();
         sizedPanel.setLayout(new BorderLayout(20, 20));
         
-        encryptCheckBox = new JCheckBox("Use encryption to encrypt the new database?", encrypted);
+        encryptCheckBox = new JCheckBox("Use encryption to encrypt the new database?", INITIAL_ENCRYPTED);
+        encryptCheckBox.setName("encrypted");
         sizedPanel.add(encryptCheckBox, BorderLayout.NORTH);
         
         JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BorderLayout());
-        
         final Border titledBorder = BorderFactory.createTitledBorder("Password entry");
         final JPanel passwordEntryPanel = new JPanel();
         passwordEntryPanel.setBorder(titledBorder);
@@ -44,7 +60,7 @@ public final class FileNewWizardSecurityOptionPage extends WizardPage {
         constraints.insets = new Insets(5, 5, 5, 5);
         passwordEntryPanel.setLayout(gridBagLayout);
         
-        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel = new JLabel("Password");
         constraints.weightx = 0.5;
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -52,12 +68,12 @@ public final class FileNewWizardSecurityOptionPage extends WizardPage {
         passwordEntryPanel.add(passwordLabel);
         
         passwordField = new JPasswordField(PasswordValidator.MAX_PASSWORD_LENGTH);
+        passwordField.setName("password");
         constraints.gridx = 1;
         constraints.gridwidth = 2;
         gridBagLayout.setConstraints(passwordField, constraints);
         passwordEntryPanel.add(passwordField);
-        
-        JLabel passwordReentryLabel = new JLabel("Re-enter password");
+        passwordReentryLabel = new JLabel("Re-enter password");
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
@@ -65,21 +81,54 @@ public final class FileNewWizardSecurityOptionPage extends WizardPage {
         passwordEntryPanel.add(passwordReentryLabel);
         
         passwordReentryField = new JPasswordField(PasswordValidator.MAX_PASSWORD_LENGTH);
+        passwordReentryField.setName("passwordReentry");
         constraints.gridx = 1;
         constraints.gridwidth = 2;
         gridBagLayout.setConstraints(passwordReentryField, constraints);
         passwordEntryPanel.add(passwordReentryField);
         
+        helpfulPasswordHints = new JLabel(getComment());
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 3;
+        gridBagLayout.setConstraints(helpfulPasswordHints, constraints);
+        passwordEntryPanel.add(helpfulPasswordHints);
+        
         innerPanel.add(passwordEntryPanel, BorderLayout.NORTH);
-        
         sizedPanel.add(innerPanel, BorderLayout.CENTER);
-        
         add(sizedPanel);
+        enableDisableControls(INITIAL_ENCRYPTED);
     }
 
+    private String getComment() {
+        return "<html><br>"
+            + "Good security practice recommends a password that is not easy to guess.<br><br>"
+            + "Your password must be at least "
+            + PasswordValidator.MIN_PASSWORD_LENGTH + " "
+            + StringUtils.pluralise("character", PasswordValidator.MIN_PASSWORD_LENGTH)
+            + " long, with at least " + PasswordValidator.MIN_DIGITS
+            + " " + StringUtils.pluralise("digit", PasswordValidator.MIN_DIGITS) + ".<br>"
+            + "It must contain both upper and lower case letters."
+            + "</html>";
+    }
+
+    private void enableDisableControls(final boolean enable) {
+        passwordLabel.setEnabled(enable);
+        passwordField.setEnabled(enable);
+        passwordReentryLabel.setEnabled(enable);
+        passwordReentryField.setEnabled(enable);
+        helpfulPasswordHints.setForeground(enable ? Color.BLACK : Color.LIGHT_GRAY);
+    }
+
+    /**
+     * @see org.netbeans.spi.wizard.WizardPage#validateContents(java.awt.Component, java.lang.Object)
+     */
     protected String validateContents(final Component component, final Object object) {
-        if (!encryptCheckBox.isSelected()) {
-//            setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
+        if (encryptCheckBox.isSelected()) {
+            enableDisableControls(true);
+        } else {
+            enableDisableControls(false);
+            // setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
             return null;
         }
         final char[] pwd = passwordField.getPassword();
@@ -102,7 +151,11 @@ public final class FileNewWizardSecurityOptionPage extends WizardPage {
         }
         return null;
     }
-    
+
+    /**
+     * Page description
+     * @return the page description
+     */
     public static String getDescription() {
         return "Protect with Encryption?";
     }
