@@ -22,15 +22,13 @@ public final class DriveCurrentGuiThing {
     }
     /**
      * @param args command line
-     * @return 0
      */
-    public static int main(final String[] args) {
+    public static void main(final String[] args) {
         BasicConfigurator.configure();
         ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         LOGGER.info(String.format("%s %s GUI experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
         Beautifier.makeBeautiful();
         FileNewWizard.startFileNewWizard();
-        return 0;
     }
 }
