@@ -1,20 +1,21 @@
 package uk.me.gumbley.minimiser.gui.mm.al;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.WizardController;
-import org.netbeans.spi.wizard.WizardPage;
 
 import uk.me.gumbley.commoncode.string.StringUtils;
+import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 
-public class FileNewWizardChooseFolderPage extends WizardPage {
+public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
     private static final Logger LOGGER = Logger
             .getLogger(FileNewWizardChooseFolderPage.class);
     private JFileChooser fileChooser;
@@ -56,7 +57,7 @@ public class FileNewWizardChooseFolderPage extends WizardPage {
     private void initComponents() {
         setLayout(new FlowLayout());
         
-        JPanel panel = new JPanel();
+        JPanel panel = createNicelySizedPanel();
         
         fileChooser = new JFileChooser();
         fileChooser.setName("chooser");

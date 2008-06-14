@@ -7,8 +7,11 @@ import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 
+import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
+
 public class FileNewWizard {
     public static void startFileNewWizard() {
+        MiniMiserWizardPage.setLHGraphic();
         final Class[] wizardPages = new Class[] {
                 FileNewWizardIntroPage.class,
                 FileNewWizardChooseFolderPage.class,
@@ -17,17 +20,5 @@ public class FileNewWizard {
         };
         Wizard wizard = WizardPage.createWizard(wizardPages, WizardResultProducer.NO_OP);
         wizard.show();
-    }
-
-    public static JPanel createNicelySizedPanel() {
-        JPanel panel = new JPanel();
-        final JFileChooser fileChooser = new JFileChooser();
-        fileChooser.validate();
-        panel.add(fileChooser);
-        panel.validate();
-        Dimension dim = panel.getPreferredSize();
-        panel.setPreferredSize(dim);
-        panel.remove(fileChooser);
-        return panel;
     }
 }

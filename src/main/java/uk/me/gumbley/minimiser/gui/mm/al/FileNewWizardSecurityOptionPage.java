@@ -14,9 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.Border;
 
-import org.netbeans.spi.wizard.WizardPage;
-
 import uk.me.gumbley.commoncode.string.StringUtils;
+import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 import uk.me.gumbley.minimiser.util.PasswordValidator;
 
 /**
@@ -24,7 +23,7 @@ import uk.me.gumbley.minimiser.util.PasswordValidator;
  * 
  * @author matt
  */
-public final class FileNewWizardSecurityOptionPage extends WizardPage {
+public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
     private static final boolean INITIAL_ENCRYPTED = false;
     private JCheckBox encryptCheckBox;
     private JPasswordField passwordField;
@@ -41,7 +40,7 @@ public final class FileNewWizardSecurityOptionPage extends WizardPage {
     }
 
     private void initComponents() {
-        JPanel sizedPanel = FileNewWizard.createNicelySizedPanel();
+        JPanel sizedPanel = createNicelySizedPanel();
         sizedPanel.setLayout(new BorderLayout(20, 20));
         
         encryptCheckBox = new JCheckBox("Use encryption to encrypt the new database?", INITIAL_ENCRYPTED);

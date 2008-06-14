@@ -1,18 +1,21 @@
 package uk.me.gumbley.minimiser.gui.mm.al;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+
 import org.apache.log4j.Logger;
-import org.netbeans.spi.wizard.WizardPage;
+
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 
 /**
  * Tell the user about databases.
  * @author matt
  *
  */
-public final class FileNewWizardIntroPage extends WizardPage {
+public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
     private static final Logger LOGGER = Logger
             .getLogger(FileNewWizardIntroPage.class);
     /**
@@ -23,7 +26,7 @@ public final class FileNewWizardIntroPage extends WizardPage {
     }
     
     private void initComponents() {
-        JPanel sizedPanel = FileNewWizard.createNicelySizedPanel();
+        JPanel sizedPanel = createNicelySizedPanel();
         sizedPanel.setLayout(new BorderLayout());
         final JTextArea textArea = new JTextArea(getText());
         textArea.setEditable(false);
