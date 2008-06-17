@@ -36,13 +36,18 @@
 		<constructor-arg ref="openDatabaseList" />
 	</bean>
 	
-	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />
-
     <!-- menu action listeners -->
-	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.mm.al.FileNewActionListener" lazy-init="true" />
+	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.mm.al.FileNewActionListener" lazy-init="true" >
+		<constructor-arg ref="workerPool" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="accessFactory" />
+	</bean>
     
 	<!-- models, other singletons and utilities -->
+	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />
 	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" lazy-init="true" />
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />
 	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" lazy-init="true" />
+	<bean id="workerPool" class="uk.me.gumbley.minimiser.util.WorkerPool" lazy-init="true" />
+	
 </beans>

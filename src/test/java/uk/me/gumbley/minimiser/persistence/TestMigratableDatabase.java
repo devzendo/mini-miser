@@ -91,9 +91,9 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         LOGGER.info("*** testCreatePlaintextDatabase start");
         final String dbName = "testcreate";
         // should we be able to create this db?
-        // TODO my assumption about the databse directory + dbname was wrong
-        // i thought it'd create a dir for the db, but dbName is just the
-        // prefix of th efiles in the parent dir
+        // TODO my assumption about the databse directory + dbname was wrong.
+        // I thought it'd create a dir for the db, but dbName is just the
+        // prefix of the files in the parent dir
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
         // create it...

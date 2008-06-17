@@ -11,9 +11,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
+import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.mm.MenuMediatorImpl.DatabaseSwitchObserver;
+import uk.me.gumbley.minimiser.util.SwingUnittestHelper;
 
 /**
  * The Swing Menu.
@@ -117,6 +119,7 @@ public final class MenuImpl implements Menu {
     }
     
     private void enableMenuItem(final MenuIdentifier menuIdentifier, final boolean enabled) {
+        // WOZERE need to ensure all this gets done on the EDT
         menuWiring.getMenuItem(menuIdentifier).setEnabled(enabled);
     }
 
@@ -147,44 +150,70 @@ public final class MenuImpl implements Menu {
      * {@inheritDoc}
      */
     public void addDatabase(final String dbName) {
-        databases.add(dbName);
-        buildWindowMenu();
-        enableCloseAllMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (databases) {
+                    databases.add(dbName);
+                    buildWindowMenu();
+                    enableCloseAllMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void emptyDatabaseList() {
-        databases.clear();
-        currentDatabaseIndex = -1;
-        buildWindowMenu();
-        enableCloseMenu(false);
-        enableCloseAllMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (databases) {
+                    databases.clear();
+                    currentDatabaseIndex = -1;
+                    buildWindowMenu();
+                    enableCloseMenu(false);
+                    enableCloseAllMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void removeDatabase(final String dbName) {
-        databases.remove(dbName);
-        buildWindowMenu();
-        enableCloseAllMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (databases) {
+                    databases.remove(dbName);
+                    buildWindowMenu();
+                    enableCloseAllMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void switchDatabase(final String dbName) {
-        currentDatabaseIndex = databases.indexOf(dbName);
-        buildWindowMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (databases) {
+                    currentDatabaseIndex = databases.indexOf(dbName);
+                    buildWindowMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public JMenuBar getMenuBar() {
-        return menuBar;
+        synchronized (menuBar) {
+            return menuBar;
+        }
     }
 
     /**

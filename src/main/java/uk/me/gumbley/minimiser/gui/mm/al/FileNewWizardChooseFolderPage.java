@@ -8,6 +8,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.WizardController;
@@ -15,21 +16,40 @@ import org.netbeans.spi.wizard.WizardController;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 
+/**
+ * Choose an empty dirctory to hold the database.
+ * Sets result: pathName 
+ * 
+ * @author matt
+ *
+ */
 public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
+    public static final String PATH_NAME = "pathName";
+    private static final long serialVersionUID = -2393755991521527684L;
     private static final Logger LOGGER = Logger
             .getLogger(FileNewWizardChooseFolderPage.class);
     private JFileChooser fileChooser;
     private File chosenDirectory;
+    private JTextField hiddenPathName;
 
+    /**
+     * Construct the wizard page
+     */
     public FileNewWizardChooseFolderPage() {
         chosenDirectory = null;
         initComponents();
     }
     
+    /**
+     * @return description for the left-hand area
+     */
     public static String getDescription() {
         return "Choose new folder for database";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected String validateContents(final Component component, final Object object) {
         return validateGoodDirectory();
     }
@@ -60,7 +80,6 @@ public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
         JPanel panel = createNicelySizedPanel();
         
         fileChooser = new JFileChooser();
-        fileChooser.setName("chooser");
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setControlButtonsAreShown(false);
@@ -71,8 +90,18 @@ public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
                 if (evt.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
                     setChosenDirectory(fileChooser.getSelectedFile());
                 }
-            }});
+            }
+        });
         panel.add(fileChooser);
+        
+        // Add a hidden text field to receive the valid contents of the
+        // file chooser, since those contents don't get populated in the
+        // wizard's output map.
+        hiddenPathName = new JTextField();
+        hiddenPathName.setVisible(false);
+        hiddenPathName.setName(PATH_NAME);
+        add(hiddenPathName);
+        
         panel.validate();
         add(panel);
     }
@@ -98,6 +127,7 @@ public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
         } else {
             setProblem(null); //"The " + chosenDirectory.getName() + " folder can be used to hold the new database");
             setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
+            hiddenPathName.setText(chosenDirectory.getAbsolutePath());
         }
     }
 }

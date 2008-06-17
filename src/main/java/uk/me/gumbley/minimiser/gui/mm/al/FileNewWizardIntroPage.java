@@ -1,12 +1,8 @@
 package uk.me.gumbley.minimiser.gui.mm.al;
 
 import java.awt.BorderLayout;
-
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
-import org.apache.log4j.Logger;
-
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 
@@ -16,8 +12,7 @@ import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
  *
  */
 public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
-    private static final Logger LOGGER = Logger
-            .getLogger(FileNewWizardIntroPage.class);
+    private static final long serialVersionUID = 3743607043316984644L;
     /**
      * Create an intro page. 
      */
@@ -57,6 +52,9 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
             + "Or, press 'Cancel' to abandon the creation of a new database.";
     }
 
+    /**
+     * @return wizard page description for the LH area
+     */
     public static String getDescription() {
         return "About " + AppName.getAppName() + " databases";
     }

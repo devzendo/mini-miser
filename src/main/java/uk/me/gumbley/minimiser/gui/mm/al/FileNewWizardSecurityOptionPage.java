@@ -24,6 +24,9 @@ import uk.me.gumbley.minimiser.util.PasswordValidator;
  * @author matt
  */
 public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
+    public static final String PASSWORD = "password";
+    public static final String ENCRYPTED = "encrypted";
+    private static final long serialVersionUID = 2308707685829344793L;
     private static final boolean INITIAL_ENCRYPTED = false;
     private JCheckBox encryptCheckBox;
     private JPasswordField passwordField;
@@ -44,7 +47,7 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
         sizedPanel.setLayout(new BorderLayout(20, 20));
         
         encryptCheckBox = new JCheckBox("Use encryption to encrypt the new database?", INITIAL_ENCRYPTED);
-        encryptCheckBox.setName("encrypted");
+        encryptCheckBox.setName(ENCRYPTED);
         sizedPanel.add(encryptCheckBox, BorderLayout.NORTH);
         
         JPanel innerPanel = new JPanel();
@@ -67,7 +70,7 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
         passwordEntryPanel.add(passwordLabel);
         
         passwordField = new JPasswordField(PasswordValidator.MAX_PASSWORD_LENGTH);
-        passwordField.setName("password");
+        passwordField.setName(PASSWORD);
         constraints.gridx = 1;
         constraints.gridwidth = 2;
         gridBagLayout.setConstraints(passwordField, constraints);
@@ -80,7 +83,8 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
         passwordEntryPanel.add(passwordReentryLabel);
         
         passwordReentryField = new JPasswordField(PasswordValidator.MAX_PASSWORD_LENGTH);
-        passwordReentryField.setName("passwordReentry");
+        // don't need to settName, as the wizard map only needs the correct
+        // password once
         constraints.gridx = 1;
         constraints.gridwidth = 2;
         gridBagLayout.setConstraints(passwordReentryField, constraints);
@@ -120,7 +124,7 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
     }
 
     /**
-     * @see org.netbeans.spi.wizard.WizardPage#validateContents(java.awt.Component, java.lang.Object)
+     * {@inheritDoc}
      */
     protected String validateContents(final Component component, final Object object) {
         if (encryptCheckBox.isSelected()) {

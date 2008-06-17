@@ -3,8 +3,6 @@ package uk.me.gumbley.minimiser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.exception.AppException;
@@ -20,7 +18,6 @@ import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderFactory;
 import uk.me.gumbley.minimiser.version.AppVersion;
-import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 
 /**
  * The start of the application, parsescommand line for logging, and constructs
