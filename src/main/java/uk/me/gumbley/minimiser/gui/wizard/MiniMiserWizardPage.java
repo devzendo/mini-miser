@@ -54,7 +54,7 @@ public abstract class MiniMiserWizardPage extends WizardPage {
         return panel;
     }
 
-    private Dimension getPanelDimension() {
+    public static Dimension getPanelDimension() {
         synchronized (MiniMiserWizardPage.class) {
             if (pageDimension == null) {
                 JPanel panel = new JPanel();
@@ -69,7 +69,7 @@ public abstract class MiniMiserWizardPage extends WizardPage {
     }
 
     @SuppressWarnings("finally")
-    private String getTempDir() {
+    private static String getTempDir() {
         String tempDir = null;
         try {
             final File tempFile = File.createTempFile("minimiser", ".tmp");

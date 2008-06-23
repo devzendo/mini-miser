@@ -22,6 +22,12 @@
 	<!-- gui layer -->
 	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.mm.MenuWiring" lazy-init="true" />
 	
+	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" lazy-init="true" />
+
+	<bean id="windowGeometryStore" class="uk.me.gumbley.minimiser.gui.WindowGeometryStore" lazy-init="true" >
+		<constructor-arg ref="prefs" />
+	</bean>
+	
 	<bean id="menu" class="uk.me.gumbley.minimiser.gui.mm.MenuImpl" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
 	</bean>
@@ -41,6 +47,7 @@
 		<constructor-arg ref="workerPool" />
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="accessFactory" />
+		<constructor-arg ref="cursorManager" />
 	</bean>
     
 	<!-- models, other singletons and utilities -->

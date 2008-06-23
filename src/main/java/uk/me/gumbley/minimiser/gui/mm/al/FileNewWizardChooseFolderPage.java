@@ -67,7 +67,8 @@ public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
         }
         int numFiles = chosenDirectory.list().length;
         if (numFiles > 0) {
-            return "The folder must be empty - there are " + numFiles + " "
+            return "The folder must be empty - there "
+            + StringUtils.getAreIs(numFiles) + " " + numFiles + " "
             + StringUtils.pluralise("file", numFiles)
             + " in the " + chosenDirectory.getName() + " folder";
         }

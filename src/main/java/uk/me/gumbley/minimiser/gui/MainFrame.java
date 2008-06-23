@@ -34,6 +34,8 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  * @author matt
  */
 public class MainFrame {
+    private static final String MAINFRAME_WINDOW_NAME = "mainframe";
+
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
 
     private JFrame mainFrame;
@@ -41,6 +43,8 @@ public class MainFrame {
     private final SpringLoader springLoader;
     private final DelayedExecutor delayedExecutor;
     private final Prefs prefs;
+    private final CursorManager cursorManager;
+    private final WindowGeometryStore windowGeometryStore;
 
     /**
      * @param loader the IoC container abstraction
@@ -58,9 +62,14 @@ public class MainFrame {
         }
         delayedExecutor = springLoader.getBean("delayedExecutor", DelayedExecutor.class);
         prefs = springLoader.getBean("prefs", Prefs.class);
+        windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
+        windowGeometryStore.startListener();
 
         // Create new Window and exit handler
         createMainFrame();
+        cursorManager = springLoader.getBean("cursorManager", CursorManager.class);
+        cursorManager.setMainFrame(mainFrame);
+        
         // Menu
         mainFrame.add(createMenu(), BorderLayout.NORTH);
         mainFrame.add(createBlankPanel(), BorderLayout.CENTER);
@@ -77,7 +86,8 @@ public class MainFrame {
     private void createMainFrame() {
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
-        setStartingGeometry();
+        windowGeometryStore.watchWindow(mainFrame);
+        //setStartingGeometry();
         
         mainFrame.setLayout(new BorderLayout());
         exitAL = new WindowCloseActionListener(mainFrame, new MainFrameFacade() {
@@ -113,26 +123,26 @@ public class MainFrame {
             public void windowDeactivated(final WindowEvent e) {
             }
         });
-        mainFrame.addComponentListener(new ComponentListener() {
-            public void componentHidden(final ComponentEvent e) {
-            }
-
-            public void componentMoved(final ComponentEvent e) {
-                saveGeometry(mainFrame.getBounds());
-            }
-
-            public void componentResized(final ComponentEvent e) {
-                saveGeometry(mainFrame.getBounds());
-            }
-
-            public void componentShown(final ComponentEvent e) {
-            }
-        });
+//        mainFrame.addComponentListener(new ComponentListener() {
+//            public void componentHidden(final ComponentEvent e) {
+//            }
+//
+//            public void componentMoved(final ComponentEvent e) {
+//                saveGeometry(mainFrame.getBounds());
+//            }
+//
+//            public void componentResized(final ComponentEvent e) {
+//                saveGeometry(mainFrame.getBounds());
+//            }
+//
+//            public void componentShown(final ComponentEvent e) {
+//            }
+//        });
     }
 
     private void setStartingGeometry() {
         try {
-            final String geomStr = prefs.getWindowGeometry();
+            final String geomStr = prefs.getWindowGeometry(MAINFRAME_WINDOW_NAME);
             LOGGER.debug("Starting geometry is " + geomStr);
             // x,y,width,height
             final String[] geomNumStrs = geomStr.split(",");
@@ -153,7 +163,7 @@ public class MainFrame {
                     rect.x, rect.y, rect.width, rect.height);
         delayedExecutor.submit("savegeometry", 250L, new Runnable() {
             public void run() {
-                prefs.setWindowGeometry(geomStr);
+                prefs.setWindowGeometry(MAINFRAME_WINDOW_NAME, geomStr);
             }
         });
         LOGGER.info(geomStr);

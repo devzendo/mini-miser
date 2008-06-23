@@ -39,11 +39,11 @@ public final class TestDelayedExecutor extends LoggingTestCase {
      */
     @Test
     public void testExecutableEqual() {
-        Executable early = new Executable(TEST_KEY, 50, new Runnable() {
+        final Executable early = new Executable(TEST_KEY, 50, new Runnable() {
             public void run() {
             }
         });
-        Executable late = new Executable(TEST_KEY, 500, new Runnable() {
+        final Executable late = new Executable(TEST_KEY, 500, new Runnable() {
             public void run() {
             }
         });
@@ -55,11 +55,11 @@ public final class TestDelayedExecutor extends LoggingTestCase {
      */
     @Test
     public void testExecutableInEqual() {
-        Executable early = new Executable("Ee chim u jim sho", 50, new Runnable() {
+        final Executable early = new Executable("Ee chim u jim sho", 50, new Runnable() {
             public void run() {
             }
         });
-        Executable late = new Executable("kwamse imboku", 500, new Runnable() {
+        final Executable late = new Executable("kwamse imboku", 500, new Runnable() {
             public void run() {
             }
         });
@@ -72,7 +72,7 @@ public final class TestDelayedExecutor extends LoggingTestCase {
     @Test(timeout = 5000)
     public void testImmediateExecution() {
         final AtomicBoolean run = new AtomicBoolean(false);
-        Runnable r = new Runnable() {
+        final Runnable r = new Runnable() {
             public void run() {
                 run.set(true);
             }
@@ -88,7 +88,7 @@ public final class TestDelayedExecutor extends LoggingTestCase {
     @Test(timeout = 5000)
     public void testExecutingOnDelayedExecutorThread() {
         final String[] name = new String[] {"change me"};
-        Runnable r = new Runnable() {
+        final Runnable r = new Runnable() {
             public void run() {
                 name[0] = Thread.currentThread().getName();
             }
@@ -106,7 +106,7 @@ public final class TestDelayedExecutor extends LoggingTestCase {
         SwingUnittestHelper.ensureEventThreadStarted();
         try {
             final AtomicBoolean swing = new AtomicBoolean(false);
-            Runnable r = new Runnable() {
+            final Runnable r = new Runnable() {
                 public void run() {
                     swing.set(SwingUtilities.isEventDispatchThread());
                 }
@@ -128,17 +128,17 @@ public final class TestDelayedExecutor extends LoggingTestCase {
         final AtomicBoolean run0 = new AtomicBoolean(false);
         final AtomicBoolean run1 = new AtomicBoolean(false);
         final AtomicBoolean run2 = new AtomicBoolean(false);
-        Runnable r0 = new Runnable() {
+        final Runnable r0 = new Runnable() {
             public void run() {
                 run0.set(true);
             }
         };
-        Runnable r1 = new Runnable() {
+        final Runnable r1 = new Runnable() {
             public void run() {
                 run1.set(true);
             }
         };
-        Runnable r2 = new Runnable() {
+        final Runnable r2 = new Runnable() {
             public void run() {
                 run2.set(true);
             }
@@ -232,12 +232,12 @@ public final class TestDelayedExecutor extends LoggingTestCase {
                 replacementExecutable[0] = observableEvent.getExecutable();
             }
         });
-        Runnable run1 = new Runnable() {
+        final Runnable run1 = new Runnable() {
             public void run() {
                 // nop
             }
         };
-        Runnable run2 = new Runnable() {
+        final Runnable run2 = new Runnable() {
             public void run() {
                 // nop
             }

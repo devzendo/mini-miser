@@ -179,7 +179,7 @@ public final class DelayedExecutor {
             if (!triggerSortedMap.isEmpty()) {
                 final Long firstTriggerTime = triggerSortedMap.firstKey();
                 executable = triggerSortedMap.get(firstTriggerTime);
-                long now = System.currentTimeMillis();
+                final long now = System.currentTimeMillis();
                 final long triggerTime = executable.getTriggerTime();
                 if (triggerTime > now) {
                     waitTime = triggerTime - now; // wait for this first Executable to trigger
@@ -264,7 +264,6 @@ public final class DelayedExecutor {
     public void submitGui(final String key, final long delay, final Runnable runnable) {
         submit(key, delay, new Runnable() {
             public void run() {
-                // WOZERE this was dying - killing event thread - might be junit tho?
                 SwingUtilities.invokeLater(runnable);
             }
         });

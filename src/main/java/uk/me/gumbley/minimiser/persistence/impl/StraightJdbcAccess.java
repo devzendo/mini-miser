@@ -5,9 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessResourceFailureException;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.MigratableDatabase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 
 /**
  * A JdbcAccess implementation that uses JDBC directly.
@@ -61,6 +63,11 @@ public final class StraightJdbcAccess implements AccessFactory {
      */
     public MiniMiserDatabase createDatabase(final String databasePath, final String password) {
         // TODO Auto-generated method stub perhaps we ditch this class?
+        return null;
+    }
+
+    public MiniMiserDatabase createDatabase(String dbDirPlusDbName, String string, Observer<PersistenceObservableEvent> observer) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

@@ -15,6 +15,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
  *
  */
 public final class TestPrefs extends LoggingTestCase {
+    private static final String FOO = "foo";
     private Prefs prefs;
 
     /**
@@ -35,7 +36,7 @@ public final class TestPrefs extends LoggingTestCase {
      */
     @Test
     public void testGetDefaultGeometry() {
-        Assert.assertEquals("0,0,640,480", prefs.getWindowGeometry());
+        Assert.assertEquals("0,0,640,480", prefs.getWindowGeometry(FOO));
     }
     
     /**
@@ -43,7 +44,7 @@ public final class TestPrefs extends LoggingTestCase {
      */
     @Test
     public void testGetStoredGeometry() {
-        prefs.setWindowGeometry("20,20,700,500");
-        Assert.assertEquals("20,20,700,500", prefs.getWindowGeometry());
+        prefs.setWindowGeometry(FOO, "20,20,700,500");
+        Assert.assertEquals("20,20,700,500", prefs.getWindowGeometry(FOO));
     }
 }

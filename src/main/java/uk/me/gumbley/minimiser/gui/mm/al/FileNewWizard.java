@@ -6,12 +6,10 @@ import org.netbeans.api.wizard.WizardDisplayer;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
-import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 
 public class FileNewWizard {
     private static final Logger LOGGER = Logger.getLogger(FileNewWizard.class);
     public static FileNewParameters startFileNewWizard() {
-        MiniMiserWizardPage.setLHGraphic();
         final Class[] wizardPages = new Class[] {
                 FileNewWizardIntroPage.class,
                 FileNewWizardChooseFolderPage.class,
@@ -19,7 +17,12 @@ public class FileNewWizard {
                 FileNewWizardCurrencyPage.class,
         };
         Wizard wizard = WizardPage.createWizard(wizardPages, WizardResultProducer.NO_OP);
+        return null;
+        /*
         final Map<String, Object> result = (Map<String, Object>) WizardDisplayer.showWizard(wizard);
+        if (result == null) {
+            return null;
+        }
         LOGGER.info("Result: " + result);
         for (String key : result.keySet()) {
             Object obj = result.get(key);
@@ -32,5 +35,6 @@ public class FileNewWizard {
             (String) result.get(FileNewWizardSecurityOptionPage.PASSWORD),
             (String) result.get(FileNewWizardCurrencyPage.CURRENCY));
         return params;
+        */
     }
 }

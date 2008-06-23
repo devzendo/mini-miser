@@ -13,6 +13,7 @@ import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
+import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
@@ -100,6 +101,7 @@ public final class MiniMiser {
                 try {
                     Beautifier.makeBeautiful();
                     new MainFrame(springLoader, finalArgList);
+                    triggerGUIStartupTasks();
                 } catch (final AppException e) {
                     LOGGER.fatal(e.getMessage());
                     System.exit(1);
@@ -109,6 +111,12 @@ public final class MiniMiser {
         });
     }
     
+    private static void triggerGUIStartupTasks() {
+        MiniMiserWizardPage.setLHGraphic();
+        // TODO can anything be done about this stopping the menu appearing.... for a while.
+        MiniMiserWizardPage.getPanelDimension();
+    }
+
     private static SpringLoader initSpringLoader() {
         // Now load up Spring...
         long startSpring = System.currentTimeMillis();

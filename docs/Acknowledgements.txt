@@ -10,3 +10,8 @@ In case this is not legally possible:
 Kili grants anyone the right to use this work for any purpose, without any
 conditions, unless such conditions are required by law."
 Author URL: http://cs.wikiquote.org/wiki/U%C5%BEivatel:Kili
+
+
+
+Saving the window position / size is based on code in O'Reilly's Swing Hacks
+book.

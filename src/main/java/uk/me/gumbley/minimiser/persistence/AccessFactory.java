@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.persistence;
 
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+
 /**
  * This is the entry point into the persistence layer. It allows access to
  * given databases in two ways:
@@ -58,4 +60,16 @@ public interface AccessFactory {
      * database.
      */
     MiniMiserDatabase createDatabase(String databasePath, String password);
+
+    /**
+     * Create a database for normal use, listening for events during creation.
+     * 
+     * @param databasePath the path to the database.
+     * @param password the password, if the database is encrypted, or,
+     * if not encrypted, this can be the empty string or null.
+     * @param observer the listener of creation events.
+     * @return a MiniMiserDatabase object allowing you to access the
+     * database.
+     */
+    MiniMiserDatabase createDatabase(String dbDirPlusDbName, String string, Observer<PersistenceObservableEvent> observer);
 }

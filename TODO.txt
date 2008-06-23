@@ -1,5 +1,24 @@
 MiniMiser - a simple personal finance manager program
 -----------------------------------------------------
+Current outstanding small tasks:
+* get the dimensions of the standard wizard panel early, to speed up
+  file|new
+
+* add status bar
+
+* display progress info in status bar when db is being created.
+
+* window saving - do as per Swing Hacks book
+
+* why does file|new wizard jump on creation?
+
+* exit action listener should not prompt for confirmation if nothing open
+
+* decide which currencies to support
+* add currency object, entries for all supported currencies
+* display flags in pretty list in currency wizard page
+* choose a sensible default-selected currency based on system locale
+
 Menu:
 File:
   New

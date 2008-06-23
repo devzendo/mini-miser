@@ -1,12 +1,16 @@
 package uk.me.gumbley.minimiser.persistence;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
+import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
@@ -104,6 +108,28 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         LOGGER.info("*** testCreatePlaintextDatabase done");
     }
 
+    /**
+     * Test creation of a non-encrypted database, listening for progress events
+     */
+    @Test
+    public void testCreatePlaintextDatabaseWithListener() {
+        LOGGER.info("*** testCreatePlaintextDatabaseWithListener start");
+        final AtomicInteger count = new AtomicInteger(0);
+        final Observer<PersistenceObservableEvent> observer = new Observer<PersistenceObservableEvent>() {
+            public void eventOccurred(final PersistenceObservableEvent observableEvent) {
+                LOGGER.info("Progress: " + observableEvent.getDescription());
+                count.incrementAndGet();
+            }};  
+        final String dbName = "testcreate";
+        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "", observer);
+        final boolean shouldBeRandom = false;
+        checkInvariantsForCreatedDatabase(dbName, mmData, shouldBeRandom);
+        Assert.assertTrue(count.get() > 0);
+        LOGGER.info("Database creation steps: currently " + count.get());
+        LOGGER.info("*** testCreatePlaintextDatabaseWithListener done");
+    }
+    
     private void checkInvariantsForCreatedDatabase(final String dbName, final MiniMiserDatabase mmData, final boolean shouldBeRandom) {
         try {
             LOGGER.info("... created");
