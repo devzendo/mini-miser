@@ -16,7 +16,11 @@ import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
  * @author matt
  *
  */
-public class FileNewWizardCurrencyPage extends MiniMiserWizardPage {
+public final class FileNewWizardCurrencyPage extends MiniMiserWizardPage {
+    /**
+     * The name of the key that's used in the results map to refer to the
+     * currency of this database.
+     */
     public static final String CURRENCY = "currency";
     private static final long serialVersionUID = -9021172845859544894L;
     private JList currencyList;
@@ -29,14 +33,14 @@ public class FileNewWizardCurrencyPage extends MiniMiserWizardPage {
     }
 
     private void initComponents() {
-        JPanel sizedPanel = createNicelySizedPanel();
+        final JPanel sizedPanel = createNicelySizedPanel();
         sizedPanel.setLayout(new BorderLayout());
         
-        JTextArea label = new JTextArea(getText());
+        final JTextArea label = new JTextArea(getText());
         label.setEditable(false);
         sizedPanel.add(label, BorderLayout.NORTH);
         
-        Vector<String> currencies = new Vector<String>();
+        final Vector<String> currencies = new Vector<String>();
         // TODO sex this up with flags
         currencies.add("UK Sterling £");
         currencies.add("US Dollar $");
@@ -48,7 +52,7 @@ public class FileNewWizardCurrencyPage extends MiniMiserWizardPage {
         currencyList.setName(CURRENCY);
         currencyList.setCellRenderer(new StripyListCellRenderer());
         
-        JScrollPane scrollPane = new JScrollPane(currencyList);
+        final JScrollPane scrollPane = new JScrollPane(currencyList);
         sizedPanel.add(scrollPane, BorderLayout.CENTER);
         
         add(sizedPanel);

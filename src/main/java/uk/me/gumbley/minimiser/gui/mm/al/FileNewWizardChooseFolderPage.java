@@ -23,7 +23,11 @@ import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
  * @author matt
  *
  */
-public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
+public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
+    /**
+     * The name of the key that's populated in the results map for the path
+     * name of this database. 
+     */
     public static final String PATH_NAME = "pathName";
     private static final long serialVersionUID = -2393755991521527684L;
     private static final Logger LOGGER = Logger
@@ -65,7 +69,7 @@ public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
         if (!chosenDirectory.isDirectory()) {
             return "'" + chosenDirectory.getName() + "' is not a folder";
         }
-        int numFiles = chosenDirectory.list().length;
+        final int numFiles = chosenDirectory.list().length;
         if (numFiles > 0) {
             return "The folder must be empty - there "
             + StringUtils.getAreIs(numFiles) + " " + numFiles + " "
@@ -78,7 +82,7 @@ public class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
     private void initComponents() {
         setLayout(new FlowLayout());
         
-        JPanel panel = createNicelySizedPanel();
+        final JPanel panel = createNicelySizedPanel();
         
         fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

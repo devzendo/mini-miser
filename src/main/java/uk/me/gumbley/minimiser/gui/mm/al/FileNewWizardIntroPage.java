@@ -21,7 +21,7 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
     }
     
     private void initComponents() {
-        JPanel sizedPanel = createNicelySizedPanel();
+        final JPanel sizedPanel = createNicelySizedPanel();
         sizedPanel.setLayout(new BorderLayout());
         final JTextArea textArea = new JTextArea(getText());
         textArea.setEditable(false);

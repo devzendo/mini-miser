@@ -24,11 +24,17 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  * @author matt
  *
  */
-/**
- * @author matt
- *
- */
 public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
+    private static final String[] CREATION_DDL_STRINGS = new String[] {
+        "CREATE TABLE Versions("
+                + "entity VARCHAR(40) PRIMARY KEY,"
+                + "version VARCHAR(40)"
+                + ")",
+                
+    };
+    private static final int POPULATION_STEPS = 1;
+    private static final int STATIC_CREATION_STEPS = 4;
+    
     private final SpringLoader springLoader;
     private static final Observer<PersistenceObservableEvent> IGNORING_LISTENER = new Observer<PersistenceObservableEvent>() {
         public void eventOccurred(final PersistenceObservableEvent observableEvent) {
@@ -128,6 +134,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
     }
 
     public MiniMiserDatabase createDatabase(final String databasePath, final String password, final Observer<PersistenceObservableEvent> observer) {
+        // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
         DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);
         createTables(dbSetup, observer);
@@ -140,15 +147,15 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
     // TODO move this to VersionsDao?
     private void createTables(final DatabaseSetup dbDetails, final Observer<PersistenceObservableEvent> observer) {
         SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
-        observer.eventOccurred(new PersistenceObservableEvent("Creating table 1 of 1"));
-        jdbcTemplate.getJdbcOperations().execute("CREATE TABLE Versions("
-            + "entity VARCHAR(40) PRIMARY KEY,"
-            + "version VARCHAR(40)"
-            + ")");
-        // TODO more tables here...
+        for (int i = 0; i < CREATION_DDL_STRINGS.length; i++) {
+            observer.eventOccurred(new PersistenceObservableEvent("Creating table " + (i + 1) + " of " + CREATION_DDL_STRINGS.length));
+            jdbcTemplate.getJdbcOperations().execute(CREATION_DDL_STRINGS[i]);
+        }
     }
     
     private void populateTables(final DatabaseSetup dbDetails, final Observer<PersistenceObservableEvent> observer) {
+        // Don't forget to adjust POPULATION_STEPS when we add steps to
+        // the population.
         // TODO get this from Spring when we have a factory bean that can
         // create a JdbcTemplate from a programmatically created
         // DataSource.
@@ -159,6 +166,15 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         Version appVersion = new Version(VersionableEntity.APPLICATION_VERSION, AppVersion.getVersion());
         versionDao.persistVersion(appVersion);
         // TODO more tables here...
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getNumberOfDatabaseCreationSteps() {
+        return CREATION_DDL_STRINGS.length
+            + POPULATION_STEPS
+            + STATIC_CREATION_STEPS;
     }
 }
 

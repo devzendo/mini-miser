@@ -72,4 +72,15 @@ public interface AccessFactory {
      * database.
      */
     MiniMiserDatabase createDatabase(String dbDirPlusDbName, String string, Observer<PersistenceObservableEvent> observer);
+
+    /**
+     * For displaying progress bars during database creation, we need to know
+     * how many steps are involved. Each step might take some small amount
+     * of time, so that after each step is complete, the user could discern
+     * the creation progress bar increasing.
+     * This number of steps is dependent on the number of tables and other
+     * administrative activities involved.
+     * @return the numebr of database creation steps.
+     */
+    int getNumberOfDatabaseCreationSteps();
 }

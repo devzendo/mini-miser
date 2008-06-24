@@ -6,7 +6,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.gui.mm.al.FileNewWizard;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 
@@ -29,6 +28,6 @@ public final class DriveCurrentGuiThing {
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         LOGGER.info(String.format("%s %s GUI experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
         Beautifier.makeBeautiful();
-        FileNewWizard.startFileNewWizard();
+        
     }
 }

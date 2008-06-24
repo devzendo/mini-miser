@@ -125,7 +125,8 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "", observer);
         final boolean shouldBeRandom = false;
         checkInvariantsForCreatedDatabase(dbName, mmData, shouldBeRandom);
-        Assert.assertTrue(count.get() > 0);
+        final int numberOfDatabaseCreationSteps = accessFactory.getNumberOfDatabaseCreationSteps();
+        Assert.assertTrue(count.get() == numberOfDatabaseCreationSteps);
         LOGGER.info("Database creation steps: currently " + count.get());
         LOGGER.info("*** testCreatePlaintextDatabaseWithListener done");
     }
@@ -176,5 +177,14 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         final boolean shouldBeRandom = true;
         checkInvariantsForCreatedDatabase(dbName, mmData, shouldBeRandom);
         LOGGER.info("*** testCreateEncryptedDatabase done");
+    }
+    
+    @Test
+    public void testThereAreDatabaseCreationSteps() {
+        LOGGER.info("*** testThereAreDatabaseCreationSteps start");
+        final int numberOfDatabaseCreationSteps = accessFactory.getNumberOfDatabaseCreationSteps();
+        Assert.assertTrue(numberOfDatabaseCreationSteps > 0);
+        LOGGER.info("There are " + numberOfDatabaseCreationSteps + " DB creation steps");
+        LOGGER.info("*** testThereAreDatabaseCreationSteps start");
     }
 }

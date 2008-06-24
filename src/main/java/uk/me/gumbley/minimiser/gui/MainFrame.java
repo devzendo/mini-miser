@@ -34,6 +34,8 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  * @author matt
  */
 public class MainFrame {
+    private static final String MAIN_FRAME_NAME = "main";
+
     private static final String MAINFRAME_WINDOW_NAME = "mainframe";
 
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
@@ -73,7 +75,9 @@ public class MainFrame {
         // Menu
         mainFrame.add(createMenu(), BorderLayout.NORTH);
         mainFrame.add(createBlankPanel(), BorderLayout.CENTER);
-        mainFrame.pack();
+        if (!windowGeometryStore.hasStoredGeometry(mainFrame)) {
+            mainFrame.pack();
+        }
         mainFrame.setVisible(true);
     }
 
@@ -84,9 +88,10 @@ public class MainFrame {
     }
 
     private void createMainFrame() {
+        windowGeometryStore.watchWindow(MAIN_FRAME_NAME);
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
-        windowGeometryStore.watchWindow(mainFrame);
+        mainFrame.setName(MAIN_FRAME_NAME);
         //setStartingGeometry();
         
         mainFrame.setLayout(new BorderLayout());
@@ -96,6 +101,7 @@ public class MainFrame {
             }
 
             public void shutdown() {
+                windowGeometryStore.saveGeometry(mainFrame);
                 MainFrame.this.shutdown();
             }
         });

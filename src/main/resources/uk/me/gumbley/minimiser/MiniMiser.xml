@@ -44,7 +44,6 @@
 	
     <!-- menu action listeners -->
 	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.mm.al.FileNewActionListener" lazy-init="true" >
-		<constructor-arg ref="workerPool" />
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="accessFactory" />
 		<constructor-arg ref="cursorManager" />

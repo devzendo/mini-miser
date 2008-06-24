@@ -24,7 +24,14 @@ import uk.me.gumbley.minimiser.util.PasswordValidator;
  * @author matt
  */
 public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
+    /**
+     * The key in the results map that refers to the password for this database.
+     */
     public static final String PASSWORD = "password";
+    /**
+     * The key in the results map that refers to whether thsi database is
+     * encrypted or not.
+     */
     public static final String ENCRYPTED = "encrypted";
     private static final long serialVersionUID = 2308707685829344793L;
     private static final boolean INITIAL_ENCRYPTED = false;
@@ -43,20 +50,20 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
     }
 
     private void initComponents() {
-        JPanel sizedPanel = createNicelySizedPanel();
+        final JPanel sizedPanel = createNicelySizedPanel();
         sizedPanel.setLayout(new BorderLayout(20, 20));
         
         encryptCheckBox = new JCheckBox("Use encryption to encrypt the new database?", INITIAL_ENCRYPTED);
         encryptCheckBox.setName(ENCRYPTED);
         sizedPanel.add(encryptCheckBox, BorderLayout.NORTH);
         
-        JPanel innerPanel = new JPanel();
+        final JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BorderLayout());
         final Border titledBorder = BorderFactory.createTitledBorder("Password entry");
         final JPanel passwordEntryPanel = new JPanel();
         passwordEntryPanel.setBorder(titledBorder);
         final GridBagLayout gridBagLayout = new GridBagLayout();
-        GridBagConstraints constraints = new GridBagConstraints();
+        final GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridwidth = 1;
         constraints.insets = new Insets(5, 5, 5, 5);

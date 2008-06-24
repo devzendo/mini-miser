@@ -70,4 +70,9 @@ public final class StraightJdbcAccess implements AccessFactory {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public int getNumberOfDatabaseCreationSteps() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

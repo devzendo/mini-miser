@@ -36,7 +36,7 @@ public final class TestPrefs extends LoggingTestCase {
      */
     @Test
     public void testGetDefaultGeometry() {
-        Assert.assertEquals("0,0,640,480", prefs.getWindowGeometry(FOO));
+        Assert.assertEquals("", prefs.getWindowGeometry(FOO));
     }
     
     /**
