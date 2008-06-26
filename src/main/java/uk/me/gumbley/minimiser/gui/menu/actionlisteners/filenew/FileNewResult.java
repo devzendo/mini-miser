@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.mm.al;
+package uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew;
 
 import java.io.File;
 import java.util.Map;

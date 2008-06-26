@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.mm;
+package uk.me.gumbley.minimiser.gui.menu;
 
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;

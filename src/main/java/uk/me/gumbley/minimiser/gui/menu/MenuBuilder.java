@@ -1,8 +1,8 @@
-package uk.me.gumbley.minimiser.gui.mm;
+package uk.me.gumbley.minimiser.gui.menu;
 
 import java.awt.event.ActionListener;
 import org.apache.log4j.Logger;
-import uk.me.gumbley.minimiser.gui.mm.Menu.MenuIdentifier;
+import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -11,7 +11,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * @author matt
  *
  */
-public class MenuBuilder {
+public final class MenuBuilder {
     private static final Logger LOGGER = Logger.getLogger(MenuBuilder.class);
     private final MenuWiring wiring;
     private final SpringLoader loader;
@@ -31,6 +31,7 @@ public class MenuBuilder {
      */
     public void build() {
         loadAndWire(MenuIdentifier.FileNew);
+        loadAndWire(MenuIdentifier.FileOpen);
     }
 
     private void loadAndWire(final MenuIdentifier menuIdentifier) {

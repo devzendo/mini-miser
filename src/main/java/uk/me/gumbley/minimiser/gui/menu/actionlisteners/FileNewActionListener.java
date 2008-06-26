@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.mm.al;
+package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +8,11 @@ import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 import uk.me.gumbley.minimiser.gui.CursorManager;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewResult;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardChooseFolderPage;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardCurrencyPage;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardIntroPage;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardSecurityOptionPage;
 import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 

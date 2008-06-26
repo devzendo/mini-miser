@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.mm.al;
+package uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;

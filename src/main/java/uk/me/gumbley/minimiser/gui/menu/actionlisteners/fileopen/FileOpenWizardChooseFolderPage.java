@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.mm.al;
+package uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -15,23 +15,23 @@ import org.netbeans.spi.wizard.WizardController;
 
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
+import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
 
 /**
- * Choose an empty dirctory to hold the database.
+ * Choose an existing directory that holds a database.
  * Sets result: pathName 
  * 
  * @author matt
  *
  */
-public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
+public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
     /**
      * The name of the key that's populated in the results map for the path
      * name of this database. 
      */
     public static final String PATH_NAME = "pathName";
-    private static final long serialVersionUID = -2393755991521527684L;
     private static final Logger LOGGER = Logger
-            .getLogger(FileNewWizardChooseFolderPage.class);
+            .getLogger(FileOpenWizardChooseFolderPage.class);
     private JFileChooser fileChooser;
     private File chosenDirectory;
     private JTextField hiddenPathName;
@@ -39,7 +39,7 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
     /**
      * Construct the wizard page
      */
-    public FileNewWizardChooseFolderPage() {
+    public FileOpenWizardChooseFolderPage() {
         chosenDirectory = null;
         initComponents();
     }
@@ -48,37 +48,16 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
      * @return description for the left-hand area
      */
     public static String getDescription() {
-        return "Choose new folder for database";
+        return "Choose existing database folder";
     }
 
     /**
      * {@inheritDoc}
      */
     protected String validateContents(final Component component, final Object object) {
-        return validateGoodDirectory();
+        return DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(chosenDirectory);
     }
 
-    private String validateGoodDirectory() {
-        LOGGER.info("validateGoodDirectory");
-        if (chosenDirectory == null) {
-            return "You must create a new folder to hold this database";
-        }
-        if (!chosenDirectory.exists()) {
-            return "The '" + chosenDirectory.getName() + "' folder does not exist";
-        }
-        if (!chosenDirectory.isDirectory()) {
-            return "'" + chosenDirectory.getName() + "' is not a folder";
-        }
-        final int numFiles = chosenDirectory.list().length;
-        if (numFiles > 0) {
-            return "The folder must be empty - there "
-            + StringUtils.getAreIs(numFiles) + " " + numFiles + " "
-            + StringUtils.pluralise("file", numFiles)
-            + " in the " + chosenDirectory.getName() + " folder";
-        }
-        return null;
-    }
-    
     private void initComponents() {
         setLayout(new FlowLayout());
         
@@ -90,8 +69,6 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
         fileChooser.setControlButtonsAreShown(false);
         fileChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(final PropertyChangeEvent evt) {
-                LOGGER.info("Type: " + evt.getPropertyName());
-                LOGGER.info(evt);
                 if (evt.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
                     setChosenDirectory(fileChooser.getSelectedFile());
                 }
@@ -124,13 +101,13 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
     private void setChosenDirectory(final File chosenDir) {
         chosenDirectory = chosenDir;
         LOGGER.info("Chosen directory:" + chosenDirectory);
-        final String problem = validateGoodDirectory();
+        final String problem = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(chosenDirectory);
         if (problem != null) {
             LOGGER.warn(problem);
             setProblem(problem);
             setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
         } else {
-            setProblem(null); //"The " + chosenDirectory.getName() + " folder can be used to hold the new database");
+            setProblem(null);
             setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
             hiddenPathName.setText(chosenDirectory.getAbsolutePath());
         }
