@@ -20,7 +20,7 @@
 	</bean>
 	
 	<!-- gui layer -->
-	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.mm.MenuWiring" lazy-init="true" />
+	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.menu.MenuWiring" lazy-init="true" />
 	
 	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" lazy-init="true" />
 
@@ -28,22 +28,27 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 	
-	<bean id="menu" class="uk.me.gumbley.minimiser.gui.mm.MenuImpl" lazy-init="true" >
+	<bean id="menu" class="uk.me.gumbley.minimiser.gui.menu.MenuImpl" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
 	</bean>
 
-	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.mm.MenuBuilder" lazy-init="true" >
+	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilder" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
 		<constructor-arg ref="springLoader" />
 	</bean>
 
-	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.mm.MenuMediatorImpl" lazy-init="true" >
+	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl" lazy-init="true" >
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="openDatabaseList" />
 	</bean>
 	
     <!-- menu action listeners -->
-	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.mm.al.FileNewActionListener" lazy-init="true" >
+	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileNewActionListener" lazy-init="true" >
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="accessFactory" />
+		<constructor-arg ref="cursorManager" />
+	</bean>
+	<bean id="menuALFileOpen" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileOpenActionListener" lazy-init="true" >
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="accessFactory" />
 		<constructor-arg ref="cursorManager" />
