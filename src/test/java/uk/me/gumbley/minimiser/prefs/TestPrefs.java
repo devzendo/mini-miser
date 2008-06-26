@@ -15,6 +15,8 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
  *
  */
 public final class TestPrefs extends LoggingTestCase {
+    private static final String WINDOW_GEOMETRY = "20,20,700,500";
+    private static final String WIZARD_PANEL_SIZE = "200,300";
     private static final String FOO = "foo";
     private Prefs prefs;
 
@@ -44,7 +46,23 @@ public final class TestPrefs extends LoggingTestCase {
      */
     @Test
     public void testGetStoredGeometry() {
-        prefs.setWindowGeometry(FOO, "20,20,700,500");
-        Assert.assertEquals("20,20,700,500", prefs.getWindowGeometry(FOO));
+        prefs.setWindowGeometry(FOO, WINDOW_GEOMETRY);
+        Assert.assertEquals(WINDOW_GEOMETRY, prefs.getWindowGeometry(FOO));
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void testGetDefaultWizardPanelSize() {
+        Assert.assertEquals("", prefs.getWizardPanelSize());
+    }
+    
+    /**
+     * 
+     */
+    public void testGetStoredWizardPanelSize() {
+        prefs.setWizardPanelSize(WIZARD_PANEL_SIZE);
+        Assert.assertEquals(WIZARD_PANEL_SIZE, prefs.getWizardPanelSize());
     }
 }

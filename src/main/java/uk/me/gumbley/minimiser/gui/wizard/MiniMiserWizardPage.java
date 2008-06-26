@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.WizardPage;
+import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * A Wizard Page of the largest size we use - that's big enough to contain a
@@ -27,7 +28,7 @@ public abstract class MiniMiserWizardPage extends WizardPage {
      * Construct the common wizard page
      */
     public MiniMiserWizardPage() {
-        getPanelDimension();
+        //getPanelDimension();
     }
 
     /**
@@ -50,19 +51,34 @@ public abstract class MiniMiserWizardPage extends WizardPage {
      */
     public JPanel createNicelySizedPanel() {
         JPanel panel = new JPanel();
-        panel.setPreferredSize(getPanelDimension());
+        panel.setPreferredSize(pageDimension);
         return panel;
     }
 
-    public static Dimension getPanelDimension() {
+    public static Dimension getPanelDimension(final Prefs prefs) {
         synchronized (MiniMiserWizardPage.class) {
             if (pageDimension == null) {
-                JPanel panel = new JPanel();
-                final JFileChooser fileChooser = new JFileChooser(getTempDir());
-                fileChooser.validate();
-                panel.add(fileChooser);
-                panel.validate();
-                pageDimension = panel.getPreferredSize();
+                final String wizardPanelSize = prefs.getWizardPanelSize();
+                if (wizardPanelSize.equals("")) {
+                    LOGGER.debug("Wizard panel size is not yet stored; computing it");
+                    JPanel panel = new JPanel();
+                    final JFileChooser fileChooser = new JFileChooser(getTempDir());
+                    fileChooser.validate();
+                    panel.add(fileChooser);
+                    panel.validate();
+                    pageDimension = panel.getPreferredSize();
+                    final String size = String.format("%d,%d", pageDimension.width, pageDimension.height);
+                    LOGGER.debug("Storing the wizard panel size as '" + size + "'");
+                    prefs.setWizardPanelSize(size);
+                } else {
+                    LOGGER.debug("Wizard panel size is stored as '" + wizardPanelSize + "'");
+                    final String[] geomNumStrs = wizardPanelSize.split(",");
+                    final int[] geomNums = new int[geomNumStrs.length];
+                    for (int i = 0; i < geomNumStrs.length; i++) {
+                        geomNums[i] = Integer.parseInt(geomNumStrs[i]);
+                    }
+                    pageDimension = new Dimension(geomNums[0], geomNums[1]);
+                }
             }
             return pageDimension;
         }

@@ -14,6 +14,7 @@ import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
+import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
@@ -101,7 +102,7 @@ public final class MiniMiser {
                 try {
                     Beautifier.makeBeautiful();
                     new MainFrame(springLoader, finalArgList);
-                    triggerGUIStartupTasks();
+                    triggerGUIStartupTasks(springLoader);
                 } catch (final AppException e) {
                     LOGGER.fatal(e.getMessage());
                     System.exit(1);
@@ -111,19 +112,19 @@ public final class MiniMiser {
         });
     }
     
-    private static void triggerGUIStartupTasks() {
+    private static void triggerGUIStartupTasks(final SpringLoader springLoader) {
         MiniMiserWizardPage.setLHGraphic();
-        // TODO can anything be done about this stopping the menu appearing.... for a while.
-        MiniMiserWizardPage.getPanelDimension();
+        final Prefs prefs = springLoader.getBean("prefs", Prefs.class);
+        MiniMiserWizardPage.getPanelDimension(prefs);
     }
 
     private static SpringLoader initSpringLoader() {
         // Now load up Spring...
-        long startSpring = System.currentTimeMillis();
-        SpringLoader sl = SpringLoaderFactory
+        final long startSpring = System.currentTimeMillis();
+        final SpringLoader sl = SpringLoaderFactory
                 .initialise("uk/me/gumbley/minimiser/MiniMiser.xml");
-        long stopSpring = System.currentTimeMillis();
-        long springElapsed = stopSpring - startSpring;
+        final long stopSpring = System.currentTimeMillis();
+        final long springElapsed = stopSpring - startSpring;
         LOGGER.debug("SpringLoader initialised in "
                 + StringUtils.translateTimeDuration(springElapsed));
         return sl;

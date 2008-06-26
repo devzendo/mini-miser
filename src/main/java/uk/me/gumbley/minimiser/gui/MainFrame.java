@@ -3,10 +3,7 @@ package uk.me.gumbley.minimiser.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -19,13 +16,11 @@ import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.gui.mm.Menu;
-import uk.me.gumbley.minimiser.gui.mm.MenuBuilder;
-import uk.me.gumbley.minimiser.gui.mm.MenuMediator;
-import uk.me.gumbley.minimiser.gui.mm.Menu.MenuIdentifier;
-import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.gui.menu.Menu;
+import uk.me.gumbley.minimiser.gui.menu.MenuBuilder;
+import uk.me.gumbley.minimiser.gui.menu.MenuMediator;
+import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
-import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
@@ -34,17 +29,12 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  * @author matt
  */
 public class MainFrame {
-    private static final String MAIN_FRAME_NAME = "main";
-
-    private static final String MAINFRAME_WINDOW_NAME = "mainframe";
-
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
+    private static final String MAIN_FRAME_NAME = "main";
 
     private JFrame mainFrame;
     private ActionListener exitAL;
     private final SpringLoader springLoader;
-    private final DelayedExecutor delayedExecutor;
-    private final Prefs prefs;
     private final CursorManager cursorManager;
     private final WindowGeometryStore windowGeometryStore;
 
@@ -62,10 +52,7 @@ public class MainFrame {
         for (int i = 0; i < argList.size(); i++) {
             LOGGER.debug("arg " + i + " = '" + argList.get(i) + "'");
         }
-        delayedExecutor = springLoader.getBean("delayedExecutor", DelayedExecutor.class);
-        prefs = springLoader.getBean("prefs", Prefs.class);
         windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
-        windowGeometryStore.startListener();
 
         // Create new Window and exit handler
         createMainFrame();
@@ -78,21 +65,20 @@ public class MainFrame {
         if (!windowGeometryStore.hasStoredGeometry(mainFrame)) {
             mainFrame.pack();
         }
+        windowGeometryStore.loadGeometry(mainFrame);
         mainFrame.setVisible(true);
     }
 
     private Component createBlankPanel() {
-        JPanel blankPanel = new JPanel();
+        final JPanel blankPanel = new JPanel();
         blankPanel.setPreferredSize(new Dimension(640, 480));
         return blankPanel;
     }
 
     private void createMainFrame() {
-        windowGeometryStore.watchWindow(MAIN_FRAME_NAME);
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
         mainFrame.setName(MAIN_FRAME_NAME);
-        //setStartingGeometry();
         
         mainFrame.setLayout(new BorderLayout());
         exitAL = new WindowCloseActionListener(mainFrame, new MainFrameFacade() {
@@ -129,52 +115,8 @@ public class MainFrame {
             public void windowDeactivated(final WindowEvent e) {
             }
         });
-//        mainFrame.addComponentListener(new ComponentListener() {
-//            public void componentHidden(final ComponentEvent e) {
-//            }
-//
-//            public void componentMoved(final ComponentEvent e) {
-//                saveGeometry(mainFrame.getBounds());
-//            }
-//
-//            public void componentResized(final ComponentEvent e) {
-//                saveGeometry(mainFrame.getBounds());
-//            }
-//
-//            public void componentShown(final ComponentEvent e) {
-//            }
-//        });
     }
 
-    private void setStartingGeometry() {
-        try {
-            final String geomStr = prefs.getWindowGeometry(MAINFRAME_WINDOW_NAME);
-            LOGGER.debug("Starting geometry is " + geomStr);
-            // x,y,width,height
-            final String[] geomNumStrs = geomStr.split(",");
-            final int[] geomNums = new int[geomNumStrs.length];
-            for (int i = 0; i < geomNumStrs.length; i++) {
-                geomNums[i] = Integer.parseInt(geomNumStrs[i]);
-            }
-            mainFrame.setLocation(geomNums[0], geomNums[1]);
-            mainFrame.setPreferredSize(new Dimension(geomNums[2], geomNums[3]));
-            LOGGER.debug("Starting geometry set");
-        } catch (final NumberFormatException nfe) {
-            LOGGER.warn("Couldn't set starting geometry", nfe);
-        }
-    }
-
-    private void saveGeometry(final Rectangle rect) {
-        final String geomStr = String.format("%d,%d,%d,%d",
-                    rect.x, rect.y, rect.width, rect.height);
-        delayedExecutor.submit("savegeometry", 250L, new Runnable() {
-            public void run() {
-                prefs.setWindowGeometry(MAINFRAME_WINDOW_NAME, geomStr);
-            }
-        });
-        LOGGER.info(geomStr);
-    }
-    
     private JMenuBar createMenu() {
         LOGGER.info("Getting the menu");
         final Menu menu = springLoader.getBean("menu", Menu.class);
@@ -189,9 +131,9 @@ public class MainFrame {
     }
 
     private void shutdown() {
-        long start = System.currentTimeMillis();
-        long stop = System.currentTimeMillis();
-        long dur = stop - start;
+        final long start = System.currentTimeMillis();
+        final long stop = System.currentTimeMillis();
+        final long dur = stop - start;
         LOGGER.info("Shutdown took " + StringUtils.translateTimeDuration(dur));
         // give time for the above to be logged
         ThreadUtils.waitNoInterruption(500);

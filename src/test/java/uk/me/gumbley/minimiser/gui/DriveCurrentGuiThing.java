@@ -1,7 +1,10 @@
 package uk.me.gumbley.minimiser.gui;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.logging.Logging;
@@ -28,6 +31,11 @@ public final class DriveCurrentGuiThing {
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         LOGGER.info(String.format("%s %s GUI experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
         Beautifier.makeBeautiful();
-        
+        JFrame frame = new JFrame("title");
+        final JButton button = new JButton("hello");
+        button.setPreferredSize(new Dimension(100, 200));
+        frame.add(button);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
