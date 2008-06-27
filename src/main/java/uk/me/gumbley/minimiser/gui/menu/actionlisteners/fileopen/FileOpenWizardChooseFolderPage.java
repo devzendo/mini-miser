@@ -5,15 +5,11 @@ import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.WizardController;
-
-import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
 
@@ -25,6 +21,7 @@ import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
  *
  */
 public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
+    private static final long serialVersionUID = -738376249450121977L;
     /**
      * The name of the key that's populated in the results map for the path
      * name of this database. 

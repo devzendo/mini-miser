@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
 import java.sql.SQLException;
+import org.apache.log4j.Logger;
 import org.h2.constant.ErrorCode;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -25,6 +26,8 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  *
  */
 public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
+    private static final Logger LOGGER = Logger
+            .getLogger(JdbcTemplateJdbcAccessImpl.class);
     private static final String[] CREATION_DDL_STRINGS = new String[] {
         "CREATE TABLE Versions("
                 + "entity VARCHAR(40) PRIMARY KEY,"
@@ -113,16 +116,22 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         // Spring sql-error-codes.xml.
         // So, I have to check myself. (Obviating one of the reasons I chose Spring!)
         try {
+            LOGGER.debug("Closing database to check for non-existance");
             dbSetup.getDataSource().getConnection().close();
-        } catch (SQLException e) {
+            LOGGER.debug("Closed successfully");
+        } catch (final SQLException e) {
+            LOGGER.debug("SQLException from close", e);
             if (e.getErrorCode() == ErrorCode.DATABASE_NOT_FOUND_1) {
-                throw new DataAccessResourceFailureException(String.format("Database at %s not found", databasePath));
+                final String message = String.format("Database at %s not found", databasePath);
+                LOGGER.debug(message);
+                throw new DataAccessResourceFailureException(message);
             }
             // Assume that anything that goes wrong here is bad...
             throw new org.springframework.jdbc.UncategorizedSQLException(
                 String.format("Possible database not found - SQL Error Code %d",
                     e.getErrorCode()), "", e);
         }
+        LOGGER.debug("Creating new JdbcTemplateMigratableDatabaseImpl");
         return new JdbcTemplateMigratableDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
     }
 

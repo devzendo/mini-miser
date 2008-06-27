@@ -3,13 +3,12 @@ package uk.me.gumbley.minimiser.persistence;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import uk.me.gumbley.commoncode.os.OSTypeDetect;
+import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
@@ -64,11 +63,42 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
     @Test(expected = DataAccessResourceFailureException.class)
     public void testNonExistantDatabaseThrowsUpOnOpen() {
         LOGGER.info("*** testNonExistantDatabaseThrowsUpOnOpen");
-        String dbDir = getAbsoluteDatabaseDirectory("nonexistant");
+        final String dbDir = getAbsoluteDatabaseDirectory("nonexistant");
         Assert.assertFalse(new File(dbDir).exists());
         accessFactory.openMigratableDatabase(dbDir, null);
     }
-    
+
+    @Test
+    public void testGoodDatabaseCanBeOpened() {
+        LOGGER.info("*** testGoodDatabaseCanBeOpened start");
+        final String dbName = "testopen";
+        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
+        // create it...
+        LOGGER.info("... creating");
+        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "");
+        try {
+            // now close and open it
+            LOGGER.info("... closing");
+            mmData.close();
+            LOGGER.info("... re-opening");
+//            final MigratableDatabase migratableDatabase = accessFactory.openMigratableDatabase(dbDirPlusDbName, "");
+//            Assert.assertNotNull(migratableDatabase);
+//            try {
+//                // TODO obtain the version number and validate it
+//            } finally {
+//                LOGGER.info("... re-closing");
+//                if (migratableDatabase != null) {
+//                    migratableDatabase.close();
+//                }
+//            }
+        } finally {
+            LOGGER.info("... deleting");
+            deleteDatabaseFiles(dbName);
+            LOGGER.info("... done");
+        }
+    }
+
     // CREATE TESTS ------------------------------------------------------------
     
     /**
@@ -119,7 +149,8 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
             public void eventOccurred(final PersistenceObservableEvent observableEvent) {
                 LOGGER.info("Progress: " + observableEvent.getDescription());
                 count.incrementAndGet();
-            }};  
+            }
+        };  
         final String dbName = "testcreate";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "", observer);
@@ -142,13 +173,13 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
                     numberOfFilesInDatabaseDirectory > 0);
             LOGGER.info(String.format("... %s file(s) in dir, testing version", numberOfFilesInDatabaseDirectory));
             // is it correct?
-            Version dbVersion = mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
+            final Version dbVersion = mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
             LOGGER.info(String.format("... schema version returned from db should be null - it is %s", dbVersion));
             Assert.assertNotNull(dbVersion);
             Assert.assertEquals(VersionableEntity.SCHEMA_VERSION, dbVersion.getEntity());
             Assert.assertEquals(CurrentSchemaVersion.CURRENT_SCHEMA_VERSION, dbVersion.getVersion());
             //
-            Version appVersion = mmData.getVersionDao().findVersion(VersionableEntity.APPLICATION_VERSION);
+            final Version appVersion = mmData.getVersionDao().findVersion(VersionableEntity.APPLICATION_VERSION);
             LOGGER.info(String.format("... application version returned from db should be null - it is %s", appVersion));
             Assert.assertNotNull(dbVersion);
             Assert.assertEquals(VersionableEntity.APPLICATION_VERSION, appVersion.getEntity());
@@ -159,7 +190,7 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         } finally {
             // tidy up
             LOGGER.info("... tidying up");
-            boolean random = doesDatabaseLookRandom(dbName);
+            final boolean random = doesDatabaseLookRandom(dbName);
             deleteWithClosureCheck(dbName, mmData);
             Assert.assertEquals(shouldBeRandom, random);
         }
@@ -179,6 +210,9 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         LOGGER.info("*** testCreateEncryptedDatabase done");
     }
     
+    /**
+     * Test that we have a positive number of db creation steps
+     */
     @Test
     public void testThereAreDatabaseCreationSteps() {
         LOGGER.info("*** testThereAreDatabaseCreationSteps start");

@@ -69,7 +69,7 @@ public final class DatabaseDirectoryValidator {
                 numCorrectlyNamedFiles++;
             }
         }
-        if (numCorrectlyNamedFiles >= 3) {
+        if (numCorrectlyNamedFiles < 3) {
             return "The folder must contain existing database files";
         }
         return null;

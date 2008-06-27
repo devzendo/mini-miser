@@ -79,7 +79,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
             }
             if (databaseDirectory != null && databaseDirectory.exists()
                     && databaseDirectory.isDirectory()) {
-                List<String> files = Arrays.asList(databaseDirectory.list());
+                final List<String> files = Arrays.asList(databaseDirectory.list());
                 if (files == null || files.size() == 0) {
                     return;
                 }
@@ -122,7 +122,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
      * /home/matt/testdb/foo
      */
     protected final String getAbsoluteDatabaseDirectory(final String dbname) {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(StringUtils.slashTerminate(databaseDirectory.getAbsolutePath()));
         sb.append(dbname);
         return sb.toString();
@@ -148,7 +148,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
             count = dbFiles.length;
             for (File file : dbFiles) {
                 LOGGER.debug(String.format("Deleting %s", file.getAbsoluteFile()));
-                boolean gone = file.delete();
+                final boolean gone = file.delete();
                 allGone &= gone;
                 if (!gone) {
                     LOGGER.warn(String.format("Could not delete %s", file.getAbsolutePath()));
@@ -190,16 +190,16 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
             throw new IllegalStateException("databaseOpenFileDescriptors called on nonsupported platform");
         }
         final String dbDir = getDatabaseDirectory().getAbsolutePath();
-        ArrayList <String>cmd = new ArrayList<String>();
+        final ArrayList <String>cmd = new ArrayList<String>();
         cmd.add("lsof");
         cmd.add("-Fn");
         cmd.add("+d");
         cmd.add(dbDir);
-        IteratorExecutor ie = new IteratorExecutor((String[]) cmd.toArray(new String[0]));
-        String ourFilePath = String.format("n%s/%s", dbDir, dbName);
+        final IteratorExecutor ie = new IteratorExecutor((String[]) cmd.toArray(new String[0]));
+        final String ourFilePath = String.format("n%s/%s", dbDir, dbName);
         boolean anyOpen = false;
         while (ie.hasNext()) {
-            String line = ie.next().toString();
+            final String line = ie.next().toString();
             if (line.startsWith(ourFilePath)) {
                 anyOpen = true;
                 LOGGER.debug(String.format("Open file: '%s'", line));
@@ -223,7 +223,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
      * @param dbName the database name to check for randomness
      * @return true if it looks random, false if not
      */
-    protected boolean doesDatabaseLookRandom(final String dbName) {
+    protected final boolean doesDatabaseLookRandom(final String dbName) {
         final List<File> dbFiles = getDatabaseFiles(dbName);
         boolean atLeastOneFileToCheck = false;
         boolean random = true;
@@ -245,18 +245,17 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
 
     private boolean isRandom(final File file) {
         try {
-            long hist[] = new long[256];
-            long size = file.length();
+            final long[] hist = new long[256];
+            final long size = file.length();
             final InputStream is = new FileInputStream(file);
             try {
                 final byte[] buf = new byte[512];
                 int nread = 0;
-                byte last = 0;
                 do {
                     nread = is.read(buf);
                     if (nread != -1) {
                         for (int i = 0; i < nread; i++) {
-                            int rand = buf[i] & 0x00ff;
+                            final int rand = buf[i] & 0x00ff;
                             hist[rand]++;
                         }
                     }
@@ -272,13 +271,13 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
             //LOGGER.debug(String.format("[%f, %f, %f]", lowerTolerance, bytesPerfectlyEquallyDistributed, upperTolerance));
             int numWithinTolerance = 0;
             for (int i = 0; i < 256; i++) {
-                boolean withinTolerance = (hist[i] >= (long)lowerTolerance && hist[i] <= (long)upperTolerance);
+                final boolean withinTolerance = (hist[i] >= (long) lowerTolerance && hist[i] <= (long) upperTolerance);
                 //LOGGER.debug(String.format("Byte 0x%02X, count %d %swithin tolerance", i, hist[i], withinTolerance ? " " : "NOT "));
                 if (withinTolerance) {
                     numWithinTolerance++;
                 }
             }
-            double randomness = (double)numWithinTolerance/256.0;
+            final double randomness = (double) numWithinTolerance / 256.0;
             //LOGGER.debug(String.format("Randomness is %f", randomness));
             return randomness >= 0.75;
         } catch (final IOException e) {
