@@ -58,7 +58,11 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         private String dbURL;
         private SingleConnectionDataSource dataSource;
         private SimpleJdbcTemplate jdbcTemplate;
-        public DatabaseSetup(final String databasePath, final String password, final boolean allowCreate, final Observer<PersistenceObservableEvent> observer) {
+        public DatabaseSetup(final String databasePath,
+                final String password,
+                final boolean allowCreate,
+                final Observer<PersistenceObservableEvent> observer) {
+            LOGGER.debug("Validating arguments");
             if (databasePath == null) {
                 throw new DataAccessResourceFailureException("Null database path");
             }
@@ -77,7 +81,9 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
             // build the URL at runtime, since it depends on the database path and
             // password.
             observer.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
+            LOGGER.debug("Obtaining data source bean");
             dataSource = springLoader.getBean("dataSource", SingleConnectionDataSource.class);
+            LOGGER.debug("Populating data source with URL and password");
             dataSource.setUrl(dbURL);
             dataSource.setPassword(dbPassword);
             // Just instantiate directly rather than bothering with Spring
@@ -85,8 +91,10 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
             // doesn't support getDataSource() so we can't close programmatically.
             // See http://forum.springframework.org/archive/index.php/t-9704.html
             observer.eventOccurred(new PersistenceObservableEvent("Opening database"));
+            LOGGER.debug("Obtaining SimpleJdbcTemplate");
             jdbcTemplate = new SimpleJdbcTemplate(dataSource);
             observer.eventOccurred(new PersistenceObservableEvent("Database opened"));
+            LOGGER.debug("Database setup done");
         }
         public String getDbPassword() {
             return dbPassword;
@@ -108,7 +116,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
      * {@inheritDoc}
      */
     public MigratableDatabase openMigratableDatabase(final String databasePath, final String password) {
-        DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false, IGNORING_LISTENER);
+        final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false, IGNORING_LISTENER);
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
         // but then doesn't pass the error on to me.
@@ -116,11 +124,11 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         // Spring sql-error-codes.xml.
         // So, I have to check myself. (Obviating one of the reasons I chose Spring!)
         try {
-            LOGGER.debug("Closing database to check for non-existance");
-            dbSetup.getDataSource().getConnection().close();
-            LOGGER.debug("Closed successfully");
+            // This'll throw if the db doesn't exist.
+            final boolean closed = dbSetup.getDataSource().getConnection().isClosed();
+            LOGGER.debug("db is initially closed? " + closed);
         } catch (final SQLException e) {
-            LOGGER.debug("SQLException from close", e);
+            LOGGER.debug("SQLException from isClosed", e);
             if (e.getErrorCode() == ErrorCode.DATABASE_NOT_FOUND_1) {
                 final String message = String.format("Database at %s not found", databasePath);
                 LOGGER.debug(message);
@@ -142,20 +150,28 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         return createDatabase(databasePath, password, IGNORING_LISTENER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public MiniMiserDatabase createDatabase(final String databasePath, final String password, final Observer<PersistenceObservableEvent> observer) {
         // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
-        DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);
+        final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);
         createTables(dbSetup, observer);
         populateTables(dbSetup, observer);
-        final JdbcTemplateMiniMiserDatabaseImpl templateImpl = new JdbcTemplateMiniMiserDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
+        final JdbcTemplateMiniMiserDatabaseImpl templateImpl =
+            new JdbcTemplateMiniMiserDatabaseImpl(
+                dbSetup.getDbURL(),
+                dbSetup.getDbPath(),
+                dbSetup.getJdbcTemplate(),
+                dbSetup.getDataSource());
         observer.eventOccurred(new PersistenceObservableEvent("Database creation complete"));
         return templateImpl;
     }
 
     // TODO move this to VersionsDao?
     private void createTables(final DatabaseSetup dbDetails, final Observer<PersistenceObservableEvent> observer) {
-        SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
+        final SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
         for (int i = 0; i < CREATION_DDL_STRINGS.length; i++) {
             observer.eventOccurred(new PersistenceObservableEvent("Creating table " + (i + 1) + " of " + CREATION_DDL_STRINGS.length));
             jdbcTemplate.getJdbcOperations().execute(CREATION_DDL_STRINGS[i]);
@@ -169,10 +185,10 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
         // create a JdbcTemplate from a programmatically created
         // DataSource.
         observer.eventOccurred(new PersistenceObservableEvent("Populating table 1 of 1"));
-        VersionDao versionDao = new JdbcTemplateVersionDao(dbDetails.getJdbcTemplate());
-        Version schemaVersion = new Version(VersionableEntity.SCHEMA_VERSION, CurrentSchemaVersion.CURRENT_SCHEMA_VERSION);
+        final VersionDao versionDao = new JdbcTemplateVersionDao(dbDetails.getJdbcTemplate());
+        final Version schemaVersion = new Version(VersionableEntity.SCHEMA_VERSION, CurrentSchemaVersion.CURRENT_SCHEMA_VERSION);
         versionDao.persistVersion(schemaVersion);
-        Version appVersion = new Version(VersionableEntity.APPLICATION_VERSION, AppVersion.getVersion());
+        final Version appVersion = new Version(VersionableEntity.APPLICATION_VERSION, AppVersion.getVersion());
         versionDao.persistVersion(appVersion);
         // TODO more tables here...
     }

@@ -41,8 +41,8 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
         this.dbPath = path;
         this.jdbcTemplate = template;
         this.dataSource = source;
-        versionDao = new JdbcTemplateVersionDao(jdbcTemplate);
         isClosed = false;
+        versionDao = new JdbcTemplateVersionDao(jdbcTemplate);
     }
 
     /**

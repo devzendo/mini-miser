@@ -12,13 +12,13 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import uk.me.gumbley.commoncode.executor.IteratorExecutor;
 import uk.me.gumbley.commoncode.os.OSTypeDetect;
 import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.config.UnittestingConfig;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
+import uk.me.gumbley.minimiser.util.OpenFilesDetector;
 
 /**
  * All persistence test cases must have a test database directory that must be
@@ -167,16 +167,32 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
      */
     protected final void deleteWithClosureCheck(final String dbName, final Database mmData) {
         LOGGER.info("*** still open?");
-        if (OSTypeDetect.getInstance().getOSType() == OSType.Linux) {
-            Assert.assertTrue(databaseOpenFileDescriptors(dbName));
-        }
+        assertDatabaseShouldBeOpen(dbName);
         LOGGER.info("*** closing");
         mmData.close();
         LOGGER.info("*** closed");
-        if (OSTypeDetect.getInstance().getOSType() == OSType.Linux) {
-            Assert.assertFalse(databaseOpenFileDescriptors(dbName));
-        }
+        assertDatabaseShouldBeClosed(dbName);
         deleteDatabaseFiles(dbName);
+    }
+
+    /**
+     * The database should be open.
+     * @param dbName the name of the database in the test directory
+     */
+    protected final void assertDatabaseShouldBeOpen(final String dbName) {
+        if (OSTypeDetect.getInstance().getOSType() == OSType.Linux) {
+            Assert.assertTrue(databaseHasOpenFileDescriptors(dbName));
+        }
+    }
+
+    /**
+     * The database should be closed.
+     * @param dbName the name of the database in the test directory
+     */
+    protected final void assertDatabaseShouldBeClosed(final String dbName) {
+        if (OSTypeDetect.getInstance().getOSType() == OSType.Linux) {
+            Assert.assertFalse(databaseHasOpenFileDescriptors(dbName));
+        }
     }
     /**
      * Does lsof | grep <dbName> report any open file descriptors?
@@ -185,32 +201,12 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
      * @param dbName the database name
      * @return true if files are open, false if not.
      */
-    protected final boolean databaseOpenFileDescriptors(final String dbName) {
-        if (OSTypeDetect.getInstance().getOSType() != OSType.Linux) {
-            throw new IllegalStateException("databaseOpenFileDescriptors called on nonsupported platform");
-        }
+    protected final boolean databaseHasOpenFileDescriptors(final String dbName) {
         final String dbDir = getDatabaseDirectory().getAbsolutePath();
-        final ArrayList <String>cmd = new ArrayList<String>();
-        cmd.add("lsof");
-        cmd.add("-Fn");
-        cmd.add("+d");
-        cmd.add(dbDir);
-        final IteratorExecutor ie = new IteratorExecutor((String[]) cmd.toArray(new String[0]));
-        final String ourFilePath = String.format("n%s/%s", dbDir, dbName);
-        boolean anyOpen = false;
-        while (ie.hasNext()) {
-            final String line = ie.next().toString();
-            if (line.startsWith(ourFilePath)) {
-                anyOpen = true;
-                LOGGER.debug(String.format("Open file: '%s'", line));
-            }
-        }
-        final int exitValue = ie.getExitValue();
-        final String errMsg = String.format("lsof of %s returned %d : %s", dbDir, exitValue, anyOpen ? "FILES ARE OPEN" : "NO FILES OPEN");
-        LOGGER.debug(errMsg);
-        return anyOpen;
+        return OpenFilesDetector.anyOpenFiles(dbDir, dbName);
     }
 
+    
     /**
      * Suppress the check for database directory emptiness after a test case
      * since if it fails, it'll obscure any other reason for test failure.

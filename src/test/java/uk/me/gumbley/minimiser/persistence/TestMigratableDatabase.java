@@ -7,8 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
-import uk.me.gumbley.commoncode.os.OSTypeDetect;
-import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
@@ -68,6 +66,9 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         accessFactory.openMigratableDatabase(dbDir, null);
     }
 
+    /**
+     * Creates a db, then tries to open it, verifying that it can.
+     */
     @Test
     public void testGoodDatabaseCanBeOpened() {
         LOGGER.info("*** testGoodDatabaseCanBeOpened start");
@@ -77,21 +78,25 @@ public final class TestMigratableDatabase extends PersistenceUnittestCase {
         // create it...
         LOGGER.info("... creating");
         final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "");
+        LOGGER.info("... created");
         try {
             // now close and open it
+            assertDatabaseShouldBeOpen(dbName);
             LOGGER.info("... closing");
             mmData.close();
+            assertDatabaseShouldBeClosed(dbName);
             LOGGER.info("... re-opening");
-//            final MigratableDatabase migratableDatabase = accessFactory.openMigratableDatabase(dbDirPlusDbName, "");
-//            Assert.assertNotNull(migratableDatabase);
-//            try {
-//                // TODO obtain the version number and validate it
-//            } finally {
-//                LOGGER.info("... re-closing");
-//                if (migratableDatabase != null) {
-//                    migratableDatabase.close();
-//                }
-//            }
+            final MigratableDatabase migratableDatabase = accessFactory.openMigratableDatabase(dbDirPlusDbName, "");
+            try {
+                assertDatabaseShouldBeOpen(dbName);
+                Assert.assertNotNull(migratableDatabase);
+                LOGGER.info("... we opened the database!");
+                // TODO obtain the version number and validate it
+            } finally {
+                LOGGER.info("... re-closing");
+                migratableDatabase.close();
+                assertDatabaseShouldBeClosed(dbName);
+            }
         } finally {
             LOGGER.info("... deleting");
             deleteDatabaseFiles(dbName);
