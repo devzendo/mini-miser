@@ -3,7 +3,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl;
+
 import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;

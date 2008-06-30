@@ -1,13 +1,14 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
-import java.sql.Connection;
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
