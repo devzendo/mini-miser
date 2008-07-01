@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
+import org.springframework.dao.DataAccessException;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
@@ -23,7 +24,7 @@ import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
  */
 public final class FileNewResult extends DeferredWizardResult {
     private static final Logger LOGGER = Logger.getLogger(FileNewResult.class);
-    private static final int SETUP_STEPS = 5;
+    private static final int SETUP_STEPS = 6;
     private final OpenDatabaseList databaseList;
     private final AccessFactory access;
     private final CursorManager cursorMan;
@@ -82,20 +83,26 @@ public final class FileNewResult extends DeferredWizardResult {
                 progress.setProgress(observableEvent.getDescription(), stepNo.incrementAndGet(), maxSteps);
             }
         };
-        final MiniMiserDatabase database = access.createDatabase(fullPath, params.isEncrypted() ? params.getPassword() : "", observer);
-        progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
-
-        final Runnable addDatabaseAndNormalCursorSwingTask = new Runnable() {
-            public void run() {
-                LOGGER.info("Database created; adding to open database list");
-                // TODO the MiniMiserDatabase is now lost - need to add it
-                // to the DatabaseDescriptor.
-                databaseList.addOpenedDatabase(new DatabaseDescriptor(dbName));
-                cursorMan.normal();
-            }
-        };
-        GUIUtils.runOnEventThread(addDatabaseAndNormalCursorSwingTask);
-        progress.finished(null); // TODO create summary here?
+        try {
+            final MiniMiserDatabase database = access.createDatabase(fullPath, params.isEncrypted() ? params.getPassword() : "", observer);
+            progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
+    
+            final Runnable addDatabaseAndNormalCursorSwingTask = new Runnable() {
+                public void run() {
+                    LOGGER.info("Database created; adding to open database list");
+                    // TODO the MiniMiserDatabase is now lost - need to add it
+                    // to the DatabaseDescriptor.
+                    databaseList.addOpenedDatabase(new DatabaseDescriptor(dbName));
+                    cursorMan.normal();
+                }
+            };
+            GUIUtils.runOnEventThread(addDatabaseAndNormalCursorSwingTask);
+            progress.finished(null); // TODO create summary here?
+        } catch (final DataAccessException dae) {
+            LOGGER.warn("Failed to create database " + dbName + ": " + dae.getMessage(), dae);
+        } finally {
+            cursorMan.normalViaEventThread();
+        }
     }
 
     private final class FileNewParameters {

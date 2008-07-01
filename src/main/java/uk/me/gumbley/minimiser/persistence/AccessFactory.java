@@ -3,27 +3,34 @@ package uk.me.gumbley.minimiser.persistence;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
- * This is the entry point into the persistence layer. It allows access to
- * given databases in two ways:
- * <ul>
- * <li> MigratableDatabase, which uses JDBC + JdbcTemplate operations to access
- *      the version table of the v1 schema, and migrate a database to the
- *      latest schema version.
- * <li> MiniMiserDatabase, which uses JDBC + JdbcTemplate to access a database
- *      at the latest schema verison, for normal application usage.
+ * This is the entry point into the persistence layer.
+ * 
+ * It allows access to given databases via a MiniMiserDatabase instance, which
+ * uses JDBC + JdbcTemplate to access a database at the latest schema version,
+ * for normal application usage.
+ * 
+ * Databases can be created, or opened.
+ * 
+ * The MiniMiser object also allows lower-level (DDL) execution, so as to
+ * perform a migration from the database's current schema version to the latest. 
  *      
- *      Note that the initial thoughts on architecture were that I should
+ * Historical note: the initial thoughts on architecture were that I should
  *      use Hibernate for this access method, but the Spring docs and course
- *      notes suggest that for many apps, JDBC + JdbcTemplate is just fine.
- * </ul>  
+ *      notes suggest that for many apps, JDBC + JdbcTemplate is just fine. I
+ *      started with a straight JDBC version, but it was too painful, so now I
+ *      just have the JdbcTemplate version.
+ *      
  * @author matt
  *
  */
 public interface AccessFactory {
 
     /**
-     * Obtain low level access to a given database for version checking and
-     * migration.
+     * Open an existing database for normal use.
+     * 
+     * Note that the database may not be at the current schema version, so the
+     * migration code should be invoked first to update it, before the main DAO
+     * objects are used.
      * 
      * Can throw runtime exceptions:
      * <ul>
@@ -37,18 +44,10 @@ public interface AccessFactory {
      * @param directory the directory containing the database
      * @param password an optional password for encrypted databases; ignored
      * for unencrypted databases
-     * @return a MigratableDatabase facade for migration operations
+     * @return a MiniMiserDatabase, from which DAOs can be obtained, and DDL
+     * executed. 
      */
-    MigratableDatabase openMigratableDatabase(String directory, String password);
-
-    /**
-     * Open an existing, current-schema database for normal use.
-     * The typical use case is that openMigratableDatabase has been done,
-     * the MigratableDatabase has been used to determine that the database
-     * exists and is at the correct schema version, and has then been closed.
-     * This call is then made to allow normal access to the database.
-     * TODO write this
-     */
+    MiniMiserDatabase openDatabase(String directory, String password);
     
     /**
      * Create a database for normal use.
@@ -71,7 +70,7 @@ public interface AccessFactory {
      * @return a MiniMiserDatabase object allowing you to access the
      * database.
      */
-    MiniMiserDatabase createDatabase(String dbDirPlusDbName, String string, Observer<PersistenceObservableEvent> observer);
+    MiniMiserDatabase createDatabase(String databasePath, String strpasswording, Observer<PersistenceObservableEvent> observer);
 
     /**
      * For displaying progress bars during database creation, we need to know

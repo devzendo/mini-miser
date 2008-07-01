@@ -5,7 +5,7 @@
 	<bean id="testConfig" class="uk.me.gumbley.minimiser.config.UnittestingConfig">
 	</bean>
 	
-	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateJdbcAccessImpl">
+	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl">
 		<constructor-arg ref="springLoader" />
 	</bean>
 	

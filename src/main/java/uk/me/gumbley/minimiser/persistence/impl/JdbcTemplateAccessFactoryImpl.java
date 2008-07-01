@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
-import uk.me.gumbley.minimiser.persistence.MigratableDatabase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
@@ -20,14 +19,16 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
- * A JdbcAccess that uses Spring's JdbcTemplate.
+ * An AccessFactory that uses Spring's JdbcTemplate.
+ * Historical note: I used to have one that used plain
+ * JDBC, but it was painful compared to this one.
  *
  * @author matt
  *
  */
-public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
+public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     private static final Logger LOGGER = Logger
-            .getLogger(JdbcTemplateJdbcAccessImpl.class);
+            .getLogger(JdbcTemplateAccessFactoryImpl.class);
     private static final String[] CREATION_DDL_STRINGS = new String[] {
         "CREATE TABLE Versions("
                 + "entity VARCHAR(40) PRIMARY KEY,"
@@ -44,11 +45,12 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
             // do nothing
         }
     };
+    
     /**
      * Construct one, using the SpringLoader
      * @param sL the SpringLoader
      */
-    public JdbcTemplateJdbcAccessImpl(final SpringLoader sL) {
+    public JdbcTemplateAccessFactoryImpl(final SpringLoader sL) {
         springLoader = sL;
     }
 
@@ -112,10 +114,11 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
             return dataSource;
         }
     }
+    
     /**
      * {@inheritDoc}
      */
-    public MigratableDatabase openMigratableDatabase(final String databasePath, final String password) {
+    public MiniMiserDatabase openDatabase(final String databasePath, final String password) {
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false, IGNORING_LISTENER);
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
@@ -140,7 +143,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
                     e.getErrorCode()), "", e);
         }
         LOGGER.debug("Creating new JdbcTemplateMigratableDatabaseImpl");
-        return new JdbcTemplateMigratableDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
+        return new JdbcTemplateMiniMiserDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
     }
 
     /**
@@ -154,6 +157,7 @@ public final class JdbcTemplateJdbcAccessImpl implements AccessFactory {
      * {@inheritDoc}
      */
     public MiniMiserDatabase createDatabase(final String databasePath, final String password, final Observer<PersistenceObservableEvent> observer) {
+        LOGGER.debug("Creating database with path '" + databasePath + "' and password '" + password + "'");
         // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);

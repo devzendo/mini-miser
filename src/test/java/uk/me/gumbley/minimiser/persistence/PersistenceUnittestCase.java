@@ -165,7 +165,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
      * @param dbName the database name
      * @param mmData the factory to close the db with
      */
-    protected final void deleteWithClosureCheck(final String dbName, final Database mmData) {
+    protected final void deleteWithClosureCheck(final String dbName, final MiniMiserDatabase mmData) {
         LOGGER.info("*** still open?");
         assertDatabaseShouldBeOpen(dbName);
         LOGGER.info("*** closing");
