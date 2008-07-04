@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.logging.Logging;
@@ -44,5 +46,7 @@ public final class DriveCurrentGuiThing {
         dialog.pack();
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
+        final char[] password = dialog.getPassword();
+        LOGGER.info("returned '" + new String(password) + "' length " + password.length);
     }
 }
