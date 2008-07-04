@@ -4,21 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- persistence layer -->
-	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl">
-		<constructor-arg ref="springLoader" />
-	</bean>
+	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
 
-	<!-- Half statically defined here, but the URL and password are dynamic -->
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
-		lazy-init="true"
-		scope="prototype">
-		<property name="driverClassName"
-		    value="org.h2.Driver" />
-		<property name="username"
-		    value="sa" />
-	</bean>
-	
 	<!-- gui layer -->
 	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.menu.MenuWiring" lazy-init="true" />
 	

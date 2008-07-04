@@ -9,6 +9,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialog;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 
@@ -31,11 +32,17 @@ public final class DriveCurrentGuiThing {
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         LOGGER.info(String.format("%s %s GUI experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
         Beautifier.makeBeautiful();
+        
         JFrame frame = new JFrame("title");
         final JButton button = new JButton("hello");
-        button.setPreferredSize(new Dimension(100, 200));
+        button.setPreferredSize(new Dimension(400, 200));
         frame.add(button);
         frame.pack();
         frame.setVisible(true);
+        
+        PasswordEntryDialog dialog = new PasswordEntryDialog(frame, "Sentient");
+        dialog.pack();
+        dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
     }
 }

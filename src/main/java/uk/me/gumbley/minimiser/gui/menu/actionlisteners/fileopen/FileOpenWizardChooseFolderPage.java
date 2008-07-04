@@ -5,13 +5,21 @@ import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.WizardController;
+import org.springframework.dao.DataAccessException;
+import uk.me.gumbley.commoncode.gui.GUIUtils;
+import uk.me.gumbley.commoncode.string.StringUtils;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
+import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 
 /**
  * Choose an existing directory that holds a database.
@@ -21,7 +29,6 @@ import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
  *
  */
 public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
-    private static final long serialVersionUID = -738376249450121977L;
     /**
      * The name of the key that's populated in the results map for the path
      * name of this database. 
@@ -32,6 +39,7 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
     private JFileChooser fileChooser;
     private File chosenDirectory;
     private JTextField hiddenPathName;
+    
 
     /**
      * Construct the wizard page
@@ -103,10 +111,10 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
             LOGGER.warn(problem);
             setProblem(problem);
             setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
-        } else {
-            setProblem(null);
-            setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
-            hiddenPathName.setText(chosenDirectory.getAbsolutePath());
         }
+        final String dbDir = chosenDirectory.getAbsolutePath();
+        hiddenPathName.setText(dbDir);
+        setProblem(null);
+        setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
     }
 }

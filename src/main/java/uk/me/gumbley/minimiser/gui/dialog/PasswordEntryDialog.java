@@ -1,0 +1,201 @@
+package uk.me.gumbley.minimiser.gui.dialog;
+
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
+import org.apache.log4j.Logger;
+import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.util.PasswordValidator;
+
+/**
+ * A modal dialog that prompts the user for a database password, reminding them
+ * of the ruls for password.
+ * 
+ * @author matt
+ */
+public final class PasswordEntryDialog extends JDialog implements ActionListener,
+        PropertyChangeListener {
+    private static final long serialVersionUID = -8854443686261158187L;
+    private static final Logger LOGGER = Logger
+            .getLogger(PasswordEntryDialog.class);
+
+    private char[] password = new char[0];
+
+    private JPasswordField passwordField;
+    private JTextArea critArea;
+
+    private JOptionPane optionPane;
+
+    private String btnString1 = "Open";
+
+    private String btnString2 = "Cancel";
+
+    /**
+     * Returns the entered password otherwise, returns the password as the user
+     * entered it.
+     * @return the password
+     */
+    public char[] getPassword() {
+        return password;
+    }
+
+    /**
+     * Creates the reusable dialog.
+     * @param parentFrame the parent frame
+     */
+    public PasswordEntryDialog(final Frame parentFrame, final String dbName) {
+        super(parentFrame, true);
+        setTitle("Enter Password for '" + dbName + "'");
+        passwordField = new JPasswordField();
+        critArea = new JTextArea("");
+        critArea.setEditable(false);
+        // Create an array of the text and components to be displayed.
+        final String msg = "The '" + dbName + "' database is encrypted.\n"
+            + "The correct password must be entered before\n"
+            + AppName.getAppName() + " can open it.";
+        final JTextArea msgArea = new JTextArea(msg); 
+        msgArea.setEditable(false);
+        final Object[] array = {msgArea, passwordField, critArea};
+        // Create an array specifying the number of dialog buttons
+        // and their text.
+        final Object[] options = {btnString1, btnString2};
+        // Create the JOptionPane.
+        optionPane = new JOptionPane(array, JOptionPane.QUESTION_MESSAGE,
+                JOptionPane.YES_NO_OPTION, null, options, options[0]);
+        // Make this dialog display it.
+        setContentPane(optionPane);
+        // Handle window closing correctly.
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(final WindowEvent we) {
+                /*
+                 * Instead of directly closing the window, we're going to change
+                 * the JOptionPane's value property.
+                 */
+                optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
+            }
+        });
+        // Ensure the text field always gets the first focus.
+        addComponentListener(new ComponentAdapter() {
+            public void componentShown(final ComponentEvent ce) {
+                passwordField.requestFocusInWindow();
+            }
+        });
+        // Register an event handler that puts the text into the option pane.
+//        passwordField.addActionListener(this);
+
+        passwordField.addKeyListener(new KeyListener() {
+
+            public void keyPressed(KeyEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void keyReleased(KeyEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            public void keyTyped(KeyEvent e) {
+                validatePassword();
+            }});
+        // Register an event handler that reacts to option pane state changes.
+        optionPane.addPropertyChangeListener(this);
+    }
+
+    /**
+     * This method handles events for the text field.
+     * @param e the text field event
+     */
+    public void actionPerformed(final ActionEvent e) {
+        optionPane.setValue(btnString1);
+        validatePassword();
+    }
+
+    private void validatePassword() {
+
+        final char[] passwordContents = passwordField.getPassword();
+        final String criticism = PasswordValidator
+                .criticisePassword(passwordContents);
+        if (criticism == null) {
+            critArea.setText("");
+            password = passwordContents;
+            // TODO enable Open
+        } else {
+            critArea.setText(criticism);
+            // TODO disable Open
+            // text was invalid
+//            passwordField.selectAll();
+//            JOptionPane.showMessageDialog(PasswordEntryDialog.this,
+//                "Sorry, " + criticism + ".", "Try again",
+//                JOptionPane.ERROR_MESSAGE);
+//            password = new char[0];
+//            passwordField.requestFocusInWindow();
+        }
+
+    }
+    /**
+     * This method reacts to state changes in the option pane.
+     * @param e the event
+     */
+    public void propertyChange(final PropertyChangeEvent e) {
+        final String prop = e.getPropertyName();
+        if (isVisible()
+                && (e.getSource() == optionPane)
+                && (JOptionPane.VALUE_PROPERTY.equals(prop) || JOptionPane.INPUT_VALUE_PROPERTY
+                        .equals(prop))) {
+            final Object value = optionPane.getValue();
+            if (value == JOptionPane.UNINITIALIZED_VALUE) {
+                // ignore reset
+                return;
+            }
+            // Reset the JOptionPane's value.
+            // If you don't do this, then if the user
+            // presses the same button next time, no
+            // property change event will be fired.
+            optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+            LOGGER.info("got a change");
+            if (btnString1.equals(value)) {
+                final char[] passwordContents = passwordField.getPassword();
+                final String criticism = PasswordValidator
+                        .criticisePassword(passwordContents);
+                if (criticism == null) {
+                    password = passwordContents;
+                    // we're done; clear and dismiss the dialog
+                    clearAndHide();
+                } else {
+                    critArea.setText(criticism);
+                    // text was invalid
+                    passwordField.selectAll();
+                    JOptionPane.showMessageDialog(PasswordEntryDialog.this,
+                        "Sorry, " + criticism + ".", "Try again",
+                        JOptionPane.ERROR_MESSAGE);
+                    password = new char[0];
+                    passwordField.requestFocusInWindow();
+                }
+            } else { // user closed dialog or clicked cancel
+                password = new char[0];
+                clearAndHide();
+            }
+        }
+    }
+
+    /** This method clears the dialog and hides it. */
+    public void clearAndHide() {
+        passwordField.setText(null);
+        setVisible(false);
+    }
+}

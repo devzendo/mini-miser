@@ -5,21 +5,9 @@
 	<bean id="testConfig" class="uk.me.gumbley.minimiser.config.UnittestingConfig">
 	</bean>
 	
-	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl">
-		<constructor-arg ref="springLoader" />
-	</bean>
+	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
 	
 	<!-- <bean id="versionDao" class="uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao" />
 	should inject the JdbcTemplate if we had a factory bean? -->
-		
-	<!-- Half statically defined here, but the URL and password are dynamic -->
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
-		lazy-init="true"
-		scope="prototype">
-		<property name="driverClassName"
-		    value="org.h2.Driver" />
-		<property name="username"
-		    value="sa" />
-	</bean>
-	</beans>
+	
+</beans>

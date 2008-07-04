@@ -59,6 +59,7 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
         
         final JPanel innerPanel = new JPanel();
         innerPanel.setLayout(new BorderLayout());
+
         final Border titledBorder = BorderFactory.createTitledBorder("Password entry");
         final JPanel passwordEntryPanel = new JPanel();
         passwordEntryPanel.setBorder(titledBorder);

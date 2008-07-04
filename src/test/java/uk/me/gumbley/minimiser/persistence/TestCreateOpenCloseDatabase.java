@@ -67,17 +67,153 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
     }
 
     /**
-     * Creates a db, then tries to open it, verifying that it can.
+     * Creates plaintext db, then tries to open it, verifying that it can.
      */
     @Test
-    public void testGoodDatabaseCanBeOpened() {
-        LOGGER.info("*** testGoodDatabaseCanBeOpened start");
+    public void testGoodPlaintextDatabaseCanBeOpened() {
+        LOGGER.info("*** testGoodPlaintextDatabaseCanBeOpened start");
         final String dbName = "testopen";
+        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, "", new RunOnCreatedDb() {
+            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+                LOGGER.info("... re-opening");
+                final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbPassword);
+                try {
+                    assertDatabaseShouldBeOpen(dbName);
+                    Assert.assertNotNull(openedDatabase);
+                    LOGGER.info("... we opened the database!");
+                    checkDatabaseInvariants(dbName, openedDatabase, false, false);
+                } finally {
+                    LOGGER.info("... re-closing");
+                    openedDatabase.close();
+                }
+            }
+            
+        });
+    }
+
+    /**
+     * Creates encrypted db, then tries to open it with the creation password,
+     * verifying that it can.
+     */
+    @Test
+    public void testGoodEncryptedDatabaseCanBeOpened() {
+        LOGGER.info("*** testGoodEncryptedDatabaseCanBeOpened start");
+        final String dbName = "testopenenc";
+        final String dbPassword = "Qwerty123";
+        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, dbPassword, new RunOnCreatedDb() {
+            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+                LOGGER.info("... re-opening");
+                final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbPassword);
+                try {
+                    assertDatabaseShouldBeOpen(dbName);
+                    Assert.assertNotNull(openedDatabase);
+                    LOGGER.info("... we opened the database!");
+                    checkDatabaseInvariants(dbName, openedDatabase, true, false);
+                } finally {
+                    LOGGER.info("... re-closing");
+                    openedDatabase.close();
+                }
+            }
+            
+        });
+    }
+
+    /**
+     * Creates encrypted db, then tries to open it with another password,
+     * verifying that it can't.
+     */
+    @Test
+    public void testGoodEncryptedDatabaseCantBeOpenedWithOtherPassword() {
+        LOGGER.info("*** testGoodEncryptedDatabaseCantBeOpenedWithOtherPassword start");
+        final String dbName = "testopenenc";
+        final String dbCreationPassword = "Qwerty123";
+        final String dbEvilHackerPassword = "Fossi11ized";
+        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, dbCreationPassword, new RunOnCreatedDb() {
+            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+                LOGGER.info("... re-opening");
+                MiniMiserDatabase openedDatabase = null;
+                boolean caughtBPE = false;
+                try {
+                    openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbEvilHackerPassword);
+                    Assert.fail("Should not have been able to open an encrypted database with some other password");
+                } catch (final BadPasswordException bpe) {
+                    LOGGER.info("Correctly caught bad password exception: " + bpe.getMessage());
+                    caughtBPE = true;
+                } catch (final Throwable t) {
+                    LOGGER.warn("Caught unexpected " + t.getClass().getName(), t);
+                    Assert.fail("Should not have caught some unknown throwable");
+                } finally {
+                    LOGGER.info("... re-closing");
+                    assertDatabaseShouldBeClosed(dbName);
+                    Assert.assertNull(openedDatabase);
+                    Assert.assertTrue("Did not catch a bad password exception", caughtBPE);
+                }
+            }
+            
+        });
+    }
+
+    /**
+     * Creates encrypted db, then tries to open it with an empty password,
+     * verifying that it can't.
+     */
+    @Test
+    public void testGoodEncryptedDatabaseCantBeOpenedWithEmptyPassword() {
+        LOGGER.info("*** testGoodEncryptedDatabaseCantBeOpenedWithEmptyPassword start");
+        final String dbName = "testopenenc";
+        final String dbCreationPassword = "Qwerty123";
+        final String dbEvilHackerPassword = "";
+        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, dbCreationPassword, new RunOnCreatedDb() {
+            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+                LOGGER.info("... re-opening");
+                MiniMiserDatabase openedDatabase = null;
+                boolean caughtBPE = false;
+                try {
+                    openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbEvilHackerPassword);
+                    Assert.fail("Should not have been able to open an encrypted database with an empty password");
+                } catch (final BadPasswordException bpe) {
+                    LOGGER.info("Correctly caught bad password exception: " + bpe.getMessage());
+                    caughtBPE = true;
+                } catch (final Throwable t) {
+                    LOGGER.warn("Caught unexpected " + t.getClass().getName(), t);
+                    Assert.fail("Should not have caught some unknown throwable");
+                } finally {
+                    LOGGER.info("... re-closing");
+                    assertDatabaseShouldBeClosed(dbName);
+                    Assert.assertNull(openedDatabase);
+                    Assert.assertTrue("Did not catch a bad password exception", caughtBPE);
+                }
+            }
+            
+        });
+    }
+
+    private interface RunOnCreatedDb {
+        /**
+         * Run some custom behaviour for a given database that's been created
+         * and will be deleted afterwards.
+         * @param dbName the name of the database
+         * @param dbPassword the password for this database, if encrypted. "" if not.
+         * @param dbDirPlusDbName the directory of the db plus the db name
+         */
+        void runOnCreatedDb(String dbName, String dbPassword, String dbDirPlusDbName);
+    }
+    
+    /**
+     * Creates a db, closes it, then allows pluggable behaviour, before deleting it.
+     * @param dbName the name of the database
+     * @param dbPassword the password for this database, if encrypted. "" if not.
+     * @param runOnCreatedDb some behaviour to run when the db is created, before deleting
+     */
+    private void createDatabaseWithPluggableBehaviourBeforeDeletion(final String dbName, 
+            final String dbPassword, final RunOnCreatedDb runOnCreatedDb) {
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        LOGGER.info(String.format("... dbName = %s", dbName));
         LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
+        LOGGER.info(String.format("... dbPassword = '%s'", dbPassword));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "");
+        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, dbPassword);
         LOGGER.info("... created");
         try {
             // now close and open it
@@ -85,18 +221,8 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             LOGGER.info("... closing");
             mmData.close();
             assertDatabaseShouldBeClosed(dbName);
-            LOGGER.info("... re-opening");
-            final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, "");
-            try {
-                assertDatabaseShouldBeOpen(dbName);
-                Assert.assertNotNull(openedDatabase);
-                LOGGER.info("... we opened the database!");
-                checkDatabaseInvariants(dbName, openedDatabase, false, false);
-            } finally {
-                LOGGER.info("... re-closing");
-                openedDatabase.close();
-                assertDatabaseShouldBeClosed(dbName);
-            }
+            runOnCreatedDb.runOnCreatedDb(dbName, dbPassword, dbDirPlusDbName);
+            assertDatabaseShouldBeClosed(dbName);
         } finally {
             LOGGER.info("... deleting");
             deleteDatabaseFiles(dbName);
@@ -233,6 +359,8 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
     
     /**
      * Test that we cannot get DAOs when we've closed.
+     * TODO loop on all DAOs when we have more - need to check that all fail
+     * @throws IllegalStateException due to closed db
      */
     @Test(expected = IllegalStateException.class)
     public void testGetVersionDaoFailsOnClosedDatabase() throws IllegalStateException {
@@ -251,7 +379,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             mmData.close();
             assertDatabaseShouldBeClosed(dbName);
             LOGGER.info("... now trying to getVersionDao");
-            final Version dbVersion = mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
+            mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
         } finally {
             LOGGER.info("... deleting");
             deleteDatabaseFiles(dbName);

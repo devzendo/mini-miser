@@ -8,6 +8,11 @@ import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 import uk.me.gumbley.minimiser.gui.CursorManager;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardChooseFolderPage;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardCurrencyPage;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardIntroPage;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardSecurityOptionPage;
+import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenInitialBranchController;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenResult;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardChooseFolderPage;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardIntroPage;
@@ -90,8 +95,6 @@ public final class FileOpenActionListener implements ActionListener {
         final Class[] wizardPages = new Class[] {
                 FileOpenWizardIntroPage.class,
                 FileOpenWizardChooseFolderPage.class,
-//                FileNewWizardSecurityOptionPage.class,
-//                FileNewWizardCurrencyPage.class,
         };
         final WizardResultProducer producer = new WizardResultProducer() {
             public boolean cancel(final Map settings) {

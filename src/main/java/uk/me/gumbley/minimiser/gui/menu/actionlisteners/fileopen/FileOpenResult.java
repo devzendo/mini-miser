@@ -22,7 +22,6 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
  */
 public final class FileOpenResult extends DeferredWizardResult {
     private static final Logger LOGGER = Logger.getLogger(FileOpenResult.class);
-    private static final int SETUP_STEPS = 5;
     private final OpenDatabaseList databaseList;
     private final AccessFactory access;
     private final CursorManager cursorMan;
@@ -52,6 +51,7 @@ public final class FileOpenResult extends DeferredWizardResult {
             LOGGER.info("User cancelled File|Open");
             return;
         }
+        LOGGER.debug("start with " + result);
         cursorMan.hourglassViaEventThread();
 
         final String dbPath = (String) result.get(FileOpenWizardChooseFolderPage.PATH_NAME);
@@ -61,29 +61,38 @@ public final class FileOpenResult extends DeferredWizardResult {
         final String dbName = dbPathFile.getName();
         final String dbFullPath = StringUtils.slashTerminate(dbPath) + dbName;
         LOGGER.info("Opening database at path: " + dbFullPath);
-        try {
-            final MiniMiserDatabase openMigratableDatabase = access.openDatabase(dbFullPath, "");
-            LOGGER.info("Opened OK");
-
-            final Runnable addDatabaseAndNormalCursorSwingTask = new Runnable() {
-                public void run() {
-                    LOGGER.info("Database created; adding to open database list");
-                    // TODO the MiniMiserDatabase is now lost - need to add it
-                    // to the DatabaseDescriptor.
-                    databaseList.addOpenedDatabase(new DatabaseDescriptor(dbName));
-                    cursorMan.normal();
-                }
-            };
-            GUIUtils.runOnEventThread(addDatabaseAndNormalCursorSwingTask);
-        } catch (final BadPasswordException bad) {
-            // TODO get user to enter password and try again
-            LOGGER.warn("Bad password: " + bad.getMessage());
-        } catch (final DataAccessException dae) {
-            // TODO report error to user
-            LOGGER.warn("Data access exception: " + dae.getMessage());
-        } finally {
-            cursorMan.normalViaEventThread();
+        boolean retryPasswordLoop = true;
+        // Try at first with an empty password - if we get a BPE, prompt for
+        // password and retry.
+        String dbPassword = "";
+        while (retryPasswordLoop) {
+            try {
+                final MiniMiserDatabase openMigratableDatabase = access.openDatabase(dbFullPath, dbPassword);
+                LOGGER.info("Opened OK");
+                
+                final Runnable addDatabaseSwingTask = new Runnable() {
+                    public void run() {
+                        LOGGER.info("Database created; adding to open database list");
+                        // TODO the MiniMiserDatabase is now lost - need to add it
+                        // to the DatabaseDescriptor.
+                        databaseList.addOpenedDatabase(new DatabaseDescriptor(dbName));
+                    }
+                };
+                GUIUtils.runOnEventThread(addDatabaseSwingTask);
+                retryPasswordLoop = false;
+            } catch (final BadPasswordException bad) {
+                LOGGER.warn("Bad password: " + bad.getMessage());
+                dbPassword = promptForPassword();
+            } catch (final DataAccessException dae) {
+                // TODO report error to user
+                LOGGER.warn("Data access exception: " + dae.getMessage());
+            }
         }
         progress.finished(null); // TODO create summary here?
+        cursorMan.normalViaEventThread();
+    }
+
+    private String promptForPassword() {
+        return null;
     }
 }

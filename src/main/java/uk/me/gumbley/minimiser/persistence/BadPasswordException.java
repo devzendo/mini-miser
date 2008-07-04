@@ -5,10 +5,18 @@ package uk.me.gumbley.minimiser.persistence;
  * an encrypted database for migration but the wrong password is
  * supplied.
  * 
- * TODO find out what Spring's JdbcTemplate throws in this case.
  * @author matt
  *
  */
 public class BadPasswordException extends RuntimeException {
-    private static final long serialVersionUID = -4237763396785087320L;
+    private static final long serialVersionUID = -3378063389975036678L;
+
+    /**
+     * Couldn't open database due to bad password
+     * @param message helpful text
+     */
+    public BadPasswordException(final String message) {
+        super(message);
+    }
+
 }

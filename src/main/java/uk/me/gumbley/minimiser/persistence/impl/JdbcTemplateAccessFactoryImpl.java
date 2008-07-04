@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
@@ -15,7 +16,6 @@ import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
@@ -39,7 +39,6 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     private static final int POPULATION_STEPS = 1;
     private static final int STATIC_CREATION_STEPS = 4;
     
-    private final SpringLoader springLoader;
     private static final Observer<PersistenceObservableEvent> IGNORING_LISTENER = new Observer<PersistenceObservableEvent>() {
         public void eventOccurred(final PersistenceObservableEvent observableEvent) {
             // do nothing
@@ -47,11 +46,9 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     };
     
     /**
-     * Construct one, using the SpringLoader
-     * @param sL the SpringLoader
+     * Construct one
      */
-    public JdbcTemplateAccessFactoryImpl(final SpringLoader sL) {
-        springLoader = sL;
+    public JdbcTemplateAccessFactoryImpl() {
     }
 
     private class DatabaseSetup {
@@ -79,16 +76,16 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             if (!allowCreate) {
                 dbURL += ";IFEXISTS=TRUE";
             }
-            // We can populate half the data source from Spring, but we need to
-            // build the URL at runtime, since it depends on the database path and
-            // password.
+
             observer.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
             LOGGER.debug("Obtaining data source bean");
-            dataSource = springLoader.getBean("dataSource", SingleConnectionDataSource.class);
-            LOGGER.debug("Populating data source with URL and password");
-            dataSource.setUrl(dbURL);
-            dataSource.setPassword(dbPassword);
-            // Just instantiate directly rather than bothering with Spring
+            final String driverClassName = "org.h2.Driver";
+            final String userName = "sa";
+            final boolean suppressClose = false;
+            dataSource = new SingleConnectionDataSource(driverClassName,
+                dbURL, userName, dbPassword + " userpwd", suppressClose); 
+            LOGGER.debug("DataSource is " + dataSource);
+
             // TODO Spring lossage: I'd use a SimpleJdbcTemplate here, but it
             // doesn't support getDataSource() so we can't close programmatically.
             // See http://forum.springframework.org/archive/index.php/t-9704.html
@@ -132,15 +129,21 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             LOGGER.debug("db is initially closed? " + closed);
         } catch (final SQLException e) {
             LOGGER.debug("SQLException from isClosed", e);
-            if (e.getErrorCode() == ErrorCode.DATABASE_NOT_FOUND_1) {
-                final String message = String.format("Database at %s not found", databasePath);
-                LOGGER.debug(message);
-                throw new DataAccessResourceFailureException(message);
+            switch (e.getErrorCode()) {
+                case ErrorCode.DATABASE_NOT_FOUND_1:
+                    final String dbnfMessage = String.format("Database at %s not found", databasePath);
+                    LOGGER.debug(dbnfMessage);
+                    throw new DataAccessResourceFailureException(dbnfMessage);
+                case ErrorCode.FILE_ENCRYPTION_ERROR_1:
+                    final String feeMessage = String.format("Bad password opening database at %s", databasePath);
+                    LOGGER.debug(feeMessage);
+                    throw new BadPasswordException(feeMessage);
+                default:
+                    // Assume that anything that goes wrong here is bad...
+                    throw new org.springframework.jdbc.UncategorizedSQLException(
+                        String.format("Could not open database - SQL Error Code %d",
+                            e.getErrorCode()), "", e);
             }
-            // Assume that anything that goes wrong here is bad...
-            throw new org.springframework.jdbc.UncategorizedSQLException(
-                String.format("Possible database not found - SQL Error Code %d",
-                    e.getErrorCode()), "", e);
         }
         LOGGER.debug("Creating new JdbcTemplateMigratableDatabaseImpl");
         return new JdbcTemplateMiniMiserDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
@@ -161,6 +164,17 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);
+        try {
+            if (dbSetup.getDataSource().getConnection().isClosed()) {
+                LOGGER.warn("DataSource/Connection reports connection closed");
+                throw new DataAccessResourceFailureException(
+                    "Database closed when should be open");
+            }
+        } catch (final SQLException e) {
+            throw new DataAccessResourceFailureException(
+                String.format("Database closed when should be open - SQL Error Code %d",
+                e.getErrorCode()), e);
+        }
         createTables(dbSetup, observer);
         populateTables(dbSetup, observer);
         final JdbcTemplateMiniMiserDatabaseImpl templateImpl =

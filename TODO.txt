@@ -2,42 +2,9 @@ MiniMiser - a simple personal finance manager program
 -----------------------------------------------------
 Current outstanding small tasks:
 
-* encrypted database creation doesn't work:
-Creating new JDBC Connection to [jdbc:h2:/home/matt/Desktop/crap/crypt/crypt;CIPHER=AES]
-2008-07-01 19:09:23,569 FileNewResult [Wizard Background Result Thread uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewResult@8b8a47] Failed to create database crypt: Could not get JDBC Connection; nested exception is org.h2.jdbc.JdbcSQLException: Wrong password format, must be: file password <space> user password [90050-69]
-org.springframework.jdbc.CannotGetJdbcConnectionException: Could not get JDBC Connection; nested exception is org.h2.jdbc.JdbcSQLException: Wrong password format, must be: file password <space> user password [90050-69]
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:82)
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:381)
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:428)
-	at uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl.createTables(JdbcTemplateAccessFactoryImpl.java:181)
-	at uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl.createDatabase(JdbcTemplateAccessFactoryImpl.java:164)
-	at uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewResult.start(FileNewResult.java:87)
-	at org.netbeans.api.wizard.displayer.WizardDisplayerImpl$4.run(WizardDisplayerImpl.java:495)
-	at java.lang.Thread.run(Thread.java:595)
-Caused by: org.h2.jdbc.JdbcSQLException: Wrong password format, must be: file password <space> user password [90050-69]
-	at org.h2.message.Message.getSQLException(Message.java:91)
-	at org.h2.message.Message.getSQLException(Message.java:95)
-	at org.h2.message.Message.getSQLException(Message.java:73)
-	at org.h2.message.Message.getSQLException(Message.java:116)
-	at org.h2.engine.ConnectionInfo.readPasswords(ConnectionInfo.java:211)
-	at org.h2.engine.ConnectionInfo.<init>(ConnectionInfo.java:73)
-	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:957)
-	at org.h2.Driver.connect(Driver.java:57)
-	at java.sql.DriverManager.getConnection(DriverManager.java:525)
-	at java.sql.DriverManager.getConnection(DriverManager.java:140)
-	at org.springframework.jdbc.datasource.DriverManagerDataSource.getConnectionFromDriverManager(DriverManagerDataSource.java:281)
-	at org.springframework.jdbc.datasource.DriverManagerDataSource.getConnectionFromDriverManager(DriverManagerDataSource.java:269)
-	at org.springframework.jdbc.datasource.DriverManagerDataSource.getConnectionFromDriverManager(DriverManagerDataSource.java:253)
-	at org.springframework.jdbc.datasource.SingleConnectionDataSource.initConnection(SingleConnectionDataSource.java:244)
-	at org.springframework.jdbc.datasource.SingleConnectionDataSource.getConnection(SingleConnectionDataSource.java:187)
-	at org.springframework.jdbc.datasource.DataSourceUtils.doGetConnection(DataSourceUtils.java:113)
-	at org.springframework.jdbc.datasource.DataSourceUtils.getConnection(DataSourceUtils.java:79)
-	... 7 more
-
-
 * open database list won't prompt for password (on separate wizard branch) if we
   get the password wrong.
-  
+
 * add the tab pane container
 
 * add a prefs dialog
@@ -46,6 +13,7 @@ Caused by: org.h2.jdbc.JdbcSQLException: Wrong password format, must be: file pa
 * if debug flag, add an SQL interface panel
 
 * exit action listener should not prompt for confirmation if nothing open
+* ensure databases closed on exit, if confirmation ok   
 
 * decide which currencies to support
 * add currency object, entries for all supported currencies

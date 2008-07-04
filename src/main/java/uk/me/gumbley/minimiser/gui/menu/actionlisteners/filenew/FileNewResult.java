@@ -100,6 +100,7 @@ public final class FileNewResult extends DeferredWizardResult {
             progress.finished(null); // TODO create summary here?
         } catch (final DataAccessException dae) {
             LOGGER.warn("Failed to create database " + dbName + ": " + dae.getMessage(), dae);
+            throw dae;
         } finally {
             cursorMan.normalViaEventThread();
         }
