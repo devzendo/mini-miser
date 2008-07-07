@@ -15,29 +15,23 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
-
-import org.apache.log4j.Logger;
-
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.util.PasswordValidator;
 
 /**
  * A modal dialog that prompts the user for a database password, reminding them
- * of the ruls for password.
+ * of the rules for passwords.
  * 
  * @author matt
  */
 public final class PasswordEntryDialog extends JDialog implements ActionListener,
         PropertyChangeListener {
-    private static final long serialVersionUID = -8854443686261158187L;
-    private static final Logger LOGGER = Logger
-            .getLogger(PasswordEntryDialog.class);
+    private static final long serialVersionUID = -7735298608803797513L;
 
     private char[] password = new char[0];
 
