@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialog;
+import uk.me.gumbley.minimiser.gui.dialog.SeriousProblemDialog;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 
@@ -42,11 +43,9 @@ public final class DriveCurrentGuiThing {
         frame.pack();
         frame.setVisible(true);
         
-        PasswordEntryDialog dialog = new PasswordEntryDialog(frame, "Sentient");
+        SeriousProblemDialog dialog = new SeriousProblemDialog(frame, "doing something innoccuous", new Exception("Could not find will to unit test GUI components"));
         dialog.pack();
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
-        final char[] password = dialog.getPassword();
-        LOGGER.info("returned '" + new String(password) + "' length " + password.length);
     }
 }
