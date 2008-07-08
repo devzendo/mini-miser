@@ -1,19 +1,19 @@
 package uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen;
 
-import java.awt.Frame;
 import java.io.File;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
+import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialog;
-import uk.me.gumbley.minimiser.gui.dialog.SeriousProblemDialog;
+import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
+import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
@@ -30,9 +30,6 @@ public final class FileOpenResult extends DeferredWizardResult {
     private final OpenDatabaseList databaseList;
     private final AccessFactory access;
     private final CursorManager cursorMan;
-    private Object passwordLock = new Object();
-    private char[] password;
-    private CountDownLatch passwordSetLatch;
 
     /**
      * Create the FileOpenResult creation worker
@@ -100,70 +97,37 @@ public final class FileOpenResult extends DeferredWizardResult {
                 LOGGER.warn("Bad password: " + bad.getMessage());
                 progress.setProgress("Password required", 2, 3);
                 // TODO pass the wizard's frame in here
-                dbPassword = promptForPassword(null, dbName);
+                final PasswordEntryDialogHelper passwordHelper = new PasswordEntryDialogHelper();
+                dbPassword = passwordHelper.promptForPassword(null, dbName);
                 if (dbPassword.equals("")) {
                     LOGGER.info("Cancelled open (with password)");
                     retryPasswordLoop = false;
                 }
                 tryingToOpenMessage = "Trying to open database";
+            } catch (final DataAccessResourceFailureException darfe) {
+                LOGGER.warn("Could not open database: " + darfe.getMessage());
+                // TODO pass the wizard's frame in here
+                GUIUtils.invokeLaterOnEventThread(new Runnable() {
+                    public void run() {
+                        JOptionPane.showMessageDialog(null,
+                            "Could not open database '" + dbName + "':\n" + darfe.getMessage(),
+                            "Could not open database '" + dbName + "'",
+                            JOptionPane.OK_OPTION);
+                    }});
+                retryPasswordLoop = false;
+                // don't retry file choice - shouldn't have been able to open
+                // rubbish anyway
             } catch (final DataAccessException dae) {
                 // TODO report error to user
                 // WOZERE the whole app goes ape if an exception is thrown, and clobbers eclipse
                 
                 LOGGER.warn("Data access exception: " + dae.getMessage(), dae);
                 // TODO pass the wizard's frame in here
-                reportSeriousProblem(null, "trying to open database '" + dbName + "'.", dae);
+                ProblemDialog.reportProblem(null, "trying to open database '" + dbName + "'.", dae);
                 retryPasswordLoop = false;
             }
         }
         progress.finished(null);
         cursorMan.normalViaEventThread();
-    }
-
-    private void reportSeriousProblem(final Frame frame, final String whileDoing, final Exception exception) {
-        GUIUtils.runOnEventThread(new Runnable() {
-            public void run() {
-                final SeriousProblemDialog dialog = new SeriousProblemDialog(frame, whileDoing, exception);
-                dialog.pack();
-                dialog.setLocationRelativeTo(frame);
-                dialog.setVisible(true);
-            }});
-        
-    }
-
-    private String promptForPassword(final Frame frame, final String dbName) {
-        passwordSetLatch = new CountDownLatch(1);
-        GUIUtils.runOnEventThread(new Runnable() {
-            public void run() {
-                final PasswordEntryDialog dialog = new PasswordEntryDialog(frame, dbName);
-                dialog.pack();
-                dialog.setLocationRelativeTo(frame);
-                dialog.setVisible(true);
-                synchronized (passwordLock) {
-                    setPassword(dialog.getPassword());
-                }
-                passwordSetLatch.countDown();
-            }
-        });
-        try {
-            passwordSetLatch.await();
-        } catch (final InterruptedException e) {
-            LOGGER.warn("Shouldn't have been interrupted", e);
-            return "";
-        }
-        final char[] pwd = getPassword();
-        return pwd.length == 0 ? "" : new String(pwd);
-    }
-    
-    private char[] getPassword() {
-        synchronized (passwordLock) {
-            return password;
-        }
-    }
-    
-    private void setPassword(final char[] newPassword) {
-        synchronized (passwordLock) {
-            password = newPassword;
-        }
     }
 }
