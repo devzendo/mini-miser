@@ -2,8 +2,15 @@ MiniMiser - a simple personal finance manager program
 -----------------------------------------------------
 Current outstanding small tasks:
 
-* open database list won't prompt for password (on separate wizard branch) if we
-  get the password wrong.
+* why can we open the crap folder as a database?
+
+* Password Validator - may not be counting the number of letters correctly?
+
+* you can open and create the same database multiple times - OpenDatabaseList
+should be consulted to prevent this.
+
+* add close
+* add close all
 
 * add the tab pane container
 
@@ -19,6 +26,25 @@ Current outstanding small tasks:
 * add currency object, entries for all supported currencies
 * display flags in pretty list in currency wizard page
 * choose a sensible default-selected currency based on system locale
+
+* about dialog
+  * basic info - product name, version
+  * GPL license
+  * credits
+
+* decide final product name
+* create logo
+* System menu needs logo, not standard Java one.
+* rename product
+* create getting started guide
+
+* create installer for windows
+* create .deb package for Ubuntu
+
+* blog category
+* sourceforge account
+* upload v0.1 to sourceforge
+* release!
 
 Menu:
 File:
