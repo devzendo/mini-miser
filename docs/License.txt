@@ -1,0 +1,26 @@
+
+    MiniMiser - personal financial management, tracking and reconciliation
+    software.
+    
+    Copyright (C) 2008 Matthew James Gumbley
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+
+    A full copy of the GPLV2 text can be shown by selecting the "About..."
+    option from the "Help" menu, and choosing the "License" tab.
+    
+    In the source distribution, the text of the GPLV2 may be found in the
+    src/main/resources/COPYING.txt file.
+    

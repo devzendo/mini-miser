@@ -70,7 +70,8 @@ public interface AccessFactory {
      * @return a MiniMiserDatabase object allowing you to access the
      * database.
      */
-    MiniMiserDatabase createDatabase(String databasePath, String strpasswording, Observer<PersistenceObservableEvent> observer);
+    MiniMiserDatabase createDatabase(String databasePath, String password,
+            Observer<PersistenceObservableEvent> observer);
 
     /**
      * For displaying progress bars during database creation, we need to know

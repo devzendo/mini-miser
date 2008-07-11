@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.util;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
@@ -9,7 +10,18 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
  * @author matt
  *
  */
-public class TestPasswordValidator extends LoggingTestCase {
+public final class TestPasswordValidator extends LoggingTestCase {
+    private static final Logger LOGGER = Logger
+            .getLogger(TestPasswordValidator.class);
+    
+    /**
+     * 
+     */
+    @Test
+    public void testMinimumsAddUp() {
+        Assert.assertTrue(PasswordValidator.MIN_DIGITS + PasswordValidator.MIN_LETTERS <= PasswordValidator.MIN_PASSWORD_LENGTH);
+    }
+
     /**
      * 
      */
@@ -92,14 +104,15 @@ public class TestPasswordValidator extends LoggingTestCase {
     @Test
     public void testValidity() {
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < PasswordValidator.MIN_LETTERS; i++) {
+        for (int i = 0; i < PasswordValidator.MIN_LETTERS - 1; i++) {
             sb.append('A');
         }
+        sb.append("a");
         for (int i = 0; i < PasswordValidator.MIN_DIGITS; i++) {
             sb.append('1');
         }
-        sb.append("----a--");
         final String xlat = xlat(sb.toString());
+        LOGGER.info("testValidity: " + xlat);
         Assert.assertNull(xlat);
     }
     private String xlat(final String p) {

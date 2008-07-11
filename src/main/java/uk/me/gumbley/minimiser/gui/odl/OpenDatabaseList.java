@@ -129,4 +129,14 @@ public final class OpenDatabaseList {
             }
         }
     }
+
+    /**
+     * Does the list contain this database?
+     * @param databaseDescriptor a database descriptor
+     * @return true if contained, false if not contained.
+     * 
+     */
+    public boolean containsDatabase(final DatabaseDescriptor databaseDescriptor) {
+        return databaseList.contains(databaseDescriptor);
+    }
 }

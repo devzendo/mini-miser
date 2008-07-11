@@ -37,7 +37,8 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
             + "Together, these files hold all of your account information.\n\n"
             
             + "The folder name you choose will also be used in the database file names.\n"
-            + "Please choose a meaningful name!\n\n"
+            + "Please choose a meaningful, unique name! You cannot open multiple databases\n"
+            + "with the same name, even if in different folders.\n\n"
             
             + "Once created, an empty database can be used immediately, or data from other\n"
             + "personal finance software can be imported into it.\n\n"

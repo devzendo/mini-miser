@@ -24,7 +24,7 @@ public final class PasswordValidator {
     /**
      * 
      */
-    public static final int MIN_DIGITS = 1;
+    public static final int MIN_DIGITS = 2;
 
     private PasswordValidator() {
         // nop

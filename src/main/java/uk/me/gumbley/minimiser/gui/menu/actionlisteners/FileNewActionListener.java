@@ -46,11 +46,11 @@ public final class FileNewActionListener implements ActionListener {
      * {@inheritDoc}
      */
     public void actionPerformed(final ActionEvent e) {
-        final Class[] wizardPages = new Class[] {
-                FileNewWizardIntroPage.class,
-                FileNewWizardChooseFolderPage.class,
-                FileNewWizardSecurityOptionPage.class,
-                FileNewWizardCurrencyPage.class,
+        final WizardPage[] wizardPages = new WizardPage[] {
+                new FileNewWizardIntroPage(),
+                new FileNewWizardChooseFolderPage(databaseList),
+                new FileNewWizardSecurityOptionPage(),
+                new FileNewWizardCurrencyPage(),
         };
         final WizardResultProducer producer = new WizardResultProducer() {
             public boolean cancel(final Map settings) {

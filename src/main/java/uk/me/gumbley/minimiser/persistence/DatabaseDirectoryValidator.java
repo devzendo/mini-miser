@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.persistence;
 
 import java.io.File;
+import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
@@ -12,6 +13,8 @@ import uk.me.gumbley.commoncode.string.StringUtils;
  *
  */
 public final class DatabaseDirectoryValidator {
+    private static final Logger LOGGER = Logger
+            .getLogger(DatabaseDirectoryValidator.class);
     /**
      * No instantiations. 
      */
@@ -50,6 +53,7 @@ public final class DatabaseDirectoryValidator {
      * an existing database, or null if it is suitable.
      */
     public static String validateDirectoryForOpeningExistingDatabase(final File dir) {
+        LOGGER.debug("validating " + dir + " for opening existing database");
         if (dir == null) {
             return "You must choose an existing database folder";
         }
@@ -65,6 +69,7 @@ public final class DatabaseDirectoryValidator {
         int numCorrectlyNamedFiles = 0;
         final String[] fileList = dir.list();
         for (String fileName : fileList) {
+            LOGGER.debug("Examining file '" + fileName + "'");
             if (fileName.startsWith(directoryName + '.') && fileName.endsWith(".db")) {
                 numCorrectlyNamedFiles++;
             }

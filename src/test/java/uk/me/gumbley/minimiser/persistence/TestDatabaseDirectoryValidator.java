@@ -25,7 +25,10 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntCreateNullDir() {
-        Assert.assertNotNull(DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(null));
+        LOGGER.info("*** shouldntCreateNullDir");
+        final String out = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(null);
+        LOGGER.info("shouldntCreateNullDir: " + out);
+        Assert.assertNotNull(out);
     }
     
     /**
@@ -33,10 +36,11 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntCreateNonExistantDir() {
+        LOGGER.info("*** shouldntCreateNonExistantDir");
         final File nondir = new File(getDatabaseDirectory(), "doesnt-exist");
         final String out = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(nondir);
-        Assert.assertNotNull(out);
         LOGGER.info("shouldntCreateNonExistantDir: " + out);
+        Assert.assertNotNull(out);
     }
     
     /**
@@ -44,6 +48,7 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntCreateInFileInsteadOfDir() throws IOException {
+        LOGGER.info("*** shouldntCreateInFileInsteadOfDir");
         final File file = new File(getDatabaseDirectory(), "testfile");
         Assert.assertFalse(file.exists());
         file.deleteOnExit();
@@ -65,6 +70,7 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntCreateInNonEmptyDir() throws IOException {
+        LOGGER.info("*** shouldntCreateInNonEmptyDir");
         final File file = new File(getDatabaseDirectory(), "testfile");
         Assert.assertFalse(file.exists());
         file.deleteOnExit();
@@ -74,8 +80,8 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
             pw.close();
             Assert.assertTrue(file.exists());
             final String out = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(getDatabaseDirectory());
-            Assert.assertNotNull(out);
             LOGGER.info("shouldntCreateInNonEmptyDir: " + out);
+            Assert.assertNotNull(out);
         } finally {
             file.delete();
         }
@@ -86,7 +92,9 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldCreateInEmptyDir() {
-        Assert.assertNull(DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(getDatabaseDirectory()));
+        LOGGER.info("*** shouldCreateInEmptyDir");
+        final String out = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(getDatabaseDirectory());
+        Assert.assertNull(out);
     }
 
     /**
@@ -94,7 +102,10 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntOpenNull() {
-        Assert.assertNotNull(DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(null));
+        LOGGER.info("*** shouldntOpenNull");
+        final String out = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(null);
+        LOGGER.info("shouldntOpenNull: " + out);
+        Assert.assertNotNull(out);
     }
     
     /**
@@ -102,10 +113,11 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntOpenNonExistantDir() {
+        LOGGER.info("*** shouldntOpenNonExistantDir");
         final File nondir = new File(getDatabaseDirectory(), "doesnt-exist");
         final String out = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(nondir);
-        Assert.assertNotNull(out);
         LOGGER.info("shouldntOpenNonExistantDir: " + out);
+        Assert.assertNotNull(out);
     }
     
     /**
@@ -113,6 +125,7 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntOpenFileInsteadOfDir() throws IOException {
+        LOGGER.info("*** shouldntOpenFileInsteadOfDir");
         final File file = new File(getDatabaseDirectory(), "testfile");
         Assert.assertFalse(file.exists());
         file.deleteOnExit();
@@ -122,8 +135,8 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
             pw.close();
             Assert.assertTrue(file.exists());
             final String out = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(file);
-            Assert.assertNotNull(out);
             LOGGER.info("shouldntOpenFileInsteadOfDir: " + out);
+            Assert.assertNotNull(out);
         } finally {
             file.delete();
         }
@@ -134,7 +147,10 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntOpenEmptyDir() {
-        Assert.assertNotNull(DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(getDatabaseDirectory()));
+        LOGGER.info("*** shouldntOpenEmptyDir");
+        final String out = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(getDatabaseDirectory());
+        LOGGER.info("shouldntOpenEmptyDir: " + out);
+        Assert.assertNotNull(out);
     }
 
     /**
@@ -142,24 +158,28 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
      */
     @Test
     public void shouldntOpenIfNotEnoughDbFilesInDir() throws IOException {
+        LOGGER.info("*** shouldntOpenIfNotEnoughDbFilesInDir");
         final List<File> fileList = new ArrayList<File>();
         final File dbDir = getDatabaseDirectory();
         final String dbName = dbDir.getName();
         try {
             fileList.add(createTempFile(dbName + ".data.db"));
             fileList.add(createTempFile(dbName + ".index.db"));
-            Assert.assertNotNull(DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(getDatabaseDirectory()));
+            final String out = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(getDatabaseDirectory());
+            LOGGER.info("shouldntOpenIfNotEnoughDbFilesInDir: " + out);
+            Assert.assertNotNull(out);
         } finally {
             for (File file : fileList) {
                 file.delete();
             }
         }
     }
-
+    
     /**
      * @throws IOException on failure
      */
     public void shouldOpenIfEnoughDbFilesInDir() throws IOException {
+        LOGGER.info("*** shouldOpenIfEnoughDbFilesInDir");
         final List<File> fileList = new ArrayList<File>();
         final File dbDir = getDatabaseDirectory();
         final String dbName = dbDir.getName();
@@ -167,7 +187,9 @@ public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCas
             fileList.add(createTempFile(dbName + ".1.log.db"));
             fileList.add(createTempFile(dbName + ".data.db"));
             fileList.add(createTempFile(dbName + ".index.db"));
-            Assert.assertNull(DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(getDatabaseDirectory()));
+            final String out = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(getDatabaseDirectory());
+            LOGGER.info("shouldOpenIfEnoughDbFilesInDir: " + out);
+            Assert.assertNull(out);
         } finally {
             for (File file : fileList) {
                 file.delete();

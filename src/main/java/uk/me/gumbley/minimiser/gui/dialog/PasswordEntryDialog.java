@@ -66,7 +66,7 @@ public final class PasswordEntryDialog extends JDialog implements ActionListener
         critArea = new JTextArea("");
         critArea.setEditable(false);
         critArea.setLineWrap(true);
-        critArea.setForeground(Color.DARK_GRAY);
+        critArea.setForeground(Color.BLUE); // like Wizard
         // Create an array of the text and components to be displayed.
         final String msg = "The '" + dbName + "' database is encrypted.\n"
             + "The correct password must be entered before " + AppName.getAppName() + " can open it.";
@@ -107,10 +107,10 @@ public final class PasswordEntryDialog extends JDialog implements ActionListener
             }
 
             public void keyReleased(final KeyEvent e) {
+                validatePassword();
             }
 
             public void keyTyped(final KeyEvent e) {
-                validatePassword();
             }
         });
         // Register an event handler that reacts to option pane state changes.
@@ -155,7 +155,7 @@ public final class PasswordEntryDialog extends JDialog implements ActionListener
         final String criticism = PasswordValidator
                 .criticisePassword(passwordContents);
         if (criticism == null) {
-            critArea.setText("The password meets the criteria. Try it!");
+            critArea.setText(""); // The password meets the criteria. Try it!
             password = passwordContents;
             openButton.setEnabled(true);
         } else {

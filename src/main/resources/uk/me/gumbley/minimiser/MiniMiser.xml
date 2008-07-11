@@ -40,6 +40,15 @@
 		<constructor-arg ref="accessFactory" />
 		<constructor-arg ref="cursorManager" />
 	</bean>
+	<bean id="menuALFileClose" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseActionListener" lazy-init="true" >
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="accessFactory" />
+		<constructor-arg ref="cursorManager" />
+	</bean>
+
+
+	<bean id="menuALHelpAbout" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpAboutActionListener" lazy-init="true" >
+	</bean>
     
 	<!-- models, other singletons and utilities -->
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />

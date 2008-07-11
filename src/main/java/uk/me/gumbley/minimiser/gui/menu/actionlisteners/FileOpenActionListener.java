@@ -46,9 +46,9 @@ public final class FileOpenActionListener implements ActionListener {
      * {@inheritDoc}
      */
     public void actionPerformed(final ActionEvent e) {
-        final Class<?>[] wizardPages = new Class[] {
-                FileOpenWizardIntroPage.class,
-                FileOpenWizardChooseFolderPage.class,
+        final WizardPage[] wizardPages = new WizardPage[] {
+                new FileOpenWizardIntroPage(),
+                new FileOpenWizardChooseFolderPage(databaseList),
         };
         final WizardResultProducer producer = new WizardResultProducer() {
             @SuppressWarnings("unchecked")

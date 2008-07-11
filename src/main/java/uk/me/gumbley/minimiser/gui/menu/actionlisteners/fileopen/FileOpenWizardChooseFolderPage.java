@@ -5,21 +5,14 @@ import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
-import org.netbeans.spi.wizard.WizardController;
-import org.springframework.dao.DataAccessException;
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
-import uk.me.gumbley.minimiser.persistence.AccessFactory;
-import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 
 /**
  * Choose an existing directory that holds a database.
@@ -29,6 +22,7 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
  *
  */
 public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
+    private static final long serialVersionUID = -8420603958193604163L;
     /**
      * The name of the key that's populated in the results map for the path
      * name of this database. 
@@ -39,12 +33,15 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
     private JFileChooser fileChooser;
     private File chosenDirectory;
     private JTextField hiddenPathName;
-    
+    private final OpenDatabaseList openDatabaseList;
 
     /**
      * Construct the wizard page
+     * @param databaseList the open database that gets consulted if a database
+     * is a possible open candidate, since you can't have the same db open twice.
      */
-    public FileOpenWizardChooseFolderPage() {
+    public FileOpenWizardChooseFolderPage(final OpenDatabaseList databaseList) {
+        openDatabaseList = databaseList;
         chosenDirectory = null;
         initComponents();
     }
@@ -60,12 +57,29 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
      * {@inheritDoc}
      */
     protected String validateContents(final Component component, final Object object) {
-        return DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(chosenDirectory);
+        LOGGER.debug("validateContents called for chosenDirectory " + chosenDirectory);
+        final String validDirectory = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(chosenDirectory);
+        if (validDirectory != null) {
+            return validDirectory;
+        }
+        final String dbName = chosenDirectory.getName();
+        if (openDatabaseList.containsDatabase(new DatabaseDescriptor(dbName))) {
+            return "A database called '" + dbName + "' is already open";
+        }
+        return null;
     }
 
     private void initComponents() {
         setLayout(new FlowLayout());
         
+        // Add a hidden text field to receive the valid contents of the
+        // file chooser, since those contents don't get populated in the
+        // wizard's output map.
+        hiddenPathName = new JTextField();
+        hiddenPathName.setVisible(false);
+        hiddenPathName.setName(PATH_NAME);
+        add(hiddenPathName);
+
         final JPanel panel = createNicelySizedPanel();
         
         fileChooser = new JFileChooser();
@@ -75,46 +89,18 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
         fileChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(final PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
-                    setChosenDirectory(fileChooser.getSelectedFile());
+                    final File selectedFile = fileChooser.getSelectedFile();
+                    LOGGER.debug("propertyChange gave me: " + selectedFile);
+                    chosenDirectory = selectedFile;
+                    hiddenPathName.setText(selectedFile.getAbsolutePath());
                 }
             }
         });
         panel.add(fileChooser);
+        add(fileChooser);
         
-        // Add a hidden text field to receive the valid contents of the
-        // file chooser, since those contents don't get populated in the
-        // wizard's output map.
-        hiddenPathName = new JTextField();
-        hiddenPathName.setVisible(false);
-        hiddenPathName.setName(PATH_NAME);
-        add(hiddenPathName);
         
         panel.validate();
         add(panel);
-    }
-    
-    /**
-     * Set the chosen directory. Simple components added to the wizard (e.g.
-     * JTextField, JCheckBox) will be monitored, and validateCOntents...) called
-     * when they change. The Wizard doesn't monitor the JFileChooser, so wire
-     * this method up to it, which calls the abstracted-out validation code,
-     * and calls back into the wizard to set the problem text and forward
-     * navigation mode.
-     *  
-     * @param chosenDir the file or directory chosen by the JFileChooser.
-     */
-    private void setChosenDirectory(final File chosenDir) {
-        chosenDirectory = chosenDir;
-        LOGGER.info("Chosen directory:" + chosenDirectory);
-        final String problem = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(chosenDirectory);
-        if (problem != null) {
-            LOGGER.warn(problem);
-            setProblem(problem);
-            setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
-        }
-        final String dbDir = chosenDirectory.getAbsolutePath();
-        hiddenPathName.setText(dbDir);
-        setProblem(null);
-        setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
     }
 }

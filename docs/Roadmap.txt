@@ -1,0 +1,40 @@
+MiniMiser roadmap
+=================
+Overall project goals:
+  * Write an open source personal finance tracking / reconciliation program to
+    replace a commercial product running on Windows XP that is now no longer
+    supported by its manufacturer.
+  * The program must be able to import data from this commercial program with
+    no loss of information. Other common imports would be useful.
+  * The UI must be well thought out and follow respected UI design guidelines
+    (i.e. what would Apple do?)
+  * It must be possible to optionally encrypt data stored by the program using
+    a strong, respected algorithm.
+Technical & personal project goals:
+  * Develop a desktop app with an excellent UI in Swing.
+  * Written using Test-Driven Design & Development (except GUI).
+  * Use more of the Spring Framework.
+  * Support Windows, Ubuntu Linux and Mac OS X.
+  * As well as bulding a damn fine desktop app, build an underlying extensible
+    framework/platform that can be built upon / extended by others.
+  * Build a community / cottage industry of users.
+  
+Version 0.0 - Foundations
+  * Technical goals:
+    * Start new Maven-based product.
+    * Get building under CI server / repository management.
+    * Build basic application framework to support menu & main app panes.
+    * Build data access layer foundation.
+  * Functionality - build foundations of data access without supporting "proper"
+    financial / account data structures yet:
+    * Create new databases, optionally encrypted, with a default currency.
+    * Open existing databases (entering password for encrypted ones).
+    * Close open databases.
+    * Switch between multiple open databases.
+    * About dialog / credits / GPL license
+    * Prefs dialog / advanced tab / SQL debug pane
+    * SQL debug pane for issuing statements.
+
+Version 0.1 - Drive the data structure definition
+
+TBC...

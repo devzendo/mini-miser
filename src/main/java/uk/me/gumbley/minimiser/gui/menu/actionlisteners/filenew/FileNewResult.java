@@ -11,10 +11,10 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 
 /**
@@ -90,14 +90,12 @@ public final class FileNewResult extends DeferredWizardResult {
             final Runnable addDatabaseAndNormalCursorSwingTask = new Runnable() {
                 public void run() {
                     LOGGER.info("Database created; adding to open database list");
-                    // TODO the MiniMiserDatabase is now lost - need to add it
-                    // to the DatabaseDescriptor.
-                    databaseList.addOpenedDatabase(new DatabaseDescriptor(dbName));
+                    databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, database));
                     cursorMan.normal();
                 }
             };
             GUIUtils.runOnEventThread(addDatabaseAndNormalCursorSwingTask);
-            progress.finished(null); // TODO create summary here?
+            progress.finished(null);
         } catch (final DataAccessException dae) {
             LOGGER.warn("Failed to create database " + dbName + ": " + dae.getMessage(), dae);
             throw dae;

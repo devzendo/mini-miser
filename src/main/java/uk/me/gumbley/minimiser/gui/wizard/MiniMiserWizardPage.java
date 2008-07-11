@@ -41,6 +41,11 @@ public abstract class MiniMiserWizardPage extends WizardPage {
         try {
             image = ImageIO.read(resourceAsStream);
             UIManager.put(key, image);
+            try {
+                resourceAsStream.close();
+            } catch (final IOException e) {
+                ; // nop
+            }
         } catch (final IOException e) {
             LOGGER.warn("Couldn't read coins image: " + e.getMessage(), e);
         }

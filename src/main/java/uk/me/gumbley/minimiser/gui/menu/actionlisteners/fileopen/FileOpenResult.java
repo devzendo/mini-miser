@@ -14,11 +14,11 @@ import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
 import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 
 /**
  * The worker for opening databases when the File|Open wizard has finished.
@@ -75,16 +75,14 @@ public final class FileOpenResult extends DeferredWizardResult {
         while (retryPasswordLoop) {
             try {
                 progress.setProgress(tryingToOpenMessage, 1, 3);
-                final MiniMiserDatabase openMigratableDatabase = access.openDatabase(dbFullPath, dbPassword);
+                final MiniMiserDatabase database = access.openDatabase(dbFullPath, dbPassword);
                 LOGGER.info("Opened OK");
                 progress.setProgress("Opened OK", 3, 3);
                 
                 final Runnable addDatabaseSwingTask = new Runnable() {
                     public void run() {
                         LOGGER.info("Database created; adding to open database list");
-                        // TODO the MiniMiserDatabase is now lost - need to add it
-                        // to the DatabaseDescriptor.
-                        databaseList.addOpenedDatabase(new DatabaseDescriptor(dbName));
+                        databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, database));
                     }
                 };
                 GUIUtils.runOnEventThread(addDatabaseSwingTask);
@@ -113,7 +111,8 @@ public final class FileOpenResult extends DeferredWizardResult {
                             "Could not open database '" + dbName + "':\n" + darfe.getMessage(),
                             "Could not open database '" + dbName + "'",
                             JOptionPane.OK_OPTION);
-                    }});
+                    }
+                });
                 retryPasswordLoop = false;
                 // don't retry file choice - shouldn't have been able to open
                 // rubbish anyway

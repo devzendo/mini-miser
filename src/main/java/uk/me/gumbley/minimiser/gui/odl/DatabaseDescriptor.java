@@ -22,14 +22,14 @@ public class DatabaseDescriptor {
      * Obtain the database name
      * @return the database name
      */
-    public String getDatabaseName() {
+    public final String getDatabaseName() {
         return dbName;
     }
     
     /**
      * {@inheritDoc}
      */
-    public String toString() {
+    public final String toString() {
         return dbName;
     }
 

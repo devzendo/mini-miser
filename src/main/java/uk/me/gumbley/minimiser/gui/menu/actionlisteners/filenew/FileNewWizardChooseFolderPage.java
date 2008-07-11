@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.WizardController;
 
+import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
 
@@ -24,22 +26,26 @@ import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
  *
  */
 public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
+    private static final long serialVersionUID = 8622934565584167141L;
     /**
      * The name of the key that's populated in the results map for the path
      * name of this database. 
      */
     public static final String PATH_NAME = "pathName";
-    private static final long serialVersionUID = -2393755991521527684L;
     private static final Logger LOGGER = Logger
             .getLogger(FileNewWizardChooseFolderPage.class);
     private JFileChooser fileChooser;
     private File chosenDirectory;
     private JTextField hiddenPathName;
+    private final OpenDatabaseList openDatabaseList;
 
     /**
      * Construct the wizard page
+     * @param databaseList the open database that gets consulted if a database
+     * is a possible open candidate, since you can't have the same db open twice.
      */
-    public FileNewWizardChooseFolderPage() {
+    public FileNewWizardChooseFolderPage(final OpenDatabaseList databaseList) {
+        openDatabaseList = databaseList;
         chosenDirectory = null;
         initComponents();
     }
@@ -55,7 +61,15 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
      * {@inheritDoc}
      */
     protected String validateContents(final Component component, final Object object) {
-        return DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(chosenDirectory);
+        final String validDirectory = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(chosenDirectory);
+        if (validDirectory != null) {
+            return validDirectory;
+        }
+        final String dbName = chosenDirectory.getName();
+        if (openDatabaseList.containsDatabase(new DatabaseDescriptor(dbName))) {
+            return "A database called '" + dbName + "' is already open";
+        }
+        return null;
     }
 
     private void initComponents() {
