@@ -18,7 +18,7 @@ public final class TestPrefs extends LoggingTestCase {
     private static final String WINDOW_GEOMETRY = "20,20,700,500";
     private static final String WIZARD_PANEL_SIZE = "200,300";
     private static final String FOO = "foo";
-    private Prefs prefs;
+    private IPrefs prefs;
 
     /**
      * Create a temporary file to hold prefs data, that's deleted after
@@ -61,8 +61,33 @@ public final class TestPrefs extends LoggingTestCase {
     /**
      * 
      */
+    @Test
     public void testGetStoredWizardPanelSize() {
         prefs.setWizardPanelSize(WIZARD_PANEL_SIZE);
         Assert.assertEquals(WIZARD_PANEL_SIZE, prefs.getWizardPanelSize());
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void shouldInitiallyHaveEmptyRecentFiles() {
+        final String[] recentFiles = prefs.getRecentFiles();
+        Assert.assertNotNull(recentFiles);
+        Assert.assertEquals(0, recentFiles.length);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void shouldHaveOneRecentFileAfterAddOfOne() {
+        prefs.setRecentFiles(new String[] {"/tmp/foo/foo"});
+        final String[] recentFiles = prefs.getRecentFiles();
+        Assert.assertNotNull(recentFiles);
+        Assert.assertEquals(1, recentFiles.length);
+        Assert.assertEquals("/tmp/foo/foo", recentFiles[0]);
+    }
+    
+    
 }

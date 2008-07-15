@@ -16,4 +16,10 @@ public interface MainFrameFacade {
      * Shut down the application
      */
     void shutdown();
+    
+    /**
+     * Have we got any databases open?
+     * @return true iff one or more databases open.
+     */
+    boolean anyDatabasesOpen();
 }

@@ -52,7 +52,7 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @author matt
      *
      */
-    private class DatabaseEventObserver implements Observer<DatabaseEvent> {
+    private final class DatabaseEventObserver implements Observer<DatabaseEvent> {
         /**
          * {@inheritDoc}
          */
@@ -60,15 +60,15 @@ public final class MenuMediatorImpl implements MenuMediator {
             if (event instanceof DatabaseListEmptyEvent) {
                 menu.emptyDatabaseList();
             } else if (event instanceof DatabaseClosedEvent) {
-                DatabaseClosedEvent dce = (DatabaseClosedEvent) event;
+                final DatabaseClosedEvent dce = (DatabaseClosedEvent) event;
                 menu.enableCloseMenu(openDatabaseList.getNumberOfDatabases() > 0);
                 menu.removeDatabase(dce.getDatabaseName());
             } else if (event instanceof DatabaseOpenedEvent) {
-                DatabaseOpenedEvent doe = (DatabaseOpenedEvent) event;
+                final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) event;
                 menu.enableCloseMenu(true);
                 menu.addDatabase(doe.getDatabaseName());
             } else if (event instanceof DatabaseSwitchedEvent) {
-                DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) event;
+                final DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) event;
                 menu.switchDatabase(dse.getDatabaseName());
             } else {
                 throw new IllegalStateException("Unexpected a " + event.getClass().getSimpleName());
@@ -81,7 +81,7 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @author matt
      *
      */
-    public class DatabaseSwitchObserver implements Observer<WindowMenuChoice> {
+    public final class DatabaseSwitchObserver implements Observer<WindowMenuChoice> {
         /**
          * {@inheritDoc}
          */

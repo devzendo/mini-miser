@@ -25,6 +25,7 @@ public final class MenuImpl implements Menu {
     private List<String> databases;
     private int currentDatabaseIndex;
 
+    // WOZERE wire in the RecentFilesList when it's done.
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenu windowMenu;

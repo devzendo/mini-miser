@@ -7,19 +7,25 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
 import uk.me.gumbley.minimiser.gui.menu.Menu;
 import uk.me.gumbley.minimiser.gui.menu.MenuBuilder;
 import uk.me.gumbley.minimiser.gui.menu.MenuMediator;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
@@ -37,6 +43,7 @@ public class MainFrame {
     private final SpringLoader springLoader;
     private final CursorManager cursorManager;
     private final WindowGeometryStore windowGeometryStore;
+    private final OpenDatabaseList openDatabaseList;
 
     /**
      * @param loader the IoC container abstraction
@@ -53,6 +60,7 @@ public class MainFrame {
             LOGGER.debug("arg " + i + " = '" + argList.get(i) + "'");
         }
         windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
+        openDatabaseList = springLoader.getBean("openDatabaseList", OpenDatabaseList.class);
 
         // Create new Window and exit handler
         createMainFrame();
@@ -87,8 +95,36 @@ public class MainFrame {
             }
 
             public void shutdown() {
+                // TODO flush DelayedExecutor thread
+                closeOpenDatabases();
                 windowGeometryStore.saveGeometry(mainFrame);
                 MainFrame.this.shutdown();
+            }
+            
+            public boolean anyDatabasesOpen() {
+                return openDatabaseList.getNumberOfDatabases() > 0;
+            }
+            
+            private void closeOpenDatabases() {
+                final List<DatabaseDescriptor> openDatabases = openDatabaseList.getOpenDatabases();
+                for (DatabaseDescriptor descriptor : openDatabases) {
+                    // TODO perhaps DatabaseDescriptor should be polymorphic?
+                    final String databaseName = descriptor.getDatabaseName();
+                    if (descriptor instanceof MiniMiserDatabaseDescriptor) {
+                        final MiniMiserDatabaseDescriptor mmdd = (MiniMiserDatabaseDescriptor) descriptor;
+                        try {
+                            LOGGER.info("Closing database '" + databaseName + "'");
+                            mmdd.getDatabase().close();
+                            LOGGER.info("Database '" + databaseName + "' closed");
+                        } catch (final DataAccessException dae) {
+                            LOGGER.warn("Could not close database '" + databaseName + "': " + dae.getMessage(), dae);
+                            // TODO pass main frame in here
+                            ProblemDialog.reportProblem(null, "while closing the '" + databaseName + "' database", dae);
+                        }
+                    } else {
+                        LOGGER.error("Closing a non-MiniMiserDatabaseDescriptor");
+                    }
+                }
             }
         });
         mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

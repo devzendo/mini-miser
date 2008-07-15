@@ -42,7 +42,10 @@
 	</bean>
 	<bean id="menuALFileClose" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseActionListener" lazy-init="true" >
 		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="accessFactory" />
+		<constructor-arg ref="cursorManager" />
+	</bean>
+	<bean id="menuALFileCloseAll" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseAllActionListener" lazy-init="true" >
+		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="cursorManager" />
 	</bean>
 

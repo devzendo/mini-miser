@@ -33,6 +33,7 @@ public final class MenuBuilder {
         loadAndWire(MenuIdentifier.FileNew);
         loadAndWire(MenuIdentifier.FileOpen);
         loadAndWire(MenuIdentifier.FileClose);
+        loadAndWire(MenuIdentifier.FileCloseAll);
         
         loadAndWire(MenuIdentifier.HelpAbout);
     }

@@ -11,7 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.WizardPage;
-import uk.me.gumbley.minimiser.prefs.Prefs;
+
+import uk.me.gumbley.minimiser.prefs.IPrefs;
 
 /**
  * A Wizard Page of the largest size we use - that's big enough to contain a
@@ -60,7 +61,7 @@ public abstract class MiniMiserWizardPage extends WizardPage {
         return panel;
     }
 
-    public static Dimension getPanelDimension(final Prefs prefs) {
+    public static Dimension getPanelDimension(final IPrefs prefs) {
         synchronized (MiniMiserWizardPage.class) {
             if (pageDimension == null) {
                 final String wizardPanelSize = prefs.getWizardPanelSize();
