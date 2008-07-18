@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.odl;
+package uk.me.gumbley.minimiser.openlist;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.openlist.DatabaseClosedEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseListEmptyEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 
 
 /**

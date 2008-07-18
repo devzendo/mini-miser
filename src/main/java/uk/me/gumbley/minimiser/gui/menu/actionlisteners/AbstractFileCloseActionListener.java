@@ -5,8 +5,8 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 
 /**

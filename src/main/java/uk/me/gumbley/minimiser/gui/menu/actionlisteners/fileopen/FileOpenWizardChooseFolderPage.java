@@ -9,9 +9,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.apache.log4j.Logger;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.DatabaseDirectoryValidator;
 
 /**

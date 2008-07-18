@@ -1,11 +1,11 @@
-package uk.me.gumbley.minimiser.gui.recent;
+package uk.me.gumbley.minimiser.recentlist;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**

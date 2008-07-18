@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 
 /**
  * Triggered by the File Close menu.

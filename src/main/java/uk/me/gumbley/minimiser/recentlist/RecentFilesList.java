@@ -1,6 +1,6 @@
-package uk.me.gumbley.minimiser.gui.recent;
+package uk.me.gumbley.minimiser.recentlist;
 
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
  * Maintains a short list of recently-opened files.

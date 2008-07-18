@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.odl;
+package uk.me.gumbley.minimiser.openlist;
 
 import java.util.ArrayList;
 import java.util.List;

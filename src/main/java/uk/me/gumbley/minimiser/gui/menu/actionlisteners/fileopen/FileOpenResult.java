@@ -14,7 +14,7 @@ import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
 import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;

@@ -13,7 +13,7 @@ import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardCho
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardCurrencyPage;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardIntroPage;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardSecurityOptionPage;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 
 /**

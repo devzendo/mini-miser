@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.odl;
+package uk.me.gumbley.minimiser.openlist;
 
 /**
  * The last database has been closed, so now no database detail should be shown,

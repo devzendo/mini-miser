@@ -1,7 +1,9 @@
-package uk.me.gumbley.minimiser.gui.recent;
+package uk.me.gumbley.minimiser.recentlist;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import uk.me.gumbley.minimiser.recentlist.QuoteEscape;
 
 
 /**

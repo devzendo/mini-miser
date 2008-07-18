@@ -1,6 +1,6 @@
 package uk.me.gumbley.minimiser.persistence;
 
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
  * A DatabaseDescriptor that also encapsulates an open/created MiniMiserDatabase 

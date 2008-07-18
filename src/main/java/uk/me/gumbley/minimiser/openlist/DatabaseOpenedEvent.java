@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.odl;
+package uk.me.gumbley.minimiser.openlist;
 
 /**
  * A database has been opened, this is the notification you receive from the 

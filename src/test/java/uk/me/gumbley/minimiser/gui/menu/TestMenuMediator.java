@@ -6,10 +6,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
-import uk.me.gumbley.minimiser.gui.recent.RecentFilesList;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 
 /**
  * Tests the linkage between the menu items enabling/disabling and

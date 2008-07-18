@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.odl;
+package uk.me.gumbley.minimiser.openlist;
 
 import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
 

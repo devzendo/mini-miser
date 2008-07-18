@@ -3,14 +3,14 @@ package uk.me.gumbley.minimiser.gui.menu;
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseClosedEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseListEmptyEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseOpenedEvent;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseSwitchedEvent;
-import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
-import uk.me.gumbley.minimiser.gui.recent.RecentFilesList;
+import uk.me.gumbley.minimiser.openlist.DatabaseClosedEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseListEmptyEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 
 /**
  * Mediates between application events and menu updates.

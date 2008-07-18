@@ -55,9 +55,9 @@
 	</bean>
     
 	<!-- models, other singletons and utilities -->
-	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />
+	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" lazy-init="true" />
 
-	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.gui.recent.DefaultRecentFilesListImpl" lazy-init="true">
+	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl" lazy-init="true">
 		<constructor-arg ref="prefs" />
 	</bean>
 

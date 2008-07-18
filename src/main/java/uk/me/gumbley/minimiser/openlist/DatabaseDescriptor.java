@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.odl;
+package uk.me.gumbley.minimiser.openlist;
 
 /**
  * A bean that gives a database a name, optionally a path, and (in subclasses)

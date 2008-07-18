@@ -1,14 +1,16 @@
-package uk.me.gumbley.minimiser.gui.recent;
+package uk.me.gumbley.minimiser.recentlist;
 
 import java.util.Arrays;
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
-import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.gui.recent.DefaultRecentFilesListImpl.DbPair;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl;
+import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
+import uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl.DbPair;
 
 
 /**
