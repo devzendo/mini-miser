@@ -3,8 +3,6 @@ package uk.me.gumbley.minimiser.recentlist;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.me.gumbley.minimiser.recentlist.QuoteEscape;
-
 
 /**
  * Tests the escaping and unescaping of double quotes.
@@ -12,7 +10,7 @@ import uk.me.gumbley.minimiser.recentlist.QuoteEscape;
  * @author matt
  *
  */
-public class TestQuoteEscape {
+public final class TestQuoteEscape {
     /**
      * 
      */

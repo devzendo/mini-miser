@@ -1,16 +1,18 @@
 package uk.me.gumbley.minimiser.recentlist;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
-import uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl;
-import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
-import uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl.DbPair;
+import uk.me.gumbley.minimiser.prefs.TestPrefs;
 
 
 /**
@@ -29,6 +31,10 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @Test
     public void shouldBeEmptyOnStartup() {
         final Prefs prefs = EasyMock.createMock(Prefs.class);
+        // WOZERE now I am loading the list from the prefs every occurrence of this fails.
+        
+        EasyMock.expect(prefs.getRecentFiles()).andReturn(new String[0]);
+
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
         Assert.assertEquals(0, recentFilesList.getNumberOfEntries());
         Assert.assertTrue(arrayEqual(new DatabaseDescriptor[0], recentFilesList.getRecentFiles()));
@@ -225,49 +231,23 @@ public final class TestRecentFilesList extends LoggingTestCase {
     }
 
     /**
-     * 
+     * @throws IOException on failure
      */
     @Test
-    public void testEscapeWhenNoQuotes() {
-        Assert.assertEquals("\"one\",\"path\"", DefaultRecentFilesListImpl.escape("one", "path"));
-    }
-    
-    /**
-     * 
-     */
-    @Test
-    public void testUnescapeWhenNoQuotes() {
-        final DbPair unescaped = DefaultRecentFilesListImpl.unescape("\"one\",\"two\"");
-        Assert.assertEquals("one", unescaped.getName());
-        Assert.assertEquals("two", unescaped.getPath());
-    }
+    public void saveAndLoadRestoresOK() throws IOException {
+        final Prefs prefs = TestPrefs.createUnitTestPrefsFile();
+        final File prefsFile = new File(prefs.getAbsolutePath());
+        try {
+            final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
+            recentFilesList.add(new DatabaseDescriptor("1", "/tmp/foo"));
 
-    /**
-     * 
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testUnescapeFailure() {
-        DefaultRecentFilesListImpl.unescape("\"f\\\"oo\",\"/tmp/\\\"quote"); // no end quote
-    }
-    
-    /**
-     * 
-     */
-    @Test
-    public void testRoundTripWithQuotes() {
-        final StringBuilder name = new StringBuilder();
-        name.append('f');
-        name.append('"');
-        name.append("oo");
-        final StringBuilder path = new StringBuilder();
-        path.append("/tmp/");
-        path.append('"');
-        path.append("quote");
-        final String escaped = DefaultRecentFilesListImpl.escape(name.toString(), path.toString());
-        Assert.assertEquals("\"f\\\"oo\",\"/tmp/\\\"quote\"", escaped);
-
-        final DbPair unescaped = DefaultRecentFilesListImpl.unescape(escaped);
-        Assert.assertEquals(name.toString(), unescaped.getName());
-        Assert.assertEquals(path.toString(), unescaped.getPath());
+            final RecentFilesList reopenRecentFilesList = new DefaultRecentFilesListImpl(prefs);
+            Assert.assertEquals(1, reopenRecentFilesList.getNumberOfEntries());
+            final DatabaseDescriptor[] recentFiles = reopenRecentFilesList.getRecentFiles();
+            Assert.assertEquals("1", recentFiles[0].getDatabaseName());
+            Assert.assertEquals("/tmp/foo", recentFiles[0].getDatabasePath());
+        } finally {
+            prefsFile.delete();
+        }
     }
 }

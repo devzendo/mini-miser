@@ -30,12 +30,9 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
      */
     public DefaultRecentFilesListImpl(final Prefs prefs) {
         preferences = prefs;
-        databaseList = new ArrayList<DatabaseDescriptor>();
-        // TODO need to load the list from prefs.getRecentFiles(), split on :
-        // WOZERE adding the :path to stored entries
+        databaseList = load();
     }
 
-    
     /**
      * {@inheritDoc}
      */
@@ -73,7 +70,17 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
         }
         preferences.setRecentFiles(listAsStringPaths.toArray(new String[0]));
     }
-
+    
+    private List<DatabaseDescriptor> load() {
+        final String[] recentEscapedNamesAndPaths = preferences.getRecentFiles();
+        final List<DatabaseDescriptor> descriptors = new ArrayList <DatabaseDescriptor>();
+        for (String nameAndPath : recentEscapedNamesAndPaths) {
+            final DbPair pair = unescape(nameAndPath);
+            descriptors.add(new DatabaseDescriptor(pair.getName(), pair.getPath()));
+        }
+        return descriptors;
+    }
+    
     /**
      * {@inheritDoc}
      */
