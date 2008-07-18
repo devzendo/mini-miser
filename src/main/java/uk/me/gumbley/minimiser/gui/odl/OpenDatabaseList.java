@@ -63,7 +63,7 @@ public final class OpenDatabaseList {
             LOGGER.info("Adding " + descriptor.getDatabaseName());
             databaseList.add(descriptor);
             currentDatabaseIndex = databaseList.size() - 1;
-            observerList.eventOccurred(new DatabaseOpenedEvent(descriptor.getDatabaseName()));
+            observerList.eventOccurred(new DatabaseOpenedEvent(descriptor.getDatabaseName(), descriptor.getDatabasePath()));
         }
         LOGGER.info("Switching to " + descriptor.getDatabaseName());
         observerList.eventOccurred(new DatabaseSwitchedEvent(descriptor.getDatabaseName()));
@@ -137,6 +137,7 @@ public final class OpenDatabaseList {
      * 
      */
     public boolean containsDatabase(final DatabaseDescriptor databaseDescriptor) {
-        return databaseList.contains(databaseDescriptor);
+        final boolean contained = databaseList.contains(databaseDescriptor);
+        return contained;
     }
 }

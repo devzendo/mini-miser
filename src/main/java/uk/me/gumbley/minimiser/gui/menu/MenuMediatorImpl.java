@@ -1,13 +1,16 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseClosedEvent;
+import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseEvent;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseListEmptyEvent;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.gui.odl.DatabaseSwitchedEvent;
 import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
+import uk.me.gumbley.minimiser.gui.recent.RecentFilesList;
 
 /**
  * Mediates between application events and menu updates.
@@ -20,16 +23,19 @@ public final class MenuMediatorImpl implements MenuMediator {
             .getLogger(MenuMediatorImpl.class);
     private final Menu menu;
     private final OpenDatabaseList openDatabaseList;
+    private final RecentFilesList recentFilesList;
     
     /**
      * Create a Mediator between application events and the menu
      * @param leMenu ici un menu
      * @param odl the open database list
+     * @param recentFiles the recent files list
      */
-    public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl) {
+    public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl, final RecentFilesList recentFiles) {
         LOGGER.info("initialising MenuMediatorImpl");
         menu = leMenu;
         openDatabaseList = odl;
+        recentFilesList = recentFiles;
         initialiseMenu();
         wireAdapters();
         LOGGER.info("initialised MenuMediatorImpl");
@@ -66,6 +72,10 @@ public final class MenuMediatorImpl implements MenuMediator {
             } else if (event instanceof DatabaseOpenedEvent) {
                 final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) event;
                 menu.enableCloseMenu(true);
+                recentFilesList.add(new DatabaseDescriptor(doe.getDatabaseName(), doe.getDatabasePath()));
+                // WOZERE need to interact with the recent files list and pass
+                // the contents after modification to the menu to repopulate
+                // the file menu
                 menu.addDatabase(doe.getDatabaseName());
             } else if (event instanceof DatabaseSwitchedEvent) {
                 final DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) event;

@@ -13,11 +13,12 @@ public final class MiniMiserDatabaseDescriptor extends DatabaseDescriptor {
 
     /**
      * Construct.
-     * @param databaseName the databse name
+     * @param databaseName the database name
+     * @param databaseFullPath the full path to the database
      * @param database the database interface
      */
-    public MiniMiserDatabaseDescriptor(final String databaseName, final MiniMiserDatabase database) {
-        super(databaseName);
+    public MiniMiserDatabaseDescriptor(final String databaseName, final String databaseFullPath, final MiniMiserDatabase database) {
+        super(databaseName, databaseFullPath);
         miniMiserDatabase = database;
     }
 

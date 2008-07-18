@@ -27,6 +27,7 @@
 	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl" lazy-init="true" >
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="recentFilesList" />
 	</bean>
 	
     <!-- menu action listeners -->
@@ -55,9 +56,16 @@
     
 	<!-- models, other singletons and utilities -->
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList" lazy-init="true" />
+
+	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.gui.recent.DefaultRecentFilesListImpl" lazy-init="true">
+		<constructor-arg ref="prefs" />
+	</bean>
+
 	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" lazy-init="true" />
+
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />
+
 	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" lazy-init="true" />
+
 	<bean id="workerPool" class="uk.me.gumbley.minimiser.util.WorkerPool" lazy-init="true" />
-	
 </beans>

@@ -1,11 +1,14 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
+import org.easymock.EasyMock;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.gui.odl.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.gui.odl.OpenDatabaseList;
+import uk.me.gumbley.minimiser.gui.recent.RecentFilesList;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 
 /**
@@ -22,6 +25,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 public final class TestMenuMediator extends LoggingTestCase {
     private StubMenu stubMenu;
     private OpenDatabaseList openDatabaseList;
+    private RecentFilesList recentFilesList;
 
     /**
      * Get all necessaries
@@ -30,7 +34,8 @@ public final class TestMenuMediator extends LoggingTestCase {
     public void getMediator() {
         stubMenu = new StubMenu();
         openDatabaseList = new OpenDatabaseList();
-        new MenuMediatorImpl(stubMenu, openDatabaseList);
+        recentFilesList = EasyMock.createMock(RecentFilesList.class);
+        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList);
     }
     
     /**
@@ -46,8 +51,15 @@ public final class TestMenuMediator extends LoggingTestCase {
      */
     @Test
     public void testCloseEnabledWithOneOpen() {
-        openDatabaseList.addOpenedDatabase(new DatabaseDescriptor("one"));
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        
+        recentFilesList.add(databaseDescriptor);
+        EasyMock.replay(recentFilesList);
+        
+        openDatabaseList.addOpenedDatabase(databaseDescriptor);
         Assert.assertTrue(stubMenu.isCloseEnabled());
+        
+        EasyMock.verify(recentFilesList);
     }
     
     /**

@@ -14,8 +14,8 @@ import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
-import uk.me.gumbley.minimiser.prefs.IPrefs;
 import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.prefs.DefaultPrefsImpl;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
@@ -117,7 +117,7 @@ public final class MiniMiser {
     
     private static void triggerGUIStartupTasks(final SpringLoader springLoader) {
         MiniMiserWizardPage.setLHGraphic();
-        final IPrefs prefs = springLoader.getBean("prefs", Prefs.class);
+        final Prefs prefs = springLoader.getBean("prefs", DefaultPrefsImpl.class);
         MiniMiserWizardPage.getPanelDimension(prefs);
     }
 

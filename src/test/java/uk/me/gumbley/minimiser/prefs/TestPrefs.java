@@ -18,7 +18,7 @@ public final class TestPrefs extends LoggingTestCase {
     private static final String WINDOW_GEOMETRY = "20,20,700,500";
     private static final String WIZARD_PANEL_SIZE = "200,300";
     private static final String FOO = "foo";
-    private IPrefs prefs;
+    private Prefs prefs;
 
     /**
      * Create a temporary file to hold prefs data, that's deleted after
@@ -30,7 +30,7 @@ public final class TestPrefs extends LoggingTestCase {
     public void getPrefs() throws IOException {
         final File tempFile = File.createTempFile("minimiser-unit-test", "prefs").getAbsoluteFile();
         tempFile.deleteOnExit();
-        prefs = new Prefs(tempFile.getAbsolutePath());
+        prefs = new DefaultPrefsImpl(tempFile.getAbsolutePath());
     }
     
     /**

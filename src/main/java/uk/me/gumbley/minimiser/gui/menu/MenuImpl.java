@@ -47,6 +47,7 @@ public final class MenuImpl implements Menu {
 
         menuBar = new JMenuBar();
         fileMenu = createFileMenu();
+        buildFileMenu(); // initially we'll have no recent files list
         windowMenu = createWindowMenu();
         helpMenu = createHelpMenu();
 
@@ -79,25 +80,30 @@ public final class MenuImpl implements Menu {
     private JMenu createFileMenu() {
         final JMenu menu = new JMenu("File");
         menu.setMnemonic('F');
-
-        createMenuItem(MenuIdentifier.FileNew, "New...", 'N', menu);
-        createMenuItem(MenuIdentifier.FileOpen, "Open...", 'O', menu);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(MenuIdentifier.FileClose, "Close", 'C', menu);
-        createMenuItem(MenuIdentifier.FileCloseAll, "Close all", 'l', menu);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(MenuIdentifier.FileImport, "Import...", 'I', menu);
-        createMenuItem(MenuIdentifier.FileExport, "Export...", 'E', menu);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', menu);
-
         return menu;
+    }
+
+    private void buildFileMenu() {
+        fileMenu.removeAll();
+        createMenuItem(MenuIdentifier.FileNew, "New...", 'N', fileMenu);
+        createMenuItem(MenuIdentifier.FileOpen, "Open...", 'O', fileMenu);
+
+        fileMenu.add(new JSeparator());
+
+        createMenuItem(MenuIdentifier.FileClose, "Close", 'C', fileMenu);
+        createMenuItem(MenuIdentifier.FileCloseAll, "Close all", 'l', fileMenu);
+
+        fileMenu.add(new JSeparator());
+
+        createMenuItem(MenuIdentifier.FileImport, "Import...", 'I', fileMenu);
+        createMenuItem(MenuIdentifier.FileExport, "Export...", 'E', fileMenu);
+
+        fileMenu.add(new JSeparator());
+        // TODO if (recent files list has any entries
+        // add recent files list entries
+        // add another separator
+
+        createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
     }
     
     private void createMenuItem(final MenuIdentifier menuIdentifier,

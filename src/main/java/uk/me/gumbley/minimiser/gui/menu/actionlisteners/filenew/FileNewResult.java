@@ -73,8 +73,8 @@ public final class FileNewResult extends DeferredWizardResult {
 
         final File path = new File(params.getPath());
         final String dbName = path.getName();
-        final String fullPath = StringUtils.slashTerminate(path.getAbsolutePath()) + dbName;
-        LOGGER.info("Final db path is " + fullPath);
+        final String dbFullPath = StringUtils.slashTerminate(path.getAbsolutePath()) + dbName;
+        LOGGER.info("Final db path is " + dbFullPath);
         progress.setProgress("Creating DB", stepNo.incrementAndGet(), maxSteps);
 
         final Observer<PersistenceObservableEvent> observer = new Observer<PersistenceObservableEvent>() {
@@ -84,13 +84,13 @@ public final class FileNewResult extends DeferredWizardResult {
             }
         };
         try {
-            final MiniMiserDatabase database = access.createDatabase(fullPath, params.isEncrypted() ? params.getPassword() : "", observer);
+            final MiniMiserDatabase database = access.createDatabase(dbFullPath, params.isEncrypted() ? params.getPassword() : "", observer);
             progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
     
             final Runnable addDatabaseAndNormalCursorSwingTask = new Runnable() {
                 public void run() {
                     LOGGER.info("Database created; adding to open database list");
-                    databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, database));
+                    databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, dbFullPath, database));
                     cursorMan.normal();
                 }
             };

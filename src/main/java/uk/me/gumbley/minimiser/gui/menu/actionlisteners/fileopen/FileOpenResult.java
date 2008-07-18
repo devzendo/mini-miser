@@ -82,7 +82,7 @@ public final class FileOpenResult extends DeferredWizardResult {
                 final Runnable addDatabaseSwingTask = new Runnable() {
                     public void run() {
                         LOGGER.info("Database created; adding to open database list");
-                        databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, database));
+                        databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, dbFullPath, database));
                     }
                 };
                 GUIUtils.runOnEventThread(addDatabaseSwingTask);

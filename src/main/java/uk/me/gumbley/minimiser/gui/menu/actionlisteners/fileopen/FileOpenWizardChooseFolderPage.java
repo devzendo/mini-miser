@@ -60,12 +60,17 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
         LOGGER.debug("validateContents called for chosenDirectory " + chosenDirectory);
         final String validDirectory = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(chosenDirectory);
         if (validDirectory != null) {
+            LOGGER.debug("Not valid for open: " + validDirectory);
             return validDirectory;
         }
         final String dbName = chosenDirectory.getName();
+        LOGGER.debug("valid database '" + dbName + "', checking ODL to see if it's already open");
+        LOGGER.debug("Open DBs: " + openDatabaseList.getOpenDatabases());
         if (openDatabaseList.containsDatabase(new DatabaseDescriptor(dbName))) {
+            LOGGER.debug("it is already open");
             return "A database called '" + dbName + "' is already open";
         }
+        LOGGER.debug("It is not open already - allowing it");
         return null;
     }
 

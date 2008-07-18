@@ -52,7 +52,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("testdb");
 
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent("testdb")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent("testdb", "")));
         obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("testdb")));
         EasyMock.replay(obs);
 
@@ -96,7 +96,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     @Test
     public void openDatabaseDoesntFireRemovedListener() {
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent("testdb")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent("testdb", "")));
         obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("testdb")));
         EasyMock.replay(obs);
         list.addDatabaseEventObserver(obs);
@@ -134,7 +134,56 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         
         EasyMock.verify(obs);
     }
+
+    /**
+     * Tests equality of DatabaseDescriptors, and containment within the open
+     * database list.
+     */
+    @Test
+    public void containsExistingInstance() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one", "/tmp/one");
+        list.addOpenedDatabase(databaseDescriptor);
+        Assert.assertTrue(list.containsDatabase(databaseDescriptor));
+    }
     
+    /**
+     * Tests failure to contain. 
+     */
+    @Test
+    public void doesNotContain() {
+        list.addOpenedDatabase(new DatabaseDescriptor("one"));
+        Assert.assertFalse(list.containsDatabase(new DatabaseDescriptor("two")));
+    }
+    
+    /**
+     * Tests equality of DatabaseDescriptors, and containment within the open
+     * database list.
+     */
+    @Test
+    public void containsAnotherInstanceOfSame() {
+        list.addOpenedDatabase(new DatabaseDescriptor("one"));
+        Assert.assertTrue(list.containsDatabase(new DatabaseDescriptor("one")));
+        Assert.assertTrue(list.containsDatabase(new DatabaseDescriptor("one", "/tmp/one")));
+        Assert.assertTrue(list.containsDatabase(new DatabaseDescriptor("one", "/tmp/other"))); // ignores path
+    }
+
+    private class OtherDatabaseDescriptor extends DatabaseDescriptor {
+        public OtherDatabaseDescriptor(final String databaseName) {
+            super(databaseName);
+        }
+        
+    }
+    /**
+     * Tests equality of different subclasses of DatabaseDescriptors, given the
+     * same name.
+     */
+    @Test
+    public void containsAnotherClassWithSameName() {
+        list.addOpenedDatabase(new DatabaseDescriptor("one"));
+        Assert.assertTrue(list.containsDatabase(new DatabaseDescriptor("one")));
+        Assert.assertTrue(list.containsDatabase(new OtherDatabaseDescriptor("one")));
+    }
+
     /**
      * Can't remove a database that isn't there
      */
