@@ -112,7 +112,7 @@ public final class TestDelayedExecutor extends LoggingTestCase {
                 }
             };
             delayedExecutor.submitGui(TEST_KEY, 0L, r);
-            ThreadUtils.waitNoInterruption(250);
+            ThreadUtils.waitNoInterruption(500);
             Assert.assertTrue(swing.get());
         } finally {
             SwingUnittestHelper.ensureEventThreadFlushed();
