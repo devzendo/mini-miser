@@ -2,8 +2,6 @@ MiniMiser - a simple personal finance manager program
 -----------------------------------------------------
 Current outstanding small tasks:
 
-* add the tab pane container
-
 * add recent files list
 
 * store open database list in prefs
@@ -12,28 +10,32 @@ Current outstanding small tasks:
 
 * open on startup any files in the stored open database list
 
+* add the tab pane container
+
 * add a prefs dialog
 * add 'open files from last time on startup' flag, make startup opener honour it
 * add debug flag
 
 * if debug flag, add an SQL interface panel
 
-* Why prompt for close confirmation if we have databases open, on exit?
+* Q: Why prompt for close confirmation if we have databases open, on exit?
   It's not as though you'd lose any data (it is all in a database, after all).
 
+* BUG: Currency symbols don't render correctly on Windows
 * decide which currencies to support
 * add currency object, entries for all supported currencies
 * display flags in pretty list in currency wizard page
 * choose a sensible default-selected currency based on system locale
 
 * about dialog
+  * switch to HTML version of GPL2 text - text/plain looks poor
   * upgrade to GPL3?
 
 * review all TODOs
 
 * decide final product name
 * create logo
-* System menu needs logo, not standard Java one.
+* System menu on main window and popups needs logo, not standard Java one.
 * rename product
 * create getting started guide
 
