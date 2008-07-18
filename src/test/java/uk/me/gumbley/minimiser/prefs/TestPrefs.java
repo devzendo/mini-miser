@@ -28,11 +28,21 @@ public final class TestPrefs extends LoggingTestCase {
      */
     @Before
     public void getPrefs() throws IOException {
-        final File tempFile = File.createTempFile("minimiser-unit-test", "prefs").getAbsoluteFile();
-        tempFile.deleteOnExit();
-        prefs = new DefaultPrefsImpl(tempFile.getAbsolutePath());
+        prefs = createUnitTestPrefsFile();
     }
     
+    /**
+     * Create a temporary prefs file for unit tests. Please ensure it gets
+     * deleted!
+     * @return a new Prefs object.
+     * @throws IOException on failure
+     */
+    public static Prefs createUnitTestPrefsFile() throws IOException {
+        final File tempFile = File.createTempFile("minimiser-unit-test", "prefs").getAbsoluteFile();
+        tempFile.deleteOnExit();
+        return new DefaultPrefsImpl(tempFile.getAbsolutePath());
+    }
+
     /**
      * 
      */
