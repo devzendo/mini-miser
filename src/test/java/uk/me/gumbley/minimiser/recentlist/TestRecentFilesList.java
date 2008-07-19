@@ -31,13 +31,14 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @Test
     public void shouldBeEmptyOnStartup() {
         final Prefs prefs = EasyMock.createMock(Prefs.class);
-        // WOZERE now I am loading the list from the prefs every occurrence of this fails.
-        
         EasyMock.expect(prefs.getRecentFiles()).andReturn(new String[0]);
-
+        EasyMock.replay(prefs);
+        
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
         Assert.assertEquals(0, recentFilesList.getNumberOfEntries());
         Assert.assertTrue(arrayEqual(new DatabaseDescriptor[0], recentFilesList.getRecentFiles()));
+        
+        EasyMock.verify(prefs);
     }
     
     private boolean arrayEqual(final DatabaseDescriptor[] a, final DatabaseDescriptor[] b) {
@@ -50,8 +51,9 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @Test
     public void addOneShouldHaveOneInPrefs() {
         final Prefs prefs = EasyMock.createMock(Prefs.class);
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {"one" + SEP + "/tmp/foo"}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DefaultRecentFilesListImpl.escape("one", "/tmp/foo")}));
         EasyMock.replay(prefs);
+        
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
         recentFilesList.add(new DatabaseDescriptor("one", "/tmp/foo"));
         Assert.assertEquals(1, recentFilesList.getNumberOfEntries());
@@ -65,8 +67,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @Test
     public void addSameOneOnlyYieldsOneButDoesntSaveTwiceSinceNoReordering() {
         final Prefs prefs = EasyMock.createMock(Prefs.class);
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {"one" + SEP}));
-        //EasyMock.expectLastCall().times(2);
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DefaultRecentFilesListImpl.escape("one", "")}));
+        //EasyMock.expectLastCall().times(2); no!
         EasyMock.replay(prefs);
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
         recentFilesList.add(new DatabaseDescriptor("one"));
@@ -82,8 +84,9 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @Test
     public void addTwoStoresTwoInPrefs() {
         final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {"one" + SEP}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {"two" + SEP, "one" + SEP}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DefaultRecentFilesListImpl.escape("one", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DefaultRecentFilesListImpl.escape("two", ""), 
+                DefaultRecentFilesListImpl.escape("one", "")}));
         EasyMock.replay(prefs);
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
         recentFilesList.add(new DatabaseDescriptor("one"));
@@ -121,8 +124,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
         // you!
         Assert.assertEquals(4, capacity);
         // generate expected prefs storage
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {"1" + SEP}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {"2" + SEP, "1" + SEP}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DefaultRecentFilesListImpl.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DefaultRecentFilesListImpl.escape("2", ""), DefaultRecentFilesListImpl.escape("1", "")}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {"3" + SEP, "2" + SEP, "1" + SEP}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {"4" + SEP, "3" + SEP, "2" + SEP, "1" + SEP}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {"fish" + SEP, "4" + SEP, "3" + SEP, "2" + SEP}));
