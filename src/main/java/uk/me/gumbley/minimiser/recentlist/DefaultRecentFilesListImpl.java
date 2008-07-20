@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -16,6 +16,8 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  *
  */
 public final class DefaultRecentFilesListImpl implements RecentFilesList {
+    private static final Logger LOGGER = Logger
+            .getLogger(DefaultRecentFilesListImpl.class);
     /**
      * The separator between name and path, in the prefs entries.
      * Default visibility for unit tests.
@@ -63,19 +65,25 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
     }
 
     private void save() {
+        LOGGER.info("saving recent files...");
         final ArrayList<String> listAsStringPaths = new ArrayList<String>();
         for (DatabaseDescriptor databaseDescriptor : databaseList) {
-            listAsStringPaths.add(databaseDescriptor.getDatabaseName()
-                + NAME_PATH_SEPARATOR + databaseDescriptor.getDatabasePath());
+            listAsStringPaths.add(escape(databaseDescriptor.getDatabaseName(),
+                databaseDescriptor.getDatabasePath()));
+        }
+        for (String string : listAsStringPaths) {
+            LOGGER.info("  " + string);
         }
         preferences.setRecentFiles(listAsStringPaths.toArray(new String[0]));
     }
     
     private List<DatabaseDescriptor> load() {
+        LOGGER.info("loading recent files...");
         final String[] recentEscapedNamesAndPaths = preferences.getRecentFiles();
         final List<DatabaseDescriptor> descriptors = new ArrayList <DatabaseDescriptor>();
         for (String nameAndPath : recentEscapedNamesAndPaths) {
             final DbPair pair = unescape(nameAndPath);
+            LOGGER.info("stored " + nameAndPath + " name " + pair.getName() + " path " + pair.getPath());
             descriptors.add(new DatabaseDescriptor(pair.getName(), pair.getPath()));
         }
         return descriptors;
