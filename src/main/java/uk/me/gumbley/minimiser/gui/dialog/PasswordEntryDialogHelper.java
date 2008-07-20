@@ -13,7 +13,7 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
  * @author matt
  *
  */
-public class PasswordEntryDialogHelper {
+public final class PasswordEntryDialogHelper {
     private Object passwordLock = new Object();
     private char[] password = new char[0];
     private CountDownLatch passwordSetLatch;
