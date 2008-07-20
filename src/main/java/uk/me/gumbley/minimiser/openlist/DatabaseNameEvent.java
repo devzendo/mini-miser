@@ -23,7 +23,7 @@ public abstract class DatabaseNameEvent extends DatabaseEvent {
      * Obtain the name of the database that has opened 
      * @return the database name
      */
-    public String getDatabaseName() {
+    public final String getDatabaseName() {
         return dbName;
     }
 
@@ -31,7 +31,7 @@ public abstract class DatabaseNameEvent extends DatabaseEvent {
      * {@inheritDoc}
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
@@ -42,7 +42,7 @@ public abstract class DatabaseNameEvent extends DatabaseEvent {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }

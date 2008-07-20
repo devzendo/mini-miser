@@ -12,7 +12,7 @@ import uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl.DbPair;
  * @author matt
  *
  */
-public class TestRecentFilesListEscaping {
+public final class TestRecentFilesListEscaping {
     /**
      * 
      */

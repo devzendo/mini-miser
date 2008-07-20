@@ -6,7 +6,7 @@ package uk.me.gumbley.minimiser.persistence.domain;
  * @author matt
  *
  */
-public class Version {
+public final class Version {
     private String entityName;
     private String versionDesc;
 

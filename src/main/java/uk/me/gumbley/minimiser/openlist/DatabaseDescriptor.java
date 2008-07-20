@@ -47,7 +47,7 @@ public class DatabaseDescriptor {
      * Obtain the database path.
      * @return the database path, which may be an empty string, but never null. 
      */
-    public String getDatabasePath() {
+    public final String getDatabasePath() {
         return dbPath;
     }
     
@@ -62,7 +62,7 @@ public class DatabaseDescriptor {
      * {@inheritDoc}
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
@@ -73,7 +73,7 @@ public class DatabaseDescriptor {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }

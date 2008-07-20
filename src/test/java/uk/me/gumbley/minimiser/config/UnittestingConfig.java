@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * @author matt
  *
  */
-public class UnittestingConfig {
+public final class UnittestingConfig {
     private static final Logger LOGGER = Logger.getLogger(UnittestingConfig.class);
     private static final String LOAD_FAILURE = "Could not load test configuration file %s: %s";
     //
@@ -34,7 +34,7 @@ public class UnittestingConfig {
             props.load(inStream);
         } catch (final FileNotFoundException e) {
             LOGGER.warn(String.format(LOAD_FAILURE, TESTCONFIG_PROPERTIES, e.getMessage()));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.warn(String.format(LOAD_FAILURE, TESTCONFIG_PROPERTIES, e.getMessage()));
         } 
     }
@@ -43,7 +43,7 @@ public class UnittestingConfig {
      * @return a File describing the test database directory
      */
     public File getTestDatabaseDirectory() {
-        String dataDir = props.getProperty(DATABASE_DIRECTORY_KEY, null);
+        final String dataDir = props.getProperty(DATABASE_DIRECTORY_KEY, null);
         if (dataDir != null) {
             return new File(dataDir);
         }

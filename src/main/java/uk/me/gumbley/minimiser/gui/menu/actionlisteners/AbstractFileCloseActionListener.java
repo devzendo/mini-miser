@@ -25,7 +25,7 @@ public abstract class AbstractFileCloseActionListener implements ActionListener 
      * Get the cursor manager
      * @return the cursor manager
      */
-    protected CursorManager getCursorMan() {
+    protected final CursorManager getCursorMan() {
         return cursorMan;
     }
 
@@ -33,7 +33,7 @@ public abstract class AbstractFileCloseActionListener implements ActionListener 
      * Get the open database list
      * @return the open database list
      */
-    protected OpenDatabaseList getDatabaseList() {
+    protected final OpenDatabaseList getDatabaseList() {
         return databaseList;
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractFileCloseActionListener implements ActionListener 
      * @return true if there actually is a current database, and database closed
      * false on any problems. 
      */
-    protected boolean closeCurrentDatabase() {
+    protected final boolean closeCurrentDatabase() {
         final DatabaseDescriptor currentDatabase = databaseList.getCurrentDatabase();
         if (currentDatabase == null) {
             LOGGER.warn("Closing a null database; there are " + databaseList.getNumberOfDatabases() + " open database(s)");

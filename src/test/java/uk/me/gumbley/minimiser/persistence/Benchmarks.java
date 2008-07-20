@@ -47,7 +47,7 @@ public final class Benchmarks extends PersistenceUnittestCase {
         final MiniMiserDatabase mmData = accessFactory.createDatabase(
             dbDirPlusDbName, "");
         try {
-            VersionDao versionDao = mmData.getVersionDao();
+            final VersionDao versionDao = mmData.getVersionDao();
             // populate
             for (int i = 0; i < 1000; i++) {
                 final Version v = new Version(String.format("Benchmark%d", i), String.format("Version%d", i));
@@ -97,8 +97,8 @@ public final class Benchmarks extends PersistenceUnittestCase {
     @Test
     @Ignore
     public void benchmarkSpeedOfPlaintextVsEncrypted() {
-        long speedOfPlaintext = createPopulatedDatabase("plaintextbenchmark", false);
-        long speedOfEncrypted = createPopulatedDatabase("encryptedbenchmark", true);
+        final long speedOfPlaintext = createPopulatedDatabase("plaintextbenchmark", false);
+        final long speedOfEncrypted = createPopulatedDatabase("encryptedbenchmark", true);
         LOGGER.info(String.format("Speed of plaintext db: %s", StringUtils.translateTimeDuration(speedOfPlaintext)));
         LOGGER.info(String.format("Speed of encrypted db: %s", StringUtils.translateTimeDuration(speedOfEncrypted)));
         // increased number of rows in test to 10000, and on laptop, swa:
@@ -114,7 +114,7 @@ public final class Benchmarks extends PersistenceUnittestCase {
             final MiniMiserDatabase mmData = accessFactory.createDatabase(
                 dbDirPlusDbName, encrypted ? "secret squirrel" : "");
             try {
-                VersionDao versionDao = mmData.getVersionDao();
+                final VersionDao versionDao = mmData.getVersionDao();
                 final int rows = 100000;
                 // populate
                 for (int i = 0; i < rows; i++) {

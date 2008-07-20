@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
  * @author matt
  *
  */
-public class WorkerPool {
+public final class WorkerPool {
     private ExecutorService executorService;
 
     /**
