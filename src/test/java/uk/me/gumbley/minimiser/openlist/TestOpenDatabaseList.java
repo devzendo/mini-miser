@@ -9,14 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
-import uk.me.gumbley.minimiser.openlist.DatabaseClosedEvent;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
-import uk.me.gumbley.minimiser.openlist.DatabaseListEmptyEvent;
-import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
-import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
-import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
-
 
 /**
  * Test the open database list
