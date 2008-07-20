@@ -33,7 +33,7 @@ public final class JdbcTemplateVersionDao implements VersionDao {
             
             // notice the return type with respect to Java 5 covariant return types
             public Version mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-                Version version = new Version();
+                final Version version = new Version();
                 version.setEntity(rs.getString("entity"));
                 version.setVersion(rs.getString("version"));
                 return version;
@@ -46,7 +46,7 @@ public final class JdbcTemplateVersionDao implements VersionDao {
      * {@inheritDoc}
      */
     public void persistVersion(final Version version) throws DataAccessException {
-        int count = this.jdbcTemplate.queryForInt(
+        final int count = this.jdbcTemplate.queryForInt(
             "select count(0) from Versions where entity = ?",
             new Object[]{version.getEntity()});
         if (count == 0) {
@@ -64,7 +64,7 @@ public final class JdbcTemplateVersionDao implements VersionDao {
      * {@inheritDoc}
      */
     public boolean exists(final String entity) throws DataAccessException {
-        int count = this.jdbcTemplate.queryForInt(
+        final int count = this.jdbcTemplate.queryForInt(
             "select count(0) from Versions where entity = ?",
             new Object[]{entity});
         return count == 1;
