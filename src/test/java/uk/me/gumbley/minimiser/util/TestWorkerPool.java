@@ -16,7 +16,7 @@ import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
  * @author matt
  *
  */
-public class TestWorkerPool {
+public final class TestWorkerPool {
     private WorkerPool workerPool;
 
     /**
@@ -27,6 +27,9 @@ public class TestWorkerPool {
         workerPool = new WorkerPool();
     }
     
+    /**
+     * 
+     */
     @Test(timeout = 2000)
     public void testRunnableGetsExecuted() {
         final AtomicBoolean done = new AtomicBoolean(false);
@@ -41,6 +44,10 @@ public class TestWorkerPool {
         Assert.assertTrue(done.get());
     }
     
+    /**
+     * @throws InterruptedException on failure
+     * @throws ExecutionException on failure
+     */
     @Test(timeout = 2000)
     public void testCallableReturnsResultInFuture() throws InterruptedException, ExecutionException {
         final Callable<Boolean> c = new Callable<Boolean>() {
@@ -49,7 +56,7 @@ public class TestWorkerPool {
                 return Boolean.TRUE;
             }
         };
-        Future<Boolean> future = workerPool.submit(c);
+        final Future<Boolean> future = workerPool.submit(c);
         ThreadUtils.waitNoInterruption(250);
         Assert.assertFalse(future.isDone());
         ThreadUtils.waitNoInterruption(1500);
