@@ -45,7 +45,6 @@ public abstract class MiniMiserWizardPage extends WizardPage {
             try {
                 resourceAsStream.close();
             } catch (final IOException e) {
-                ; // nop
             }
         } catch (final IOException e) {
             LOGGER.warn("Couldn't read coins image: " + e.getMessage(), e);
@@ -55,19 +54,25 @@ public abstract class MiniMiserWizardPage extends WizardPage {
     /**
      * @return a panel big enough to hold a JFileChooser, our largest component
      */
-    public JPanel createNicelySizedPanel() {
-        JPanel panel = new JPanel();
+    public final JPanel createNicelySizedPanel() {
+        final JPanel panel = new JPanel();
         panel.setPreferredSize(pageDimension);
         return panel;
     }
 
+    /**
+     * Return the dimensions of the usual wizard page, calculating and storing
+     * these if they haven't been determined and stored before.
+     * @param prefs the prefs, to store the dimension in, for future runs
+     * @return the dimension of the panel
+     */
     public static Dimension getPanelDimension(final Prefs prefs) {
         synchronized (MiniMiserWizardPage.class) {
             if (pageDimension == null) {
                 final String wizardPanelSize = prefs.getWizardPanelSize();
                 if (wizardPanelSize.equals("")) {
                     LOGGER.debug("Wizard panel size is not yet stored; computing it");
-                    JPanel panel = new JPanel();
+                    final JPanel panel = new JPanel();
                     final JFileChooser fileChooser = new JFileChooser(getTempDir());
                     fileChooser.validate();
                     panel.add(fileChooser);
