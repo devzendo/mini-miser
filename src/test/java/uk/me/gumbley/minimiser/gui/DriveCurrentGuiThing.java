@@ -5,16 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.gui.dialog.AboutDialog;
-import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialog;
 import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
-import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 
@@ -38,7 +33,7 @@ public final class DriveCurrentGuiThing {
         LOGGER.info(String.format("%s %s GUI experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
         Beautifier.makeBeautiful();
         
-        JFrame frame = new JFrame("title");
+        final JFrame frame = new JFrame("title");
         final JButton button = new JButton("hello");
         button.setPreferredSize(new Dimension(400, 200));
         frame.add(button);
