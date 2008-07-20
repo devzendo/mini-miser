@@ -12,6 +12,9 @@ conditions, unless such conditions are required by law."
 Author URL: http://cs.wikiquote.org/wiki/U%C5%BEivatel:Kili
 
 
+Flags of the World taken from Wikimedia Commons / Wikipedia.
+See http://en.wikipedia.org/wiki/List_of_Flags_by_Country
+
 
 Saving the window position / size is based on code in O'Reilly's Swing Hacks
 book.
