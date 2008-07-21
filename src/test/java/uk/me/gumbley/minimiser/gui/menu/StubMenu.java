@@ -4,7 +4,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenuBar;
-import uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl.DatabaseSwitchObserver;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * A Menu that tests can interrogate to test the correctness of the
@@ -17,6 +17,7 @@ public final class StubMenu implements Menu {
     private boolean closeMenuEnabled;
     private List<String> databases;
     private int currentDatabaseIndex;
+    private boolean recentListBuilt;
     
     /**
      * 
@@ -24,6 +25,7 @@ public final class StubMenu implements Menu {
     public StubMenu() {
         databases = new ArrayList<String>();
         currentDatabaseIndex = -1;
+        recentListBuilt = false;
     }
     
     /**
@@ -95,12 +97,26 @@ public final class StubMenu implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void addDatabaseSwitchObserver(final DatabaseSwitchObserver observer) {
+    public void addDatabaseSwitchObserver(final Observer<WindowMenuChoice> observer) {
     }
 
     /**
      * {@inheritDoc}
      */
     public void addMenuActionListener(final MenuIdentifier menuIdentifier, final ActionListener actionListener) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void refreshRecentList() {
+        recentListBuilt = true;
+    }
+
+    /**
+     * @return whether or not the recent list has been built.
+     */
+    public boolean isRecentListBuilt() {
+        return recentListBuilt;
     }
 }

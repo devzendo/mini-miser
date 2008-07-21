@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.recentlist;
 
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
@@ -42,4 +43,10 @@ public interface RecentFilesList {
      * @return an array of database descriptors, never null
      */
     DatabaseDescriptor[] getRecentFiles();
+
+    /**
+     * Add an observer that will be notified every time the recent list changes.
+     * @param observer the observer
+     */
+    void addRecentListEventObserver(Observer<RecentListEvent> observer);
 }

@@ -11,6 +11,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
+import uk.me.gumbley.minimiser.recentlist.RecentListEvent;
 
 /**
  * Mediates between application events and menu updates.
@@ -50,6 +51,8 @@ public final class MenuMediatorImpl implements MenuMediator {
         openDatabaseList.addDatabaseEventObserver(new DatabaseEventObserver());
         // menu -> ODL (which'll talk back to the menu)
         menu.addDatabaseSwitchObserver(new DatabaseSwitchObserver());
+        // recent list -> menu
+        recentFilesList.addRecentListEventObserver(new RecentListEventObserver());
     }
     
     /**
@@ -91,7 +94,7 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @author matt
      *
      */
-    public final class DatabaseSwitchObserver implements Observer<WindowMenuChoice> {
+    private final class DatabaseSwitchObserver implements Observer<WindowMenuChoice> {
         /**
          * {@inheritDoc}
          */
@@ -99,4 +102,22 @@ public final class MenuMediatorImpl implements MenuMediator {
             openDatabaseList.switchDatabase(windowMenuChoice.getDatabaseName());
         }
     }
+
+    /**
+     * Adapts between recent list updates and the menu, to update the recent
+     * list menu.
+     * @author matt
+     *
+     */
+    final class RecentListEventObserver implements Observer<RecentListEvent> {
+        /**
+         * {@inheritDoc}
+         */
+        public void eventOccurred(final RecentListEvent observableEvent) {
+            LOGGER.info("rebuilding menu");
+            menu.refreshRecentList();
+        }
+    }
+
+
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -18,11 +20,7 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 public final class DefaultRecentFilesListImpl implements RecentFilesList {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultRecentFilesListImpl.class);
-    /**
-     * The separator between name and path, in the prefs entries.
-     * Default visibility for unit tests.
-     */
-    static final String NAME_PATH_SEPARATOR = ":";
+    private final ObserverList<RecentListEvent> observerList;
     private final List<DatabaseDescriptor> databaseList;
     private final Prefs preferences;
 
@@ -32,6 +30,7 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
      */
     public DefaultRecentFilesListImpl(final Prefs prefs) {
         preferences = prefs;
+        observerList = new ObserverList<RecentListEvent>();
         databaseList = load();
     }
 
@@ -50,16 +49,22 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
     public void add(final DatabaseDescriptor databaseDescriptor) {
         final int indexOf = databaseList.indexOf(databaseDescriptor);
         if (indexOf != -1) {
+            // the one being added is already present
             if (!databaseList.get(0).equals(databaseDescriptor)) {
+                // the one being added is not at the head, so put it there  
                 databaseList.remove(indexOf);
                 databaseList.add(0, databaseDescriptor);
+                observerList.eventOccurred(new RecentListEvent());
                 save();
             }
+            // else it's already at the head, so don't bother saving
         } else {
+            // the one being added is not present
             databaseList.add(0, databaseDescriptor);
             if (databaseList.size() > DEFAULT_CAPACITY) {
                 databaseList.remove(DEFAULT_CAPACITY);
             }
+            observerList.eventOccurred(new RecentListEvent());
             save();
         }
     }
@@ -175,5 +180,12 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
                               QuoteEscape.unescapeQuotes(matcher.group(2)));
         }
         throw new IllegalArgumentException("Could not unescape the pair [" + escapedPair + "]");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addRecentListEventObserver(final Observer<RecentListEvent> observer) {
+        observerList.addObserver(observer);
     }
 }

@@ -2,7 +2,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 
 import java.awt.event.ActionListener;
 import javax.swing.JMenuBar;
-import uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl.DatabaseSwitchObserver;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**
@@ -103,10 +103,15 @@ public interface Menu {
      * The last database has been closed. Reset to initial state.
      */
     void emptyDatabaseList();
+    
+    /**
+     * The list of recent databases has changed; refresh it.
+     */
+    void refreshRecentList();
 
     /**
      * Add an observer of window menu database switches
      * @param observer of switches
      */
-    void addDatabaseSwitchObserver(final DatabaseSwitchObserver observer);
+    void addDatabaseSwitchObserver(final Observer<WindowMenuChoice> observer);
 }

@@ -10,9 +10,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl.DatabaseSwitchObserver;
 
 /**
  * The Swing Menu.
@@ -203,7 +203,7 @@ public final class MenuImpl implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void addDatabaseSwitchObserver(final DatabaseSwitchObserver observer) {
+    public void addDatabaseSwitchObserver(final Observer<WindowMenuChoice> observer) {
         windowMenuChoiceObservers.addObserver(observer);
     }
 
@@ -212,5 +212,14 @@ public final class MenuImpl implements Menu {
      */
     public void addMenuActionListener(final MenuIdentifier menuIdentifier, final ActionListener actionListener) {
         menuWiring.setActionListener(menuIdentifier, actionListener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void refreshRecentList() {
+        // WOZERE need to test for calls to this upon recent list changes via menu mediator
+        // TODO Auto-generated method stub
+        
     }
 }

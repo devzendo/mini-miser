@@ -3,12 +3,11 @@ package uk.me.gumbley.minimiser.recentlist;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
-
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
@@ -48,7 +47,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
      * 
      */
     @Test
-    public void instantiateShouldLoad() {
+    public void instantiateShouldLoadPrefs() {
         final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
         prefs.getRecentFiles();
         EasyMock.expectLastCall().andReturn((new String[0]));
@@ -75,6 +74,84 @@ public final class TestRecentFilesList extends LoggingTestCase {
         Assert.assertEquals(1, recentFilesList.getNumberOfEntries());
         Assert.assertTrue(arrayEqual(new DatabaseDescriptor[] {new DatabaseDescriptor("one")}, recentFilesList.getRecentFiles()));
         EasyMock.verify(prefs);
+    }
+
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void addOneShouldFireListener() {
+        final String expectedEscapedPair = DefaultRecentFilesListImpl.escape("one", "/tmp/foo");
+
+        final Prefs prefs = getInitiallyEmptyPrefs();
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
+        EasyMock.replay(prefs);
+
+        final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
+        final Observer<RecentListEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(RecentListEvent.class));
+        EasyMock.replay(obs);
+
+        recentFilesList.addRecentListEventObserver(obs);
+        recentFilesList.add(new DatabaseDescriptor("one", "/tmp/foo"));
+
+        EasyMock.verify(obs);
+    }
+
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void addNonReorderingOneShouldNotFireListenerTwice() {
+        final String expectedEscapedPair = DefaultRecentFilesListImpl.escape("one", "/tmp/foo");
+
+        final Prefs prefs = getInitiallyEmptyPrefs();
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
+        EasyMock.replay(prefs);
+
+        final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
+        final Observer<RecentListEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(RecentListEvent.class));
+        // but only once...
+        EasyMock.replay(obs);
+
+        recentFilesList.addRecentListEventObserver(obs);
+        recentFilesList.add(new DatabaseDescriptor("one", "/tmp/foo"));
+        recentFilesList.add(new DatabaseDescriptor("one", "/tmp/foo"));
+
+        EasyMock.verify(obs);
+    }
+
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void addReorderingOneShouldFireListenerTwice() {
+        final String oneExpectedEscapedPair = DefaultRecentFilesListImpl.escape("one", "/tmp/foo");
+        final String twoExpectedEscapedPair = DefaultRecentFilesListImpl.escape("two", "/tmp/foo");
+
+        final Prefs prefs = getInitiallyEmptyPrefs();
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {oneExpectedEscapedPair}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {twoExpectedEscapedPair, oneExpectedEscapedPair}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {oneExpectedEscapedPair, twoExpectedEscapedPair}));
+        EasyMock.replay(prefs);
+
+        final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
+        final Observer<RecentListEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(RecentListEvent.class)); // one
+        obs.eventOccurred(EasyMock.isA(RecentListEvent.class)); // two
+        obs.eventOccurred(EasyMock.isA(RecentListEvent.class)); // one moved
+        EasyMock.replay(obs);
+
+        recentFilesList.addRecentListEventObserver(obs);
+        recentFilesList.add(new DatabaseDescriptor("one", "/tmp/foo"));
+        recentFilesList.add(new DatabaseDescriptor("two", "/tmp/foo"));
+        recentFilesList.add(new DatabaseDescriptor("one", "/tmp/foo"));
+
+        EasyMock.verify(obs);
     }
 
     private Prefs getInitiallyEmptyPrefs() {

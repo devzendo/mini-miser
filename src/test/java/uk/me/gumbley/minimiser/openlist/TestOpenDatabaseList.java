@@ -36,8 +36,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     public void testEmptiness() {
         final int numberOfDatabases = list.getNumberOfDatabases();
         LOGGER.info("There are " + numberOfDatabases + " open databases");
-        //Assert.assertEquals(0, numberOfDatabases); // inexplicably fails?!
-        Assert.assertTrue(numberOfDatabases == 0);
+        Assert.assertEquals(0, numberOfDatabases); // inexplicably fails?!
         Assert.assertNull(list.getCurrentDatabase());
         Assert.assertFalse(list.containsDatabase(new DatabaseDescriptor("foo")));
     }
@@ -74,17 +73,17 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         final DatabaseDescriptor one = new DatabaseDescriptor("one");
         list.addOpenedDatabase(one);
         Assert.assertEquals(one, list.getCurrentDatabase());
-        Assert.assertTrue(1 == list.getNumberOfDatabases());
+        Assert.assertEquals(1, list.getNumberOfDatabases());
         
         final DatabaseDescriptor two = new DatabaseDescriptor("two");
         list.addOpenedDatabase(two);
         Assert.assertEquals(two, list.getCurrentDatabase());
-        Assert.assertTrue(2 == list.getNumberOfDatabases());
+        Assert.assertEquals(2, list.getNumberOfDatabases());
         
         final DatabaseDescriptor three = new DatabaseDescriptor("three");
         list.addOpenedDatabase(three);
         Assert.assertEquals(three, list.getCurrentDatabase());
-        Assert.assertTrue(3 == list.getNumberOfDatabases());
+        Assert.assertEquals(3, list.getNumberOfDatabases());
     }
 
     /**
@@ -118,7 +117,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         Assert.assertFalse(list.containsDatabase(databaseDescriptor));
         list.addOpenedDatabase(databaseDescriptor);
-        Assert.assertTrue(1 == list.getNumberOfDatabases());
+        Assert.assertEquals(1, list.getNumberOfDatabases());
         Assert.assertTrue(list.containsDatabase(databaseDescriptor));
 
         
@@ -128,7 +127,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         list.addDatabaseEventObserver(obs);
 
         list.addOpenedDatabase(databaseDescriptor);
-        Assert.assertTrue(1 == list.getNumberOfDatabases());
+        Assert.assertEquals(1, list.getNumberOfDatabases());
         Assert.assertTrue(list.containsDatabase(databaseDescriptor));
         
         EasyMock.verify(obs);
@@ -201,6 +200,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
      * i.e. the tick should stay in the same place.
      * 
      */
+    // TODO do we have a test that covers the above comment?
     
     /**
      * Close the only database, fire a listener, and get list empty.
