@@ -24,8 +24,8 @@ public final class MenuImpl implements Menu {
     private static final Logger LOGGER = Logger.getLogger(MenuImpl.class);
     private List<String> databases;
     private int currentDatabaseIndex;
+    private String[] recentDatabaseNames;
 
-    // WOZERE wire in the RecentFilesList when it's done.
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenu windowMenu;
@@ -42,6 +42,7 @@ public final class MenuImpl implements Menu {
         this.menuWiring = wiring;
         databases = new ArrayList<String>();
         currentDatabaseIndex = -1;
+        recentDatabaseNames = new String[0];
 
         windowMenuChoiceObservers = new ObserverList<WindowMenuChoice>();
 
@@ -99,13 +100,25 @@ public final class MenuImpl implements Menu {
         createMenuItem(MenuIdentifier.FileExport, "Export...", 'E', fileMenu);
 
         fileMenu.add(new JSeparator());
-        // TODO if (recent files list has any entries
-        // add recent files list entries
-        // add another separator
+        buildRecentList();
 
         createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
     }
     
+    private void buildRecentList() {
+        if (recentDatabaseNames.length == 0) {
+            return;
+        }
+        for (int i = 0; i < recentDatabaseNames.length; i++) {
+            final String recentDbName = recentDatabaseNames[i];
+            final JMenuItem menuItem = new JMenuItem(recentDbName);
+            menuItem.setMnemonic('1' + i);
+            fileMenu.add(menuItem);
+            // WOZERE TODO add action listener 
+        }
+        fileMenu.add(new JSeparator());
+    }
+
     private void createMenuItem(final MenuIdentifier menuIdentifier,
             final String menuItemText, final char mnemonic, final JMenu menu) {
         final JMenuItem menuItem = new JMenuItem(menuItemText);
@@ -217,9 +230,8 @@ public final class MenuImpl implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void refreshRecentList() {
-        // WOZERE need to test for calls to this upon recent list changes via menu mediator
-        // TODO Auto-generated method stub
-        
+    public void refreshRecentList(final String[] dbNames) {
+        this.recentDatabaseNames = dbNames;
+        buildFileMenu();
     }
 }

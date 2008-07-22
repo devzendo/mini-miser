@@ -106,8 +106,9 @@ public interface Menu {
     
     /**
      * The list of recent databases has changed; refresh it.
+     * @param dbNames the list of database names, in order
      */
-    void refreshRecentList();
+    void refreshRecentList(String[] dbNames);
 
     /**
      * Add an observer of window menu database switches

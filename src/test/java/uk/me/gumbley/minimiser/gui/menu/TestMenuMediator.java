@@ -3,14 +3,11 @@ package uk.me.gumbley.minimiser.gui.menu;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
-import uk.me.gumbley.minimiser.recentlist.RecentListEvent;
 
 /**
  * Tests the linkage between the menu items enabling/disabling and
@@ -94,46 +91,22 @@ public final class TestMenuMediator extends LoggingTestCase {
     }
     
     /**
-     * 
+     * I'm using a stub recent list as coding the event notification in EasyMock
+     * was becoming painful. This test overrides the recent list created in
+     * the before section. 
      */
     @Test
-    @Ignore
     public void recentMenuGetsRebuiltWhenOpenListIsAddedTo() {
-        // WOZERE simulate event propagation of the recent list
-        // perhaps with a stub recent files list that doesn't use prefs
         recentFilesList = new StubRecentFilesList();
+        Assert.assertEquals(0, stubMenu.getRecentDatabaseNames().length);
         startMediator();
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         Assert.assertFalse(stubMenu.isRecentListBuilt());
         openDatabaseList.addOpenedDatabase(databaseDescriptor);
         Assert.assertTrue(stubMenu.isRecentListBuilt());
-    }
-
-    private final class StubRecentFilesList implements RecentFilesList {
-        public void add(DatabaseDescriptor databaseDescriptor) {
-            // TODO Auto-generated method stub
-        }
-
-        public void addRecentListEventObserver(
-                Observer<RecentListEvent> observer) {
-            // TODO Auto-generated method stub
-        }
-
-        public int getCapacity() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public int getNumberOfEntries() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public DatabaseDescriptor[] getRecentFiles() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+        Assert.assertEquals(1, stubMenu.getRecentDatabaseNames().length);
+        Assert.assertEquals("one", stubMenu.getRecentDatabaseNames()[0]);
     }
 
     /**

@@ -26,6 +26,7 @@ import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
+import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
@@ -44,6 +45,7 @@ public class MainFrame {
     private final CursorManager cursorManager;
     private final WindowGeometryStore windowGeometryStore;
     private final OpenDatabaseList openDatabaseList;
+    private final RecentFilesList recentList;
 
     /**
      * @param loader the IoC container abstraction
@@ -61,6 +63,7 @@ public class MainFrame {
         }
         windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
         openDatabaseList = springLoader.getBean("openDatabaseList", OpenDatabaseList.class);
+        recentList = springLoader.getBean("recentFilesList", RecentFilesList.class);
 
         // Create new Window and exit handler
         createMainFrame();
@@ -156,6 +159,7 @@ public class MainFrame {
     private JMenuBar createMenu() {
         LOGGER.info("Getting the menu");
         final Menu menu = springLoader.getBean("menu", Menu.class);
+        menu.refreshRecentList(recentList.getRecentFileNames());
         LOGGER.info("Got the menu");
         menu.addMenuActionListener(MenuIdentifier.FileExit, exitAL);
         // wire up dependencies

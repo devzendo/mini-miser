@@ -45,8 +45,15 @@ public interface RecentFilesList {
     DatabaseDescriptor[] getRecentFiles();
 
     /**
+     * Return the array of recent file names
+     * @return an array of database names, never null
+     */
+    String[] getRecentFileNames();
+
+    /**
      * Add an observer that will be notified every time the recent list changes.
      * @param observer the observer
      */
     void addRecentListEventObserver(Observer<RecentListEvent> observer);
+
 }

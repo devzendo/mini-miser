@@ -18,12 +18,14 @@ public final class StubMenu implements Menu {
     private List<String> databases;
     private int currentDatabaseIndex;
     private boolean recentListBuilt;
+    private String[] recentDatabases;
     
     /**
      * 
      */
     public StubMenu() {
         databases = new ArrayList<String>();
+        recentDatabases = new String[0];
         currentDatabaseIndex = -1;
         recentListBuilt = false;
     }
@@ -109,7 +111,8 @@ public final class StubMenu implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void refreshRecentList() {
+    public void refreshRecentList(final String[] dbNames) {
+        this.recentDatabases = dbNames;
         recentListBuilt = true;
     }
 
@@ -118,5 +121,12 @@ public final class StubMenu implements Menu {
      */
     public boolean isRecentListBuilt() {
         return recentListBuilt;
+    }
+
+    /**
+     * @return the names of the recently accessed databases
+     */
+    String[] getRecentDatabaseNames() {
+        return recentDatabases;
     }
 }

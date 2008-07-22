@@ -87,9 +87,14 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
         final String[] recentEscapedNamesAndPaths = preferences.getRecentFiles();
         final List<DatabaseDescriptor> descriptors = new ArrayList <DatabaseDescriptor>();
         for (String nameAndPath : recentEscapedNamesAndPaths) {
-            final DbPair pair = unescape(nameAndPath);
-            LOGGER.info("stored " + nameAndPath + " name " + pair.getName() + " path " + pair.getPath());
-            descriptors.add(new DatabaseDescriptor(pair.getName(), pair.getPath()));
+            try {
+                final DbPair pair = unescape(nameAndPath);
+                LOGGER.info("stored " + nameAndPath + " name " + pair.getName() + " path " + pair.getPath());
+                descriptors.add(new DatabaseDescriptor(pair.getName(), pair.getPath()));
+            } catch (final IllegalArgumentException iae) {
+                // TODO should this be a warning in a dialog?
+                LOGGER.warn("Could not reload entry from recent list '" + nameAndPath + "'");
+            }
         }
         return descriptors;
     }
@@ -107,9 +112,19 @@ public final class DefaultRecentFilesListImpl implements RecentFilesList {
     /**
      * {@inheritDoc}
      */
-    
     public DatabaseDescriptor[] getRecentFiles() {
         return databaseList.toArray(new DatabaseDescriptor[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getRecentFileNames() {
+        final String[] dbNames = new String[databaseList.size()];
+        for (int i = 0; i < dbNames.length; i++) {
+            dbNames[i] = databaseList.get(i).getDatabaseName();
+        }
+        return dbNames;
     }
 
     /**

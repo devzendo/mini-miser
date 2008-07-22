@@ -76,9 +76,6 @@ public final class MenuMediatorImpl implements MenuMediator {
                 final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) event;
                 menu.enableCloseMenu(true);
                 recentFilesList.add(new DatabaseDescriptor(doe.getDatabaseName(), doe.getDatabasePath()));
-                // WOZERE need to interact with the recent files list and pass
-                // the contents after modification to the menu to repopulate
-                // the file menu
                 menu.addDatabase(doe.getDatabaseName());
             } else if (event instanceof DatabaseSwitchedEvent) {
                 final DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) event;
@@ -114,8 +111,7 @@ public final class MenuMediatorImpl implements MenuMediator {
          * {@inheritDoc}
          */
         public void eventOccurred(final RecentListEvent observableEvent) {
-            LOGGER.info("rebuilding menu");
-            menu.refreshRecentList();
+            menu.refreshRecentList(recentFilesList.getRecentFileNames());
         }
     }
 

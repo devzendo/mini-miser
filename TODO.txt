@@ -2,6 +2,8 @@ MiniMiser - a simple personal finance manager program
 -----------------------------------------------------
 Current outstanding small tasks:
 
+* Q: recent list needs to be in a submenu, perhaps?
+
 * add recent files list
 
 * store open database list in prefs

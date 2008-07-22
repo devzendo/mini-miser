@@ -35,11 +35,12 @@ public final class TestRecentFilesList extends LoggingTestCase {
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
         Assert.assertEquals(0, recentFilesList.getNumberOfEntries());
         Assert.assertTrue(arrayEqual(new DatabaseDescriptor[0], recentFilesList.getRecentFiles()));
+        Assert.assertTrue(arrayEqual(new String[0], recentFilesList.getRecentFileNames()));
         
         EasyMock.verify(prefs);
     }
     
-    private boolean arrayEqual(final DatabaseDescriptor[] a, final DatabaseDescriptor[] b) {
+    private <T> boolean arrayEqual(final T[] a, final T[] b) {
         return Arrays.asList(a).equals(Arrays.asList(b));
     }
     
@@ -73,6 +74,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
 
         Assert.assertEquals(1, recentFilesList.getNumberOfEntries());
         Assert.assertTrue(arrayEqual(new DatabaseDescriptor[] {new DatabaseDescriptor("one")}, recentFilesList.getRecentFiles()));
+        Assert.assertTrue(arrayEqual(new String[] {"one"}, recentFilesList.getRecentFileNames()));
+
         EasyMock.verify(prefs);
     }
 
@@ -178,6 +181,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
         
         Assert.assertEquals(1, recentFilesList.getNumberOfEntries());
         Assert.assertTrue(arrayEqual(new DatabaseDescriptor[] {new DatabaseDescriptor("one")}, recentFilesList.getRecentFiles()));
+        Assert.assertTrue(arrayEqual(new String[] {"one"}, recentFilesList.getRecentFileNames()));
         EasyMock.verify(prefs);
     }
     
@@ -203,6 +207,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
                     new DatabaseDescriptor("two"),
                     new DatabaseDescriptor("one")
                     }, recentFilesList.getRecentFiles()));
+        Assert.assertTrue(arrayEqual(new String[] {"two", "one"}, recentFilesList.getRecentFileNames()));
         EasyMock.verify(prefs);
     }
     
@@ -267,6 +272,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
                 new DatabaseDescriptor("3"),
                 new DatabaseDescriptor("2"),
                 }, recentFilesList.getRecentFiles()));
+        Assert.assertTrue(arrayEqual(new String[] {"fish", "4", "3", "2"}, recentFilesList.getRecentFileNames()));
         EasyMock.verify(prefs);
     }
     
@@ -316,6 +322,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
                 new DatabaseDescriptor("2"),
                 new DatabaseDescriptor("1"),
                 }, recentFilesList.getRecentFiles()));
+        Assert.assertTrue(arrayEqual(new String[] {"4", "3", "2", "1"}, recentFilesList.getRecentFileNames()));
         EasyMock.verify(prefs);
     }
     
@@ -368,6 +375,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
                 new DatabaseDescriptor("3"),
                 new DatabaseDescriptor("2"),
                 }, recentFilesList.getRecentFiles()));
+        Assert.assertTrue(arrayEqual(new String[] {"1", "4", "3", "2"}, recentFilesList.getRecentFileNames()));
         EasyMock.verify(prefs);
     }
 
@@ -387,6 +395,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
             final DatabaseDescriptor[] recentFiles = reopenRecentFilesList.getRecentFiles();
             Assert.assertEquals("1", recentFiles[0].getDatabaseName());
             Assert.assertEquals("/tmp/foo", recentFiles[0].getDatabasePath());
+            Assert.assertTrue(arrayEqual(new String[] {"1"}, recentFilesList.getRecentFileNames()));
         } finally {
             prefsFile.delete();
         }
