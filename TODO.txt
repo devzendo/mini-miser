@@ -2,10 +2,16 @@ MiniMiser - a simple personal finance manager program
 -----------------------------------------------------
 Current outstanding small tasks:
 
-* Q: recent list needs to be in a submenu, perhaps?
+* add recent files list - make it open files
 
-* add recent files list
+* check Kohsuke's surname
 
+* Add a FAQ to the help contents with notes from the docs page re moving / renaming databases.
+
+
+* database switching via menu does not seem to have been done TDD - 
+  addDatabaseSwitchObserver is only called from wireAdapters - add tests
+  
 * store open database list in prefs
 * store the current file in prefs
 * store the current tab in prefs
