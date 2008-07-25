@@ -73,7 +73,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
     public void testGoodPlaintextDatabaseCanBeOpened() {
         LOGGER.info("*** testGoodPlaintextDatabaseCanBeOpened start");
         final String dbName = "testopen";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, "", new RunOnCreatedDb() {
+        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbPassword);
@@ -100,7 +100,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         LOGGER.info("*** testGoodEncryptedDatabaseCanBeOpened start");
         final String dbName = "testopenenc";
         final String dbPassword = "Qwerty123";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, dbPassword, new RunOnCreatedDb() {
+        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbPassword);
@@ -128,7 +128,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         final String dbName = "testopenenc";
         final String dbCreationPassword = "Qwerty123";
         final String dbEvilHackerPassword = "Fossi11ized";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, dbCreationPassword, new RunOnCreatedDb() {
+        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbCreationPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 MiniMiserDatabase openedDatabase = null;
@@ -163,7 +163,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         final String dbName = "testopenenc";
         final String dbCreationPassword = "Qwerty123";
         final String dbEvilHackerPassword = "";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(dbName, dbCreationPassword, new RunOnCreatedDb() {
+        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbCreationPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 MiniMiserDatabase openedDatabase = null;
@@ -188,50 +188,6 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         });
     }
 
-    private interface RunOnCreatedDb {
-        /**
-         * Run some custom behaviour for a given database that's been created
-         * and will be deleted afterwards.
-         * @param dbName the name of the database
-         * @param dbPassword the password for this database, if encrypted. "" if not.
-         * @param dbDirPlusDbName the directory of the db plus the db name
-         */
-        void runOnCreatedDb(String dbName, String dbPassword, String dbDirPlusDbName);
-    }
-    
-    /**
-     * Creates a db, closes it, then allows pluggable behaviour, before deleting it.
-     * @param dbName the name of the database
-     * @param dbPassword the password for this database, if encrypted. "" if not.
-     * @param runOnCreatedDb some behaviour to run when the db is created, before deleting
-     */
-    private void createDatabaseWithPluggableBehaviourBeforeDeletion(final String dbName, 
-            final String dbPassword, final RunOnCreatedDb runOnCreatedDb) {
-        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        LOGGER.info(String.format("... dbName = %s", dbName));
-        LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
-        LOGGER.info(String.format("... dbPassword = '%s'", dbPassword));
-        // create it...
-        LOGGER.info("... creating");
-        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, dbPassword);
-        LOGGER.info("... created");
-        try {
-            // now close and open it
-            assertDatabaseShouldBeOpen(dbName);
-            LOGGER.info("... closing");
-            mmData.close();
-            assertDatabaseShouldBeClosed(dbName);
-            runOnCreatedDb.runOnCreatedDb(dbName, dbPassword, dbDirPlusDbName);
-            assertDatabaseShouldBeClosed(dbName);
-        } finally {
-            LOGGER.info("... deleting");
-            deleteDatabaseFiles(dbName);
-            LOGGER.info("... done");
-        }
-    }
-
-    // CREATE TESTS ------------------------------------------------------------
-    
     /**
      * Null db path is bad
      */

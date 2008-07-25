@@ -296,4 +296,56 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
         }
         return dbFiles;
     }
+
+    /**
+     * Run some custom behaviour for a given database that's been created
+     * and will be deleted afterwards.
+     * @author matt
+     *
+     */
+    protected interface RunOnCreatedDb {
+        /**
+         * Run some custom behaviour for a given database that's been created
+         * and will be deleted afterwards.
+         * @param dbName the name of the database
+         * @param dbPassword the password for this database, if encrypted. "" if not.
+         * @param dbDirPlusDbName the directory of the db plus the db name
+         */
+        void runOnCreatedDb(String dbName, String dbPassword, String dbDirPlusDbName);
+    }
+
+    /**
+     * Creates a db, closes it, then allows pluggable behaviour, before deleting it.
+     * @param accessFactory the access factory to use when creating
+     * @param dbName the name of the database
+     * @param dbPassword the password for this database, if encrypted. "" if not.
+     * @param runOnCreatedDb some behaviour to run when the db is created, before deleting
+     */
+    protected final void createDatabaseWithPluggableBehaviourBeforeDeletion(
+            final AccessFactory accessFactory,
+            final String dbName,
+            final String dbPassword,
+            final RunOnCreatedDb runOnCreatedDb) {
+        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        LOGGER.info(String.format("... dbName = %s", dbName));
+        LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
+        LOGGER.info(String.format("... dbPassword = '%s'", dbPassword));
+        // create it...
+        LOGGER.info("... creating");
+        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, dbPassword);
+        LOGGER.info("... created");
+        try {
+            // now close and open it
+            assertDatabaseShouldBeOpen(dbName);
+            LOGGER.info("... closing");
+            mmData.close();
+            assertDatabaseShouldBeClosed(dbName);
+            runOnCreatedDb.runOnCreatedDb(dbName, dbPassword, dbDirPlusDbName);
+            assertDatabaseShouldBeClosed(dbName);
+        } finally {
+            LOGGER.info("... deleting");
+            deleteDatabaseFiles(dbName);
+            LOGGER.info("... done");
+        }
+    }
 }
