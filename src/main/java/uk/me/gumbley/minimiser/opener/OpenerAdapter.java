@@ -24,7 +24,23 @@ public interface OpenerAdapter {
         /**
          * Sent immediately prior to opening the database. 
          */
-        OPENING 
+        OPENING, 
+        /**
+         * Sent upon successful open. 
+         */
+        OPENED, 
+        /**
+         * Sent before the password is requested from the adapter. 
+         */
+        PASSWORD_REQUIRED, 
+        /**
+         * The user cancelled the password entry on an encrypted database. 
+         */
+        PASSWORD_CANCELLED, 
+        /**
+         * The database is not present. 
+         */
+        NOT_PRESENT 
     };
     
     /**
@@ -33,4 +49,11 @@ public interface OpenerAdapter {
      * @param description a short text to show the user
      */
     void reportProgress(ProgressStage progressStage, String description);
+    
+    /**
+     * The database is encrypted, and the password must be prompted for and
+     * returned.
+     * @return the password, or null if the user cancels the password entry.
+     */
+    String requestPassword();
 }

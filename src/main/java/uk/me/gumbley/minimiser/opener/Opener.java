@@ -3,8 +3,10 @@ package uk.me.gumbley.minimiser.opener;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 
 /**
@@ -52,14 +54,14 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 public class Opener {
     private static final Logger LOGGER = Logger.getLogger(Opener.class);
     
-    private final AccessFactory databaseAccessFactory;
+    private final AccessFactory access;
 
     /**
      * Construct the Opener.
      * @param accessFactory the access factory used for accessing databases
      */
     public Opener(final AccessFactory accessFactory) {
-        this.databaseAccessFactory = accessFactory;
+        this.access = accessFactory;
     }
 
     /**
@@ -84,11 +86,11 @@ public class Opener {
      * @throws DataAccessException upon database open failure, other than a 
      * bad password, which will be prompted for. 
      * <p>
-     * Note that this should be
-     * treated as a very bad problem (database corruption?.
+     * Note that this should be treated as a very bad problem (database
+     * corruption?) - so log a problem report.
      * <p>
      * Note that if you receive the subclass DataAccessResourceFailureException
-     * then this indicates that the database isn't there. 
+     * then this indicates that the database isn't there - so just say "nope". 
      */
     public MiniMiserDatabase openDatabase(
             final String dbName,
@@ -96,7 +98,35 @@ public class Opener {
             final OpenerAdapter openerAdapter) throws DataAccessException {
         LOGGER.info("Opening database '" + dbName + "' from path '" + pathToDatabase + "'");
         openerAdapter.reportProgress(ProgressStage.STARTING, "Starting to open");
-        // TODO Auto-generated method stub
-        return null;
+
+        // Try at first with an empty password - if we get a BPE, prompt for
+        // password and retry.
+        String dbPassword = "";
+        String tryingToOpenMessage = "Opening database";
+        while (true) {
+            try {
+                openerAdapter.reportProgress(ProgressStage.OPENING, tryingToOpenMessage);
+                final MiniMiserDatabase database = access.openDatabase(pathToDatabase, dbPassword);
+                LOGGER.info("Opened OK");
+        
+                openerAdapter.reportProgress(ProgressStage.OPENED, "Opened OK");
+                return database;
+            } catch (final BadPasswordException bad) {
+                LOGGER.warn("Bad password: " + bad.getMessage());
+                openerAdapter.reportProgress(ProgressStage.PASSWORD_REQUIRED, "Password required");
+                dbPassword = openerAdapter.requestPassword();
+                if (dbPassword == null || dbPassword.equals("")) {
+                    LOGGER.info("Open of encrypted database cancelled");
+                    openerAdapter.reportProgress(ProgressStage.PASSWORD_CANCELLED, "Open cancelled");
+                    return null;
+                }
+                
+                tryingToOpenMessage = "Trying to open database";
+            } catch (final DataAccessResourceFailureException darfe) {
+                LOGGER.warn("Could not open database: " + darfe.getMessage());
+                openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database not found");
+                throw darfe;
+            }
+        }
     }
 }
