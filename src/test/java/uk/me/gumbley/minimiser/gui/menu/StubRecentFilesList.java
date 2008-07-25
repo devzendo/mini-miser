@@ -5,72 +5,48 @@ package uk.me.gumbley.minimiser.gui.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
-import uk.me.gumbley.minimiser.recentlist.RecentListEvent;
+import uk.me.gumbley.minimiser.recentlist.AbstractRecentFilesListImpl;
 
 /**
- * A stub recent file list that is pretty dumb - accepts observers, and
- * notifies them whenever ANY change occurs to the list.
+ * A stub recent file list that accepts observers, and
+ * notifies them when changes occurs to the list, in the same manner as
+ * the real one, but with no backing store.
+ * 
+ * add method logic nicked from the real one, after it had been TDD'ed :-)
  * 
  * @author matt
  *
  */
-public final class StubRecentFilesList implements RecentFilesList {
-    private final ObserverList<RecentListEvent> observerList;
-    private final List<DatabaseDescriptor> databaseList;
-
+public final class StubRecentFilesList extends AbstractRecentFilesListImpl {
     /**
      * 
      */
     StubRecentFilesList() {
-        observerList = new ObserverList<RecentListEvent>();
-        databaseList = new ArrayList<DatabaseDescriptor>();
+        super();
+    }
+
+    /**
+     * Silently add a database
+     * @param databaseDescriptor the database to add
+     */
+    public void addDatabaseSilently(final DatabaseDescriptor databaseDescriptor) {
+        addSilently(databaseDescriptor);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void add(final DatabaseDescriptor databaseDescriptor) {
-        databaseList.add(databaseDescriptor);
-        observerList.eventOccurred(new RecentListEvent());
+    @Override
+    protected List<DatabaseDescriptor> load() {
+        return new ArrayList<DatabaseDescriptor>();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addRecentListEventObserver(
-            final Observer<RecentListEvent> observer) {
-        observerList.addObserver(observer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getCapacity() {
-        return 4;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getNumberOfEntries() {
-        return databaseList.size();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public DatabaseDescriptor[] getRecentFiles() {
-        return databaseList.toArray(new DatabaseDescriptor[0]);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String[] getRecentFileNames() {
-        return new String[0];
+    @Override
+    protected void save() {
+        // do nothing
     }
 }

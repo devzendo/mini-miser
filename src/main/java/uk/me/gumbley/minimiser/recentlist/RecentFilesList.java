@@ -15,6 +15,8 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 public interface RecentFilesList {
     /**
      * The default capacity for the recent files list.
+     * Note that if this changes, the unit tests will have to be modified, as
+     * they currently have an assumption on this.
      */
     int DEFAULT_CAPACITY = 4;
 

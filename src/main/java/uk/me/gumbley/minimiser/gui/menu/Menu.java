@@ -113,6 +113,14 @@ public interface Menu {
     /**
      * Add an observer of window menu database switches
      * @param observer of switches
+     * TODO this appears to have not been added TDD - need to write tests
+     * for observation of database switching?
      */
-    void addDatabaseSwitchObserver(final Observer<WindowMenuChoice> observer);
+    void addDatabaseSwitchObserver(Observer<DatabaseNameChoice> observer);
+    
+    /**
+     * Add an observer of open recent submenu database open requests
+     * @param observer of open recent requests
+     */
+    void addOpenRecentObserver(Observer<DatabaseNameChoice> observer);
 }

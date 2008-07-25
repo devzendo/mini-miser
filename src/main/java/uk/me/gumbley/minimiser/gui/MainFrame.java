@@ -160,6 +160,8 @@ public class MainFrame {
         LOGGER.info("Getting the menu");
         final Menu menu = springLoader.getBean("menu", Menu.class);
         menu.refreshRecentList(recentList.getRecentFileNames());
+        // TODO SMELL why not have it populated correctly at first?
+        // we could pass in the recent strings to a ctor?
         LOGGER.info("Got the menu");
         menu.addMenuActionListener(MenuIdentifier.FileExit, exitAL);
         // wire up dependencies

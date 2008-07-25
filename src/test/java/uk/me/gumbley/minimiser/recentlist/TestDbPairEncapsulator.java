@@ -3,8 +3,6 @@ package uk.me.gumbley.minimiser.recentlist;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl.DbPair;
-
 
 /**
  * Tests of the escaping mechanism used in the RecentFilesList.
@@ -12,13 +10,13 @@ import uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl.DbPair;
  * @author matt
  *
  */
-public final class TestRecentFilesListEscaping {
+public final class TestDbPairEncapsulator {
     /**
      * 
      */
     @Test
     public void testEscapeWhenNoQuotes() {
-        Assert.assertEquals("\"one\",\"path\"", DefaultRecentFilesListImpl.escape("one", "path"));
+        Assert.assertEquals("\"one\",\"path\"", DbPairEncapsulator.escape("one", "path"));
     }
     
     /**
@@ -26,7 +24,7 @@ public final class TestRecentFilesListEscaping {
      */
     @Test
     public void testUnescapeWhenNoQuotes() {
-        final DbPair unescaped = DefaultRecentFilesListImpl.unescape("\"one\",\"two\"");
+        final DbPairEncapsulator.DbPair unescaped = DbPairEncapsulator.unescape("\"one\",\"two\"");
         Assert.assertEquals("one", unescaped.getName());
         Assert.assertEquals("two", unescaped.getPath());
     }
@@ -36,7 +34,7 @@ public final class TestRecentFilesListEscaping {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testUnescapeFailure() {
-        DefaultRecentFilesListImpl.unescape("\"f\\\"oo\",\"/tmp/\\\"quote"); // no end quote
+        DbPairEncapsulator.unescape("\"f\\\"oo\",\"/tmp/\\\"quote"); // no end quote
     }
     
     /**
@@ -52,10 +50,10 @@ public final class TestRecentFilesListEscaping {
         path.append("/tmp/");
         path.append('"');
         path.append("quote");
-        final String escaped = DefaultRecentFilesListImpl.escape(name.toString(), path.toString());
+        final String escaped = DbPairEncapsulator.escape(name.toString(), path.toString());
         Assert.assertEquals("\"f\\\"oo\",\"/tmp/\\\"quote\"", escaped);
 
-        final DbPair unescaped = DefaultRecentFilesListImpl.unescape(escaped);
+        final DbPairEncapsulator.DbPair unescaped = DbPairEncapsulator.unescape(escaped);
         Assert.assertEquals(name.toString(), unescaped.getName());
         Assert.assertEquals(path.toString(), unescaped.getPath());
     }

@@ -6,11 +6,11 @@ package uk.me.gumbley.minimiser.recentlist;
  * @author matt
  *
  */
-public final class QuoteEscape {
+public final class QuoteEscaper {
     /**
      * No instances
      */
-    private QuoteEscape() {
+    private QuoteEscaper() {
         
     }
 

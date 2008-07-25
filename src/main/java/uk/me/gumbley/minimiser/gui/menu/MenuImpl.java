@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JCheckBoxMenuItem;
@@ -31,7 +32,8 @@ public final class MenuImpl implements Menu {
     private JMenu windowMenu;
     private JMenu helpMenu;
 
-    private ObserverList<WindowMenuChoice> windowMenuChoiceObservers;
+    private ObserverList<DatabaseNameChoice> windowMenuChoiceObservers;
+    private ObserverList<DatabaseNameChoice> openRecentSubmenuChoiceObservers;
     private final MenuWiring menuWiring;
     
     /**
@@ -44,7 +46,8 @@ public final class MenuImpl implements Menu {
         currentDatabaseIndex = -1;
         recentDatabaseNames = new String[0];
 
-        windowMenuChoiceObservers = new ObserverList<WindowMenuChoice>();
+        windowMenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
+        openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
 
         menuBar = new JMenuBar();
         fileMenu = createFileMenu();
@@ -88,6 +91,7 @@ public final class MenuImpl implements Menu {
         fileMenu.removeAll();
         createMenuItem(MenuIdentifier.FileNew, "New...", 'N', fileMenu);
         createMenuItem(MenuIdentifier.FileOpen, "Open...", 'O', fileMenu);
+        fileMenu.add(buildRecentList());
 
         fileMenu.add(new JSeparator());
 
@@ -100,23 +104,30 @@ public final class MenuImpl implements Menu {
         createMenuItem(MenuIdentifier.FileExport, "Export...", 'E', fileMenu);
 
         fileMenu.add(new JSeparator());
-        buildRecentList();
 
         createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
     }
     
-    private void buildRecentList() {
+    private JMenu buildRecentList() {
+        final JMenu submenu = new JMenu("Open recent");
+        submenu.setMnemonic('r');
         if (recentDatabaseNames.length == 0) {
-            return;
+            submenu.setEnabled(false);
+        } else {
+            for (int i = 0; i < recentDatabaseNames.length; i++) {
+                final String recentDbName = recentDatabaseNames[i];
+                final int mnemonic = 1 + i;
+                final JMenuItem menuItem = new JMenuItem("" + mnemonic + " " + recentDbName);
+                menuItem.setMnemonic(KeyEvent.VK_0 + mnemonic);
+                menuItem.addActionListener(new ActionListener() {
+                    public void actionPerformed(final ActionEvent e) {
+                        openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameChoice(recentDbName));
+                    }
+                });
+                submenu.add(menuItem);
+            }
         }
-        for (int i = 0; i < recentDatabaseNames.length; i++) {
-            final String recentDbName = recentDatabaseNames[i];
-            final JMenuItem menuItem = new JMenuItem(recentDbName);
-            menuItem.setMnemonic('1' + i);
-            fileMenu.add(menuItem);
-            // WOZERE TODO add action listener 
-        }
-        fileMenu.add(new JSeparator());
+        return submenu;
     }
 
     private void createMenuItem(final MenuIdentifier menuIdentifier,
@@ -155,7 +166,7 @@ public final class MenuImpl implements Menu {
             final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(database, i == currentDatabaseIndex);
             menuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent e) {
-                    windowMenuChoiceObservers.eventOccurred(new WindowMenuChoice(database));
+                    windowMenuChoiceObservers.eventOccurred(new DatabaseNameChoice(database));
                 }
             });
             windowMenu.add(menuItem);
@@ -216,7 +227,7 @@ public final class MenuImpl implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void addDatabaseSwitchObserver(final Observer<WindowMenuChoice> observer) {
+    public void addDatabaseSwitchObserver(final Observer<DatabaseNameChoice> observer) {
         windowMenuChoiceObservers.addObserver(observer);
     }
 
@@ -233,5 +244,12 @@ public final class MenuImpl implements Menu {
     public void refreshRecentList(final String[] dbNames) {
         this.recentDatabaseNames = dbNames;
         buildFileMenu();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addOpenRecentObserver(final Observer<DatabaseNameChoice> observer) {
+        openRecentSubmenuChoiceObservers.addObserver(observer);
     }
 }

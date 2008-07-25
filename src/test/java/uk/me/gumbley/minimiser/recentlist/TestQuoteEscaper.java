@@ -10,13 +10,13 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestQuoteEscape {
+public final class TestQuoteEscaper {
     /**
      * 
      */
     @Test
     public void testEscapeQuotesWhenNoQuotes() {
-        Assert.assertEquals("foo", QuoteEscape.escapeQuotes("foo"));
+        Assert.assertEquals("foo", QuoteEscaper.escapeQuotes("foo"));
     }
     
     /**
@@ -28,7 +28,7 @@ public final class TestQuoteEscape {
         sb.append('f');
         sb.append('"');
         sb.append("oo");
-        Assert.assertEquals("f\\\"oo", QuoteEscape.escapeQuotes(sb.toString()));
+        Assert.assertEquals("f\\\"oo", QuoteEscaper.escapeQuotes(sb.toString()));
     }
 
     /**
@@ -42,7 +42,7 @@ public final class TestQuoteEscape {
         sb.append("oo");
         sb.append('"');
         sb.append("ball");
-        Assert.assertEquals("f\\\"oo\\\"ball", QuoteEscape.escapeQuotes(sb.toString()));
+        Assert.assertEquals("f\\\"oo\\\"ball", QuoteEscaper.escapeQuotes(sb.toString()));
     }
 
     /**
@@ -50,7 +50,7 @@ public final class TestQuoteEscape {
      */
     @Test
     public void testUnescapeWhenNoQuotes() {
-        Assert.assertEquals("foo", QuoteEscape.unescapeQuotes("foo"));
+        Assert.assertEquals("foo", QuoteEscaper.unescapeQuotes("foo"));
     }
 
     /**
@@ -58,7 +58,7 @@ public final class TestQuoteEscape {
      */
     @Test
     public void testUnescapeWhenQuotes() {
-        Assert.assertEquals("fo\"o", QuoteEscape.unescapeQuotes("fo\\\"o"));
+        Assert.assertEquals("fo\"o", QuoteEscaper.unescapeQuotes("fo\\\"o"));
     }
 
     /**
@@ -66,7 +66,7 @@ public final class TestQuoteEscape {
      */
     @Test
     public void testUnescapeWhenQuotesPrefixedByExtraSlash() {
-        Assert.assertEquals("fo\\\"o", QuoteEscape.unescapeQuotes("fo\\\\\"o"));
+        Assert.assertEquals("fo\\\"o", QuoteEscaper.unescapeQuotes("fo\\\\\"o"));
     }
     
     /**
@@ -74,6 +74,6 @@ public final class TestQuoteEscape {
      */
     @Test
     public void testUnescapeWhenMultipleQuotes() {
-        Assert.assertEquals("fo\"ot\"ball\"", QuoteEscape.unescapeQuotes("fo\\\"ot\\\"ball\\\""));
+        Assert.assertEquals("fo\"ot\"ball\"", QuoteEscaper.unescapeQuotes("fo\\\"ot\\\"ball\\\""));
     }
 }

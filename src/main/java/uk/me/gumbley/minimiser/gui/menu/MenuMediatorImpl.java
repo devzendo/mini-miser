@@ -51,6 +51,9 @@ public final class MenuMediatorImpl implements MenuMediator {
         openDatabaseList.addDatabaseEventObserver(new DatabaseEventObserver());
         // menu -> ODL (which'll talk back to the menu)
         menu.addDatabaseSwitchObserver(new DatabaseSwitchObserver());
+        // menu -> opener (for the recent list)
+        // TODO NONTDD
+        menu.addOpenRecentObserver(new OpenRecentObserver());
         // recent list -> menu
         recentFilesList.addRecentListEventObserver(new RecentListEventObserver());
     }
@@ -91,11 +94,11 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @author matt
      *
      */
-    private final class DatabaseSwitchObserver implements Observer<WindowMenuChoice> {
+    private final class DatabaseSwitchObserver implements Observer<DatabaseNameChoice> {
         /**
          * {@inheritDoc}
          */
-        public void eventOccurred(final WindowMenuChoice windowMenuChoice) {
+        public void eventOccurred(final DatabaseNameChoice windowMenuChoice) {
             openDatabaseList.switchDatabase(windowMenuChoice.getDatabaseName());
         }
     }
@@ -106,7 +109,7 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @author matt
      *
      */
-    final class RecentListEventObserver implements Observer<RecentListEvent> {
+    private final class RecentListEventObserver implements Observer<RecentListEvent> {
         /**
          * {@inheritDoc}
          */
@@ -115,5 +118,24 @@ public final class MenuMediatorImpl implements MenuMediator {
         }
     }
 
-
+    /**
+     * Adapts between recent list choices and the opening/switching mechanism.
+     * If already opened, switch to it.
+     * If not opened, open it.
+     * @author matt
+     *
+     */
+    private final class OpenRecentObserver implements Observer<DatabaseNameChoice> {
+        /**
+         * {@inheritDoc}
+         */
+        public void eventOccurred(final DatabaseNameChoice observableEvent) {
+            final String databaseName = observableEvent.getDatabaseName();
+            if (openDatabaseList.containsDatabase(new DatabaseDescriptor(databaseName))) {
+                openDatabaseList.switchDatabase(databaseName);
+            } else {
+                
+            }
+        }
+    }
 }

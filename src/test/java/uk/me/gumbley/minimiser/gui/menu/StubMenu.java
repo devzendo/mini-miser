@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JMenuBar;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * A Menu that tests can interrogate to test the correctness of the
@@ -19,7 +20,8 @@ public final class StubMenu implements Menu {
     private int currentDatabaseIndex;
     private boolean recentListBuilt;
     private String[] recentDatabases;
-    
+    private ObserverList<DatabaseNameChoice> openRecentSubmenuChoiceObservers;
+
     /**
      * 
      */
@@ -28,6 +30,7 @@ public final class StubMenu implements Menu {
         recentDatabases = new String[0];
         currentDatabaseIndex = -1;
         recentListBuilt = false;
+        openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
     }
     
     /**
@@ -99,7 +102,7 @@ public final class StubMenu implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void addDatabaseSwitchObserver(final Observer<WindowMenuChoice> observer) {
+    public void addDatabaseSwitchObserver(final Observer<DatabaseNameChoice> observer) {
     }
 
     /**
@@ -128,5 +131,20 @@ public final class StubMenu implements Menu {
      */
     String[] getRecentDatabaseNames() {
         return recentDatabases;
+    }
+    
+    /**
+     * For unit tests, inject a request to open an entry from the recent list.
+     * @param dbName the database name to open.
+     */
+    void injectOpenRecentRequest(final String dbName) {
+        openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameChoice(dbName));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addOpenRecentObserver(final Observer<DatabaseNameChoice> observer) {
+        openRecentSubmenuChoiceObservers.addObserver(observer);
     }
 }

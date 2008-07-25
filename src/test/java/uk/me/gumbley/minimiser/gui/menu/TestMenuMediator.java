@@ -1,11 +1,16 @@
-package uk.me.gumbley.minimiser.gui.menu;
+ package uk.me.gumbley.minimiser.gui.menu;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 
@@ -25,12 +30,13 @@ public final class TestMenuMediator extends LoggingTestCase {
     /**
      * Get all necessaries
      */
+    @SuppressWarnings("unchecked")
     @Before
     public void getMediatorPrerequisites() {
         stubMenu = new StubMenu();
         openDatabaseList = new OpenDatabaseList();
         recentFilesList = EasyMock.createStrictMock(RecentFilesList.class);
-        recentFilesList.addRecentListEventObserver(EasyMock.isA(MenuMediatorImpl.RecentListEventObserver.class));
+        recentFilesList.addRecentListEventObserver(EasyMock.isA(Observer.class));
     }
 
     private void startMediator() {
@@ -107,6 +113,79 @@ public final class TestMenuMediator extends LoggingTestCase {
         Assert.assertTrue(stubMenu.isRecentListBuilt());
         Assert.assertEquals(1, stubMenu.getRecentDatabaseNames().length);
         Assert.assertEquals("one", stubMenu.getRecentDatabaseNames()[0]);
+    }
+    
+    /**
+     * I'm using a stub recent list as coding the event notification in EasyMock
+     * was becoming painful. This test overrides the recent list created in
+     * the before section. 
+     */
+    @Test
+    public void openRecentWhenAlreadyOpenedShouldSwitch() {
+        recentFilesList = new StubRecentFilesList();
+        startMediator();
+
+        final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one");
+        openDatabaseList.addOpenedDatabase(databaseDescriptorOne);
+
+        final AtomicBoolean switchedToOne = new AtomicBoolean(false);
+        openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
+            public void eventOccurred(final DatabaseEvent observableEvent) {
+                if (observableEvent instanceof DatabaseSwitchedEvent) {
+                    final DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) observableEvent;
+                    if (dse.getDatabaseName().equals("one")) {
+                        switchedToOne.set(true);
+                    }
+                }
+            }
+        });
+
+        final DatabaseDescriptor databaseDescriptorTwo = new DatabaseDescriptor("two");
+        openDatabaseList.addOpenedDatabase(databaseDescriptorTwo);
+
+        Assert.assertTrue(stubMenu.isRecentListBuilt());
+        Assert.assertEquals(2, stubMenu.getRecentDatabaseNames().length);
+        Assert.assertEquals("two", stubMenu.getRecentDatabaseNames()[0]);
+
+        Assert.assertFalse(switchedToOne.get());
+    
+        stubMenu.injectOpenRecentRequest("one");
+
+        Assert.assertTrue("did not switch to already-opened on recent open of already-opened db", switchedToOne.get());
+    }
+    
+
+    /**
+     * I'm using a stub recent list as coding the event notification in EasyMock
+     * was becoming painful. This test overrides the recent list created in
+     * the before section. 
+     */
+    @Test
+    public void openRecentWhenNotCurrentlyOpenedShouldOpen() {
+        final StubRecentFilesList stubRecentFilesList = new StubRecentFilesList(); 
+        recentFilesList = stubRecentFilesList;
+        startMediator();
+
+        final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one");
+        stubRecentFilesList.addDatabaseSilently(databaseDescriptorOne);
+
+        final AtomicBoolean openedOne = new AtomicBoolean(false);
+        openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
+            public void eventOccurred(final DatabaseEvent observableEvent) {
+                if (observableEvent instanceof DatabaseOpenedEvent) {
+                    final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) observableEvent;
+                    if (doe.getDatabaseName().equals("one")) {
+                        openedOne.set(true);
+                    }
+                }
+            }
+        });
+
+        Assert.assertFalse(openedOne.get());
+    
+        stubMenu.injectOpenRecentRequest("one");
+
+        Assert.assertTrue("did not open not-opened on recent open of not-opened db", openedOne.get());
     }
 
     /**
