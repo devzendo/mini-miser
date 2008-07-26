@@ -1,5 +1,9 @@
 package uk.me.gumbley.minimiser.opener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,10 +13,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
@@ -97,7 +101,6 @@ public final class TestOpener extends PersistenceUnittestCase {
     /**
      * Grab the configured AccessFactory from the Spring App Context, and pass
      * it to a new Opener.
-     * TODO not in a unit test!
      */
     @Before
     public void getPrerequisites() {
@@ -110,7 +113,7 @@ public final class TestOpener extends PersistenceUnittestCase {
      * Don't allow any progress reports to have their detection missed - their
      * presence should each be asserted.
      */
-    @After
+    //@After
     public void checkForUnexpectedProgressReports() {
         progressRecorder.assertAllProgressReceivedWasAsserted();
     }
@@ -331,8 +334,8 @@ public final class TestOpener extends PersistenceUnittestCase {
      * 
      */
     @Test
-    public void progressNotificationsExceptionOnOpenOfNonExistantWithNoPassword() {
-        LOGGER.info("** progressNotificationsExceptionOnOpenOfNonExistantWithNoPassword");
+    public void progressNotificationsExceptionOnOpenOfNonExistant() {
+        LOGGER.info("** progressNotificationsExceptionOnOpenOfNonExistant");
         final String dbName = "wah";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         final OpenerAdapter openerAdapter = new OpenerAdapter() {
@@ -350,9 +353,9 @@ public final class TestOpener extends PersistenceUnittestCase {
             opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
             Assert.fail("Should not have been able to open a nonexistant database");
         } catch (final DataAccessResourceFailureException darfe) {
-            LOGGER.info("Correctly caught not DataAccessResourceFailureException:" + darfe.getMessage());
-        } catch (final Throwable t) {
-            Assert.fail("Should not have caught a " + t.getClass().getName() + " opening a nonexistant database");
+            LOGGER.info("Correctly caught a DataAccessResourceFailureException:" + darfe.getMessage());
+        } catch (final DataAccessException dae) {
+            Assert.fail("Should not have caught a " + dae.getClass().getName() + " opening a nonexistant database: " + dae.getMessage());
         }
         progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
         
@@ -361,12 +364,60 @@ public final class TestOpener extends PersistenceUnittestCase {
         progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.NOT_PRESENT);
     }
     
-
     /**
      * 
      */
     @Test
-    public void progressNotificationsExceptionOnOpenOfNonExistantWithPassword() {
-        LOGGER.info("** progressNotificationsExceptionOnOpenOfNonExistantWithPassword");
+    public void progressNotificationsExceptionOnOpenOfCorrupt() {
+        LOGGER.info("** progressNotificationsExceptionOnOpenOfCorrupt");
+        final String dbName = "corrupt";
+        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
+            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+
+                // Corrupt the database
+                final File dbFile = new File(getAbsoluteDatabaseDirectory(dbName) + ".data.db");
+                LOGGER.info("data file is " + dbFile.getAbsolutePath());
+                Assert.assertTrue(dbFile.exists());
+                RandomAccessFile raf;
+                try {
+                    raf = new RandomAccessFile(dbFile, "rw");
+                    raf.seek(1024);
+                    raf.writeChars("Let's write all over the database, to see if it'll fail to open!");
+                    raf.close();
+                } catch (final FileNotFoundException e) {
+                    Assert.fail("Got a file not found!: " + e.getMessage());
+                } catch (final IOException e) {
+                    Assert.fail("Got an IOexception!: " + e.getMessage());
+                }
+
+                final OpenerAdapter openerAdapter = new OpenerAdapter() {
+
+                    public void reportProgress(final ProgressStage progressStage, final String description) {
+                        progressRecorder.receiveProgress(progressStage, description);
+                    }
+
+                    public String requestPassword() {
+                        Assert.fail("Not an encrypted db; password should not have been prompted for");
+                        return null;
+                    }
+                };
+                try {
+                    opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
+                    Assert.fail("Should not have been able to open a corrupt database");
+                } catch (final DataAccessResourceFailureException darfe) {
+                    LOGGER.warn("Caught unexpected: ", darfe);
+                    Assert.fail("Should not have caught a " + darfe.getClass().getName() + " opening a corrupt database");
+                } catch (final DataAccessException dae) {
+                    LOGGER.info("Correctly caught a DataAccessException:" + dae.getMessage(), dae);
+                }
+                progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
+                
+                progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENING);
+                // First time round (which is all we'll have here), expect this.
+                Assert.assertEquals("Opening database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
+                
+                progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPEN_FAILED);
+            }
+        });
     }
 }

@@ -111,6 +111,7 @@ public class Opener {
         
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened OK");
                 return database;
+                
             } catch (final BadPasswordException bad) {
                 LOGGER.warn("Bad password: " + bad.getMessage());
                 openerAdapter.reportProgress(ProgressStage.PASSWORD_REQUIRED, "Password required");
@@ -126,6 +127,11 @@ public class Opener {
                 LOGGER.warn("Could not open database: " + darfe.getMessage());
                 openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database not found");
                 throw darfe;
+                
+            } catch (final DataAccessException dae) {
+                LOGGER.warn("Data access exception opening database: " + dae.getMessage(), dae);
+                openerAdapter.reportProgress(ProgressStage.OPEN_FAILED, "Open failed");
+                throw dae;
             }
         }
     }
