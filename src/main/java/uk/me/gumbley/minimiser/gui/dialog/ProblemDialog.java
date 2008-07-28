@@ -26,6 +26,7 @@ public final class ProblemDialog extends JDialog implements
     private JOptionPane optionPane;
     private String btnString1 = "Continue";
 
+    // WOZERE need to test possible combinations of this again manually
     /**
      * Creates the reusable dialog.
      * @param parentFrame the parent frame
@@ -49,19 +50,9 @@ public final class ProblemDialog extends JDialog implements
         }
         msg.append("\n\n");
 
-        final StringBuilder problem = new StringBuilder();
-        final String exceptionMessage = exception == null ? "" : exception.getMessage() == null ? "" : exception.getMessage();
-        if (exceptionMessage.length() > 0) {
-            problem.append("Problem: '");
-            problem.append(exceptionMessage);
-            if (!exceptionMessage.endsWith(".")) {
-                problem.append(".");
-            }
-            problem.append("'\n\n");
-        }
+        final String problem = formExceptionMessageDescription(exception);
         msg.append(problem.toString());
 
-        detail.append(problem);
         detail.append(AppName.getAppName());
         detail.append(" v");
         detail.append(AppVersion.getVersion());
@@ -70,29 +61,24 @@ public final class ProblemDialog extends JDialog implements
         detail.append(caller);
         if (exception != null) {
             detail.append("\n\n");
-            detail.append("Exception:\n  ");
-            detail.append(exception.getClass().getName());
-            detail.append("\n\n");
-            detail.append("Problem occurred at:\n");
-            final StackTraceElement[] stackTraceArray = exception.getStackTrace();
-            for (StackTraceElement element : stackTraceArray) {
-                detail.append("  ");
-                detail.append(element.toString());
-                detail.append("\n");
-            }
+            detail.append(exceptionDetails(exception));
         }
         msg.append("Please copy all of the following details of the problem into an email\n");
         msg.append("and send it to " + getEmailAddress() + ".\n");
 
         final JTextArea msgArea = new JTextArea(msg.toString()); 
         msgArea.setEditable(false);
+        msgArea.setWrapStyleWord(true);
+        msgArea.setLineWrap(true);
+        msgArea.setColumns(70);
 
         final JTextArea detailArea = new JTextArea(detail.toString());
         detailArea.setEditable(false);
         detailArea.setBackground(Color.WHITE);
+        detailArea.setWrapStyleWord(true);
         detailArea.setLineWrap(true);
-        detailArea.setRows(12);
-        detailArea.setColumns(60);
+        detailArea.setRows(16);
+        detailArea.setColumns(70);
         detailArea.setFont(new Font("Monospaced", Font.PLAIN, 10));
         
         final Object[] array = {msgArea, new JScrollPane(detailArea)};
@@ -115,6 +101,47 @@ public final class ProblemDialog extends JDialog implements
         });
         // Register an event handler that reacts to option pane state changes.
         optionPane.addPropertyChangeListener(this);
+    }
+
+    private String exceptionDetails(final Exception exception) {
+        final StringBuilder detail = new StringBuilder();
+        detail.append("Exception:\n  ");
+        detail.append(exception.getClass().getName());
+        detail.append("\n\n");
+        detail.append("Full exception message:\n  ");
+        detail.append(exception.getMessage());
+        detail.append("\n\n");
+        detail.append("Problem occurred at:\n");
+        final StackTraceElement[] stackTraceArray = exception.getStackTrace();
+        for (StackTraceElement element : stackTraceArray) {
+            detail.append("  ");
+            detail.append(element.toString());
+            detail.append("\n");
+        }
+        return detail.toString();
+    }
+
+    private String formExceptionMessageDescription(final Exception exception) {
+        final StringBuilder problem = new StringBuilder();
+        final String exceptionMessage = exception == null ? "" : exception.getMessage() == null ? "" : exception.getMessage();
+        if (exceptionMessage.length() > 0) {
+            problem.append("Problem: '");
+            problem.append(getFirstSentence(exceptionMessage));
+            if (!exceptionMessage.endsWith(".")) {
+                problem.append(".");
+            }
+            problem.append("'\n\n");
+        }
+        return problem.toString();
+    }
+
+    private String getFirstSentence(final String exceptionMessage) {
+        final int dotIndex = exceptionMessage.indexOf('.');
+        if (dotIndex != -1) {
+            return exceptionMessage.substring(0, dotIndex);
+        } else {
+            return exceptionMessage;
+        }
     }
 
     private String getEmailAddress() {

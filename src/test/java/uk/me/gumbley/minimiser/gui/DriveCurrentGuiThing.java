@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
+import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 
@@ -40,6 +41,17 @@ public final class DriveCurrentGuiThing {
         frame.pack();
         frame.setVisible(true);
 
+        //enterPassword(frame);
+        //problemDialogNoException(frame);
+        problemDialogException(frame);
+    }
+    private static void problemDialogException(JFrame frame) {
+        ProblemDialog.reportProblem(frame, "working out the meaning of life", new RuntimeException("the obstacle is the path"));;
+    }
+    private static void problemDialogNoException(JFrame frame) {
+        ProblemDialog.reportProblem(frame, "working out the meaning of life");
+    }
+    private static void enterPassword(final JFrame frame) {
         new PasswordEntryDialogHelper().promptForPassword(frame, "foo");
     }
 }
