@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
@@ -161,6 +162,7 @@ public final class TestMenuMediator extends LoggingTestCase {
      * the before section. 
      */
     @Test
+    @Ignore
     public void openRecentWhenNotCurrentlyOpenedShouldOpen() {
         final StubRecentFilesList stubRecentFilesList = new StubRecentFilesList(); 
         recentFilesList = stubRecentFilesList;
