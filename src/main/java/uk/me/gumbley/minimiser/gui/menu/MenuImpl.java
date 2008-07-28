@@ -11,6 +11,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
@@ -23,6 +24,7 @@ import uk.me.gumbley.minimiser.common.AppName;
  */
 public final class MenuImpl implements Menu {
     private static final Logger LOGGER = Logger.getLogger(MenuImpl.class);
+    private Object lock = new Object();
     private List<String> databases;
     private int currentDatabaseIndex;
     private String[] recentDatabaseNames;
@@ -34,34 +36,41 @@ public final class MenuImpl implements Menu {
 
     private ObserverList<DatabaseNameChoice> windowMenuChoiceObservers;
     private ObserverList<DatabaseNameChoice> openRecentSubmenuChoiceObservers;
-    private final MenuWiring menuWiring;
+    private MenuWiring menuWiring;
     
     /**
      * Create the Menu
      * @param wiring the MenuWiring singleton
      */
     public MenuImpl(final MenuWiring wiring) {
-        this.menuWiring = wiring;
-        databases = new ArrayList<String>();
-        currentDatabaseIndex = -1;
-        recentDatabaseNames = new String[0];
-
-        windowMenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
-        openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
-
-        menuBar = new JMenuBar();
-        fileMenu = createFileMenu();
-        buildFileMenu(); // initially we'll have no recent files list
-        windowMenu = createWindowMenu();
-        helpMenu = createHelpMenu();
-
-        menuBar.add(fileMenu);
-        menuBar.add(windowMenu);
-        menuBar.add(helpMenu);
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    menuWiring = wiring;
+                    databases = new ArrayList<String>();
+                    currentDatabaseIndex = -1;
+                    recentDatabaseNames = new String[0];
+            
+                    windowMenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
+                    openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
         
-        enableCloseAllMenu();
+                    menuBar = new JMenuBar();
+                    fileMenu = createFileMenu();
+                    buildFileMenu(); // initially we'll have no recent files list
+                    windowMenu = createWindowMenu();
+                    helpMenu = createHelpMenu();
+    
+                    menuBar.add(fileMenu);
+                    menuBar.add(windowMenu);
+                    menuBar.add(helpMenu);
+                    
+                    enableCloseAllMenu();
+                }
+            }
+        });
     }
 
+    // EDT
     private JMenu createWindowMenu() {
         final JMenu menu = new JMenu("Window");
         menu.setMnemonic('W');
@@ -70,6 +79,7 @@ public final class MenuImpl implements Menu {
         return menu;
     }
 
+    // EDT
     private JMenu createHelpMenu() {
         final JMenu menu = new JMenu("Help");
         menu.setMnemonic('H');
@@ -81,12 +91,14 @@ public final class MenuImpl implements Menu {
         return menu;
     }
 
+    // EDT
     private JMenu createFileMenu() {
         final JMenu menu = new JMenu("File");
         menu.setMnemonic('F');
         return menu;
     }
 
+    // EDT
     private void buildFileMenu() {
         fileMenu.removeAll();
         createMenuItem(MenuIdentifier.FileNew, "New...", 'N', fileMenu);
@@ -108,6 +120,7 @@ public final class MenuImpl implements Menu {
         createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
     }
     
+    // EDT
     private JMenu buildRecentList() {
         final JMenu submenu = new JMenu("Open recent");
         submenu.setMnemonic('r');
@@ -130,6 +143,7 @@ public final class MenuImpl implements Menu {
         return submenu;
     }
 
+    // EDT
     private void createMenuItem(final MenuIdentifier menuIdentifier,
             final String menuItemText, final char mnemonic, final JMenu menu) {
         final JMenuItem menuItem = new JMenuItem(menuItemText);
@@ -141,16 +155,25 @@ public final class MenuImpl implements Menu {
     /**
      * {@inheritDoc}
      */
+    // EDT
     public void enableCloseMenu(final boolean enabled) {
-        enableMenuItem(MenuIdentifier.FileClose, enabled);
-        enableMenuItem(MenuIdentifier.FileImport, enabled);
-        enableMenuItem(MenuIdentifier.FileExport, enabled);
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    enableMenuItem(MenuIdentifier.FileClose, enabled);
+                    enableMenuItem(MenuIdentifier.FileImport, enabled);
+                    enableMenuItem(MenuIdentifier.FileExport, enabled);
+                }
+            }
+        });
     }
     
+    // EDT
     private void enableMenuItem(final MenuIdentifier menuIdentifier, final boolean enabled) {
         menuWiring.getMenuItem(menuIdentifier).setEnabled(enabled);
     }
 
+    // EDT
     private void buildWindowMenu() {
         LOGGER.debug("building window menu");
         windowMenu.removeAll();
@@ -174,6 +197,7 @@ public final class MenuImpl implements Menu {
         windowMenu.setEnabled(true);
     }
 
+    // EDT
     private void enableCloseAllMenu() {
         enableMenuItem(MenuIdentifier.FileCloseAll, databases.size() != 0);
     }
@@ -181,46 +205,73 @@ public final class MenuImpl implements Menu {
     /**
      * {@inheritDoc}
      */
+    // EDT
     public void addDatabase(final String dbName) {
-        databases.add(dbName);
-        buildWindowMenu();
-        enableCloseAllMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    databases.add(dbName);
+                    buildWindowMenu();
+                    enableCloseAllMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void emptyDatabaseList() {
-        databases.clear();
-        currentDatabaseIndex = -1;
-        buildWindowMenu();
-        enableCloseMenu(false);
-        enableCloseAllMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    databases.clear();
+                    currentDatabaseIndex = -1;
+                    buildWindowMenu();
+                    enableCloseMenu(false);
+                    enableCloseAllMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void removeDatabase(final String dbName) {
-        databases.remove(dbName);
-        buildWindowMenu();
-        enableCloseAllMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    databases.remove(dbName);
+                    buildWindowMenu();
+                    enableCloseAllMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void switchDatabase(final String dbName) {
-        currentDatabaseIndex = databases.indexOf(dbName);
-        buildWindowMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    currentDatabaseIndex = databases.indexOf(dbName);
+                    buildWindowMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public JMenuBar getMenuBar() {
-        synchronized (menuBar) {
-            return menuBar;
+        synchronized (lock) {
+            synchronized (menuBar) {
+                return menuBar;
+            }
         }
     }
 
@@ -228,28 +279,52 @@ public final class MenuImpl implements Menu {
      * {@inheritDoc}
      */
     public void addDatabaseSwitchObserver(final Observer<DatabaseNameChoice> observer) {
-        windowMenuChoiceObservers.addObserver(observer);
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    windowMenuChoiceObservers.addObserver(observer);
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void addMenuActionListener(final MenuIdentifier menuIdentifier, final ActionListener actionListener) {
-        menuWiring.setActionListener(menuIdentifier, actionListener);
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    menuWiring.setActionListener(menuIdentifier, actionListener);
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void refreshRecentList(final String[] dbNames) {
-        this.recentDatabaseNames = dbNames;
-        buildFileMenu();
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    recentDatabaseNames = dbNames;
+                    buildFileMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void addOpenRecentObserver(final Observer<DatabaseNameChoice> observer) {
-        openRecentSubmenuChoiceObservers.addObserver(observer);
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    openRecentSubmenuChoiceObservers.addObserver(observer);
+                }
+            }
+        });
     }
 }
