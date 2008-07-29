@@ -96,6 +96,7 @@ public class Opener {
             final String dbName,
             final String pathToDatabase,
             final OpenerAdapter openerAdapter) throws DataAccessException {
+        openerAdapter.startOpening();
         LOGGER.info("Opening database '" + dbName + "' from path '" + pathToDatabase + "'");
         openerAdapter.reportProgress(ProgressStage.STARTING, "Starting to open");
 
@@ -110,6 +111,7 @@ public class Opener {
                 LOGGER.info("Opened OK");
         
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened OK");
+                openerAdapter.stopOpening();
                 return database;
                 
             } catch (final BadPasswordException bad) {
@@ -119,6 +121,7 @@ public class Opener {
                 if (dbPassword == null || dbPassword.equals("")) {
                     LOGGER.info("Open of encrypted database cancelled");
                     openerAdapter.reportProgress(ProgressStage.PASSWORD_CANCELLED, "Open cancelled");
+                    openerAdapter.stopOpening();
                     return null;
                 }
                 
@@ -126,11 +129,13 @@ public class Opener {
             } catch (final DataAccessResourceFailureException darfe) {
                 LOGGER.warn("Could not open database: " + darfe.getMessage());
                 openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database not found");
+                openerAdapter.stopOpening();
                 throw darfe;
                 
             } catch (final DataAccessException dae) {
                 LOGGER.warn("Data access exception opening database: " + dae.getMessage(), dae);
                 openerAdapter.reportProgress(ProgressStage.OPEN_FAILED, "Open failed");
+                openerAdapter.stopOpening();
                 throw dae;
             }
         }

@@ -4,7 +4,7 @@ Current outstanding small tasks:
 
 * add recent files list - make it open files
 
-* check Kohsuke's surname
+* fill in the rest of the acks in credits.html
 
 * Add a FAQ to the help contents with notes from the docs page re moving / renaming databases.
 
@@ -47,11 +47,16 @@ Current outstanding small tasks:
 * rename product
 * create getting started guide
 
+* create Maven dependencies plugin builder
 * create installer for windows
 * create .deb package for Ubuntu
+* upgrade Mac
+* create .app package for Mac OS X
 
 * blog category
-* sourceforge account
+* intro articles
+* sourceforge account? Don't forget Enrique's offer!
+* trac - Enrique!
 * upload v0.1 to sourceforge
 * release!
 

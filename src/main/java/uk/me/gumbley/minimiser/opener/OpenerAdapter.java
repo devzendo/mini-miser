@@ -1,9 +1,15 @@
 package uk.me.gumbley.minimiser.opener;
 
 /**
- * An Opener uses an OpenerAdapter to inform the user of progress during the
- * open, and to request any password, confirmation for migration, and to
- * inform the user of any failures.
+ * An Opener uses an OpenerAdapter to inform the user of:
+ * <ul>
+ * <li> progress during the open
+ * <li> to request any password
+ * <li> to request confirmation for migration
+ * <li> to inform the user of any failures.
+ * </ul>
+ * The start and end of an open operation can also be signalled, e.g. for
+ * setting and clearing the hourglass cursor.
  *  
  * @author matt
  *
@@ -71,6 +77,11 @@ public interface OpenerAdapter {
          */
         public static final ProgressStage OPEN_FAILED = new ProgressStage(3);
     };
+
+    /**
+     * The opening operation is starting. Always called before any progress.
+     */
+    void startOpening();
     
     /**
      * Report progress of the open operation to the user interface
@@ -85,4 +96,9 @@ public interface OpenerAdapter {
      * @return the password, or null if the user cancels the password entry.
      */
     String requestPassword();
+
+    /**
+     * The opening operation has completed. Always called after all progress.
+     */
+    void stopOpening();
 }

@@ -26,7 +26,6 @@ public final class ProblemDialog extends JDialog implements
     private JOptionPane optionPane;
     private String btnString1 = "Continue";
 
-    // WOZERE need to test possible combinations of this again manually
     /**
      * Creates the reusable dialog.
      * @param parentFrame the parent frame

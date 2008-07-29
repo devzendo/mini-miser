@@ -134,7 +134,10 @@ public final class MenuMediatorImpl implements MenuMediator {
             if (openDatabaseList.containsDatabase(new DatabaseDescriptor(databaseName))) {
                 openDatabaseList.switchDatabase(databaseName);
             } else {
-                
+                // WOZERE
+                // adapt between a global status with an opener adapter, and
+                // the Opener, then update the openDatabase.
+                // this is being tested TDD.
             }
         }
     }

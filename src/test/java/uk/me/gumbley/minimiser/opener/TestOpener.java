@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,11 @@ public final class TestOpener extends PersistenceUnittestCase {
     private final class ProgressRecorder {
         private Map<ProgressStage, List<String>> progressReceived = new HashMap<ProgressStage, List<String>>();
         private Set<ProgressStage> assertedStages = new HashSet<ProgressStage>();
+        private boolean startReceived = false;
+        private boolean stopReceived = false;
+        private boolean illegalProgressBeforeStart = false;
+        private boolean illegalProgressAfterStop = false;
+        
         /**
          * Gimme! 
          */
@@ -58,6 +64,12 @@ public final class TestOpener extends PersistenceUnittestCase {
          */
         public void receiveProgress(final ProgressStage progressStage, final String description) {
             LOGGER.info("Reached stage '" + progressStage + "' text '" + description + "'");
+            if (!startReceived) {
+                illegalProgressBeforeStart = true;
+            }
+            if (stopReceived) {
+                illegalProgressAfterStop = true;
+            }
             final List<String> descriptions;
             if (progressReceived.containsKey(progressStage)) {
                 descriptions = progressReceived.get(progressStage);
@@ -87,7 +99,7 @@ public final class TestOpener extends PersistenceUnittestCase {
         }
         
         /**
-         * Assert that all received stages were asserted. 
+         * Assert that all received stages were asserted.
          */
         public void assertAllProgressReceivedWasAsserted() {
             for (final ProgressStage progressStage : progressReceived.keySet()) {
@@ -95,6 +107,26 @@ public final class TestOpener extends PersistenceUnittestCase {
                         + " was received but was not asserted for",
                         assertedStages.contains(progressStage));
             }
+        }
+        
+        public void assertStopAndStartReceived() {
+            Assert.assertTrue("start() was not called on the OpenerAdapter", startReceived);
+            Assert.assertTrue("stop() was not called on the OpenerAdapter", stopReceived);
+            if (illegalProgressBeforeStart) {
+                Assert.fail("progress received but start() has not yet been called");
+            }
+            if (illegalProgressAfterStop) {
+                Assert.fail("progress received after stop() has been called");
+            }
+
+        }
+
+        public void startReceived() {
+            startReceived = true;
+        }
+
+        public void stopReceived() {
+            stopReceived = true;
         }
     }
 
@@ -113,9 +145,17 @@ public final class TestOpener extends PersistenceUnittestCase {
      * Don't allow any progress reports to have their detection missed - their
      * presence should each be asserted.
      */
-    //@After
+    @After
     public void checkForUnexpectedProgressReports() {
         progressRecorder.assertAllProgressReceivedWasAsserted();
+    }
+    
+    /**
+     * start() and stop() methods must also have been called.
+     */
+    @After
+    public void checkForStartAndStop() {
+        progressRecorder.assertStopAndStartReceived();
     }
     
     /**
@@ -137,6 +177,14 @@ public final class TestOpener extends PersistenceUnittestCase {
                     public String requestPassword() {
                         Assert.fail("Not an encrypted db; password should not have been prompted for");
                         return null;
+                    }
+
+                    public void startOpening() {
+                        progressRecorder.startReceived();
+                    }
+
+                    public void stopOpening() {
+                        progressRecorder.stopReceived();
                     }
                 };
                 
@@ -185,6 +233,14 @@ public final class TestOpener extends PersistenceUnittestCase {
 
                     public String requestPassword() {
                         return dbPassword;
+                    }
+
+                    public void startOpening() {
+                        progressRecorder.startReceived();
+                    }
+
+                    public void stopOpening() {
+                        progressRecorder.stopReceived();
                     }
                 };
                 
@@ -238,6 +294,14 @@ public final class TestOpener extends PersistenceUnittestCase {
 
                     public String requestPassword() {
                         return "";
+                    }
+
+                    public void startOpening() {
+                        progressRecorder.startReceived();
+                    }
+
+                    public void stopOpening() {
+                        progressRecorder.stopReceived();
                     }
                 };
                 
@@ -295,6 +359,14 @@ public final class TestOpener extends PersistenceUnittestCase {
                         LOGGER.info("Trying password '" + password + "'");
                         return password;
                     }
+
+                    public void startOpening() {
+                        progressRecorder.startReceived();
+                    }
+
+                    public void stopOpening() {
+                        progressRecorder.stopReceived();
+                    }
                 };
                 
                 // Note that the password isn't passed into the opener, since
@@ -348,6 +420,14 @@ public final class TestOpener extends PersistenceUnittestCase {
                 Assert.fail("Not an encrypted db; password should not have been prompted for");
                 return null;
             }
+
+            public void startOpening() {
+                progressRecorder.startReceived();
+            }
+
+            public void stopOpening() {
+                progressRecorder.stopReceived();
+            }
         };
         try {
             opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
@@ -399,6 +479,14 @@ public final class TestOpener extends PersistenceUnittestCase {
                     public String requestPassword() {
                         Assert.fail("Not an encrypted db; password should not have been prompted for");
                         return null;
+                    }
+
+                    public void startOpening() {
+                        progressRecorder.startReceived();
+                    }
+
+                    public void stopOpening() {
+                        progressRecorder.stopReceived();
                     }
                 };
                 try {
