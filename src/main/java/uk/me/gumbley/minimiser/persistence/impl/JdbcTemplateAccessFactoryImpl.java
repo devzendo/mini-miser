@@ -128,7 +128,6 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final boolean closed = dbSetup.getDataSource().getConnection().isClosed();
             LOGGER.debug("db is initially closed? " + closed);
         } catch (final SQLException e) {
-            LOGGER.debug("SQLException from isClosed", e);
             switch (e.getErrorCode()) {
                 case ErrorCode.DATABASE_NOT_FOUND_1:
                     final String dbnfMessage = String.format("Database at %s not found", databasePath);
@@ -139,6 +138,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                     LOGGER.debug(feeMessage);
                     throw new BadPasswordException(feeMessage);
                 default:
+                    LOGGER.warn("SQLException from isClosed", e);
                     // Assume that anything that goes wrong here is bad...
                     throw new org.springframework.jdbc.UncategorizedSQLException(
                         String.format("Could not open database - SQL Error Code %d",
