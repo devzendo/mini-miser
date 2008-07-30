@@ -1,5 +1,8 @@
 package uk.me.gumbley.minimiser.opener;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+
 /**
  * An Opener uses an OpenerAdapter to inform the user of:
  * <ul>
@@ -24,8 +27,10 @@ public interface OpenerAdapter {
      */
     public final class ProgressStage {
         private int enumValue;
-        private ProgressStage(final int val) {
+        private String name;
+        private ProgressStage(final int val, final String psName) {
             enumValue = val;
+            name = psName;
         }
         
         /**
@@ -46,36 +51,43 @@ public interface OpenerAdapter {
         }
         
         /**
+         * {@inheritDoc}
+         */
+        public String toString() {
+            return name;
+        }
+        
+        /**
          * The open operation is starting. Sent almost immediately to give some
          * immediate feedback.
          */
-        public static final ProgressStage STARTING = new ProgressStage(0);
+        public static final ProgressStage STARTING = new ProgressStage(0, "STARTING");
         /**
          * Sent immediately prior to opening the database. 
          */
-        public static final ProgressStage OPENING = new ProgressStage(1);
+        public static final ProgressStage OPENING = new ProgressStage(1, "OPENING");
 
         /**
          * Sent before the password is requested from the adapter. 
          */
-        public static final ProgressStage PASSWORD_REQUIRED = new ProgressStage(2); 
+        public static final ProgressStage PASSWORD_REQUIRED = new ProgressStage(2, "PASSWORD_REQUIRED"); 
 
         /**
          * Sent upon successful open. 
          */
-        public static final ProgressStage OPENED = new ProgressStage(3);
+        public static final ProgressStage OPENED = new ProgressStage(3, "OPENED");
         /**
          * The user cancelled the password entry on an encrypted database. 
          */
-        public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(3);
+        public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(3, "PASSWORD_CANCELLED");
         /**
          * The database is not present. 
          */
-        public static final ProgressStage NOT_PRESENT = new ProgressStage(3);
+        public static final ProgressStage NOT_PRESENT = new ProgressStage(3, "NOT_PRESENT");
         /**
          * Failed to open for a serious reason 
          */
-        public static final ProgressStage OPEN_FAILED = new ProgressStage(3);
+        public static final ProgressStage OPEN_FAILED = new ProgressStage(3, "OPEN_FAILED");
     };
 
     /**
@@ -96,6 +108,20 @@ public interface OpenerAdapter {
      * @return the password, or null if the user cancels the password entry.
      */
     String requestPassword();
+    
+    /**
+     * Report to the user that the database could not be found.
+     * @param exception the not found exception that has occurred
+     */
+    void databaseNotFound(DataAccessResourceFailureException exception);
+    
+    /**
+     * Report to the user that a serious problem has occurred.
+     * Note that this should be treated as a very bad problem (database
+     * corruption?) - so log a problem report.
+     * @param exception the data access exception that has occurred.
+     */
+    void seriousProblemOccurred(DataAccessException exception);
 
     /**
      * The opening operation has completed. Always called after all progress.

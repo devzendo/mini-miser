@@ -15,10 +15,9 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="openerHelper" class="uk.me.gumbley.minimiser.gui.OpenerHelper" lazy-init="true" >
+	<bean id="opener" class="uk.me.gumbley.minimiser.opener.Opener" lazy-init="true" >
 		<constructor-arg ref="accessFactory" />
 		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="cursorManager" />
 	</bean>
 	
 	<bean id="menu" class="uk.me.gumbley.minimiser.gui.menu.MenuImpl" lazy-init="true" >
@@ -45,7 +44,7 @@
 	<bean id="menuALFileOpen" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileOpenActionListener" lazy-init="true" >
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="cursorManager" />
-		<constructor-arg ref="openerHelper" />
+		<constructor-arg ref="opener" />
 	</bean>
 	<bean id="menuALFileClose" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseActionListener" lazy-init="true" >
 		<constructor-arg ref="openDatabaseList" />

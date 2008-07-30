@@ -11,16 +11,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.log4j.Logger;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
-
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
+import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
@@ -35,6 +39,7 @@ public final class TestOpener extends PersistenceUnittestCase {
     private static final Logger LOGGER = Logger.getLogger(TestOpener.class);
     
     private AccessFactory accessFactory;
+    private OpenDatabaseList openDatabaseList;
     private Opener opener;
     private ProgressRecorder progressRecorder;
     
@@ -50,6 +55,8 @@ public final class TestOpener extends PersistenceUnittestCase {
         private boolean stopReceived = false;
         private boolean illegalProgressBeforeStart = false;
         private boolean illegalProgressAfterStop = false;
+        private boolean notFoundReceived = false;
+        private boolean seriousProblemReceived = false;
         
         /**
          * Gimme! 
@@ -118,7 +125,6 @@ public final class TestOpener extends PersistenceUnittestCase {
             if (illegalProgressAfterStop) {
                 Assert.fail("progress received after stop() has been called");
             }
-
         }
 
         public void startReceived() {
@@ -127,6 +133,30 @@ public final class TestOpener extends PersistenceUnittestCase {
 
         public void stopReceived() {
             stopReceived = true;
+        }
+
+        public void notFoundReceived() {
+            notFoundReceived = true;
+        }
+        
+        public void seriousProblemReceived() {
+            seriousProblemReceived = true;
+        }
+
+        public void assertNotFoundReceived() {
+            Assert.assertTrue("notFound should have been called but was not", notFoundReceived);
+        }
+
+        public void assertSeriousProblemReceived() {
+            Assert.assertTrue("seriousProblem should have been called but was not", seriousProblemReceived);
+        }
+
+        public void assertNotFoundNotReceived() {
+            Assert.assertFalse("notFound should not have been called but was", notFoundReceived);
+        }
+
+        public void assertSeriousProblemNotReceived() {
+            Assert.assertFalse("seriousProblem should not have been called but was", seriousProblemReceived);
         }
     }
 
@@ -137,7 +167,8 @@ public final class TestOpener extends PersistenceUnittestCase {
     @Before
     public void getPrerequisites() {
         accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
-        opener = new Opener(accessFactory);
+        openDatabaseList = new OpenDatabaseList();
+        opener = new Opener(accessFactory, openDatabaseList);
         progressRecorder = new ProgressRecorder();
     }
 
@@ -159,6 +190,45 @@ public final class TestOpener extends PersistenceUnittestCase {
     }
     
     /**
+     * Does most of the things a test OpenerAdapter needs - except supplying
+     * a password
+     * @author matt
+     *
+     */
+    private abstract class AbstractTestOpenerAdapter implements OpenerAdapter {
+        private final ProgressRecorder recorder;
+
+        /**
+         * Make me one!
+         * @param progRecorder the recorder to notify of events
+         */
+        public AbstractTestOpenerAdapter(final ProgressRecorder progRecorder) {
+            recorder = progRecorder;
+        }
+
+        public final void reportProgress(final ProgressStage progressStage, final String description) {
+            recorder.receiveProgress(progressStage, description);
+        }
+
+        public final void startOpening() {
+            recorder.startReceived();
+        }
+        
+        public final void databaseNotFound(final DataAccessResourceFailureException darfe) {
+            LOGGER.warn("Database not found: "  + darfe.getMessage());
+            recorder.notFoundReceived();
+        }
+        
+        public final void seriousProblemOccurred(final DataAccessException dae) {
+            LOGGER.warn("Serious problem detected: " + dae.getMessage());
+            recorder.seriousProblemReceived();
+        }
+
+        public final void stopOpening() {
+            recorder.stopReceived();
+        }
+    };
+    /**
      * 
      */
     @Test(timeout = 8000)
@@ -166,28 +236,22 @@ public final class TestOpener extends PersistenceUnittestCase {
         LOGGER.info("** progressNotificationsOnPlainOpen");
         final String dbName = "progressplain";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
+            @SuppressWarnings("unchecked")
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 
-                final OpenerAdapter openerAdapter = new OpenerAdapter() {
-
-                    public void reportProgress(final ProgressStage progressStage, final String description) {
-                        progressRecorder.receiveProgress(progressStage, description);
-                    }
-
+                final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
                     public String requestPassword() {
                         Assert.fail("Not an encrypted db; password should not have been prompted for");
                         return null;
                     }
-
-                    public void startOpening() {
-                        progressRecorder.startReceived();
-                    }
-
-                    public void stopOpening() {
-                        progressRecorder.stopReceived();
-                    }
                 };
-                
+                final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+                obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent(dbName, dbDirPlusDbName)));
+                obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(dbName)));
+                EasyMock.replay(obs);
+
+                openDatabaseList.addDatabaseEventObserver(obs);
+
                 // Note that the password isn't passed into the opener, since
                 // it's prompted for (and provided by the OpenerAdapter). It's
                 // used by createDatabaseWithPluggableBehaviourBeforeDeletion
@@ -203,7 +267,11 @@ public final class TestOpener extends PersistenceUnittestCase {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENED);
                     
                     Assert.assertNotNull(database);
-
+                    
+                    progressRecorder.assertNotFoundNotReceived();
+                    progressRecorder.assertSeriousProblemNotReceived();
+                    
+                    EasyMock.verify(obs);
                 } finally {
                     if (database != null) {
                         database.close();
@@ -222,27 +290,20 @@ public final class TestOpener extends PersistenceUnittestCase {
         final String dbName = "progressenc";
         final String dbPassword = "Squeamish Ossifrage";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
+            @SuppressWarnings("unchecked")
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
-                
 
-                final OpenerAdapter openerAdapter = new OpenerAdapter() {
-
-                    public void reportProgress(final ProgressStage progressStage, final String description) {
-                        progressRecorder.receiveProgress(progressStage, description);
-                    }
-
+                final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
                     public String requestPassword() {
                         return dbPassword;
                     }
-
-                    public void startOpening() {
-                        progressRecorder.startReceived();
-                    }
-
-                    public void stopOpening() {
-                        progressRecorder.stopReceived();
-                    }
                 };
+                final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+                obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent(dbName, dbDirPlusDbName)));
+                obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(dbName)));
+                EasyMock.replay(obs);
+
+                openDatabaseList.addDatabaseEventObserver(obs);
                 
                 // Note that the password isn't passed into the opener, since
                 // it's prompted for (and provided by the OpenerAdapter). It's
@@ -265,7 +326,11 @@ public final class TestOpener extends PersistenceUnittestCase {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENED);
                     
                     Assert.assertNotNull(database);
+                    
+                    progressRecorder.assertNotFoundNotReceived();
+                    progressRecorder.assertSeriousProblemNotReceived();
 
+                    EasyMock.verify(obs);
                 } finally {
                     if (database != null) {
                         database.close();
@@ -284,27 +349,19 @@ public final class TestOpener extends PersistenceUnittestCase {
         final String dbName = "progressencabandon";
         final String dbPassword = "Squeamish Ossifrage";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
+            @SuppressWarnings("unchecked")
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 
-                final OpenerAdapter openerAdapter = new OpenerAdapter() {
-
-                    public void reportProgress(final ProgressStage progressStage, final String description) {
-                        progressRecorder.receiveProgress(progressStage, description);
-                    }
-
+                final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
                     public String requestPassword() {
                         return "";
                     }
-
-                    public void startOpening() {
-                        progressRecorder.startReceived();
-                    }
-
-                    public void stopOpening() {
-                        progressRecorder.stopReceived();
-                    }
                 };
-                
+                final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+                EasyMock.replay(obs);
+
+                openDatabaseList.addDatabaseEventObserver(obs);
+                                
                 // Note that the password isn't passed into the opener, since
                 // it's prompted for (and provided by the OpenerAdapter). It's
                 // used by createDatabaseWithPluggableBehaviourBeforeDeletion
@@ -325,6 +382,11 @@ public final class TestOpener extends PersistenceUnittestCase {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.PASSWORD_CANCELLED);
 
                     Assert.assertNull(database);
+                    
+                    progressRecorder.assertNotFoundNotReceived();
+                    progressRecorder.assertSeriousProblemNotReceived();
+
+                    EasyMock.verify(obs);
                 } finally {
                     if (database != null) {
                         database.close();
@@ -344,30 +406,23 @@ public final class TestOpener extends PersistenceUnittestCase {
         final String[] dbPasswordAttempts = new String[] {"Squeamish Ossifrage", "Tantric Obstacles"};
         final AtomicInteger passwordAttempt = new AtomicInteger(1);
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPasswordAttempts[0], new RunOnCreatedDb() {
+            @SuppressWarnings("unchecked")
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 
-
-                final OpenerAdapter openerAdapter = new OpenerAdapter() {
-
-                    public void reportProgress(final ProgressStage progressStage, final String description) {
-                        progressRecorder.receiveProgress(progressStage, description);
-                    }
-
+                final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
                     public String requestPassword() {
                         final int index = passwordAttempt.getAndDecrement();
                         final String password = dbPasswordAttempts[index];
                         LOGGER.info("Trying password '" + password + "'");
                         return password;
                     }
-
-                    public void startOpening() {
-                        progressRecorder.startReceived();
-                    }
-
-                    public void stopOpening() {
-                        progressRecorder.stopReceived();
-                    }
                 };
+                final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+                obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent(dbName, dbDirPlusDbName)));
+                obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(dbName)));
+                EasyMock.replay(obs);
+
+                openDatabaseList.addDatabaseEventObserver(obs);
                 
                 // Note that the password isn't passed into the opener, since
                 // it's prompted for (and provided by the OpenerAdapter). It's
@@ -393,6 +448,11 @@ public final class TestOpener extends PersistenceUnittestCase {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENED);
                     
                     Assert.assertNotNull(database);
+                    
+                    progressRecorder.assertNotFoundNotReceived();
+                    progressRecorder.assertSeriousProblemNotReceived();
+
+                    EasyMock.verify(obs);
                 } finally {
                     if (database != null) {
                         database.close();
@@ -405,43 +465,32 @@ public final class TestOpener extends PersistenceUnittestCase {
     /**
      * 
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void progressNotificationsExceptionOnOpenOfNonExistant() {
         LOGGER.info("** progressNotificationsExceptionOnOpenOfNonExistant");
         final String dbName = "wah";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final OpenerAdapter openerAdapter = new OpenerAdapter() {
-
-            public void reportProgress(final ProgressStage progressStage, final String description) {
-                progressRecorder.receiveProgress(progressStage, description);
-            }
-
+        final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
             public String requestPassword() {
                 Assert.fail("Not an encrypted db; password should not have been prompted for");
                 return null;
             }
-
-            public void startOpening() {
-                progressRecorder.startReceived();
-            }
-
-            public void stopOpening() {
-                progressRecorder.stopReceived();
-            }
         };
-        try {
-            opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
-            Assert.fail("Should not have been able to open a nonexistant database");
-        } catch (final DataAccessResourceFailureException darfe) {
-            LOGGER.info("Correctly caught a DataAccessResourceFailureException:" + darfe.getMessage());
-        } catch (final DataAccessException dae) {
-            Assert.fail("Should not have caught a " + dae.getClass().getName() + " opening a nonexistant database: " + dae.getMessage());
-        }
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        EasyMock.replay(obs);
+
+        Assert.assertNull(opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter));
         progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
         
         progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENING);
 
         progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.NOT_PRESENT);
+        
+        progressRecorder.assertNotFoundReceived();
+        progressRecorder.assertSeriousProblemNotReceived();
+
+        EasyMock.verify(obs);
     }
     
     /**
@@ -452,52 +501,26 @@ public final class TestOpener extends PersistenceUnittestCase {
         LOGGER.info("** progressNotificationsExceptionOnOpenOfCorrupt");
         final String dbName = "corrupt";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
+            @SuppressWarnings("unchecked")
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
 
                 // Corrupt the database
                 final File dbFile = new File(getAbsoluteDatabaseDirectory(dbName) + ".data.db");
                 LOGGER.info("data file is " + dbFile.getAbsolutePath());
                 Assert.assertTrue(dbFile.exists());
-                RandomAccessFile raf;
-                try {
-                    raf = new RandomAccessFile(dbFile, "rw");
-                    raf.seek(1024);
-                    raf.writeChars("Let's write all over the database, to see if it'll fail to open!");
-                    raf.close();
-                } catch (final FileNotFoundException e) {
-                    Assert.fail("Got a file not found!: " + e.getMessage());
-                } catch (final IOException e) {
-                    Assert.fail("Got an IOexception!: " + e.getMessage());
-                }
+                corruptFile(dbFile);
 
-                final OpenerAdapter openerAdapter = new OpenerAdapter() {
-
-                    public void reportProgress(final ProgressStage progressStage, final String description) {
-                        progressRecorder.receiveProgress(progressStage, description);
-                    }
-
+                final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
                     public String requestPassword() {
                         Assert.fail("Not an encrypted db; password should not have been prompted for");
                         return null;
                     }
-
-                    public void startOpening() {
-                        progressRecorder.startReceived();
-                    }
-
-                    public void stopOpening() {
-                        progressRecorder.stopReceived();
-                    }
                 };
-                try {
-                    opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
-                    Assert.fail("Should not have been able to open a corrupt database");
-                } catch (final DataAccessResourceFailureException darfe) {
-                    LOGGER.warn("Caught unexpected: ", darfe);
-                    Assert.fail("Should not have caught a " + darfe.getClass().getName() + " opening a corrupt database");
-                } catch (final DataAccessException dae) {
-                    LOGGER.info("Correctly caught a DataAccessException:" + dae.getMessage(), dae);
-                }
+                final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+                EasyMock.replay(obs);
+
+                Assert.assertNull(opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter));
+
                 progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
                 
                 progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENING);
@@ -505,7 +528,27 @@ public final class TestOpener extends PersistenceUnittestCase {
                 Assert.assertEquals("Opening database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
                 
                 progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPEN_FAILED);
+                
+                
+                progressRecorder.assertNotFoundNotReceived();
+                progressRecorder.assertSeriousProblemReceived();
+
+                EasyMock.verify(obs);
             }
         });
+    }
+
+    private void corruptFile(final File dbFile) {
+        RandomAccessFile raf;
+        try {
+            raf = new RandomAccessFile(dbFile, "rw");
+            raf.seek(1024);
+            raf.writeChars("Let's write all over the database, to see if it'll fail to open!");
+            raf.close();
+        } catch (final FileNotFoundException e) {
+            Assert.fail("Got a file not found!: " + e.getMessage());
+        } catch (final IOException e) {
+            Assert.fail("Got an IOexception!: " + e.getMessage());
+        }
     }
 }

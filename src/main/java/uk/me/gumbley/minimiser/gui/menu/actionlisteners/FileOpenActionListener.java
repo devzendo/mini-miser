@@ -8,10 +8,10 @@ import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.OpenerHelper;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenResult;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardChooseFolderPage;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardIntroPage;
+import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 
 /**
@@ -23,21 +23,21 @@ import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 public final class FileOpenActionListener implements ActionListener {
     private final OpenDatabaseList databaseList;
     private final CursorManager cursor;
-    private final OpenerHelper openerHelp;
+    private final Opener dbOpener;
 
     /**
      * Construct the listener
      * @param openDatabaseList the open database list singleton
      * @param cursorManager the cursor manager
-     * @param openerHelper the opener helper singleton
+     * @param opener the database opener
      */
     public FileOpenActionListener(final OpenDatabaseList openDatabaseList,
             final CursorManager cursorManager,
-            final OpenerHelper openerHelper) {
+            final Opener opener) {
         super();
         this.databaseList = openDatabaseList;
         this.cursor = cursorManager;
-        this.openerHelp = openerHelper;
+        this.dbOpener = opener;
     }
 
     /**
@@ -56,7 +56,7 @@ public final class FileOpenActionListener implements ActionListener {
 
             @SuppressWarnings("unchecked")
             public Object finish(final Map settings) throws WizardException {
-                return new FileOpenResult(cursor, openerHelp);
+                return new FileOpenResult(cursor, dbOpener);
             }
         };
         final Wizard wizard = WizardPage.createWizard(wizardPages, producer);

@@ -9,8 +9,8 @@ import org.netbeans.spi.wizard.ResultProgressHandle;
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.OpenerHelper;
 import uk.me.gumbley.minimiser.opener.AbstractOpenerAdapter;
+import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 
 /**
@@ -20,17 +20,17 @@ import uk.me.gumbley.minimiser.opener.OpenerAdapter;
  */
 public final class FileOpenResult extends DeferredWizardResult {
     private static final Logger LOGGER = Logger.getLogger(FileOpenResult.class);
-    private final OpenerHelper openerHelp;
+    private final Opener dbOpener;
     private CursorManager cursor;
 
     /**
      * Create the FileOpenResult creation worker
      * @param cursorManager the cursor manager
-     * @param openerHelper the opener helper
+     * @param opener the database opener
      */
-    public FileOpenResult(final CursorManager cursorManager, final OpenerHelper openerHelper) {
+    public FileOpenResult(final CursorManager cursorManager, final Opener opener) {
         this.cursor = cursorManager;
-        this.openerHelp = openerHelper;
+        this.dbOpener = opener;
     }
     
     private final class FileOpenWizardOpenerAdapter extends AbstractOpenerAdapter {
@@ -80,8 +80,7 @@ public final class FileOpenResult extends DeferredWizardResult {
 
         // TODO pass the wizard's frame in here
         final OpenerAdapter openerAdapter = new FileOpenWizardOpenerAdapter(null, dbName, cursor, progress);
-        // TODO pass the wizard's frame in here
-        openerHelp.openWithOpener(null, dbName, dbFullPath, openerAdapter);
+        dbOpener.openDatabase(dbName, dbFullPath, openerAdapter);
 
         // A small delay to allow the user to notice the
         // Opened OK progress result - otherwise the wizard just

@@ -5,12 +5,15 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 
 /**
- * The Opener is responsible for opening databases.
+ * The Opener is responsible for opening databases, informing the user and
+ * adding the opened database to the open database list.
  * <p>
  * Requests to open are started by the openDatabase call; progress is reported
  * via notifications given to an adapter passed in the call.
@@ -33,12 +36,11 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
  * <li> the Open recent... submenu
  * </ul>
  * 
- * The Opener does <em>not</em> add the opened database to the OpenDatabaseList,
- * rather, it is returned by the openDatabase call, and it's up to the
- * calling code to do this.
+ * If successfully opened, the Opener adds the opened database to the
+ * OpenDatabaseList.
  * <p>
- * Furthermore the Opener does not set/clear the hourglass cursor, again, it's
- * up to the caller to do this around Opener activity.
+ * The separation of concerns between persistance and display is achieved
+ * with the Opener / OpenerAdapter (persistence / display).
  * <p>
  * The notifications can be used to update a progress indicator, either in the
  * File|Open wizard or status bar, depending on what's calling the Opener.
@@ -51,23 +53,28 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
  * @author matt
  *
  */
-public class Opener {
+public final class Opener {
     private static final Logger LOGGER = Logger.getLogger(Opener.class);
     
     private final AccessFactory access;
+    private final OpenDatabaseList databaseList;
 
     /**
      * Construct the Opener.
      * @param accessFactory the access factory used for accessing databases
+     * @param openDatabaseList the open database list, which will be added to
      */
-    public Opener(final AccessFactory accessFactory) {
+    public Opener(final AccessFactory accessFactory, final OpenDatabaseList openDatabaseList) {
         this.access = accessFactory;
+        this.databaseList = openDatabaseList;
     }
 
     /**
-     * Open the named database and report progress. Note that it is not the
-     * responsibility of the Opener to add a successfully-opened database to
-     * the OpenDatabaseList.
+     * Open the named database and report progress.
+     * 
+     * Note that it is not (yet) the responsibility of the Opener to add a
+     * successfully-opened database to the OpenDatabaseList.
+     * <p>
      * @param dbName the name of the database, typically for display.
      * <p>
      * Typically if called from the UI, this would be the name of the directory
@@ -78,24 +85,19 @@ public class Opener {
      * be the test database directory.
      * @param pathToDatabase the full path that will be used to open the
      * database by the access factory.
-     * @param openerAdapter an adapter that will be notified of open progress
-     * and requests for information (passwords, confirmation for migration).
+     * @param openerAdapter an adapter that will be notified of the start and
+     * end of the open operation, ongoing progress of the open,
+     * requests for information (passwords, confirmation for migration),
+     * database not found and serious problems.
      * @return null if the database open was cancelled, e.g. if the password
      * was required, but the user cancelled entry of it. If the open succeeds,
-     * the MiniMiserDatabase is returned.
-     * @throws DataAccessException upon database open failure, other than a 
-     * bad password, which will be prompted for. 
-     * <p>
-     * Note that this should be treated as a very bad problem (database
-     * corruption?) - so log a problem report.
-     * <p>
-     * Note that if you receive the subclass DataAccessResourceFailureException
-     * then this indicates that the database isn't there - so just say "nope". 
+     * the MiniMiserDatabase is returned. It is also added to the
+     * OpenDatabaseList.
      */
     public MiniMiserDatabase openDatabase(
             final String dbName,
             final String pathToDatabase,
-            final OpenerAdapter openerAdapter) throws DataAccessException {
+            final OpenerAdapter openerAdapter) {
         openerAdapter.startOpening();
         LOGGER.info("Opening database '" + dbName + "' from path '" + pathToDatabase + "'");
         openerAdapter.reportProgress(ProgressStage.STARTING, "Starting to open");
@@ -112,6 +114,9 @@ public class Opener {
         
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened OK");
                 openerAdapter.stopOpening();
+                
+                databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, pathToDatabase, database));
+
                 return database;
                 
             } catch (final BadPasswordException bad) {
@@ -129,14 +134,16 @@ public class Opener {
             } catch (final DataAccessResourceFailureException darfe) {
                 LOGGER.warn("Could not open database: " + darfe.getMessage());
                 openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database not found");
+                openerAdapter.databaseNotFound(darfe);
                 openerAdapter.stopOpening();
-                throw darfe;
+                return null;
                 
             } catch (final DataAccessException dae) {
                 LOGGER.warn("Data access exception opening database: " + dae.getMessage(), dae);
                 openerAdapter.reportProgress(ProgressStage.OPEN_FAILED, "Open failed");
+                openerAdapter.seriousProblemOccurred(dae);
                 openerAdapter.stopOpening();
-                throw dae;
+                return null;
             }
         }
     }

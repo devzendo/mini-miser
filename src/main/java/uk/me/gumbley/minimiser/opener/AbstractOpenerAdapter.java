@@ -1,8 +1,14 @@
 package uk.me.gumbley.minimiser.opener;
 
 import java.awt.Frame;
+import javax.swing.JOptionPane;
+import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
+import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
 
 /**
  * Provides the common app-wide facilities of an OpenerAdapter:
@@ -18,6 +24,8 @@ import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
  *
  */
 public abstract class AbstractOpenerAdapter implements OpenerAdapter {
+    private static final Logger LOGGER = Logger
+            .getLogger(AbstractOpenerAdapter.class);
     private Frame parentFrame;
     private final String dbName;
     private final CursorManager cursorManager;
@@ -49,6 +57,29 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
         cursorManager.hourglassViaEventThread();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public final void databaseNotFound(final DataAccessResourceFailureException exception) {
+        LOGGER.warn("Could not open database '" + dbName + "': " + exception.getMessage());
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                JOptionPane.showMessageDialog(parentFrame,
+                    "Could not open database '" + dbName + "'\n" + exception.getMessage(),
+                    "Could not open database '" + dbName + "'",
+                    JOptionPane.OK_OPTION);
+            }
+        });
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public final void seriousProblemOccurred(final DataAccessException exception) {
+        LOGGER.warn("Data access exception: " + exception.getMessage(), exception);
+        ProblemDialog.reportProblem(parentFrame, "trying to open database '" + dbName + "'.", exception);
+    }
+    
     /**
      * {@inheritDoc}
      */
