@@ -33,12 +33,12 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
     /**
      * Construct the AbstractOpenerAdapter
      * @param frame the parent frame over which any dialogs would be displayed
-     * @param name the name of the database to open
+     * @param databaseName the name of the database to open
      * @param cursorMgr the cursor manager
      */
-    public AbstractOpenerAdapter(final Frame frame, final String name, final CursorManager cursorMgr) {
+    public AbstractOpenerAdapter(final Frame frame, final String databaseName, final CursorManager cursorMgr) {
         this.parentFrame = frame;
-        this.dbName = name;
+        this.dbName = databaseName;
         this.cursorManager = cursorMgr;
     }
 

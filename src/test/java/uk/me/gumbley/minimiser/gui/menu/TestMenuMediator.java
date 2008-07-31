@@ -27,6 +27,8 @@ public final class TestMenuMediator extends LoggingTestCase {
     private StubMenu stubMenu;
     private OpenDatabaseList openDatabaseList;
     private RecentFilesList recentFilesList;
+    private StubOpener stubOpener;
+    private StubOpenerAdapterFactory stubOpenerAdapterFactory;
 
     /**
      * Get all necessaries
@@ -38,10 +40,12 @@ public final class TestMenuMediator extends LoggingTestCase {
         openDatabaseList = new OpenDatabaseList();
         recentFilesList = EasyMock.createStrictMock(RecentFilesList.class);
         recentFilesList.addRecentListEventObserver(EasyMock.isA(Observer.class));
+        stubOpener = new StubOpener();
+        stubOpenerAdapterFactory = new StubOpenerAdapterFactory();
     }
 
     private void startMediator() {
-        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList);
+        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList, stubOpener, stubOpenerAdapterFactory);
     }
     
     /**
@@ -162,7 +166,6 @@ public final class TestMenuMediator extends LoggingTestCase {
      * the before section. 
      */
     @Test
-    @Ignore
     public void openRecentWhenNotCurrentlyOpenedShouldOpen() {
         final StubRecentFilesList stubRecentFilesList = new StubRecentFilesList(); 
         recentFilesList = stubRecentFilesList;
@@ -186,7 +189,7 @@ public final class TestMenuMediator extends LoggingTestCase {
         Assert.assertFalse(openedOne.get());
     
         stubMenu.injectOpenRecentRequest("one");
-
+        // WOZERE fix this!
         Assert.assertTrue("did not open not-opened on recent open of not-opened db", openedOne.get());
     }
 
@@ -288,5 +291,30 @@ public final class TestMenuMediator extends LoggingTestCase {
         Assert.assertTrue(stubMenu.getNumberOfDatabases() == 0);
         Assert.assertNull(stubMenu.getCurrentDatabase());
         Assert.assertFalse(stubMenu.isCloseEnabled());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void openerOpeningAddsToDatabaseList() {
+        startMediator();
+
+        final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one", "/tmp/one");
+
+        final AtomicBoolean openedOne = new AtomicBoolean(false);
+        openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
+            public void eventOccurred(final DatabaseEvent observableEvent) {
+                if (observableEvent instanceof DatabaseOpenedEvent) {
+                    final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) observableEvent;
+                    if (doe.getDatabaseName().equals("one")) {
+                        openedOne.set(true);
+                    }
+                }
+            }
+        });
+
+        stubOpener.openDatabase("one", "/tmp/one", null);
+        Assert.assertTrue(openedOne.get());
     }
 }

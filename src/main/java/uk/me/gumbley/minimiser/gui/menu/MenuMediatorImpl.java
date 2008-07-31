@@ -1,8 +1,15 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
+import java.awt.Frame;
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.CursorManager;
+import uk.me.gumbley.minimiser.opener.AbstractOpenerAdapter;
+import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
+import uk.me.gumbley.minimiser.opener.IOpener;
+import uk.me.gumbley.minimiser.opener.OpenerAdapter;
+import uk.me.gumbley.minimiser.opener.OpenerAdapterFactory;
 import uk.me.gumbley.minimiser.openlist.DatabaseClosedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
@@ -25,18 +32,26 @@ public final class MenuMediatorImpl implements MenuMediator {
     private final Menu menu;
     private final OpenDatabaseList openDatabaseList;
     private final RecentFilesList recentFilesList;
+    private final IOpener opener;
+    private final OpenerAdapterFactory openerAdapterFactory;
     
     /**
      * Create a Mediator between application events and the menu
      * @param leMenu ici un menu
      * @param odl the open database list
      * @param recentFiles the recent files list
+     * @param ope the opener
+     * @param oaf the OpenerAdapterFactory
      */
-    public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl, final RecentFilesList recentFiles) {
+    public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl,
+            final RecentFilesList recentFiles, final IOpener ope,
+            final OpenerAdapterFactory oaf) {
         LOGGER.info("initialising MenuMediatorImpl");
         menu = leMenu;
         openDatabaseList = odl;
         recentFilesList = recentFiles;
+        opener = ope;
+        openerAdapterFactory = oaf;
         initialiseMenu();
         wireAdapters();
         LOGGER.info("initialised MenuMediatorImpl");
@@ -56,6 +71,8 @@ public final class MenuMediatorImpl implements MenuMediator {
         menu.addOpenRecentObserver(new OpenRecentObserver());
         // recent list -> menu
         recentFilesList.addRecentListEventObserver(new RecentListEventObserver());
+        // opener -> ODL
+        opener.addDatabaseOpenObserver(new DatabaseOpenEventObserver());
     }
     
     /**
@@ -91,6 +108,7 @@ public final class MenuMediatorImpl implements MenuMediator {
     
     /**
      * Adapts between window menu changes and open database switching
+     * 
      * @author matt
      *
      */
@@ -106,6 +124,7 @@ public final class MenuMediatorImpl implements MenuMediator {
     /**
      * Adapts between recent list updates and the menu, to update the recent
      * list menu.
+     * 
      * @author matt
      *
      */
@@ -122,6 +141,7 @@ public final class MenuMediatorImpl implements MenuMediator {
      * Adapts between recent list choices and the opening/switching mechanism.
      * If already opened, switch to it.
      * If not opened, open it.
+     * 
      * @author matt
      *
      */
@@ -134,11 +154,27 @@ public final class MenuMediatorImpl implements MenuMediator {
             if (openDatabaseList.containsDatabase(new DatabaseDescriptor(databaseName))) {
                 openDatabaseList.switchDatabase(databaseName);
             } else {
-                // WOZERE
-                // adapt between a global status with an opener adapter, and
-                // the Opener, then update the openDatabase.
-                // this is being tested TDD.
+                // TODO pass the mian frame in here
+                final OpenerAdapter openerAdapter = openerAdapterFactory.createOpenerAdapter(null, databaseName);
+                // WOZERE recent list doesn't pass thru the database path, damnit!
+                //opener.openDatabase(databaseName, observableEvent.getDatabasePath, openerAdapter);
             }
+        }
+    }
+    
+    /**
+     * Adapts between the Opener opening a database and it being added to the
+     * OpenDatabaseList.
+     * 
+     * @author matt
+     *
+     */
+    private final class DatabaseOpenEventObserver implements Observer<DatabaseOpenEvent> {
+        /**
+         * {@inheritDoc}
+         */
+        public void eventOccurred(final DatabaseOpenEvent observableEvent) {
+            openDatabaseList.addOpenedDatabase(observableEvent.getDatabase());
         }
     }
 }
