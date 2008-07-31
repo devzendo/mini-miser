@@ -17,8 +17,8 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
  * @author matt
  *
  */
-public final class Opener implements IOpener {
-    private static final Logger LOGGER = Logger.getLogger(Opener.class);
+public final class DefaultOpenerImpl implements IOpener {
+    private static final Logger LOGGER = Logger.getLogger(DefaultOpenerImpl.class);
     
     private final AccessFactory access;
     private final ObserverList<DatabaseOpenEvent> observerList;
@@ -28,7 +28,7 @@ public final class Opener implements IOpener {
      * Construct the Opener.
      * @param accessFactory the access factory used for accessing databases
      */
-    public Opener(final AccessFactory accessFactory) {
+    public DefaultOpenerImpl(final AccessFactory accessFactory) {
         this.access = accessFactory;
         observerList = new ObserverList<DatabaseOpenEvent>();
     }

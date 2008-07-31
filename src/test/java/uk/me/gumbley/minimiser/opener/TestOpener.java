@@ -159,7 +159,7 @@ public final class TestOpener extends PersistenceUnittestCase {
     @Before
     public void getPrerequisites() {
         accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
-        opener = new Opener(accessFactory);
+        opener = new DefaultOpenerImpl(accessFactory);
         progressRecorder = new ProgressRecorder();
     }
 
