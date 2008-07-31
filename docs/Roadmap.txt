@@ -18,8 +18,12 @@ Technical & personal project goals:
   * As well as bulding a damn fine desktop app, build an underlying extensible
     framework/platform that can be built upon / extended by others.
   * Build a community / cottage industry of users.
-  
-Version 0.0 - Foundations
+
+Prehistory
+  * Early sketches in Ruby/Rails - 02/12/2007.  
+  * Project restarted in Java - 11/04/2008.
+
+Version 0.1 - Foundations
   * Technical goals:
     * Start new Maven-based product.
     * Get building under CI server / repository management.
@@ -35,6 +39,6 @@ Version 0.0 - Foundations
     * Prefs dialog / advanced tab / SQL debug pane
     * SQL debug pane for issuing statements.
 
-Version 0.1 - Drive the data structure definition
+Version 0.2 - Drive the data structure definition
 
 TBC...
