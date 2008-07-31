@@ -3,7 +3,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
-import uk.me.gumbley.minimiser.opener.IOpener;
+import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
@@ -15,7 +15,7 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
  * @author matt
  *
  */
-public class StubOpener implements IOpener {
+public class StubOpener implements Opener {
     private final ObserverList<DatabaseOpenEvent> observerList;
 
     /**

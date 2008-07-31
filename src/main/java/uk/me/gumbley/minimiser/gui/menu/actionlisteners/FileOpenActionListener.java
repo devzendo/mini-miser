@@ -11,7 +11,7 @@ import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenResult;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardChooseFolderPage;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardIntroPage;
-import uk.me.gumbley.minimiser.opener.IOpener;
+import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 
 /**
@@ -23,7 +23,7 @@ import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 public final class FileOpenActionListener implements ActionListener {
     private final OpenDatabaseList databaseList;
     private final CursorManager cursor;
-    private final IOpener dbOpener;
+    private final Opener dbOpener;
 
     /**
      * Construct the listener
@@ -33,7 +33,7 @@ public final class FileOpenActionListener implements ActionListener {
      */
     public FileOpenActionListener(final OpenDatabaseList openDatabaseList,
             final CursorManager cursorManager,
-            final IOpener opener) {
+            final Opener opener) {
         super();
         this.databaseList = openDatabaseList;
         this.cursor = cursorManager;

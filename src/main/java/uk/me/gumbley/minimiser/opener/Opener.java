@@ -45,7 +45,7 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
  * @author matt
  *
  */
-public interface IOpener {
+public interface Opener {
     /**
      * Add an observer of database open events.
      * @param observer the observer to add.

@@ -15,7 +15,7 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="opener" class="uk.me.gumbley.minimiser.opener.Opener" lazy-init="true" >
+	<bean id="opener" class="uk.me.gumbley.minimiser.opener.DefaultOpenerImpl" lazy-init="true" >
 		<constructor-arg ref="accessFactory" />
 	</bean>
 	

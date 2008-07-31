@@ -32,7 +32,7 @@ public final class TestOpener extends PersistenceUnittestCase {
     private static final Logger LOGGER = Logger.getLogger(TestOpener.class);
     
     private AccessFactory accessFactory;
-    private IOpener opener;
+    private Opener opener;
     private ProgressRecorder progressRecorder;
     
     /**

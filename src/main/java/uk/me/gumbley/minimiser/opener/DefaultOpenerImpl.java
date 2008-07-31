@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
  * @author matt
  *
  */
-public final class DefaultOpenerImpl implements IOpener {
+public final class DefaultOpenerImpl implements Opener {
     private static final Logger LOGGER = Logger.getLogger(DefaultOpenerImpl.class);
     
     private final AccessFactory access;

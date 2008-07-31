@@ -7,7 +7,7 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.opener.AbstractOpenerAdapter;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
-import uk.me.gumbley.minimiser.opener.IOpener;
+import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.opener.OpenerAdapterFactory;
 import uk.me.gumbley.minimiser.openlist.DatabaseClosedEvent;
@@ -32,7 +32,7 @@ public final class MenuMediatorImpl implements MenuMediator {
     private final Menu menu;
     private final OpenDatabaseList openDatabaseList;
     private final RecentFilesList recentFilesList;
-    private final IOpener opener;
+    private final Opener opener;
     private final OpenerAdapterFactory openerAdapterFactory;
     
     /**
@@ -44,7 +44,7 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @param oaf the OpenerAdapterFactory
      */
     public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl,
-            final RecentFilesList recentFiles, final IOpener ope,
+            final RecentFilesList recentFiles, final Opener ope,
             final OpenerAdapterFactory oaf) {
         LOGGER.info("initialising MenuMediatorImpl");
         menu = leMenu;

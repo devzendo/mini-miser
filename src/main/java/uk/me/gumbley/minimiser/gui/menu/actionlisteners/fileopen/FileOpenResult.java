@@ -10,7 +10,7 @@ import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.opener.AbstractOpenerAdapter;
-import uk.me.gumbley.minimiser.opener.IOpener;
+import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 
 /**
@@ -20,7 +20,7 @@ import uk.me.gumbley.minimiser.opener.OpenerAdapter;
  */
 public final class FileOpenResult extends DeferredWizardResult {
     private static final Logger LOGGER = Logger.getLogger(FileOpenResult.class);
-    private final IOpener dbOpener;
+    private final Opener dbOpener;
     private CursorManager cursor;
 
     /**
@@ -28,7 +28,7 @@ public final class FileOpenResult extends DeferredWizardResult {
      * @param cursorManager the cursor manager
      * @param opener the database opener
      */
-    public FileOpenResult(final CursorManager cursorManager, final IOpener opener) {
+    public FileOpenResult(final CursorManager cursorManager, final Opener opener) {
         this.cursor = cursorManager;
         this.dbOpener = opener;
     }
