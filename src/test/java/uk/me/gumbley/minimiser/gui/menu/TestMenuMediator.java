@@ -108,15 +108,15 @@ public final class TestMenuMediator extends LoggingTestCase {
     @Test
     public void recentMenuGetsRebuiltWhenOpenListIsAddedTo() {
         recentFilesList = new StubRecentFilesList();
-        Assert.assertEquals(0, stubMenu.getRecentDatabaseNames().length);
+        Assert.assertEquals(0, stubMenu.getRecentDatabases().length);
         startMediator();
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         Assert.assertFalse(stubMenu.isRecentListBuilt());
         openDatabaseList.addOpenedDatabase(databaseDescriptor);
         Assert.assertTrue(stubMenu.isRecentListBuilt());
-        Assert.assertEquals(1, stubMenu.getRecentDatabaseNames().length);
-        Assert.assertEquals("one", stubMenu.getRecentDatabaseNames()[0]);
+        Assert.assertEquals(1, stubMenu.getRecentDatabases().length);
+        Assert.assertEquals(databaseDescriptor, stubMenu.getRecentDatabases()[0]);
     }
     
     /**
@@ -148,12 +148,12 @@ public final class TestMenuMediator extends LoggingTestCase {
         openDatabaseList.addOpenedDatabase(databaseDescriptorTwo);
 
         Assert.assertTrue(stubMenu.isRecentListBuilt());
-        Assert.assertEquals(2, stubMenu.getRecentDatabaseNames().length);
-        Assert.assertEquals("two", stubMenu.getRecentDatabaseNames()[0]);
+        Assert.assertEquals(2, stubMenu.getRecentDatabases().length);
+        Assert.assertEquals(databaseDescriptorTwo, stubMenu.getRecentDatabases()[0]);
 
         Assert.assertFalse(switchedToOne.get());
     
-        stubMenu.injectOpenRecentRequest("one");
+        stubMenu.injectOpenRecentRequest("one", "/tmp/one");
 
         Assert.assertTrue("did not switch to already-opened on recent open of already-opened db", switchedToOne.get());
     }
@@ -187,7 +187,7 @@ public final class TestMenuMediator extends LoggingTestCase {
 
         Assert.assertFalse(openedOne.get());
     
-        stubMenu.injectOpenRecentRequest("one");
+        stubMenu.injectOpenRecentRequest("one", "/tmp/one");
         // WOZERE fix this!
         Assert.assertTrue("did not open not-opened on recent open of not-opened db", openedOne.get());
     }
@@ -298,8 +298,6 @@ public final class TestMenuMediator extends LoggingTestCase {
     @Test
     public void openerOpeningAddsToDatabaseList() {
         startMediator();
-
-        final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one", "/tmp/one");
 
         final AtomicBoolean openedOne = new AtomicBoolean(false);
         openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {

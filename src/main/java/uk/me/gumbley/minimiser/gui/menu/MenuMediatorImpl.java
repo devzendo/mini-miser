@@ -1,11 +1,7 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
-import java.awt.Frame;
 import org.apache.log4j.Logger;
-
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.opener.AbstractOpenerAdapter;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
@@ -18,7 +14,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
-import uk.me.gumbley.minimiser.recentlist.RecentListEvent;
+import uk.me.gumbley.minimiser.recentlist.RecentListChangedEvent;
 
 /**
  * Mediates between application events and menu updates.
@@ -128,12 +124,12 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @author matt
      *
      */
-    private final class RecentListEventObserver implements Observer<RecentListEvent> {
+    private final class RecentListEventObserver implements Observer<RecentListChangedEvent> {
         /**
          * {@inheritDoc}
          */
-        public void eventOccurred(final RecentListEvent observableEvent) {
-            menu.refreshRecentList(recentFilesList.getRecentFileNames());
+        public void eventOccurred(final RecentListChangedEvent observableEvent) {
+            menu.refreshRecentList(recentFilesList.getRecentDatabases());
         }
     }
 
@@ -145,18 +141,17 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @author matt
      *
      */
-    private final class OpenRecentObserver implements Observer<DatabaseNameChoice> {
+    private final class OpenRecentObserver implements Observer<DatabaseNameAndPathChoice> {
         /**
          * {@inheritDoc}
          */
-        public void eventOccurred(final DatabaseNameChoice observableEvent) {
+        public void eventOccurred(final DatabaseNameAndPathChoice observableEvent) {
             final String databaseName = observableEvent.getDatabaseName();
             if (openDatabaseList.containsDatabase(new DatabaseDescriptor(databaseName))) {
                 openDatabaseList.switchDatabase(databaseName);
             } else {
                 final OpenerAdapter openerAdapter = openerAdapterFactory.createOpenerAdapter(databaseName);
-                // WOZERE recent list doesn't pass thru the database path, damnit!
-                //opener.openDatabase(databaseName, observableEvent.getDatabasePath, openerAdapter);
+                opener.openDatabase(databaseName, observableEvent.getDatabasePath(), openerAdapter);
             }
         }
     }

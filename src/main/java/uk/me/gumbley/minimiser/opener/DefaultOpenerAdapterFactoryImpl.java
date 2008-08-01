@@ -11,7 +11,7 @@ import uk.me.gumbley.minimiser.gui.CursorManager;
  * @author matt
  *
  */
-public class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFactory {
+public final class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFactory {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultOpenerAdapterFactoryImpl.class);
     private final CursorManager cursorManager;

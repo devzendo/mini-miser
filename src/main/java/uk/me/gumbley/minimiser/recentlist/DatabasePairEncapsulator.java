@@ -10,47 +10,14 @@ import java.util.regex.Pattern;
  * @author matt
  *
  */
-public final class DbPairEncapsulator {
+public final class DatabasePairEncapsulator {
     /**
      * Pointless CTOR
      */
-    private DbPairEncapsulator() {
+    private DatabasePairEncapsulator() {
         // no instances
     }
-    /**
-     * A bean for unescaping an escaped string into its constituent parts
-     * @author matt
-     *
-     */
-    static final class DbPair {
-        private final String name;
-        private final String path;
     
-        /**
-         * Construct a pair
-         * @param dbName the database name
-         * @param dbPath th edatabase path
-         */
-        public DbPair(final String dbName, final String dbPath) {
-            this.name = dbName;
-            this.path = dbPath;
-        }
-    
-        /**
-         * @return the database name
-         */
-        public String getName() {
-            return name;
-        }
-    
-        /**
-         * @return the database path
-         */
-        public String getPath() {
-            return path;
-        }
-    }
-
     /**
      * Escape a database name and path into a single String that can be
      * stored in prefs and later unescaped.
@@ -76,11 +43,11 @@ public final class DbPairEncapsulator {
      * @param escapedPair string of the form "name,path"
      * @return a DbPair containing the name and path, unescaped.
      */
-    public static DbPair unescape(final String escapedPair) {
+    public static DatabasePair unescape(final String escapedPair) {
         final Pattern pattern = Pattern.compile("^\"(.*)\",\"(.*)\"$");
         final Matcher matcher = pattern.matcher(escapedPair);
         if (matcher.matches()) {
-            return new DbPair(QuoteEscaper.unescapeQuotes(matcher.group(1)),
+            return new DatabasePair(QuoteEscaper.unescapeQuotes(matcher.group(1)),
                               QuoteEscaper.unescapeQuotes(matcher.group(2)));
         }
         throw new IllegalArgumentException("Could not unescape the pair [" + escapedPair + "]");

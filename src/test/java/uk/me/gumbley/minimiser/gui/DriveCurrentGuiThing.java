@@ -41,14 +41,14 @@ public final class DriveCurrentGuiThing {
         frame.pack();
         frame.setVisible(true);
 
-        //enterPassword(frame);
-        //problemDialogNoException(frame);
+        enterPassword(frame);
+        problemDialogNoException(frame);
         problemDialogException(frame);
     }
-    private static void problemDialogException(JFrame frame) {
-        ProblemDialog.reportProblem(frame, "working out the meaning of life", new RuntimeException("the obstacle is the path"));;
+    private static void problemDialogException(final JFrame frame) {
+        ProblemDialog.reportProblem(frame, "working out the meaning of life", new RuntimeException("the obstacle is the path"));
     }
-    private static void problemDialogNoException(JFrame frame) {
+    private static void problemDialogNoException(final JFrame frame) {
         ProblemDialog.reportProblem(frame, "working out the meaning of life");
     }
     private static void enterPassword(final JFrame frame) {

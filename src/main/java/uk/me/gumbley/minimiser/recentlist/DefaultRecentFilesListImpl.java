@@ -3,8 +3,6 @@ package uk.me.gumbley.minimiser.recentlist;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -29,11 +27,14 @@ public final class DefaultRecentFilesListImpl extends AbstractRecentFilesListImp
         setDatabaseList(load());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     protected void save() {
         LOGGER.info("saving recent files...");
         final ArrayList<String> listAsStringPaths = new ArrayList<String>();
         for (DatabaseDescriptor databaseDescriptor : getDatabaseList()) {
-            listAsStringPaths.add(DbPairEncapsulator.escape(databaseDescriptor.getDatabaseName(),
+            listAsStringPaths.add(DatabasePairEncapsulator.escape(databaseDescriptor.getDatabaseName(),
                 databaseDescriptor.getDatabasePath()));
         }
         for (String string : listAsStringPaths) {
@@ -42,13 +43,16 @@ public final class DefaultRecentFilesListImpl extends AbstractRecentFilesListImp
         preferences.setRecentFiles(listAsStringPaths.toArray(new String[0]));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     protected List<DatabaseDescriptor> load() {
         LOGGER.info("loading recent files...");
         final String[] recentEscapedNamesAndPaths = preferences.getRecentFiles();
         final List<DatabaseDescriptor> descriptors = new ArrayList <DatabaseDescriptor>();
         for (String nameAndPath : recentEscapedNamesAndPaths) {
             try {
-                final DbPairEncapsulator.DbPair pair = DbPairEncapsulator.unescape(nameAndPath);
+                final DatabasePair pair = DatabasePairEncapsulator.unescape(nameAndPath);
                 LOGGER.info("stored " + nameAndPath + " name " + pair.getName() + " path " + pair.getPath());
                 descriptors.add(new DatabaseDescriptor(pair.getName(), pair.getPath()));
             } catch (final IllegalArgumentException iae) {

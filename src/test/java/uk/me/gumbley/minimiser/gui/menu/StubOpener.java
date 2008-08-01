@@ -15,7 +15,7 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
  * @author matt
  *
  */
-public class StubOpener implements Opener {
+public final class StubOpener implements Opener {
     private final ObserverList<DatabaseOpenEvent> observerList;
 
     /**

@@ -165,7 +165,7 @@ public class MainFrame {
     private JMenuBar createMenu() {
         LOGGER.info("Getting the menu");
         final Menu menu = springLoader.getBean("menu", Menu.class);
-        menu.refreshRecentList(recentList.getRecentFileNames());
+        menu.refreshRecentList(recentList.getRecentDatabases());
         // TODO SMELL why not have it populated correctly at first?
         // we could pass in the recent strings to a ctor?
         LOGGER.info("Got the menu");

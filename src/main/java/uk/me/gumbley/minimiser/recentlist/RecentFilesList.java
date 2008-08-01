@@ -41,21 +41,14 @@ public interface RecentFilesList {
     int getCapacity();
 
     /**
-     * Return the array of recent files
+     * Return the array of recent databases
      * @return an array of database descriptors, never null
      */
-    DatabaseDescriptor[] getRecentFiles();
-
-    /**
-     * Return the array of recent file names
-     * @return an array of database names, never null
-     */
-    String[] getRecentFileNames();
-
+    DatabaseDescriptor[] getRecentDatabases();
+    
     /**
      * Add an observer that will be notified every time the recent list changes.
      * @param observer the observer
      */
-    void addRecentListEventObserver(Observer<RecentListEvent> observer);
-
+    void addRecentListEventObserver(Observer<RecentListChangedEvent> observer);
 }

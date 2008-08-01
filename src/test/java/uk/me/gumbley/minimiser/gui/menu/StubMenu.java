@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.JMenuBar;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
  * A Menu that tests can interrogate to test the correctness of the
@@ -19,18 +20,18 @@ public final class StubMenu implements Menu {
     private List<String> databases;
     private int currentDatabaseIndex;
     private boolean recentListBuilt;
-    private String[] recentDatabases;
-    private ObserverList<DatabaseNameChoice> openRecentSubmenuChoiceObservers;
+    private DatabaseDescriptor[] recentDatabases;
+    private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
 
     /**
      * 
      */
     public StubMenu() {
         databases = new ArrayList<String>();
-        recentDatabases = new String[0];
+        recentDatabases = new DatabaseDescriptor[0];
         currentDatabaseIndex = -1;
         recentListBuilt = false;
-        openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
+        openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
     }
     
     /**
@@ -114,8 +115,8 @@ public final class StubMenu implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void refreshRecentList(final String[] dbNames) {
-        this.recentDatabases = dbNames;
+    public void refreshRecentList(final DatabaseDescriptor[] databaseDescriptors) {
+        this.recentDatabases = databaseDescriptors;
         recentListBuilt = true;
     }
 
@@ -127,24 +128,25 @@ public final class StubMenu implements Menu {
     }
 
     /**
-     * @return the names of the recently accessed databases
+     * @return the details of the recently accessed databases
      */
-    String[] getRecentDatabaseNames() {
+    DatabaseDescriptor[] getRecentDatabases() {
         return recentDatabases;
     }
     
     /**
      * For unit tests, inject a request to open an entry from the recent list.
      * @param dbName the database name to open.
+     * @param dbPath the database path to open
      */
-    void injectOpenRecentRequest(final String dbName) {
-        openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameChoice(dbName));
+    void injectOpenRecentRequest(final String dbName, final String dbPath) {
+        openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(dbName, dbPath));
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addOpenRecentObserver(final Observer<DatabaseNameChoice> observer) {
+    public void addOpenRecentObserver(final Observer<DatabaseNameAndPathChoice> observer) {
         openRecentSubmenuChoiceObservers.addObserver(observer);
     }
 }

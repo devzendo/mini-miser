@@ -15,6 +15,7 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
  * The Swing Menu.
@@ -27,7 +28,7 @@ public final class MenuImpl implements Menu {
     private Object lock = new Object();
     private List<String> databases;
     private int currentDatabaseIndex;
-    private String[] recentDatabaseNames;
+    private DatabaseDescriptor[] recentDatabaseDescriptors;
 
     private JMenuBar menuBar;
     private JMenu fileMenu;
@@ -35,7 +36,7 @@ public final class MenuImpl implements Menu {
     private JMenu helpMenu;
 
     private ObserverList<DatabaseNameChoice> windowMenuChoiceObservers;
-    private ObserverList<DatabaseNameChoice> openRecentSubmenuChoiceObservers;
+    private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
     private MenuWiring menuWiring;
     
     /**
@@ -49,10 +50,10 @@ public final class MenuImpl implements Menu {
                     menuWiring = wiring;
                     databases = new ArrayList<String>();
                     currentDatabaseIndex = -1;
-                    recentDatabaseNames = new String[0];
+                    recentDatabaseDescriptors = new DatabaseDescriptor[0];
             
                     windowMenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
-                    openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
+                    openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
         
                     menuBar = new JMenuBar();
                     fileMenu = createFileMenu();
@@ -124,17 +125,18 @@ public final class MenuImpl implements Menu {
     private JMenu buildRecentList() {
         final JMenu submenu = new JMenu("Open recent");
         submenu.setMnemonic('r');
-        if (recentDatabaseNames.length == 0) {
+        if (recentDatabaseDescriptors.length == 0) {
             submenu.setEnabled(false);
         } else {
-            for (int i = 0; i < recentDatabaseNames.length; i++) {
-                final String recentDbName = recentDatabaseNames[i];
+            for (int i = 0; i < recentDatabaseDescriptors.length; i++) {
+                final String recentDbName = recentDatabaseDescriptors[i].getDatabaseName();
+                final String recentDbPath = recentDatabaseDescriptors[i].getDatabasePath();
                 final int mnemonic = 1 + i;
                 final JMenuItem menuItem = new JMenuItem("" + mnemonic + " " + recentDbName);
                 menuItem.setMnemonic(KeyEvent.VK_0 + mnemonic);
                 menuItem.addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
-                        openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameChoice(recentDbName));
+                        openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(recentDbName, recentDbPath));
                     }
                 });
                 submenu.add(menuItem);
@@ -304,11 +306,11 @@ public final class MenuImpl implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void refreshRecentList(final String[] dbNames) {
+    public void refreshRecentList(final DatabaseDescriptor[] dbPairs) {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    recentDatabaseNames = dbNames;
+                    recentDatabaseDescriptors = dbPairs;
                     buildFileMenu();
                 }
             }
@@ -318,7 +320,7 @@ public final class MenuImpl implements Menu {
     /**
      * {@inheritDoc}
      */
-    public void addOpenRecentObserver(final Observer<DatabaseNameChoice> observer) {
+    public void addOpenRecentObserver(final Observer<DatabaseNameAndPathChoice> observer) {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {

@@ -34,8 +34,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
         
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
         Assert.assertEquals(0, recentFilesList.getNumberOfEntries());
-        Assert.assertTrue(arrayEqual(new DatabaseDescriptor[0], recentFilesList.getRecentFiles()));
-        Assert.assertTrue(arrayEqual(new String[0], recentFilesList.getRecentFileNames()));
+        Assert.assertTrue(arrayEqual(new DatabaseDescriptor[0], recentFilesList.getRecentDatabases()));
         
         EasyMock.verify(prefs);
     }
@@ -63,7 +62,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
      */
     @Test
     public void addOneShouldHaveOneInPrefs() {
-        final String expectedEscapedPair = DbPairEncapsulator.escape("one", "/tmp/foo");
+        final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
 
         final Prefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
@@ -73,8 +72,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
         recentFilesList.add(new DatabaseDescriptor("one", "/tmp/foo"));
 
         Assert.assertEquals(1, recentFilesList.getNumberOfEntries());
-        Assert.assertTrue(arrayEqual(new DatabaseDescriptor[] {new DatabaseDescriptor("one")}, recentFilesList.getRecentFiles()));
-        Assert.assertTrue(arrayEqual(new String[] {"one"}, recentFilesList.getRecentFileNames()));
+        Assert.assertTrue(arrayEqual(new DatabaseDescriptor[] {new DatabaseDescriptor("one")}, recentFilesList.getRecentDatabases()));
 
         EasyMock.verify(prefs);
     }
@@ -85,15 +83,15 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void addOneShouldFireListener() {
-        final String expectedEscapedPair = DbPairEncapsulator.escape("one", "/tmp/foo");
+        final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
 
         final Prefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
         EasyMock.replay(prefs);
 
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
-        final Observer<RecentListEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.isA(RecentListEvent.class));
+        final Observer<RecentListChangedEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(RecentListChangedEvent.class));
         EasyMock.replay(obs);
 
         recentFilesList.addRecentListEventObserver(obs);
@@ -108,15 +106,15 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void addNonReorderingOneShouldNotFireListenerTwice() {
-        final String expectedEscapedPair = DbPairEncapsulator.escape("one", "/tmp/foo");
+        final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
 
         final Prefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
         EasyMock.replay(prefs);
 
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
-        final Observer<RecentListEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.isA(RecentListEvent.class));
+        final Observer<RecentListChangedEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(RecentListChangedEvent.class));
         // but only once...
         EasyMock.replay(obs);
 
@@ -133,8 +131,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void addReorderingOneShouldFireListenerTwice() {
-        final String oneExpectedEscapedPair = DbPairEncapsulator.escape("one", "/tmp/foo");
-        final String twoExpectedEscapedPair = DbPairEncapsulator.escape("two", "/tmp/foo");
+        final String oneExpectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
+        final String twoExpectedEscapedPair = DatabasePairEncapsulator.escape("two", "/tmp/foo");
 
         final Prefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {oneExpectedEscapedPair}));
@@ -143,10 +141,10 @@ public final class TestRecentFilesList extends LoggingTestCase {
         EasyMock.replay(prefs);
 
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
-        final Observer<RecentListEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.isA(RecentListEvent.class)); // one
-        obs.eventOccurred(EasyMock.isA(RecentListEvent.class)); // two
-        obs.eventOccurred(EasyMock.isA(RecentListEvent.class)); // one moved
+        final Observer<RecentListChangedEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(RecentListChangedEvent.class)); // one
+        obs.eventOccurred(EasyMock.isA(RecentListChangedEvent.class)); // two
+        obs.eventOccurred(EasyMock.isA(RecentListChangedEvent.class)); // one moved
         EasyMock.replay(obs);
 
         recentFilesList.addRecentListEventObserver(obs);
@@ -170,7 +168,7 @@ public final class TestRecentFilesList extends LoggingTestCase {
     public void addSameOneOnlyYieldsOneButDoesntSaveTwiceSinceNoReordering() {
         final Prefs prefs = getInitiallyEmptyPrefs();
         
-        final String expectedEscapedPair = DbPairEncapsulator.escape("one", "");
+        final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "");
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
         //EasyMock.expectLastCall().times(2); no!
         EasyMock.replay(prefs);
@@ -180,8 +178,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
         recentFilesList.add(new DatabaseDescriptor("one"));
         
         Assert.assertEquals(1, recentFilesList.getNumberOfEntries());
-        Assert.assertTrue(arrayEqual(new DatabaseDescriptor[] {new DatabaseDescriptor("one")}, recentFilesList.getRecentFiles()));
-        Assert.assertTrue(arrayEqual(new String[] {"one"}, recentFilesList.getRecentFileNames()));
+        Assert.assertTrue(arrayEqual(new DatabaseDescriptor[] {new DatabaseDescriptor("one")}, recentFilesList.getRecentDatabases()));
+
         EasyMock.verify(prefs);
     }
     
@@ -192,9 +190,9 @@ public final class TestRecentFilesList extends LoggingTestCase {
     public void addTwoStoresTwoInPrefs() {
         final Prefs prefs = getInitiallyEmptyPrefs();
         
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("one", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("two", ""), 
-                DbPairEncapsulator.escape("one", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("one", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("two", ""), 
+                DatabasePairEncapsulator.escape("one", "")}));
         EasyMock.replay(prefs);
 
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
@@ -206,8 +204,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
             new DatabaseDescriptor[] {
                     new DatabaseDescriptor("two"),
                     new DatabaseDescriptor("one")
-                    }, recentFilesList.getRecentFiles()));
-        Assert.assertTrue(arrayEqual(new String[] {"two", "one"}, recentFilesList.getRecentFileNames()));
+                    }, recentFilesList.getRecentDatabases()));
+
         EasyMock.verify(prefs);
     }
     
@@ -231,20 +229,20 @@ public final class TestRecentFilesList extends LoggingTestCase {
         LOGGER.debug("*** addingNewToAFullListPushesLastOut");
         final Prefs prefs = getInitiallyEmptyPrefs();
         // generate expected prefs storage
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("4", ""),
-                DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("fish", ""),
-                DbPairEncapsulator.escape("4", ""),
-                DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("4", ""),
+                DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("fish", ""),
+                DatabasePairEncapsulator.escape("4", ""),
+                DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", "")}));
         EasyMock.replay(prefs);
 
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
@@ -271,8 +269,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
                 new DatabaseDescriptor("4"),
                 new DatabaseDescriptor("3"),
                 new DatabaseDescriptor("2"),
-                }, recentFilesList.getRecentFiles()));
-        Assert.assertTrue(arrayEqual(new String[] {"fish", "4", "3", "2"}, recentFilesList.getRecentFileNames()));
+                }, recentFilesList.getRecentDatabases()));
+
         EasyMock.verify(prefs);
     }
     
@@ -284,16 +282,16 @@ public final class TestRecentFilesList extends LoggingTestCase {
         LOGGER.debug("*** addingSameToFullListDoesntPushAnythingOut");
         final Prefs prefs = getInitiallyEmptyPrefs();
         // generate expected prefs storage
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("4", ""),
-                DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("4", ""),
+                DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
         // no save when 4 re-added
         EasyMock.replay(prefs);
         
@@ -321,8 +319,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
                 new DatabaseDescriptor("3"),
                 new DatabaseDescriptor("2"),
                 new DatabaseDescriptor("1"),
-                }, recentFilesList.getRecentFiles()));
-        Assert.assertTrue(arrayEqual(new String[] {"4", "3", "2", "1"}, recentFilesList.getRecentFileNames()));
+                }, recentFilesList.getRecentDatabases()));
+
         EasyMock.verify(prefs);
     }
     
@@ -334,20 +332,20 @@ public final class TestRecentFilesList extends LoggingTestCase {
         LOGGER.debug("*** addingSameLaterReordersToHaveItFirst");
         final Prefs prefs = getInitiallyEmptyPrefs();
         // generate expected prefs storage
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("4", ""),
-                DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", ""),
-                DbPairEncapsulator.escape("1", "")}));
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DbPairEncapsulator.escape("1", ""),
-                DbPairEncapsulator.escape("4", ""),
-                DbPairEncapsulator.escape("3", ""),
-                DbPairEncapsulator.escape("2", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("4", ""),
+                DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", ""),
+                DatabasePairEncapsulator.escape("1", "")}));
+        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("1", ""),
+                DatabasePairEncapsulator.escape("4", ""),
+                DatabasePairEncapsulator.escape("3", ""),
+                DatabasePairEncapsulator.escape("2", "")}));
         EasyMock.replay(prefs);
         
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
@@ -374,8 +372,8 @@ public final class TestRecentFilesList extends LoggingTestCase {
                 new DatabaseDescriptor("4"),
                 new DatabaseDescriptor("3"),
                 new DatabaseDescriptor("2"),
-                }, recentFilesList.getRecentFiles()));
-        Assert.assertTrue(arrayEqual(new String[] {"1", "4", "3", "2"}, recentFilesList.getRecentFileNames()));
+                }, recentFilesList.getRecentDatabases()));
+
         EasyMock.verify(prefs);
     }
 
@@ -392,10 +390,9 @@ public final class TestRecentFilesList extends LoggingTestCase {
 
             final RecentFilesList reopenRecentFilesList = new DefaultRecentFilesListImpl(prefs);
             Assert.assertEquals(1, reopenRecentFilesList.getNumberOfEntries());
-            final DatabaseDescriptor[] recentFiles = reopenRecentFilesList.getRecentFiles();
+            final DatabaseDescriptor[] recentFiles = reopenRecentFilesList.getRecentDatabases();
             Assert.assertEquals("1", recentFiles[0].getDatabaseName());
             Assert.assertEquals("/tmp/foo", recentFiles[0].getDatabasePath());
-            Assert.assertTrue(arrayEqual(new String[] {"1"}, recentFilesList.getRecentFileNames()));
         } finally {
             prefsFile.delete();
         }

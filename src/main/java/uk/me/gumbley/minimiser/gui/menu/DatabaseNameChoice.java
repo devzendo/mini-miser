@@ -3,8 +3,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
 
 /**
- * A choice of database from the Window menu or Open Recent submenu has been
- * made.
+ * A choice of database from the Window menu has been made.
  * 
  * @author matt
  *

@@ -23,14 +23,14 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
  *
  */
 public abstract class AbstractRecentFilesListImpl implements RecentFilesList {
-    private final ObserverList<RecentListEvent> observerList;
+    private final ObserverList<RecentListChangedEvent> observerList;
     private final List<DatabaseDescriptor> databaseList;
 
     /**
      * Construct an abstract recent files list
      */
     public AbstractRecentFilesListImpl() {
-        observerList = new ObserverList<RecentListEvent>();
+        observerList = new ObserverList<RecentListChangedEvent>();
         databaseList = new ArrayList<DatabaseDescriptor>();
     }
 
@@ -53,7 +53,7 @@ public abstract class AbstractRecentFilesListImpl implements RecentFilesList {
                 // the one being added is not at the head, so put it there  
                 databaseList.remove(indexOf);
                 databaseList.add(0, databaseDescriptor);
-                observerList.eventOccurred(new RecentListEvent());
+                observerList.eventOccurred(new RecentListChangedEvent());
                 save();
             }
             // else it's already at the head, so don't bother saving
@@ -63,7 +63,7 @@ public abstract class AbstractRecentFilesListImpl implements RecentFilesList {
             if (databaseList.size() > DEFAULT_CAPACITY) {
                 databaseList.remove(DEFAULT_CAPACITY);
             }
-            observerList.eventOccurred(new RecentListEvent());
+            observerList.eventOccurred(new RecentListChangedEvent());
             save();
         }
     }
@@ -123,25 +123,14 @@ public abstract class AbstractRecentFilesListImpl implements RecentFilesList {
     /**
      * {@inheritDoc}
      */
-    public final DatabaseDescriptor[] getRecentFiles() {
+    public final DatabaseDescriptor[] getRecentDatabases() {
         return databaseList.toArray(new DatabaseDescriptor[0]);
     }
 
     /**
      * {@inheritDoc}
      */
-    public final String[] getRecentFileNames() {
-        final String[] dbNames = new String[databaseList.size()];
-        for (int i = 0; i < dbNames.length; i++) {
-            dbNames[i] = databaseList.get(i).getDatabaseName();
-        }
-        return dbNames;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public final void addRecentListEventObserver(final Observer<RecentListEvent> observer) {
+    public final void addRecentListEventObserver(final Observer<RecentListChangedEvent> observer) {
         observerList.addObserver(observer);
     }
 }

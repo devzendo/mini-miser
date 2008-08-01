@@ -9,7 +9,7 @@ import uk.me.gumbley.minimiser.opener.OpenerAdapterFactory;
  * @author matt
  *
  */
-public class StubOpenerAdapterFactory implements OpenerAdapterFactory {
+public final class StubOpenerAdapterFactory implements OpenerAdapterFactory {
     /**
      * {@inheritDoc}
      */

@@ -16,7 +16,7 @@ public final class TestDbPairEncapsulator {
      */
     @Test
     public void testEscapeWhenNoQuotes() {
-        Assert.assertEquals("\"one\",\"path\"", DbPairEncapsulator.escape("one", "path"));
+        Assert.assertEquals("\"one\",\"path\"", DatabasePairEncapsulator.escape("one", "path"));
     }
     
     /**
@@ -24,7 +24,7 @@ public final class TestDbPairEncapsulator {
      */
     @Test
     public void testUnescapeWhenNoQuotes() {
-        final DbPairEncapsulator.DbPair unescaped = DbPairEncapsulator.unescape("\"one\",\"two\"");
+        final DatabasePair unescaped = DatabasePairEncapsulator.unescape("\"one\",\"two\"");
         Assert.assertEquals("one", unescaped.getName());
         Assert.assertEquals("two", unescaped.getPath());
     }
@@ -34,7 +34,7 @@ public final class TestDbPairEncapsulator {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testUnescapeFailure() {
-        DbPairEncapsulator.unescape("\"f\\\"oo\",\"/tmp/\\\"quote"); // no end quote
+        DatabasePairEncapsulator.unescape("\"f\\\"oo\",\"/tmp/\\\"quote"); // no end quote
     }
     
     /**
@@ -50,10 +50,10 @@ public final class TestDbPairEncapsulator {
         path.append("/tmp/");
         path.append('"');
         path.append("quote");
-        final String escaped = DbPairEncapsulator.escape(name.toString(), path.toString());
+        final String escaped = DatabasePairEncapsulator.escape(name.toString(), path.toString());
         Assert.assertEquals("\"f\\\"oo\",\"/tmp/\\\"quote\"", escaped);
 
-        final DbPairEncapsulator.DbPair unescaped = DbPairEncapsulator.unescape(escaped);
+        final DatabasePair unescaped = DatabasePairEncapsulator.unescape(escaped);
         Assert.assertEquals(name.toString(), unescaped.getName());
         Assert.assertEquals(path.toString(), unescaped.getPath());
     }

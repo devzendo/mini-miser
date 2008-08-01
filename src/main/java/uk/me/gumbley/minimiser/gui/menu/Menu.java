@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 import java.awt.event.ActionListener;
 import javax.swing.JMenuBar;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 
 /**
@@ -106,9 +107,9 @@ public interface Menu {
     
     /**
      * The list of recent databases has changed; refresh it.
-     * @param dbNames the list of database names, in order
+     * @param databaseDescriptors the list of database name/paths, in order
      */
-    void refreshRecentList(String[] dbNames);
+    void refreshRecentList(DatabaseDescriptor[] databaseDescriptors);
 
     /**
      * Add an observer of window menu database switches
@@ -122,5 +123,5 @@ public interface Menu {
      * Add an observer of open recent submenu database open requests
      * @param observer of open recent requests
      */
-    void addOpenRecentObserver(Observer<DatabaseNameChoice> observer);
+    void addOpenRecentObserver(Observer<DatabaseNameAndPathChoice> observer);
 }
