@@ -154,8 +154,7 @@ public final class MenuMediatorImpl implements MenuMediator {
             if (openDatabaseList.containsDatabase(new DatabaseDescriptor(databaseName))) {
                 openDatabaseList.switchDatabase(databaseName);
             } else {
-                // TODO pass the mian frame in here
-                final OpenerAdapter openerAdapter = openerAdapterFactory.createOpenerAdapter(null, databaseName);
+                final OpenerAdapter openerAdapter = openerAdapterFactory.createOpenerAdapter(databaseName);
                 // WOZERE recent list doesn't pass thru the database path, damnit!
                 //opener.openDatabase(databaseName, observableEvent.getDatabasePath, openerAdapter);
             }

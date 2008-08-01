@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.opener;
 
-import java.awt.Frame;
 
 /**
  * A Factory for creating OpenerAdapters.
@@ -18,9 +17,8 @@ public interface OpenerAdapterFactory {
     /**
      * Create an OpenerAdapter that can monitor progress for a specific database
      * and display problems over a main window frame.
-     * @param frame the main window's frame
      * @param databaseName the name of the database.
      * @return the OpenerAdapter
      */
-    OpenerAdapter createOpenerAdapter(final Frame frame, final String databaseName);
+    OpenerAdapter createOpenerAdapter(final String databaseName);
 }

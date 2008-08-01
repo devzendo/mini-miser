@@ -14,8 +14,8 @@ import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
-import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.DefaultPrefsImpl;
+import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
@@ -103,6 +103,7 @@ public final class MiniMiser {
                 try {
                     Beautifier.makeBeautiful();
                     new MainFrame(springLoader, finalArgList);
+
                     // TODO perhaps make this wait for the main window to
                     // appear first, i.e. as an AWTEventListener
                     triggerGUIStartupTasks(springLoader);

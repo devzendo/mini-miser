@@ -15,12 +15,15 @@ public class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFactory {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultOpenerAdapterFactoryImpl.class);
     private final CursorManager cursorManager;
+    private final Frame mainFrame;
 
     /**
      * Create the factory
+     * @param mainframe the main frame
      * @param cursorMgr the cursor manager
      */
-    public DefaultOpenerAdapterFactoryImpl(final CursorManager cursorMgr) {
+    public DefaultOpenerAdapterFactoryImpl(final Frame mainframe, final CursorManager cursorMgr) {
+        this.mainFrame = mainframe;
         this.cursorManager = cursorMgr;
         // TODO pass in the main frame progress bar thing here
     }
@@ -28,11 +31,11 @@ public class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFactory {
     /**
      * {@inheritDoc}
      */
-    public OpenerAdapter createOpenerAdapter(final Frame frame, final String databaseName) {
-        return new SilentOpenerAdapter(frame, databaseName, cursorManager);
+    public OpenerAdapter createOpenerAdapter(final String databaseName) {
+        return new SilentOpenerAdapter(mainFrame, databaseName, cursorManager);
     }
-    
 
+    // TODO rename from silent when we have the main frame progress thing
     private final class SilentOpenerAdapter extends AbstractOpenerAdapter {
         public SilentOpenerAdapter(final Frame frame, final String name, final CursorManager cursorMgr) {
             super(frame, name, cursorMgr);
@@ -42,5 +45,4 @@ public class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFactory {
             LOGGER.info("Open progress: " + progressStage + ": " + description);
         }
     }
-
 }

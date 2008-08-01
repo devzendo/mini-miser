@@ -7,6 +7,8 @@
 	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
 
 	<!-- gui layer -->
+	<bean id="mainFrame" class="uk.me.gumbley.minimiser.gui.MainFrameFactory" lazy-init="true" />
+
 	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.menu.MenuWiring" lazy-init="true" />
 	
 	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" lazy-init="true" />
@@ -20,6 +22,7 @@
 	</bean>
 	
 	<bean id="openerAdapterFactory" class="uk.me.gumbley.minimiser.opener.DefaultOpenerAdapterFactoryImpl" lazy-init="true" >
+		<constructor-arg ref="mainFrame" />	
 		<constructor-arg ref="cursorManager" />
 	</bean>
 	

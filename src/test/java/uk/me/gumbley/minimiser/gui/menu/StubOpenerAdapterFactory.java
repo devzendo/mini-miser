@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
-import java.awt.Frame;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
@@ -14,7 +13,7 @@ public class StubOpenerAdapterFactory implements OpenerAdapterFactory {
     /**
      * {@inheritDoc}
      */
-    public OpenerAdapter createOpenerAdapter(final Frame frame, final String databaseName) {
+    public OpenerAdapter createOpenerAdapter(final String databaseName) {
         return new OpenerAdapter() {
             public void databaseNotFound(final DataAccessResourceFailureException exception) {
             }

@@ -89,6 +89,10 @@ public class MainFrame {
     private void createMainFrame() {
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
+
+        final MainFrameFactory mainFrameFactory = springLoader.getBean("&mainFrame", MainFrameFactory.class);
+        mainFrameFactory.setMainFrame(mainFrame);
+
         mainFrame.setName(MAIN_FRAME_NAME);
         
         mainFrame.setLayout(new BorderLayout());
@@ -109,6 +113,8 @@ public class MainFrame {
             }
             
             private void closeOpenDatabases() {
+                // TODO holy stinking effusive effulgent code, Batman!
+                // push all this inside the openDatabaseList, yesno?
                 final List<DatabaseDescriptor> openDatabases = openDatabaseList.getOpenDatabases();
                 for (DatabaseDescriptor descriptor : openDatabases) {
                     // TODO perhaps DatabaseDescriptor should be polymorphic?

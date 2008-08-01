@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
