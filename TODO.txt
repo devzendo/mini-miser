@@ -3,12 +3,6 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUGS:
-* open two databases (two, then one), either by open or open recent
-  switch to the one on the top of the window menu (two)
-  then close it
-  one should be the sole contents of the menu, but it's two
-  - close is closing the wrong db - it's closing one, not two.
-  - it's just getting the current database from the ODL
   
 * password dialog should get main frame
 

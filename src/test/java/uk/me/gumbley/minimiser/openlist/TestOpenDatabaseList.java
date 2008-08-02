@@ -87,6 +87,59 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     }
 
     /**
+     * Found in QA:
+     * open two databases (two, then one), either by open or open recent
+     * switch to the one on the top of the window menu (two)
+     * then close it
+     *   one should be the sole contents of the menu, but it's two
+     *   - close is closing the wrong db - it's closing one, not two.
+     *   - it's just getting the current database from the ODL
+     *   
+     *   The test is that switching should make the chosen database current.
+     */
+    @Test
+    public void switchMakesCorrectDatabaseCurrent() {
+        final DatabaseDescriptor one = new DatabaseDescriptor("one");
+        final DatabaseDescriptor two = new DatabaseDescriptor("two");
+        list.addOpenedDatabase(two);
+        Assert.assertEquals("two", list.getCurrentDatabase().getDatabaseName());
+        list.addOpenedDatabase(one);
+        Assert.assertEquals("one", list.getCurrentDatabase().getDatabaseName());
+        
+        list.switchDatabase("two");
+        Assert.assertEquals("two", list.getCurrentDatabase().getDatabaseName());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void switchToExistingButNonCurrentShouldSwitch() {
+        final DatabaseDescriptor one = new DatabaseDescriptor("one");
+        final DatabaseDescriptor two = new DatabaseDescriptor("two");
+        final DatabaseDescriptor three = new DatabaseDescriptor("three");
+        
+        list.addOpenedDatabase(three);
+        Assert.assertEquals("three", list.getCurrentDatabase().getDatabaseName());
+        list.addOpenedDatabase(two);
+        Assert.assertEquals("two", list.getCurrentDatabase().getDatabaseName());
+        list.addOpenedDatabase(one);
+        Assert.assertEquals("one", list.getCurrentDatabase().getDatabaseName());
+        
+        list.switchDatabase("two");
+        Assert.assertEquals("two", list.getCurrentDatabase().getDatabaseName());
+
+        list.switchDatabase("one");
+        Assert.assertEquals("one", list.getCurrentDatabase().getDatabaseName());
+        
+        list.switchDatabase("two");
+        Assert.assertEquals("two", list.getCurrentDatabase().getDatabaseName());
+
+        list.switchDatabase("three");
+        Assert.assertEquals("three", list.getCurrentDatabase().getDatabaseName());
+
+    }
+    /**
      * Open a database, a lister that was attached but now removed isn't
      * fired.
      */

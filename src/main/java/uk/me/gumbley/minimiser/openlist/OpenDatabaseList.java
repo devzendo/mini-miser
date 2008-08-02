@@ -64,8 +64,10 @@ public final class OpenDatabaseList {
             databaseList.add(descriptor);
             currentDatabaseIndex = databaseList.size() - 1;
             observerList.eventOccurred(new DatabaseOpenedEvent(descriptor.getDatabaseName(), descriptor.getDatabasePath()));
+        } else {
+            LOGGER.info("Switching to " + descriptor.getDatabaseName());
+            currentDatabaseIndex = databaseList.indexOf(descriptor);
         }
-        LOGGER.info("Switching to " + descriptor.getDatabaseName());
         observerList.eventOccurred(new DatabaseSwitchedEvent(descriptor.getDatabaseName()));
     }
 
@@ -121,9 +123,11 @@ public final class OpenDatabaseList {
      * @param databaseName the name to switch to
      */
     public void switchDatabase(final String databaseName) {
-        for (DatabaseDescriptor descriptor : databaseList) {
+        for (int i = 0; i < databaseList.size(); i++) {
+            final DatabaseDescriptor descriptor = databaseList.get(i);
             if (descriptor.getDatabaseName().equals(databaseName)) {
                 LOGGER.info("Switching to " + databaseName);
+                currentDatabaseIndex = i;
                 observerList.eventOccurred(new DatabaseSwitchedEvent(databaseName));
                 return;
             }
