@@ -4,8 +4,6 @@ Current outstanding small tasks:
 
 BUGS:
   
-* password dialog should get main frame
-
 * need status bar with text and progress
 
 * need openerAdapter in the default opener adapter factory that uses status bar
