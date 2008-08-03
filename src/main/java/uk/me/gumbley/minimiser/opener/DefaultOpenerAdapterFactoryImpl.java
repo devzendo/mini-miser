@@ -2,6 +2,8 @@ package uk.me.gumbley.minimiser.opener;
 
 import java.awt.Frame;
 import org.apache.log4j.Logger;
+
+import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.MainFrameStatusBar;
 
@@ -23,6 +25,7 @@ public final class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFacto
      * Create the factory
      * @param mainframe the main frame
      * @param cursorMgr the cursor manager
+     * @param status the status bar
      */
     public DefaultOpenerAdapterFactoryImpl(final Frame mainframe, final CursorManager cursorMgr, final MainFrameStatusBar status) {
         this.mainFrame = mainframe;
@@ -46,12 +49,18 @@ public final class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFacto
             LOGGER.info("Open progress: " + progressStage + ": " + description);
             statusBar.setProgressLength(progressStage.getMaximumValue());
             if (progressStage.getValue() == progressStage.getMaximumValue()) {
-                statusBar.clearProgress();
-                statusBar.clearMessage();
-            } else {
-                statusBar.setProgressLength(progressStage.getValue());
-                statusBar.displayMessage(description);
+                // not ideal, could use the delayed executor here...
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ThreadUtils.waitNoInterruption(500);
+                        statusBar.clearProgress();
+                        statusBar.clearMessage();
+                    }
+                }).start();
             }
+            statusBar.setProgressLength(progressStage.getValue());
+            statusBar.displayMessage(description);
         }
     }
 }
