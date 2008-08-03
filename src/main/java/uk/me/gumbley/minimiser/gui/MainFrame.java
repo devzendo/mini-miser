@@ -46,6 +46,7 @@ public class MainFrame {
     private final WindowGeometryStore windowGeometryStore;
     private final OpenDatabaseList openDatabaseList;
     private final RecentFilesList recentList;
+    private final MainFrameStatusBar statusBar;
 
     /**
      * @param loader the IoC container abstraction
@@ -69,6 +70,9 @@ public class MainFrame {
         createMainFrame();
         cursorManager = springLoader.getBean("cursorManager", CursorManager.class);
         cursorManager.setMainFrame(mainFrame);
+        
+        statusBar = springLoader.getBean("statusBar", MainFrameStatusBar.class);
+        mainFrame.add(statusBar.getPanel(), BorderLayout.SOUTH);
         
         // Menu
         mainFrame.add(createMenu(), BorderLayout.NORTH);

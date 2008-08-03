@@ -24,8 +24,13 @@
 	<bean id="openerAdapterFactory" class="uk.me.gumbley.minimiser.opener.DefaultOpenerAdapterFactoryImpl" lazy-init="true" >
 		<constructor-arg ref="mainFrame" />	
 		<constructor-arg ref="cursorManager" />
+		<constructor-arg ref="statusBar" />
 	</bean>
 	
+	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" lazy-init="true" >
+        <constructor-arg ref="delayedExecutor" />
+    </bean>
+    
 	<bean id="menu" class="uk.me.gumbley.minimiser.gui.menu.MenuImpl" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
 	</bean>

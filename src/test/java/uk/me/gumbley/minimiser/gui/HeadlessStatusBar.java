@@ -1,15 +1,21 @@
 package uk.me.gumbley.minimiser.gui;
 
+import uk.me.gumbley.minimiser.util.DelayedExecutor;
+
 /**
  * A StatusBar that has no GUI, but can be probed via tests.
  * @author matt
  *
  */
 public class HeadlessStatusBar extends AbstractStatusBar {
-    private String message;
+    private String displayedMessage = "";
     
-    public HeadlessStatusBar() {
-        message = "";
+    /**
+     * Construct with no head.
+     * @param exec the Delayed Executor
+     */
+    public HeadlessStatusBar(final DelayedExecutor exec) {
+        super(exec);
     }
     
     /**
@@ -17,7 +23,7 @@ public class HeadlessStatusBar extends AbstractStatusBar {
      */
     @Override
     public void internalSetMessageTextNow(final String message) {
-        // TODO Auto-generated method stub
+        displayedMessage = message;
     }
 
     /**
@@ -25,7 +31,6 @@ public class HeadlessStatusBar extends AbstractStatusBar {
      */
     @Override
     public void clearProgress() {
-        // TODO Auto-generated method stub
     }
 
     /**
@@ -50,9 +55,10 @@ public class HeadlessStatusBar extends AbstractStatusBar {
     }
 
     /**
-     * @return the internal message that is "being displayed right now"
+     * For tests, what's currently being displayed?
+     * @return the string
      */
-    public String getInternalMessage() {
-        return message;
+    public String getDisplayedMessage() {
+        return displayedMessage;
     }
 }
