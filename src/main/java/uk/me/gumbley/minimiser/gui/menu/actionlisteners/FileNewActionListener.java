@@ -1,12 +1,13 @@
 package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
+
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
+
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewResult;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardChooseFolderPage;
@@ -22,7 +23,7 @@ import uk.me.gumbley.minimiser.persistence.AccessFactory;
  * @author matt
  *
  */
-public final class FileNewActionListener implements ActionListener {
+public final class FileNewActionListener extends SnailActionListener {
     private final OpenDatabaseList databaseList;
     private final AccessFactory access;
     private final CursorManager cursorMan;
@@ -36,7 +37,7 @@ public final class FileNewActionListener implements ActionListener {
     public FileNewActionListener(final OpenDatabaseList openDatabaseList,
             final AccessFactory accessFactory,
             final CursorManager cursorManager) {
-        super();
+        super(cursorManager);
         this.databaseList = openDatabaseList;
         this.access = accessFactory;
         this.cursorMan = cursorManager;
@@ -45,7 +46,8 @@ public final class FileNewActionListener implements ActionListener {
     /**
      * {@inheritDoc}
      */
-    public void actionPerformed(final ActionEvent e) {
+    @Override
+    public void actionPerformedSlowly(final ActionEvent e) {
         final WizardPage[] wizardPages = new WizardPage[] {
                 new FileNewWizardIntroPage(),
                 new FileNewWizardChooseFolderPage(databaseList),
@@ -53,10 +55,12 @@ public final class FileNewActionListener implements ActionListener {
                 new FileNewWizardCurrencyPage(),
         };
         final WizardResultProducer producer = new WizardResultProducer() {
+            @SuppressWarnings("unchecked")
             public boolean cancel(final Map settings) {
                 return true;
             }
 
+            @SuppressWarnings("unchecked")
             public Object finish(final Map settings) throws WizardException {
                 return new FileNewResult(databaseList,
                     access,
@@ -64,6 +68,9 @@ public final class FileNewActionListener implements ActionListener {
             }
         };
         final Wizard wizard = WizardPage.createWizard(wizardPages, producer);
+        // ... and we've finished setting up, so back to normal... 
+        cursorMan.normal();
+        // ... and on with the show...
         wizard.show();
     }
 }

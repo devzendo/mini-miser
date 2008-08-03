@@ -1,12 +1,13 @@
 package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
+
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
+
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenResult;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardChooseFolderPage;
@@ -20,7 +21,7 @@ import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
  * @author matt
  *
  */
-public final class FileOpenActionListener implements ActionListener {
+public final class FileOpenActionListener extends SnailActionListener {
     private final OpenDatabaseList databaseList;
     private final CursorManager cursor;
     private final Opener dbOpener;
@@ -34,7 +35,7 @@ public final class FileOpenActionListener implements ActionListener {
     public FileOpenActionListener(final OpenDatabaseList openDatabaseList,
             final CursorManager cursorManager,
             final Opener opener) {
-        super();
+        super(cursorManager);
         this.databaseList = openDatabaseList;
         this.cursor = cursorManager;
         this.dbOpener = opener;
@@ -43,7 +44,8 @@ public final class FileOpenActionListener implements ActionListener {
     /**
      * {@inheritDoc}
      */
-    public void actionPerformed(final ActionEvent e) {
+    @Override
+    public void actionPerformedSlowly(final ActionEvent e) {
         final WizardPage[] wizardPages = new WizardPage[] {
                 new FileOpenWizardIntroPage(),
                 new FileOpenWizardChooseFolderPage(databaseList),
@@ -60,6 +62,9 @@ public final class FileOpenActionListener implements ActionListener {
             }
         };
         final Wizard wizard = WizardPage.createWizard(wizardPages, producer);
+        // ... and we've finished setting up, so back to normal... 
+        cursor.normal();
+        // ... and on with the show...
         wizard.show();
     }
 }
