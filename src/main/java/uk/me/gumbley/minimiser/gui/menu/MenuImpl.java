@@ -136,7 +136,15 @@ public final class MenuImpl implements Menu {
                 menuItem.setMnemonic(KeyEvent.VK_0 + mnemonic);
                 menuItem.addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
-                        openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(recentDbName, recentDbPath));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Thread.currentThread().setName("RecentOpener:" + recentDbName);
+                                Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
+                                LOGGER.info("Opening recent database '" + recentDbName + "'");
+                                openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                            }
+                        }).start();
                     }
                 });
                 submenu.add(menuItem);
