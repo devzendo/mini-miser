@@ -31,8 +31,7 @@ public abstract class AbstractStatusBar implements StatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void clearMessage() {
+    public final void clearMessage() {
         synchronized (lock) {
             permanentMessage = "";
         }
@@ -42,8 +41,7 @@ public abstract class AbstractStatusBar implements StatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void displayMessage(final String message) {
+    public final void displayMessage(final String message) {
         synchronized (lock) {
             permanentMessage = message == null ? "" : message;
         }
@@ -53,14 +51,12 @@ public abstract class AbstractStatusBar implements StatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void displayTemporaryMessage(final String message, final int seconds) {
+    public final void displayTemporaryMessage(final String message, final int seconds) {
         synchronized (lock) {
             tempMessage = message;
         }
         update();
         delayedExecutor.submit("AbstractStatusBar", seconds * 1000L, new Runnable() {
-            @Override
             public void run() {
                 synchronized (lock) {
                     tempMessage = "";

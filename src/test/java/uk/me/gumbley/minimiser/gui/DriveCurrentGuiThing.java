@@ -51,11 +51,9 @@ public final class DriveCurrentGuiThing {
         button.setPreferredSize(new Dimension(400, 200));
         button.addActionListener(new ActionListener() {
 
-            @Override
             public void actionPerformed(ActionEvent arg0) {
                 new Thread(new Runnable() {
 
-                    @Override
                     public void run() {
                         sb.displayMessage("test this one!");
                         ThreadUtils.waitNoInterruption(500);

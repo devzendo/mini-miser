@@ -51,7 +51,6 @@ public final class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFacto
             if (progressStage.getValue() == progressStage.getMaximumValue()) {
                 // not ideal, could use the delayed executor here...
                 new Thread(new Runnable() {
-                    @Override
                     public void run() {
                         ThreadUtils.waitNoInterruption(500);
                         statusBar.clearProgress();
@@ -59,7 +58,7 @@ public final class DefaultOpenerAdapterFactoryImpl implements OpenerAdapterFacto
                     }
                 }).start();
             }
-            statusBar.setProgressLength(progressStage.getValue());
+            statusBar.setProgressStep(progressStage.getValue());
             statusBar.displayMessage(description);
         }
     }

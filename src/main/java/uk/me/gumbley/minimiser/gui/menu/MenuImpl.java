@@ -137,7 +137,6 @@ public final class MenuImpl implements Menu {
                 menuItem.addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
                         new Thread(new Runnable() {
-                            @Override
                             public void run() {
                                 Thread.currentThread().setName("RecentOpener:" + recentDbName);
                                 Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
@@ -156,10 +155,15 @@ public final class MenuImpl implements Menu {
     // EDT
     private void createMenuItem(final MenuIdentifier menuIdentifier,
             final String menuItemText, final char mnemonic, final JMenu menu) {
-        final JMenuItem menuItem = new JMenuItem(menuItemText);
-        menuItem.setMnemonic(mnemonic);
+        final JMenuItem menuItem;
+        if (menuWiring.getMenuItem(menuIdentifier) != null) {
+            menuItem = menuWiring.getMenuItem(menuIdentifier);
+        } else {
+            menuItem = new JMenuItem(menuItemText);
+            menuItem.setMnemonic(mnemonic);
+            menuWiring.storeMenuItem(menuIdentifier, menuItem);
+        }
         menu.add(menuItem);
-        menuWiring.storeMenuItem(menuIdentifier, menuItem);
     }
 
     /**
@@ -167,6 +171,7 @@ public final class MenuImpl implements Menu {
      */
     // EDT
     public void enableCloseMenu(final boolean enabled) {
+        LOGGER.debug("Close menu is " + (enabled ? "enabled" : "disabled"));
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
@@ -180,7 +185,9 @@ public final class MenuImpl implements Menu {
     
     // EDT
     private void enableMenuItem(final MenuIdentifier menuIdentifier, final boolean enabled) {
-        menuWiring.getMenuItem(menuIdentifier).setEnabled(enabled);
+        LOGGER.debug((enabled ? "Enabling " : "Disabling ") + menuIdentifier);
+        final JMenuItem menuItem = menuWiring.getMenuItem(menuIdentifier);
+        menuItem.setEnabled(enabled);
     }
 
     // EDT
@@ -209,6 +216,7 @@ public final class MenuImpl implements Menu {
 
     // EDT
     private void enableCloseAllMenu() {
+        LOGGER.debug("Close All Menu - size of database list is "  + databases.size());
         enableMenuItem(MenuIdentifier.FileCloseAll, databases.size() != 0);
     }
     

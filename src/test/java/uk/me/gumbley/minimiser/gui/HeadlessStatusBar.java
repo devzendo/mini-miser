@@ -29,28 +29,24 @@ public class HeadlessStatusBar extends AbstractStatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void clearProgress() {
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
     public void setEncryptedIndicator(final boolean encrypted) {
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
     public void setProgressLength(final int max) {
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
     public void setProgressStep(final int step) {
     }
 

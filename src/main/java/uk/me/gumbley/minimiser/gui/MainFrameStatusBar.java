@@ -3,13 +3,12 @@ package uk.me.gumbley.minimiser.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-
+import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 
@@ -19,6 +18,8 @@ import uk.me.gumbley.minimiser.util.DelayedExecutor;
  * @author matt
  */
 public class MainFrameStatusBar extends AbstractStatusBar {
+    private static final Logger LOGGER = Logger
+            .getLogger(MainFrameStatusBar.class);
     private JProgressBar progressBar;
 
     private JLabel label;
@@ -56,7 +57,6 @@ public class MainFrameStatusBar extends AbstractStatusBar {
     @Override
     public void internalSetMessageTextNow(final String message) {
         GUIUtils.runOnEventThread(new Runnable() {
-            @Override
             public void run() {
                 label.setText(message);
             }
@@ -66,10 +66,9 @@ public class MainFrameStatusBar extends AbstractStatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void clearProgress() {
+        LOGGER.debug("clearing progress");
         GUIUtils.runOnEventThread(new Runnable() {
-            @Override
             public void run() {
                 progressBar.setMaximum(0);
                 progressBar.setMinimum(0);
@@ -80,7 +79,6 @@ public class MainFrameStatusBar extends AbstractStatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void setEncryptedIndicator(final boolean encrypted) {
         // TODO Auto-generated method stub
     }
@@ -88,10 +86,9 @@ public class MainFrameStatusBar extends AbstractStatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void setProgressLength(final int max) {
+        LOGGER.debug("progress length is " + max);
         GUIUtils.runOnEventThread(new Runnable() {
-            @Override
             public void run() {
                 progressBar.setMaximum(max);
                 progressBar.setMinimum(0);
@@ -102,10 +99,9 @@ public class MainFrameStatusBar extends AbstractStatusBar {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void setProgressStep(final int step) {
+        LOGGER.debug("progress step is " + step);
         GUIUtils.runOnEventThread(new Runnable() {
-            @Override
             public void run() {
                 progressBar.setValue(step);
             }

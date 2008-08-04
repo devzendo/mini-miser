@@ -1,8 +1,11 @@
 package uk.me.gumbley.minimiser.gui;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -58,10 +61,7 @@ public class MainFrame {
             throws AppException {
         super();
         this.springLoader = loader;
-        // Process command line
-        for (int i = 0; i < argList.size(); i++) {
-            LOGGER.debug("arg " + i + " = '" + argList.get(i) + "'");
-        }
+
         windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
         openDatabaseList = springLoader.getBean("openDatabaseList", OpenDatabaseList.class);
         recentList = springLoader.getBean("recentFilesList", RecentFilesList.class);
@@ -81,7 +81,20 @@ public class MainFrame {
             mainFrame.pack();
         }
         windowGeometryStore.loadGeometry(mainFrame);
+        attachVisibilityListener();
         mainFrame.setVisible(true);
+    }
+
+    private void attachVisibilityListener() {
+        final AWTEventListener awtEventListener = new AWTEventListener() {
+            public void eventDispatched(final AWTEvent event) {
+                if (event.getID() == WindowEvent.WINDOW_OPENED && event.getSource().equals(mainFrame)) {
+                    LOGGER.info("Main frame visible");
+                    // TODO trigger LifecycleManager.startup here
+                }
+            }
+        };
+        Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.WINDOW_EVENT_MASK);
     }
 
     private Component createBlankPanel() {
@@ -106,6 +119,8 @@ public class MainFrame {
             }
 
             public void shutdown() {
+                // TODO trigger LifecycleManager.shutdown here
+                // TODO move these to be managed by that, not directly coupled from here.
                 // TODO flush DelayedExecutor thread
                 closeOpenDatabases();
                 windowGeometryStore.saveGeometry(mainFrame);

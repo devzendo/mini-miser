@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
@@ -41,14 +42,16 @@ public final class AboutDialog extends JDialog implements
     private JOptionPane optionPane;
     private String btnString1 = "Continue";
     private ArrayList<SwingWorker> workers;
-    private AWTEventListener awtEventListener; 
+    private AWTEventListener awtEventListener;
+    private final CursorManager cursorManager; 
 
     /**
      * Creates the reusable dialog.
      * @param parentFrame the parent frame
      */
-    public AboutDialog(final Frame parentFrame) {
+    public AboutDialog(final Frame parentFrame, final CursorManager cursor) {
         super(parentFrame, true);
+        cursorManager = cursor;
         setTitle("About " + AppName.getAppName());
         workers = new ArrayList<SwingWorker>();
         
@@ -63,6 +66,7 @@ public final class AboutDialog extends JDialog implements
         tabbedPane.addTab("About", getAboutComponent());
         tabbedPane.addTab("Credits", getCreditsComponent());
         tabbedPane.addTab("License", getLicenseComponent());
+        cursorNormal();
         
         final JTextArea textArea = new JTextArea(msg.toString());
         textArea.setEditable(false);
@@ -150,6 +154,21 @@ public final class AboutDialog extends JDialog implements
         };
         workers.add(worker);
     }
+    
+    private void cursorNormal() {
+        final SwingWorker worker = new SwingWorker() {
+
+            @Override
+            public Object construct() {
+                return null;
+            }
+            
+            public void finished() {
+                cursorManager.normal();
+            }
+        };
+        workers.add(worker);
+    }
 
     private void readResource(final StringBuilder store, final String resourceName) {
         final InputStream resourceAsStream = Thread.currentThread().
@@ -203,16 +222,17 @@ public final class AboutDialog extends JDialog implements
             Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
         }
         setVisible(false);
+        cursorManager.normal();
     }
 
     /**
      * Create an About Dialog.
      * @param parentFrame the parent frame
      */
-    public static void showAbout(final Frame parentFrame) {
-        GUIUtils.runOnEventThread(new Runnable() {
+    public static void showAbout(final Frame parentFrame, final CursorManager cursor) {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
             public void run() {
-                final AboutDialog dialog = new AboutDialog(parentFrame);
+                final AboutDialog dialog = new AboutDialog(parentFrame, cursor);
                 dialog.pack();
                 dialog.setLocationRelativeTo(parentFrame);
                 dialog.setVisible(true);

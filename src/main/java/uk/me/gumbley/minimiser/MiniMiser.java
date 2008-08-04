@@ -102,6 +102,12 @@ public final class MiniMiser {
             public void run() {
                 try {
                     Beautifier.makeBeautiful();
+
+                    // Process command line
+                    for (int i = 0; i < finalArgList.size(); i++) {
+                        LOGGER.debug("arg " + i + " = '" + finalArgList.get(i) + "'");
+                    }
+
                     new MainFrame(springLoader, finalArgList);
 
                     // TODO perhaps make this wait for the main window to
