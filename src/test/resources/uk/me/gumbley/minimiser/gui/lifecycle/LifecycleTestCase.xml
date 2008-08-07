@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<!-- the close test -->
+	<bean id="closeLifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>databaseCloserLifecycle</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="closeLifecycleManager" class="uk.me.gumbley.minimiser.lifecycle.DefaultLifecycleManagerImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="closeLifecycleList" />	
+	</bean>
+
+	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseCloserLifecycle">
+		<constructor-arg ref="openDatabaseList" />	
+	</bean>
+
+	<!-- resources shared between tests -->
+	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" lazy-init="true" />
+
+	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
+	
+</beans>

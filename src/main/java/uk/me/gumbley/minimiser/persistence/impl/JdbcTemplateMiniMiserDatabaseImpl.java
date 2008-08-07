@@ -52,9 +52,9 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
         if (isClosed) {
             return;
         }
-        isClosed = true;
         try {
             DataSourceUtils.getConnection(dataSource).close();
+            isClosed = true;
         } catch (final CannotGetJdbcConnectionException e) {
             LOGGER.warn("Can't get JDBC Connection on close: " + e.getMessage(), e);
         } catch (final SQLException e) {
@@ -74,5 +74,22 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
         if (isClosed) {
             throw new IllegalStateException(String.format("Cannot call %s with a closed database", method));
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isClosed() {
+        if (isClosed) {
+            return true;
+        }
+        try {
+            return DataSourceUtils.getConnection(dataSource).isClosed();
+        } catch (final CannotGetJdbcConnectionException e) {
+            LOGGER.warn("Can't get JDBC Connection on isClosed: " + e.getMessage(), e);
+        } catch (final SQLException e) {
+            LOGGER.warn("SQL Exception on isClosed: " + e.getMessage(), e);
+        }
+        return false;
     }
 }

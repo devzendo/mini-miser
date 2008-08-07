@@ -18,4 +18,9 @@ public interface MiniMiserDatabase {
      * Close the database.
      */
     void close();
+
+    /**
+     * @return true iff the database is closed
+     */
+    boolean isClosed();
 }

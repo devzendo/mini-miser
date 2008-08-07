@@ -79,12 +79,14 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
                 final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbPassword);
                 try {
                     assertDatabaseShouldBeOpen(dbName);
+                    Assert.assertFalse(openedDatabase.isClosed());
                     Assert.assertNotNull(openedDatabase);
                     LOGGER.info("... we opened the database!");
                     checkDatabaseInvariants(dbName, openedDatabase, false, false);
                 } finally {
                     LOGGER.info("... re-closing");
                     openedDatabase.close();
+                    Assert.assertTrue(openedDatabase.isClosed());
                 }
             }
             

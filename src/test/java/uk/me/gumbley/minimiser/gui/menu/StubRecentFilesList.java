@@ -13,8 +13,6 @@ import uk.me.gumbley.minimiser.recentlist.AbstractRecentFilesListImpl;
  * notifies them when changes occurs to the list, in the same manner as
  * the real one, but with no backing store.
  * 
- * add method logic nicked from the real one, after it had been TDD'ed :-)
- * 
  * @author matt
  *
  */

@@ -18,6 +18,7 @@ public final class DefaultPrefsImpl implements Prefs {
     private static final String SECTION_UI = "ui";
     private static final String SECTION_WIZARD = "wizard";
     private static final String SECTION_RECENTFILES = "recentfiles";
+    private static final String SECTION_OPENFILES = "openfiles";
 
     /**
      * Create a Prefs object backed by a file
@@ -86,5 +87,19 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void setRecentFiles(final String[] paths) {
         iniFile.setArray(SECTION_RECENTFILES, paths);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getOpenFiles() {
+        return iniFile.getArray(SECTION_OPENFILES);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setOpenFiles(final String[] paths) {
+        iniFile.setArray(SECTION_OPENFILES, paths);
     }
 }

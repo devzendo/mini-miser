@@ -99,5 +99,15 @@ public final class TestPrefs extends LoggingTestCase {
         Assert.assertEquals("/tmp/foo/foo", recentFiles[0]);
     }
     
-    
+    /**
+     * WOZERE test this
+     */
+    @Test
+    public void shouldHaveOneOpenFileAfterAddOfOne() {
+        prefs.setOpenFiles(new String[] {"/tmp/foo/foo"});
+        final String[] openFiles = prefs.getOpenFiles();
+        Assert.assertNotNull(openFiles);
+        Assert.assertEquals(1, openFiles.length);
+        Assert.assertEquals("/tmp/foo/foo", openFiles[0]);
+    }
 }
