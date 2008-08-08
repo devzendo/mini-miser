@@ -7,7 +7,9 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  * @author matt
  *
  */
-public class StubOpenListPrefs implements Prefs {
+public final class StubOpenListPrefs implements Prefs {
+    private String[] openFiles = new String[0];
+    
     /**
      * {@inheritDoc}
      */
@@ -54,13 +56,18 @@ public class StubOpenListPrefs implements Prefs {
     public void setWizardPanelSize(final String size) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String[] getOpenFiles() {
-        // TODO Auto-generated method stub
-        return null;
+        return openFiles;
     }
 
-    public void setOpenFiles(String[] paths) {
-        // TODO Auto-generated method stub
+    /**
+     * {@inheritDoc}
+     */
+    public void setOpenFiles(final String[] paths) {
+        openFiles = paths == null ? new String[0] : paths;
         
     }
 }

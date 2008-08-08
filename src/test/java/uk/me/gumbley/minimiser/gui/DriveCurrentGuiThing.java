@@ -51,7 +51,7 @@ public final class DriveCurrentGuiThing {
         button.setPreferredSize(new Dimension(400, 200));
         button.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent arg0) {
+            public void actionPerformed(final ActionEvent arg0) {
                 new Thread(new Runnable() {
 
                     public void run() {
@@ -64,14 +64,16 @@ public final class DriveCurrentGuiThing {
                         sb.displayTemporaryMessage("temp message", 2);
                         ThreadUtils.waitNoInterruption(5000);
                         sb.setProgressLength(10);
-                        for (int i=0; i<10; i++) {
+                        for (int i = 0; i < 10; i++) {
                             sb.setProgressStep(i);
                             ThreadUtils.waitNoInterruption(500);
                         }
                         sb.clearProgress();
                         sb.clearMessage();
-                    }}).start();
-            }});
+                    }
+                }).start();
+            }
+        });
         frame.add(button, BorderLayout.CENTER);
 
         frame.pack();
@@ -83,13 +85,13 @@ public final class DriveCurrentGuiThing {
         
         
     }
-    private static void problemDialogException(final JFrame frame) {
-        ProblemDialog.reportProblem(frame, "working out the meaning of life", new RuntimeException("the obstacle is the path"));
-    }
-    private static void problemDialogNoException(final JFrame frame) {
-        ProblemDialog.reportProblem(frame, "working out the meaning of life");
-    }
-    private static void enterPassword(final JFrame frame) {
-        new PasswordEntryDialogHelper().promptForPassword(frame, "foo");
-    }
+//    private static void problemDialogException(final JFrame frame) {
+//        ProblemDialog.reportProblem(frame, "working out the meaning of life", new RuntimeException("the obstacle is the path"));
+//    }
+//    private static void problemDialogNoException(final JFrame frame) {
+//        ProblemDialog.reportProblem(frame, "working out the meaning of life");
+//    }
+//    private static void enterPassword(final JFrame frame) {
+//        new PasswordEntryDialogHelper().promptForPassword(frame, "foo");
+//    }
 }

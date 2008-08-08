@@ -80,6 +80,7 @@
     <bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
+				<value>databaseOpenerLifecycle</value>
 				<value>databaseCloserLifecycle</value>
 				<value>mainFrameGeometrySaverLifecycle</value>
 				<value>delayedExecutorFlushLifecycle</value>
@@ -98,6 +99,13 @@
 	
 	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseCloserLifecycle">
 		<constructor-arg ref="openDatabaseList" />	
+		<constructor-arg ref="prefs" />	
+	</bean>
+
+	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseOpenerLifecycle">
+		<constructor-arg ref="opener" />	
+		<constructor-arg ref="openerAdapterFactory" />	
+		<constructor-arg ref="prefs" />	
 	</bean>
 
 	<bean id="mainFrameGeometrySaverLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.MainFrameGeometrySaverLifecycle">

@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.recentlist;
+package uk.me.gumbley.minimiser.util;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -100,7 +100,7 @@ public final class TestPrefs extends LoggingTestCase {
     }
     
     /**
-     * WOZERE test this
+     * 
      */
     @Test
     public void shouldHaveOneOpenFileAfterAddOfOne() {

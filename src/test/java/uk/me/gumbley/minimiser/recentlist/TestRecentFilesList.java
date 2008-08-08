@@ -12,6 +12,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
+import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
 
 
 /**

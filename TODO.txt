@@ -3,10 +3,9 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUGS:
-  
-* need status bar with text and progress
-
-* need openerAdapter in the default opener adapter factory that uses status bar
+* open previously open files doesn't preserve the currently selectewd database.
+  * store the current file in prefs
+* open previously open files doesn't show which database is being reopened.
   
 * tests for opening a database that had had the opening software termiated on
   it - what about lock files being present on startup?
@@ -21,11 +20,7 @@ BUGS:
 * database switching via menu does not seem to have been done TDD - 
   addDatabaseSwitchObserver is only called from wireAdapters - add tests
   
-* store open database list in prefs
-* store the current file in prefs
 * store the current tab in prefs
-
-* open on startup any files in the stored open database list
 
 * sort out generation of the app name and version from the pom
 * change the frame title depending on the selected database
@@ -52,6 +47,7 @@ BUGS:
   * upgrade to GPL3?
 
 * review all TODOs
+* review code complexity, coverage, etc.
 
 * decide final product name
 * create logo

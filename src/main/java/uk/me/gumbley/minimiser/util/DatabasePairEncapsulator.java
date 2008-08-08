@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.recentlist;
+package uk.me.gumbley.minimiser.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

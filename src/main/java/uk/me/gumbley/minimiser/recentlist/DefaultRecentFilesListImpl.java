@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.util.DatabasePair;
+import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
 
 /**
  * A RecentFilesList implementation that persists via prefs.

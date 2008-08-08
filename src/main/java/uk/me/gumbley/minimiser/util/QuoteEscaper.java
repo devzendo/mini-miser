@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.recentlist;
+package uk.me.gumbley.minimiser.util;
 
 /**
  * Toolkit for escaping and unescaping double quotes in Strings.

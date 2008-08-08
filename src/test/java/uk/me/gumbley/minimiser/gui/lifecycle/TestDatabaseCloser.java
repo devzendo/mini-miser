@@ -1,7 +1,6 @@
 package uk.me.gumbley.minimiser.gui.lifecycle;
 
 import org.apache.log4j.Logger;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +12,8 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 import uk.me.gumbley.minimiser.prefs.Prefs;
-import uk.me.gumbley.minimiser.recentlist.DatabasePairEncapsulator;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
+import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
 
 
 /**
@@ -31,6 +30,7 @@ public class TestDatabaseCloser extends PersistenceUnittestCase {
     private AccessFactory accessFactory;
     private OpenDatabaseList openDatabaseList;
     private LifecycleManager lifecycleManager;
+    private Prefs prefs;
 
     /**
      * 
@@ -40,6 +40,7 @@ public class TestDatabaseCloser extends PersistenceUnittestCase {
         accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
         openDatabaseList = getSpringLoader().getBean("openDatabaseList", OpenDatabaseList.class);
         lifecycleManager = getSpringLoader().getBean("closeLifecycleManager", LifecycleManager.class);
+        prefs = getSpringLoader().getBean("prefs", Prefs.class);
     }
     
     /**
@@ -87,14 +88,25 @@ public class TestDatabaseCloser extends PersistenceUnittestCase {
      * 
      */
     @Test
+    public void closeFailureShouldDisplayAnError() {
+        // TODO - will need to decouple problem reporting from closing, in the
+        // same way I did for the Opener, via an adapter.
+        // This can be reused in the opener lifecycle.
+    }
+    
+    /**
+     * 
+     */
+    @Test
     public void openDatabasesShouldBeStoredOnShutdown() {
-        // TODO closer lifecycle will be given the prefs
+        Assert.assertEquals(0, prefs.getOpenFiles().length);
         
         openDatabaseList.addOpenedDatabase(new DatabaseDescriptor("one", "/tmp/one"));
 
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
-        prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("one", "/tmp/one")}));
+        lifecycleManager.shutdown();
         
-        Assert.fail("unimplemented - need to test storage of open database list in prefs first");
+        Assert.assertEquals(1, prefs.getOpenFiles().length);
+        final String openFile = prefs.getOpenFiles()[0];
+        Assert.assertEquals(DatabasePairEncapsulator.escape("one", "/tmp/one"), openFile);
     }
 }

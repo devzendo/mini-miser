@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.recentlist;
+package uk.me.gumbley.minimiser.util;
 
 /**
  * A bean for encapsulating a database name and path.
