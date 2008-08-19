@@ -13,12 +13,18 @@ public final class DefaultPrefsImpl implements Prefs {
     private INIFile iniFile;
 
     // The section names and preference items
+    private static final String SECTION_UI = "ui";
     private static final String UI_GEOMETRY = "geometry";
     private static final String WIZARD_PANEL_SIZE = "wizard_panel_size";
-    private static final String SECTION_UI = "ui";
+    
     private static final String SECTION_WIZARD = "wizard";
+
     private static final String SECTION_RECENTFILES = "recentfiles";
+    
     private static final String SECTION_OPENFILES = "openfiles";
+    
+    private static final String SECTION_LASTACTIVEFILE = "last_active_file";
+    private static final String LAST_ACTIVE_FILE = "last";
 
     /**
      * Create a Prefs object backed by a file
@@ -101,5 +107,19 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void setOpenFiles(final String[] paths) {
         iniFile.setArray(SECTION_OPENFILES, paths);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLastActiveFile() {
+        return iniFile.getValue(SECTION_LASTACTIVEFILE, LAST_ACTIVE_FILE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastActiveFile(final String name) {
+        iniFile.setValue(SECTION_LASTACTIVEFILE, LAST_ACTIVE_FILE, name);
     }
 }

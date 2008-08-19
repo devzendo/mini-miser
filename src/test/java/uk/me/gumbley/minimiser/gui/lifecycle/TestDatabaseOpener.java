@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.gui.lifecycle;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,6 +36,11 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
     private LifecycleManager lifecycleManager;
     private Prefs prefs;
     private Opener opener;
+    private final DatabaseOpenDetails[] dbDetails = new DatabaseOpenDetails[] {
+            new DatabaseOpenDetails("one", ""),
+            new DatabaseOpenDetails("two", ""),
+            new DatabaseOpenDetails("three", ""),
+    };
 
     /**
      * 
@@ -45,47 +52,95 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
         lifecycleManager = getSpringLoader().getBean("openLifecycleManager", LifecycleManager.class);
         prefs = getSpringLoader().getBean("prefs", Prefs.class);
         opener = getSpringLoader().getBean("opener", Opener.class);
+        
+        // wire up the opener to the opendatabaselist as
+        // the menumediator does
+        opener.addDatabaseOpenObserver(new Observer<DatabaseOpenEvent>() {
+            public void eventOccurred(final DatabaseOpenEvent observableEvent) {
+                openDatabaseList.addOpenedDatabase(observableEvent.getDatabase());
+            }
+        });
+
+        // store the db names so we'll repoen them on lifecycle startup
+        final List<String> pairs = new ArrayList<String>();
+        for (DatabaseOpenDetails detail : dbDetails) {
+            final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
+            final String pair = DatabasePairEncapsulator.escape(detail.getName(), dbDirPlusDbName);
+            pairs.add(pair);
+        }
+        prefs.setOpenFiles(pairs.toArray(new String[0]));
+    
     }
 
     /**
      * 
      */
     @Test
-    public void shouldOpenRecordedDatabasesOnStartup() {
-        LOGGER.info("*** shouldOpenRecordedDatabasesOnStartup start");
-        final String dbName = "testopen";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
-            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+    public void shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup() {
+        LOGGER.info("*** shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup start");
+        createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
+            public void runOnCreatedDbs() {
+
+                Assert.assertEquals(0, openDatabaseList.getNumberOfDatabases());
                 
-                // wire up the opener to the opendatabaselist as
-                // the menumediator does
-                opener.addDatabaseOpenObserver(new Observer<DatabaseOpenEvent>() {
-                    public void eventOccurred(final DatabaseOpenEvent observableEvent) {
-                        openDatabaseList.addOpenedDatabase(observableEvent.getDatabase());
-                    }
-                });
-                // store this so we'll repoen it on lifecycle startup
-                prefs.setOpenFiles(new String[] {DatabasePairEncapsulator.escape(dbName, dbDirPlusDbName)});
+                try {
+                    lifecycleManager.startup();
+                    
+                    checkCorrectlyOpenedDatabases();
+
+                    // no last active database stored, stick on three
+                    Assert.assertEquals("three", openDatabaseList.getCurrentDatabase().getDatabaseName());
+                } finally {
+                    closeOpenDatabases();
+                }
+            }
+        });
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup() {
+        LOGGER.info("*** shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup start");
+        createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
+            public void runOnCreatedDbs() {
+                
+                prefs.setLastActiveFile("two");
                 
                 Assert.assertEquals(0, openDatabaseList.getNumberOfDatabases());
                 
                 try {
                     lifecycleManager.startup();
                     
-                    Assert.assertEquals(1, openDatabaseList.getNumberOfDatabases());
-                    final DatabaseDescriptor descriptor = openDatabaseList.getOpenDatabases().get(0);
-                    Assert.assertEquals(dbName, descriptor.getDatabaseName());
-                    Assert.assertEquals(dbDirPlusDbName, descriptor.getDatabasePath());
-                    
-                    assertDatabaseShouldBeOpen(dbName);
+                    checkCorrectlyOpenedDatabases();
+                    // have we switched back to two, as it was the last current database?
+                    Assert.assertEquals("two", openDatabaseList.getCurrentDatabase().getDatabaseName());
                 } finally {
-                    if (openDatabaseList.getNumberOfDatabases() == 1) {
-                        final MiniMiserDatabaseDescriptor openDescriptor = (MiniMiserDatabaseDescriptor) openDatabaseList.getOpenDatabases().get(0);
-                        openDescriptor.getDatabase().close();
-                        assertDatabaseShouldBeClosed(dbName);
-                    }
+                    closeOpenDatabases();
                 }
             }
         });
+    }
+
+    private void closeOpenDatabases() {
+        final int numOpened = openDatabaseList.getNumberOfDatabases();
+        for (int i = 0; i < numOpened; i++) {
+            final MiniMiserDatabaseDescriptor openDescriptor = (MiniMiserDatabaseDescriptor) openDatabaseList.getOpenDatabases().get(i);
+            openDescriptor.getDatabase().close();
+            assertDatabaseShouldBeClosed(openDescriptor.getDatabaseName());
+        }
+    }
+
+    private void checkCorrectlyOpenedDatabases() {
+        Assert.assertEquals(3, openDatabaseList.getNumberOfDatabases());
+        for (int i = 0; i < dbDetails.length; i++) {
+            final DatabaseOpenDetails detail = dbDetails[i];
+
+            final DatabaseDescriptor descriptor = openDatabaseList.getOpenDatabases().get(i);
+            Assert.assertEquals(detail.getName(), descriptor.getDatabaseName());
+            Assert.assertEquals(getAbsoluteDatabaseDirectory(detail.getName()), descriptor.getDatabasePath());
+            assertDatabaseShouldBeOpen(detail.getName());
+        }
     }
 }

@@ -348,4 +348,95 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
             LOGGER.info("... done");
         }
     }
+    
+    /**
+     * Details needed to create and open a database
+     * @author matt
+     *
+     */
+    protected static final class DatabaseOpenDetails {
+        private final String name;
+        private final String password;
+
+        /**
+         * Supply details for creation/opening
+         * @param dbName the database name
+         * @param dbPassword the password
+         */
+        public DatabaseOpenDetails(final String dbName, final String dbPassword) {
+            this.name = dbName;
+            this.password = dbPassword;
+        }
+
+        /**
+         * @return the database name
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * @return the database password
+         */
+        public String getPassword() {
+            return password;
+        }
+    }
+
+    /**
+     * Run this oer multiple databases
+     * @author matt
+     *
+     */
+    protected interface RunOnCreatedDbs {
+        /**
+         * Run some custom behaviour for databases that have been created
+         * and will be deleted afterwards.
+         */
+        void runOnCreatedDbs();
+    }
+
+    /**
+     * Creates several dbs, close them, then allows pluggable behaviour, before
+     * deleting the databases.
+     * @param accessFactory the access factory to use when creating
+     * @param dbDetails the create/open details of the databases
+     * @param runOnCreatedDbs some behaviour to run when the dbs are created,
+     * before deleting
+     */
+    protected final void createDatabasesWithPluggableBehaviourBeforeDeletion(
+        final AccessFactory accessFactory,
+        final DatabaseOpenDetails[] dbDetails,
+        final RunOnCreatedDbs runOnCreatedDbs) {
+        if (dbDetails == null || dbDetails.length == 0) {
+            return;
+        }
+        try {
+            for (DatabaseOpenDetails detail : dbDetails) {
+                final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
+                LOGGER.info(String.format("... dbName = %s", detail.getName()));
+                LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
+                LOGGER.info(String.format("... dbPassword = '%s'", detail.getPassword()));
+                // create it...
+                LOGGER.info("... creating");
+                final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, detail.getPassword());
+                LOGGER.info("... created");
+                // now close and open it
+                assertDatabaseShouldBeOpen(detail.getName());
+                LOGGER.info("... closing");
+                mmData.close();
+                assertDatabaseShouldBeClosed(detail.getName());
+            }
+            runOnCreatedDbs.runOnCreatedDbs();
+            for (DatabaseOpenDetails details : dbDetails) {
+                assertDatabaseShouldBeClosed(details.getName());
+            }
+        } finally {
+            for (DatabaseOpenDetails details : dbDetails) {
+                LOGGER.info("... deleting");
+                deleteDatabaseFiles(details.getName());
+                LOGGER.info("... done");
+            }
+        }
+    }
 }

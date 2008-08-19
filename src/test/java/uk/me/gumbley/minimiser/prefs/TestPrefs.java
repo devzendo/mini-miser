@@ -110,4 +110,13 @@ public final class TestPrefs extends LoggingTestCase {
         Assert.assertEquals(1, openFiles.length);
         Assert.assertEquals("/tmp/foo/foo", openFiles[0]);
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void shouldHaveLastActiveFileAfterSettingIt() {
+        prefs.setLastActiveFile("one");
+        Assert.assertEquals("one", prefs.getLastActiveFile());
+    }
 }

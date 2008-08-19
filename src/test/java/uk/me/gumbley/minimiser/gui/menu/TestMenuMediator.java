@@ -188,7 +188,6 @@ public final class TestMenuMediator extends LoggingTestCase {
         Assert.assertFalse(openedOne.get());
     
         stubMenu.injectOpenRecentRequest("one", "/tmp/one");
-        // WOZERE fix this!
         Assert.assertTrue("did not open not-opened on recent open of not-opened db", openedOne.get());
     }
 

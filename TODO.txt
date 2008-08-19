@@ -10,7 +10,9 @@ BUGS:
 * tests for opening a database that had had the opening software termiated on
   it - what about lock files being present on startup?
 
-
+* prefs should be stored in platform-specific location, not just ~/.minimiser -
+  need ~/Library/Application Support/MiniMiser on Mac OS X
+  need Documents and Settings/username/whatever on Windows.
 
 * fill in the rest of the acks in credits.html
 

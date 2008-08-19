@@ -5,12 +5,14 @@ import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.opener.OpenerAdapterFactory;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.util.DatabasePair;
 import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
 
 /**
- * A Lifecycle that opens all databases saved in prefs.
+ * A Lifecycle that opens all databases saved in prefs, and switches to the
+ * last active one.
  * 
  * @author matt
  *
@@ -21,17 +23,23 @@ public final class DatabaseOpenerLifecycle implements Lifecycle {
     private final Opener opener;
     private final OpenerAdapterFactory openerAdapterFactory;
     private final Prefs prefs;
+    private final OpenDatabaseList openDatabaseList;
 
     /**
      * We need to read the open database list so we know what to open on
      * startup.
      * @param openr the Opener
      * @param adapterFactory the OpenerAdaptorFactory
+     * @param openList the OpenDatabaseList
      * @param prefstore the prefs store
      */
-    public DatabaseOpenerLifecycle(final Opener openr, final OpenerAdapterFactory adapterFactory, final Prefs prefstore) {
+    public DatabaseOpenerLifecycle(final Opener openr,
+            final OpenerAdapterFactory adapterFactory,
+            final OpenDatabaseList openList,
+            final Prefs prefstore) {
         this.opener = openr;
         this.openerAdapterFactory = adapterFactory;
+        this.openDatabaseList = openList;
         this.prefs = prefstore;
     }
     
@@ -54,5 +62,14 @@ public final class DatabaseOpenerLifecycle implements Lifecycle {
             opener.openDatabase(databasePair.getName(), databasePair.getPath(), openerAdapter);
         }
         LOGGER.info("Previously open databases opened");
+        
+        final String lastActiveDatabaseName = prefs.getLastActiveFile();
+        if (lastActiveDatabaseName == null) {
+            LOGGER.info("No last active database recorded; not switching to it");
+        } else {
+            LOGGER.info("Switching to last active database");
+            openDatabaseList.switchDatabase(lastActiveDatabaseName);
+            LOGGER.info("Switched to last active database");
+        }
     }
 }

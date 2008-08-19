@@ -105,6 +105,7 @@
 	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseOpenerLifecycle">
 		<constructor-arg ref="opener" />	
 		<constructor-arg ref="openerAdapterFactory" />	
+		<constructor-arg ref="openDatabaseList" />	
 		<constructor-arg ref="prefs" />	
 	</bean>
 

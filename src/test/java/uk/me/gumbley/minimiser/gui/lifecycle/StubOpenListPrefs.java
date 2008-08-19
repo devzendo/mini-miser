@@ -9,6 +9,7 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  */
 public final class StubOpenListPrefs implements Prefs {
     private String[] openFiles = new String[0];
+    private String lastActiveFile = null;
     
     /**
      * {@inheritDoc}
@@ -69,5 +70,19 @@ public final class StubOpenListPrefs implements Prefs {
     public void setOpenFiles(final String[] paths) {
         openFiles = paths == null ? new String[0] : paths;
         
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLastActiveFile() {
+        return lastActiveFile;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastActiveFile(final String name) {
+        lastActiveFile = name;
     }
 }
