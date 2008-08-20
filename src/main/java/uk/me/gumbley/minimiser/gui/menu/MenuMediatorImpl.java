@@ -1,7 +1,9 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
+import java.awt.Frame;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
@@ -30,6 +32,7 @@ public final class MenuMediatorImpl implements MenuMediator {
     private final RecentFilesList recentFilesList;
     private final Opener opener;
     private final OpenerAdapterFactory openerAdapterFactory;
+    private final Frame mainFrame;
     
     /**
      * Create a Mediator between application events and the menu
@@ -38,16 +41,18 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @param recentFiles the recent files list
      * @param ope the opener
      * @param oaf the OpenerAdapterFactory
+     * @param mainframe the main frame
      */
     public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl,
             final RecentFilesList recentFiles, final Opener ope,
-            final OpenerAdapterFactory oaf) {
+            final OpenerAdapterFactory oaf, final Frame mainframe) {
         LOGGER.info("initialising MenuMediatorImpl");
         menu = leMenu;
         openDatabaseList = odl;
         recentFilesList = recentFiles;
         opener = ope;
         openerAdapterFactory = oaf;
+        mainFrame = mainframe;
         initialiseMenu();
         wireAdapters();
         LOGGER.info("initialised MenuMediatorImpl");
@@ -113,7 +118,9 @@ public final class MenuMediatorImpl implements MenuMediator {
          * {@inheritDoc}
          */
         public void eventOccurred(final DatabaseNameChoice windowMenuChoice) {
-            openDatabaseList.switchDatabase(windowMenuChoice.getDatabaseName());
+            final String databaseName = windowMenuChoice.getDatabaseName();
+            mainFrame.setTitle(AppName.getAppName() + " - " + databaseName);
+            openDatabaseList.switchDatabase(databaseName);
         }
     }
 

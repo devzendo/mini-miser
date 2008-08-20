@@ -264,7 +264,8 @@ public final class TestOpener extends PersistenceUnittestCase {
                     
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENING);
                     // First time round (which is all we'll have here), expect this.
-                    Assert.assertEquals("Opening database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
+                    Assert.assertEquals("Opening database 'progressplain'",
+                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
                     
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENED);
                     
@@ -316,9 +317,11 @@ public final class TestOpener extends PersistenceUnittestCase {
 
                     Assert.assertEquals(2, progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).size());
                     // First time round, expect this.
-                    Assert.assertEquals("Opening database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
+                    Assert.assertEquals("Opening database 'progressenc'",
+                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
                     // Then, after the password entry...
-                    Assert.assertEquals("Trying to open database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(1));
+                    Assert.assertEquals("Trying to open database 'progressenc'",
+                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(1));
                     
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.PASSWORD_REQUIRED);
 
@@ -372,7 +375,8 @@ public final class TestOpener extends PersistenceUnittestCase {
 
                     Assert.assertEquals(1, progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).size());
                     // First time round, expect this.
-                    Assert.assertEquals("Opening database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
+                    Assert.assertEquals("Opening database 'progressencabandon'",
+                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
                     // We shouldn't get a "Trying to open database"
                     
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.PASSWORD_REQUIRED);
@@ -431,11 +435,14 @@ public final class TestOpener extends PersistenceUnittestCase {
 
                     Assert.assertEquals(3, progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).size());
                     // First time round, expect this.
-                    Assert.assertEquals("Opening database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
+                    Assert.assertEquals("Opening database 'progressenc'",
+                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
                     // Then, after the password entry...
-                    Assert.assertEquals("Trying to open database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(1));
+                    Assert.assertEquals("Trying to open database 'progressenc'",
+                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(1));
                     // Then, after this fails the first time, another password entry...
-                    Assert.assertEquals("Trying to open database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(2));
+                    Assert.assertEquals("Trying to open database 'progressenc'",
+                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(2));
                     
                     Assert.assertEquals(2, progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.PASSWORD_REQUIRED).size());
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.PASSWORD_REQUIRED);
@@ -522,10 +529,9 @@ public final class TestOpener extends PersistenceUnittestCase {
                 
                 progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENING);
                 // First time round (which is all we'll have here), expect this.
-                Assert.assertEquals("Opening database", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
+                Assert.assertEquals("Opening database 'corrupt'", progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
                 
                 progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPEN_FAILED);
-                
                 
                 progressRecorder.assertNotFoundNotReceived();
                 progressRecorder.assertSeriousProblemReceived();

@@ -111,10 +111,11 @@ public final class MenuImpl implements Menu {
         createMenuItem(MenuIdentifier.FileClose, "Close", 'C', fileMenu);
         createMenuItem(MenuIdentifier.FileCloseAll, "Close all", 'l', fileMenu);
 
-        fileMenu.add(new JSeparator());
-
-        createMenuItem(MenuIdentifier.FileImport, "Import...", 'I', fileMenu);
-        createMenuItem(MenuIdentifier.FileExport, "Export...", 'E', fileMenu);
+        // TODO enable import / export in 0.2
+//        fileMenu.add(new JSeparator());
+//
+//        createMenuItem(MenuIdentifier.FileImport, "Import...", 'I', fileMenu);
+//        createMenuItem(MenuIdentifier.FileExport, "Export...", 'E', fileMenu);
 
         fileMenu.add(new JSeparator());
 
@@ -176,8 +177,9 @@ public final class MenuImpl implements Menu {
             public void run() {
                 synchronized (lock) {
                     enableMenuItem(MenuIdentifier.FileClose, enabled);
-                    enableMenuItem(MenuIdentifier.FileImport, enabled);
-                    enableMenuItem(MenuIdentifier.FileExport, enabled);
+                    // TODO enable import / export in 0.2
+//                    enableMenuItem(MenuIdentifier.FileImport, enabled);
+//                    enableMenuItem(MenuIdentifier.FileExport, enabled);
                 }
             }
         });

@@ -24,14 +24,19 @@ import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
  *
  */
 @ApplicationContext("uk/me/gumbley/minimiser/gui/lifecycle/LifecycleTestCase.xml")
-public class TestDatabaseCloser extends PersistenceUnittestCase {
+public final class TestDatabaseCloser extends PersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestDatabaseCloser.class);
     private AccessFactory accessFactory;
     private OpenDatabaseList openDatabaseList;
     private LifecycleManager lifecycleManager;
     private Prefs prefs;
-
+    private final DatabaseOpenDetails[] dbDetails = new DatabaseOpenDetails[] {
+            new DatabaseOpenDetails("one", ""),
+            new DatabaseOpenDetails("two", ""),
+            new DatabaseOpenDetails("three", ""),
+    };
+    
     /**
      * 
      */
@@ -49,35 +54,44 @@ public class TestDatabaseCloser extends PersistenceUnittestCase {
     @Test
     public void openDatabasesShouldBeClosedOnLifecycleShutdown() {
         LOGGER.info("** openDatabasesShouldBeClosedOnLifecycleShutdown");
-        final String dbName = "closeme";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
+        createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
             @SuppressWarnings("unchecked")
-            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+            public void runOnCreatedDbs() {
+                final MiniMiserDatabase[] openDatabases = new MiniMiserDatabase[dbDetails.length];
                 LOGGER.info("... re-opening");
-                final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbPassword);
                 try {
-                    assertDatabaseShouldBeOpen(dbName);
-                    Assert.assertNotNull(openedDatabase);
-                    LOGGER.info("... we opened the database!");
+                    for (int i = 0; i < dbDetails.length; i++) {
+                        final DatabaseOpenDetails detail = dbDetails[i];
+                        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
+                        openDatabases[i] = accessFactory.openDatabase(dbDirPlusDbName, detail.getPassword());
+                        assertDatabaseShouldBeOpen(detail.getName());
+                        Assert.assertNotNull(openDatabases[i]);
+                        LOGGER.info("... we opened the database!");
+    
+                        final MiniMiserDatabaseDescriptor miniMiserDatabaseDescriptor =
+                            new MiniMiserDatabaseDescriptor(detail.getName(), dbDirPlusDbName, 
+                                                            openDatabases[i]);
 
-                    final MiniMiserDatabaseDescriptor miniMiserDatabaseDescriptor =
-                        new MiniMiserDatabaseDescriptor(dbName, dbDirPlusDbName, 
-                                                        openedDatabase);
+                        Assert.assertFalse(openDatabases[i].isClosed());
+                        
+                        openDatabaseList.addOpenedDatabase(miniMiserDatabaseDescriptor);
+                    }
                     
-                    openDatabaseList.addOpenedDatabase(miniMiserDatabaseDescriptor);
-                    Assert.assertEquals(1, openDatabaseList.getNumberOfDatabases());
+                    Assert.assertEquals(3, openDatabaseList.getNumberOfDatabases());
 
-                    Assert.assertFalse(openedDatabase.isClosed());
-                    
                     lifecycleManager.shutdown();
-                    
-                    Assert.assertTrue(openedDatabase.isClosed());
-                    assertDatabaseShouldBeClosed(dbName);
-                    
+
+                    for (int i = 0; i < dbDetails.length; i++) {
+                        final DatabaseOpenDetails detail = dbDetails[i];
+                        Assert.assertTrue(openDatabases[i].isClosed());
+                        assertDatabaseShouldBeClosed(detail.getName());
+                    }
                 } finally {
                     LOGGER.info("closing if necessary");
-                    if (!openedDatabase.isClosed()) {
-                        openedDatabase.close();
+                    for (int i = 0; i < dbDetails.length; i++) {
+                        if (!openDatabases[i].isClosed()) {
+                            openDatabases[i].close();
+                        }
                     }
                 }
             }
@@ -108,5 +122,48 @@ public class TestDatabaseCloser extends PersistenceUnittestCase {
         Assert.assertEquals(1, prefs.getOpenFiles().length);
         final String openFile = prefs.getOpenFiles()[0];
         Assert.assertEquals(DatabasePairEncapsulator.escape("one", "/tmp/one"), openFile);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void lastCurrentDatabaseShouldBeRecordedOnShutdown() {
+        Assert.assertNull(prefs.getLastActiveFile());
+
+        openDatabaseList.addOpenedDatabase(new DatabaseDescriptor("one", "/tmp/one"));
+
+        lifecycleManager.shutdown();
+
+        Assert.assertEquals("one", prefs.getLastActiveFile());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void lastCurrentDatabaseShouldBeNullIfNothingOpenOnShutdown() {
+        Assert.assertNull(prefs.getLastActiveFile());
+
+        lifecycleManager.shutdown();
+
+        Assert.assertNull(prefs.getLastActiveFile());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void lastCurrentDatabaseShouldBeNullIfLastOpenDatabaseClosedBeforeShutdown() {
+        Assert.assertNull(prefs.getLastActiveFile());
+
+        final DatabaseDescriptor descriptor = new DatabaseDescriptor("one", "/tmp/one");
+        openDatabaseList.addOpenedDatabase(descriptor);
+        Assert.assertEquals("one", openDatabaseList.getCurrentDatabase().getDatabaseName());
+        openDatabaseList.removeClosedDatabase(descriptor);
+
+        lifecycleManager.shutdown();
+
+        Assert.assertNull(prefs.getLastActiveFile());
     }
 }

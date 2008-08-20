@@ -1,11 +1,13 @@
  package uk.me.gumbley.minimiser.gui.menu;
 
+import java.awt.Frame;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
@@ -28,6 +30,7 @@ public final class TestMenuMediator extends LoggingTestCase {
     private RecentFilesList recentFilesList;
     private StubOpener stubOpener;
     private StubOpenerAdapterFactory stubOpenerAdapterFactory;
+    private Frame frame;
 
     /**
      * Get all necessaries
@@ -41,10 +44,11 @@ public final class TestMenuMediator extends LoggingTestCase {
         recentFilesList.addRecentListEventObserver(EasyMock.isA(Observer.class));
         stubOpener = new StubOpener();
         stubOpenerAdapterFactory = new StubOpenerAdapterFactory();
+        frame = new Frame("");
     }
 
     private void startMediator() {
-        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList, stubOpener, stubOpenerAdapterFactory);
+        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList, stubOpener, stubOpenerAdapterFactory, frame);
     }
     
     /**
@@ -254,10 +258,12 @@ public final class TestMenuMediator extends LoggingTestCase {
 
         final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
         final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
+        Assert.assertEquals("", frame.getTitle());
         openDatabaseList.addOpenedDatabase(databaseDescriptor1);
         openDatabaseList.addOpenedDatabase(databaseDescriptor2);
         Assert.assertTrue(stubMenu.getNumberOfDatabases() == 2);
         Assert.assertEquals("two", stubMenu.getCurrentDatabase());
+        Assert.assertEquals(AppName.getAppName() + " - two", frame.getTitle());
     }
 
     /**

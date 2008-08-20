@@ -51,19 +51,19 @@ public final class DefaultOpenerImpl implements Opener {
             final OpenerAdapter openerAdapter) {
         openerAdapter.startOpening();
         LOGGER.info("Opening database '" + dbName + "' from path '" + pathToDatabase + "'");
-        openerAdapter.reportProgress(ProgressStage.STARTING, "Starting to open");
+        openerAdapter.reportProgress(ProgressStage.STARTING, "Starting to open '" + dbName + "'");
 
         // Try at first with an empty password - if we get a BPE, prompt for
         // password and retry.
         String dbPassword = "";
-        String tryingToOpenMessage = "Opening database";
+        String tryingToOpenMessage = "Opening database '" + dbName + "'";
         while (true) {
             try {
                 openerAdapter.reportProgress(ProgressStage.OPENING, tryingToOpenMessage);
                 final MiniMiserDatabase database = access.openDatabase(pathToDatabase, dbPassword);
                 LOGGER.info("Opened OK");
         
-                openerAdapter.reportProgress(ProgressStage.OPENED, "Opened OK");
+                openerAdapter.reportProgress(ProgressStage.OPENED, "Opened '" + dbName + "' OK");
                 openerAdapter.stopOpening();
                 
                 observerList.eventOccurred(new DatabaseOpenEvent(new MiniMiserDatabaseDescriptor(dbName, pathToDatabase, database)));
@@ -72,26 +72,26 @@ public final class DefaultOpenerImpl implements Opener {
                 
             } catch (final BadPasswordException bad) {
                 LOGGER.warn("Bad password: " + bad.getMessage());
-                openerAdapter.reportProgress(ProgressStage.PASSWORD_REQUIRED, "Password required");
+                openerAdapter.reportProgress(ProgressStage.PASSWORD_REQUIRED, "Password required for '" + dbName + "'");
                 dbPassword = openerAdapter.requestPassword();
                 if (dbPassword == null || dbPassword.equals("")) {
                     LOGGER.info("Open of encrypted database cancelled");
-                    openerAdapter.reportProgress(ProgressStage.PASSWORD_CANCELLED, "Open cancelled");
+                    openerAdapter.reportProgress(ProgressStage.PASSWORD_CANCELLED, "Open of '" + dbName + "' cancelled");
                     openerAdapter.stopOpening();
                     return null;
                 }
                 
-                tryingToOpenMessage = "Trying to open database";
+                tryingToOpenMessage = "Trying to open database '" + dbName + "'";
             } catch (final DataAccessResourceFailureException darfe) {
                 LOGGER.warn("Could not open database: " + darfe.getMessage());
-                openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database not found");
+                openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database " + dbName + "' not found");
                 openerAdapter.databaseNotFound(darfe);
                 openerAdapter.stopOpening();
                 return null;
                 
             } catch (final DataAccessException dae) {
                 LOGGER.warn("Data access exception opening database: " + dae.getMessage(), dae);
-                openerAdapter.reportProgress(ProgressStage.OPEN_FAILED, "Open failed");
+                openerAdapter.reportProgress(ProgressStage.OPEN_FAILED, "Open of '" + dbName + "' failed");
                 openerAdapter.seriousProblemOccurred(dae);
                 openerAdapter.stopOpening();
                 return null;

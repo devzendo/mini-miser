@@ -39,8 +39,21 @@ public final class DatabaseCloserLifecycle implements Lifecycle {
      * {@inheritDoc}
      */
     public void shutdown() {
+        persisteActiveDatabase();
         persistOpenDatabaseList();
         closeDatabases();
+    }
+
+    private void persisteActiveDatabase() {
+        final DatabaseDescriptor currentDatabase = openDatabaseList.getCurrentDatabase();
+        if (currentDatabase == null) {
+            LOGGER.info("There is no currently active database, so clearing record of it");
+            prefs.clearLastActiveFile();
+        } else {
+            final String databaseName = currentDatabase.getDatabaseName();
+            LOGGER.info("Recording ' " + databaseName + "' as the current database");
+            prefs.setLastActiveFile(databaseName);
+        }
     }
 
     private void persistOpenDatabaseList() {

@@ -122,4 +122,11 @@ public final class DefaultPrefsImpl implements Prefs {
     public void setLastActiveFile(final String name) {
         iniFile.setValue(SECTION_LASTACTIVEFILE, LAST_ACTIVE_FILE, name);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearLastActiveFile() {
+        iniFile.removeValue(SECTION_LASTACTIVEFILE, LAST_ACTIVE_FILE);
+    }
 }

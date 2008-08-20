@@ -3,31 +3,19 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUGS:
-* open previously open files doesn't preserve the currently selectewd database.
-  * store the current file in prefs
-* open previously open files doesn't show which database is being reopened.
-  
-* tests for opening a database that had had the opening software termiated on
-  it - what about lock files being present on startup?
+* BUG: Currency symbols don't render correctly on Windows
+
+CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
+* change the frame title depending on the selected database
+
+* add the tab pane container
+
+* store the current tab in prefs
+
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
   need ~/Library/Application Support/MiniMiser on Mac OS X
   need Documents and Settings/username/whatever on Windows.
-
-* fill in the rest of the acks in credits.html
-
-* Add a FAQ to the help contents with notes from the docs page re moving / renaming databases.
-
-
-* database switching via menu does not seem to have been done TDD - 
-  addDatabaseSwitchObserver is only called from wireAdapters - add tests
-  
-* store the current tab in prefs
-
-* sort out generation of the app name and version from the pom
-* change the frame title depending on the selected database
-
-* add the tab pane container
 
 * add a prefs dialog
 * add 'open files from last time on startup' flag, make startup opener honour it
@@ -35,18 +23,11 @@ BUGS:
 
 * if debug flag, add an SQL interface panel
 
-* Q: Why prompt for close confirmation if we have databases open, on exit?
-  It's not as though you'd lose any data (it is all in a database, after all).
-
-* BUG: Currency symbols don't render correctly on Windows
 * decide which currencies to support
 * add currency object, entries for all supported currencies
 * display flags in pretty list in currency wizard page
 * choose a sensible default-selected currency based on system locale
 
-* about dialog
-  * switch to HTML version of GPL2 text - text/plain looks poor
-  * upgrade to GPL3?
 
 * review all TODOs
 * review code complexity, coverage, etc.
@@ -55,20 +36,62 @@ BUGS:
 * create logo
 * System menu on main window and popups needs logo, not standard Java one.
 * rename product
-* create getting started guide
 
-* create Maven dependencies plugin builder
-* create installer for windows
-* create .deb package for Ubuntu
-* upgrade Mac
-* create .app package for Mac OS X
 
+DRY / TDD improvements:
+* database switching via menu does not seem to have been done TDD - 
+  addDatabaseSwitchObserver is only called from wireAdapters - add tests
+
+* DRY: createDatabaseWithPluggableOpenBehaviour was duplicated to allow multiple
+  databases - this generalisation could be applied to all users of this code,
+  then the single db open could be removed. PersistenceUnittestCase
+  
+* close on startup - problem remorting - closeFailureShouldDisplayAnError
+  
+* tests for opening a database that had had the opening software termiated on
+  it - what about lock files being present on startup?
+
+DOCUMENTATION:
+* fill in the rest of the acks in credits.html
+
+* Add a FAQ to the help contents with notes from the docs page re moving /
+  renaming databases.
+
+* about dialog
+  * switch to HTML version of GPL2 text - text/plain looks poor
+  * upgrade to GPL3?
+
+* docs to write:
+  * technical doc:
+    * database schema
+    * database schema model with Jude, versioned as of 0.1
+    * architecture
+    * coding guidelines
+    * how to contribute
+  * user reference guide
+  * getting started guide
+  
 * blog category
 * intro articles
+
+MAVEN / BUILD:
+* sort out generation of the app name and version from the pom
+* create Maven basic core release contents assembly/dependencies plugin
+* create installer for windows
+* create .deb package for Ubuntu
+* create .app package for Mac OS X
+
+OUTSTANDING QUERIES:
+* Q: Why prompt for close confirmation if we have databases open, on exit?
+  It's not as though you'd lose any data (it is all in a database, after all).
+
 * sourceforge account? Don't forget Enrique's offer!
 * trac - Enrique!
 * upload v0.1 to sourceforge
 * release!
+
+
+Ideas for menu....
 
 Menu:
 File:

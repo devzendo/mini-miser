@@ -119,4 +119,14 @@ public final class TestPrefs extends LoggingTestCase {
         prefs.setLastActiveFile("one");
         Assert.assertEquals("one", prefs.getLastActiveFile());
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void shouldHaveNullLastActiveFileAfterClearingIt() {
+        prefs.setLastActiveFile("one");
+        prefs.clearLastActiveFile();
+        Assert.assertNull(prefs.getLastActiveFile());
+    }
 }

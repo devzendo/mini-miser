@@ -48,6 +48,7 @@
 		<constructor-arg ref="recentFilesList" />
 		<constructor-arg ref="opener" />
 		<constructor-arg ref="openerAdapterFactory" />
+		<constructor-arg ref="mainFrame" />
 	</bean>
 	
     <!-- menu action listeners -->

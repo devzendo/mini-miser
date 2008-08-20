@@ -65,7 +65,7 @@ public final class DatabaseOpenerLifecycle implements Lifecycle {
         
         final String lastActiveDatabaseName = prefs.getLastActiveFile();
         if (lastActiveDatabaseName == null) {
-            LOGGER.info("No last active database recorded; not switching to it");
+            LOGGER.info("No last active database recorded, so cannot switch");
         } else {
             LOGGER.info("Switching to last active database");
             openDatabaseList.switchDatabase(lastActiveDatabaseName);

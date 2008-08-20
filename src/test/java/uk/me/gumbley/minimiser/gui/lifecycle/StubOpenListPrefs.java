@@ -85,4 +85,11 @@ public final class StubOpenListPrefs implements Prefs {
     public void setLastActiveFile(final String name) {
         lastActiveFile = name;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearLastActiveFile() {
+        lastActiveFile = null;
+    }
 }
