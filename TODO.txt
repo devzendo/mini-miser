@@ -6,22 +6,53 @@ BUGS:
 * BUG: Currency symbols don't render correctly on Windows
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
-* change the frame title depending on the selected database
-
-* add the tab pane container
-
-* store the current tab in prefs
-
+* add the tab pane container - responsibility is adding/removing cards for open/
+  closed databases (upon calls from OpenDatabaseList listener), adding/removing
+  tabs for open/closed views (upon calls form menu actionlisteners), switching
+  current card to match the current database (upon calls from OpenDatabaseList
+  listener), providing notification mechanism for open/close/switch tab
+  
+  * creates a card layout
+  * creates a new card for each new database in the ODL
+  * switches to the appropriate card on switch database
+  * there is a tab enumeration for the possible view tabs
+  * view menu shows views that are currently available
+  * availability depends on
+    * prefs flags (SQL view)
+    * code been written and bound - like menu action listeners and the menu
+      builder
+  * tabs can be opened or closed. open from the view menu. close? checkboxes in
+    view menu?
+  * tabs are ordered in the jtabbedpane by their enumeration order
+  * tabs can get their database from their base class, which gets it from the
+    tab container (jtabbedpane holder) which gets it upon new database opening.
+  * open/close/switch tab can be listened for - notifications include the
+    database name and tab name
+  * the currently open tabs for each database are persisted and restored
+  * the currently selected tab for each database is persisted and restored
+    
+* need a message box with an option to never display this message again, with
+  the flag to ignore this keyed message being stored in prefs.
+* use this when the SQL view is first opened - this is a developer-only
+  feature.
+ 
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
   need ~/Library/Application Support/MiniMiser on Mac OS X
   need Documents and Settings/username/whatever on Windows.
 
 * add a prefs dialog
-* add 'open files from last time on startup' flag, make startup opener honour it
-* add debug flag
+  * follow Apple HIG - no OK/Apply/Cancel lossage, just set the prefs you want
+    and close the dialog. If you foul up, just change the settings back. Apply
+    any changes on dialog close.
+  * use a jtabbedpane with icons for the tabs
+  * provide an advanced tab
+  * have the 'SQL view available' checkbox on there
+  * add ability for checkbox-style flags to be got/set easily in prefs
 
-* if debug flag, add an SQL interface panel
+* if 'SQL view available' flag enabled, enable the SQL view
+* if 'SQL view available' flag gets disabled in prefs, close any currently-
+  open SQL views.
 
 * decide which currencies to support
 * add currency object, entries for all supported currencies
@@ -50,6 +81,11 @@ DRY / TDD improvements:
   
 * tests for opening a database that had had the opening software termiated on
   it - what about lock files being present on startup?
+
+NIGGLES:
+* change the frame title / tab set depending on the selected database - when
+  opening many databases on startup, the display "thrashes". It should not do
+  this until the last active database is switched to.
 
 DOCUMENTATION:
 * fill in the rest of the acks in credits.html

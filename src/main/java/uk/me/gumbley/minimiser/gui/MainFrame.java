@@ -118,8 +118,9 @@ public class MainFrame {
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
 
-        final MainFrameFactory mainFrameFactory = springLoader.getBean("&mainFrame", MainFrameFactory.class);
-        mainFrameFactory.setMainFrame(mainFrame);
+        setMainFrameInFactory();
+        
+        createAndSetMainFrameTitleInFactory();
 
         mainFrame.setName(MAIN_FRAME_NAME);
         mainFrame.setLayout(new BorderLayout());
@@ -150,6 +151,16 @@ public class MainFrame {
             public void windowDeactivated(final WindowEvent e) {
             }
         });
+    }
+
+    private void createAndSetMainFrameTitleInFactory() {
+        final MainFrameTitleFactory mainFrameTitleFactory = springLoader.getBean("&mainFrameTitle", MainFrameTitleFactory.class);
+        mainFrameTitleFactory.setMainFrameTitle(new DefaultMainFrameTitleImpl(mainFrame));
+    }
+
+    private void setMainFrameInFactory() {
+        final MainFrameFactory mainFrameFactory = springLoader.getBean("&mainFrame", MainFrameFactory.class);
+        mainFrameFactory.setMainFrame(mainFrame);
     }
     
     private final class WindowCloseActionListener implements ActionListener {

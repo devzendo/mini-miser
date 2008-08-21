@@ -4,6 +4,7 @@ import java.awt.Frame;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.MainFrameTitle;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
@@ -32,7 +33,7 @@ public final class MenuMediatorImpl implements MenuMediator {
     private final RecentFilesList recentFilesList;
     private final Opener opener;
     private final OpenerAdapterFactory openerAdapterFactory;
-    private final Frame mainFrame;
+    private final MainFrameTitle mainFrameTitle;
     
     /**
      * Create a Mediator between application events and the menu
@@ -41,18 +42,18 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @param recentFiles the recent files list
      * @param ope the opener
      * @param oaf the OpenerAdapterFactory
-     * @param mainframe the main frame
+     * @param mainframetitle the main frame title controller
      */
     public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl,
             final RecentFilesList recentFiles, final Opener ope,
-            final OpenerAdapterFactory oaf, final Frame mainframe) {
+            final OpenerAdapterFactory oaf, final MainFrameTitle mainframetitle) {
         LOGGER.info("initialising MenuMediatorImpl");
         menu = leMenu;
         openDatabaseList = odl;
         recentFilesList = recentFiles;
         opener = ope;
         openerAdapterFactory = oaf;
-        mainFrame = mainframe;
+        mainFrameTitle = mainframetitle;
         initialiseMenu();
         wireAdapters();
         LOGGER.info("initialised MenuMediatorImpl");
@@ -91,7 +92,11 @@ public final class MenuMediatorImpl implements MenuMediator {
                 menu.emptyDatabaseList();
             } else if (event instanceof DatabaseClosedEvent) {
                 final DatabaseClosedEvent dce = (DatabaseClosedEvent) event;
-                menu.enableCloseMenu(openDatabaseList.getNumberOfDatabases() > 0);
+                final boolean anyDatabasesOpen = openDatabaseList.getNumberOfDatabases() > 0;
+                menu.enableCloseMenu(anyDatabasesOpen);
+                if (!anyDatabasesOpen) {
+                    mainFrameTitle.clearCurrentDatabaseName();
+                }
                 menu.removeDatabase(dce.getDatabaseName());
             } else if (event instanceof DatabaseOpenedEvent) {
                 final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) event;
@@ -99,8 +104,9 @@ public final class MenuMediatorImpl implements MenuMediator {
                 recentFilesList.add(new DatabaseDescriptor(doe.getDatabaseName(), doe.getDatabasePath()));
                 menu.addDatabase(doe.getDatabaseName());
             } else if (event instanceof DatabaseSwitchedEvent) {
-                final DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) event;
-                menu.switchDatabase(dse.getDatabaseName());
+                final String databaseName = ((DatabaseSwitchedEvent) event).getDatabaseName();
+                menu.switchDatabase(databaseName);
+                mainFrameTitle.setCurrentDatabaseName(databaseName);
             } else {
                 throw new IllegalStateException("Unexpected a " + event.getClass().getSimpleName());
             }
@@ -119,7 +125,6 @@ public final class MenuMediatorImpl implements MenuMediator {
          */
         public void eventOccurred(final DatabaseNameChoice windowMenuChoice) {
             final String databaseName = windowMenuChoice.getDatabaseName();
-            mainFrame.setTitle(AppName.getAppName() + " - " + databaseName);
             openDatabaseList.switchDatabase(databaseName);
         }
     }

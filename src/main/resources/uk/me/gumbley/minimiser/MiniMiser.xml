@@ -11,6 +11,8 @@
 	<!-- gui layer -->
 	<bean id="mainFrame" class="uk.me.gumbley.minimiser.gui.MainFrameFactory" lazy-init="true" />
 
+	<bean id="mainFrameTitle" class="uk.me.gumbley.minimiser.gui.MainFrameTitleFactory" />
+
 	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.menu.MenuWiring" lazy-init="true" />
 	
 	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" lazy-init="true" />
@@ -48,7 +50,7 @@
 		<constructor-arg ref="recentFilesList" />
 		<constructor-arg ref="opener" />
 		<constructor-arg ref="openerAdapterFactory" />
-		<constructor-arg ref="mainFrame" />
+		<constructor-arg ref="mainFrameTitle" />
 	</bean>
 	
     <!-- menu action listeners -->

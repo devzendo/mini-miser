@@ -23,7 +23,7 @@ public class TestStatusBar {
      * 
      */
     @Before
-    public void getRequisites() {
+    public void getPrerequisites() {
         headlessStatusBar = new HeadlessStatusBar(new DelayedExecutor());
     }
     
