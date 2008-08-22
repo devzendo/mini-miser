@@ -12,6 +12,22 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   current card to match the current database (upon calls from OpenDatabaseList
   listener), providing notification mechanism for open/close/switch tab
   
+  ? much of this is replicated in the opendatabaselist
+  ? perhaps the database descriptor could be made polymorphic (for close)
+    and allow addition of other stuff, not just the database
+    perhaps this mechanism could be generalised into a set of attributes and
+    attribute handlers that are called on open/close/switch to manipulate the
+    attributes, or add/remove them as necessary? e.g. have a tab pane attribute
+    handler that detects a database open, creates the tab pane, registers it
+    with the tab pane manager to get it added to the card layout, then stashes
+    it in the database descriptor's tab-pane attribute?
+  ? attribute handlers are bound to the open database list at instantiation
+    time by spring
+  ? or they could be maintained in a parallel class that monitors the
+    odl via listeners, but can get the database descriptor in question, and
+    attach attributes to it?
+  ? could opening be achieved via this?
+    
   * creates a card layout
   * creates a new card for each new database in the ODL
   * switches to the appropriate card on switch database

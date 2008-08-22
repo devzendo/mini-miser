@@ -33,7 +33,7 @@ public final class FileCloseActionListener extends AbstractFileCloseActionListen
         getCursorMan().hourglassViaEventThread();
         try {
             if (!closeCurrentDatabase()) {
-                LOGGER.info("Stopping the Close All");
+                LOGGER.info("Stopping the Close");
                 return;
             }
         } finally {

@@ -1,5 +1,8 @@
 package uk.me.gumbley.minimiser.openlist;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A bean that gives a database a name, optionally a path, and (in subclasses)
  * references to the persistence/domain layer.
@@ -13,16 +16,38 @@ package uk.me.gumbley.minimiser.openlist;
  */
 public class DatabaseDescriptor {
     private final String dbName;
-    private final String dbPath;
-
+    private Map<AttributeIdentifier, Object> attributeMap;
+    
+    /**
+     * The attribute identifiers.
+     * 
+     * @author matt
+     *
+     */
+    public enum AttributeIdentifier {
+        /**
+         * The database path
+         */
+        Path,
+        
+        /**
+         * The database facade
+         */
+        Database,
+        
+        /**
+         * The tabbed pane of views
+         */
+        TabbedPane,
+    }
+    
     /**
      * Create a new DatabaseDesriptor, given just a name, used primarily in
      * tests.
      * @param databaseName the database name
      */
     public DatabaseDescriptor(final String databaseName) {
-        this.dbName = databaseName;
-        this.dbPath = "";
+        this(databaseName, "");
     }
 
     /**
@@ -31,8 +56,9 @@ public class DatabaseDescriptor {
      * @param databaseFullPath the full path to the database.
      */
     public DatabaseDescriptor(final String databaseName, final String databaseFullPath) {
+        attributeMap = new HashMap<AttributeIdentifier, Object>();
         this.dbName = databaseName;
-        this.dbPath = databaseFullPath == null ? "" : databaseFullPath;
+        setAttribute(AttributeIdentifier.Path, databaseFullPath == null ? "" : databaseFullPath);
     }
 
     /**
@@ -48,7 +74,7 @@ public class DatabaseDescriptor {
      * @return the database path, which may be an empty string, but never null. 
      */
     public final String getDatabasePath() {
-        return dbPath;
+        return (String) getAttribute(AttributeIdentifier.Path);
     }
     
     /**
@@ -94,4 +120,35 @@ public class DatabaseDescriptor {
         return true;
     }
 
+    /**
+     * Obtain the object set against a given attribute id.
+     * @param attrId the attribute id
+     * @return the object, or null if nothing ahs been set
+     */
+    public Object getAttribute(final AttributeIdentifier attrId) {
+        return attributeMap.get(attrId);
+    }
+
+    /**
+     * Set an object as a value against an attribute id
+     * @param attrId the attribute id
+     * @param object the object to set, can be null to clear, but you can
+     * use clearAttribute for that, especially for Path, as that'll be set
+     * to an empty string upon clearing.
+     */
+    public void setAttribute(final AttributeIdentifier attrId, final Object object) {
+        attributeMap.put(attrId, object);
+    }
+
+    /**
+     * Clear an attribute given an attribute id
+     * @param attrId the attribute id
+     */
+    public void clearAttribute(final AttributeIdentifier attrId) {
+        if (attrId == AttributeIdentifier.Path) {
+            attributeMap.put(AttributeIdentifier.Path, "");
+        } else {
+            attributeMap.remove(attrId);
+        }
+    }
 }
