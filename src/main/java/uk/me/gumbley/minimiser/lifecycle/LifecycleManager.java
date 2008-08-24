@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.lifecycle;
 
-import java.util.List;
+import uk.me.gumbley.minimiser.springbeanlistloader.SpringBeanListLoader;
+
 
 /**
  * Manager that controls the lifecycle of various objects. Allows objects to
@@ -10,21 +11,7 @@ import java.util.List;
  * @author matt
  *
  */
-public interface LifecycleManager {
-
-    /**
-     * Obtain a list of Lifecycle bean names
-     * @return the list of bean names
-     */
-    List<String> getLifecycleBeanNames();
-
-    /**
-     * Obtain a Lifecycle bean by its name
-     * @param beanName the bean name
-     * @return a Lifecycle
-     */
-    Lifecycle getLifecycle(String beanName);
-
+public interface LifecycleManager extends SpringBeanListLoader<Lifecycle> {
     /**
      * Start up the beans managed by the LifecycleManager, in the order that
      * they were given when instantiating the LifecycleManager. 

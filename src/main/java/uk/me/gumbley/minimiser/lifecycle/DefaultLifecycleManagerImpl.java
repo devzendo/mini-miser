@@ -52,14 +52,14 @@ public final class DefaultLifecycleManagerImpl implements LifecycleManager {
     /**
      * {@inheritDoc}
      */
-    public List<String> getLifecycleBeanNames() {
+    public List<String> getBeanNames() {
         return beanNames;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Lifecycle getLifecycle(final String beanName) {
+    public Lifecycle getBean(final String beanName) {
         return lifecycleBeansMap.get(beanName);
     }
 
@@ -100,5 +100,16 @@ public final class DefaultLifecycleManagerImpl implements LifecycleManager {
             }
         }
         LOGGER.info("End of LifecycleManager shutdown");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Lifecycle> getBeans() {
+        final List<Lifecycle> list = new ArrayList<Lifecycle>();
+        for (String beanName : beanNames) {
+            list.add(lifecycleBeansMap.get(beanName));
+        }
+        return list;
     }
 }

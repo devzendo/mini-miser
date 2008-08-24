@@ -64,7 +64,7 @@ public class TestLifecycleManager extends SpringLoaderUnittestCase {
     public void lifeCycleManagerGetsRightConfig() {
         getSimpleTestPrerequisites();
         
-        final List<String> beanNames = lifecycleManager.getLifecycleBeanNames();
+        final List<String> beanNames = lifecycleManager.getBeanNames();
         Assert.assertNotNull(beanNames);
         Assert.assertEquals(1, beanNames.size());
         Assert.assertEquals("two", beanNames.get(0));
@@ -78,7 +78,7 @@ public class TestLifecycleManager extends SpringLoaderUnittestCase {
         getSimpleTestPrerequisites();
         
         final Lifecycle two = getSpringLoader().getBean("two", Lifecycle.class);
-        Assert.assertSame(two, lifecycleManager.getLifecycle("two"));
+        Assert.assertSame(two, lifecycleManager.getBean("two"));
     }
     
     /**
@@ -108,7 +108,7 @@ public class TestLifecycleManager extends SpringLoaderUnittestCase {
     public void dontStartupBadBeans() {
         lifecycleManager = getSpringLoader().getBean("badLoadLifecycleManager", LifecycleManager.class);
         Assert.assertNotNull(lifecycleManager);
-        Assert.assertEquals(0, lifecycleManager.getLifecycleBeanNames().size());
+        Assert.assertEquals(0, lifecycleManager.getBeanNames().size());
     }
     
     /**
