@@ -8,6 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.closer.Closer;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
@@ -344,4 +347,27 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             LOGGER.info("... done");
         }
     }
+    
+    // Tests the closer code ---------------------------------------------------
+
+    /**
+     * Creates plaintext db, then opens it, then tries to close it.
+     */
+    @Test
+    public void testGoodPlaintextDatabaseCanBeOpenedThenClosed() {
+        LOGGER.info("*** testGoodPlaintextDatabaseCanBeOpenedThenClosed start");
+        final String dbName = "testcloser";
+        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
+            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
+                final MiniMiserDatabase openedDatabase = accessFactory.openDatabase(dbDirPlusDbName, dbPassword);
+                final DatabaseDescriptor dd = new DatabaseDescriptor(dbName, dbDirPlusDbName);
+                dd.setAttribute(AttributeIdentifier.Database, openedDatabase);
+
+                Closer.close(dd);
+                Assert.assertTrue(openedDatabase.isClosed());
+            }
+            
+        });
+    }
+    
 }
