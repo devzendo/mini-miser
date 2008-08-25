@@ -218,23 +218,6 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         Assert.assertTrue(list.containsDatabase(new DatabaseDescriptor("one", "/tmp/other"))); // ignores path
     }
 
-    private class OtherDatabaseDescriptor extends DatabaseDescriptor {
-        public OtherDatabaseDescriptor(final String databaseName) {
-            super(databaseName);
-        }
-        
-    }
-    /**
-     * Tests equality of different subclasses of DatabaseDescriptors, given the
-     * same name.
-     */
-    @Test
-    public void containsAnotherClassWithSameName() {
-        list.addOpenedDatabase(new DatabaseDescriptor("one"));
-        Assert.assertTrue(list.containsDatabase(new DatabaseDescriptor("one")));
-        Assert.assertTrue(list.containsDatabase(new OtherDatabaseDescriptor("one")));
-    }
-
     /**
      * Can't remove a database that isn't there
      */

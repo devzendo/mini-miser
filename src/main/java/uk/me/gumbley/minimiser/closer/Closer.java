@@ -28,6 +28,7 @@ public final class Closer {
      */
     public static boolean close(final DatabaseDescriptor descriptor) {
         final String databaseName = descriptor.getDatabaseName();
+        LOGGER.info("Closing database '" + databaseName + "'");
         try {
             final MiniMiserDatabase database = (MiniMiserDatabase) descriptor.getAttribute(AttributeIdentifier.Database);
             if (database == null) {
@@ -35,6 +36,7 @@ public final class Closer {
                 return false;
             }
             database.close();
+            LOGGER.info("Database '" + databaseName + "' closed");
             return true;
         } catch (final DataAccessException dae) {
             LOGGER.warn("Could not close database '" + databaseName + "': " + dae.getMessage(), dae);

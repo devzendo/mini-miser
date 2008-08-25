@@ -7,9 +7,9 @@ import org.junit.Test;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
@@ -68,9 +68,9 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
                         Assert.assertNotNull(openDatabases[i]);
                         LOGGER.info("... we opened the database!");
     
-                        final MiniMiserDatabaseDescriptor miniMiserDatabaseDescriptor =
-                            new MiniMiserDatabaseDescriptor(detail.getName(), dbDirPlusDbName, 
-                                                            openDatabases[i]);
+                        final DatabaseDescriptor miniMiserDatabaseDescriptor =
+                            new DatabaseDescriptor(detail.getName(), dbDirPlusDbName);
+                        miniMiserDatabaseDescriptor.setAttribute(AttributeIdentifier.Database, openDatabases[i]);
 
                         Assert.assertFalse(openDatabases[i].isClosed());
                         

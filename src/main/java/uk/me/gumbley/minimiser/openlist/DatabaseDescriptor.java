@@ -14,7 +14,7 @@ import java.util.Map;
  * @author matt
  *
  */
-public class DatabaseDescriptor {
+public final class DatabaseDescriptor {
     private final String dbName;
     private Map<AttributeIdentifier, Object> attributeMap;
     

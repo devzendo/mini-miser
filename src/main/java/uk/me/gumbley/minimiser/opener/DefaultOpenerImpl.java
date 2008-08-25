@@ -6,10 +6,11 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 
 /**
  * Default implementation of Opener.
@@ -66,7 +67,9 @@ public final class DefaultOpenerImpl implements Opener {
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened '" + dbName + "' OK");
                 openerAdapter.stopOpening();
                 
-                observerList.eventOccurred(new DatabaseOpenEvent(new MiniMiserDatabaseDescriptor(dbName, pathToDatabase, database)));
+                final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, pathToDatabase);
+                databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
+                observerList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
 
                 return database;
                 

@@ -11,10 +11,11 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 
 /**
@@ -90,7 +91,9 @@ public final class FileNewResult extends DeferredWizardResult {
             final Runnable addDatabaseAndNormalCursorSwingTask = new Runnable() {
                 public void run() {
                     LOGGER.info("Database created; adding to open database list");
-                    databaseList.addOpenedDatabase(new MiniMiserDatabaseDescriptor(dbName, dbFullPath, database));
+                    final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, dbFullPath);
+                    databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
+                    databaseList.addOpenedDatabase(databaseDescriptor);
                     cursorMan.normal();
                 }
             };

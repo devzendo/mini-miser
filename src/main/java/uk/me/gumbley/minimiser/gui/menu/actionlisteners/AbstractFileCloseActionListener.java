@@ -2,12 +2,10 @@ package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 
 import java.awt.event.ActionListener;
 import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
+import uk.me.gumbley.minimiser.closer.Closer;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 
 /**
  * Base class for File Close / All menu action listeners.
@@ -60,26 +58,8 @@ public abstract class AbstractFileCloseActionListener implements ActionListener 
             LOGGER.warn("Closing a null database; there are " + databaseList.getNumberOfDatabases() + " open database(s)");
             return false;
         }
-        final String databaseName = currentDatabase.getDatabaseName();
-        LOGGER.info("Closing database '" + databaseName + "'");
         try {
-            // TODO perhaps DatabaseDescriptor should be polymorphic?
-            if (currentDatabase instanceof MiniMiserDatabaseDescriptor) {
-                final MiniMiserDatabaseDescriptor mmdd = (MiniMiserDatabaseDescriptor) currentDatabase;
-                try {
-                    mmdd.getDatabase().close();
-                    LOGGER.info("Database '" + databaseName + "' closed");
-                    return true;
-                } catch (final DataAccessException dae) {
-                    LOGGER.warn("Could not close database '" + databaseName + "': " + dae.getMessage(), dae);
-                    // TODO pass main frame in here
-                    ProblemDialog.reportProblem(null, "while closing the '" + currentDatabase.getDatabaseName() + "' database", dae);
-                    return false;
-                }
-            } else {
-                LOGGER.error("Closing a non-MiniMiserDatabaseDescriptor");
-                return false;
-            }
+            return Closer.close(currentDatabase);
         } finally {
             databaseList.removeClosedDatabase(currentDatabase);
         }

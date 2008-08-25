@@ -3,12 +3,10 @@ package uk.me.gumbley.minimiser.gui.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
-import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
+import uk.me.gumbley.minimiser.closer.Closer;
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabaseDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
 
@@ -72,22 +70,7 @@ public final class DatabaseCloserLifecycle implements Lifecycle {
         LOGGER.info("Closing open databases");
         final List<DatabaseDescriptor> openDatabases = openDatabaseList.getOpenDatabases();
         for (DatabaseDescriptor descriptor : openDatabases) {
-            // TODO perhaps DatabaseDescriptor should be polymorphic?
-            final String databaseName = descriptor.getDatabaseName();
-            if (descriptor instanceof MiniMiserDatabaseDescriptor) {
-                final MiniMiserDatabaseDescriptor mmdd = (MiniMiserDatabaseDescriptor) descriptor;
-                try {
-                    LOGGER.info("Closing database '" + databaseName + "'");
-                    mmdd.getDatabase().close();
-                    LOGGER.info("Database '" + databaseName + "' closed");
-                } catch (final DataAccessException dae) {
-                    LOGGER.warn("Could not close database '" + databaseName + "': " + dae.getMessage(), dae);
-                    // TODO pass main frame in here
-                    ProblemDialog.reportProblem(null, "while closing the '" + databaseName + "' database", dae);
-                }
-            } else {
-                LOGGER.error("Closing a non-MiniMiserDatabaseDescriptor");
-            }
+            Closer.close(descriptor);
         }
         LOGGER.info("Open databases closed");
     }

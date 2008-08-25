@@ -83,12 +83,12 @@ public final class OpenDatabaseList {
             throw new IllegalStateException(
                 String.format("Could not remove closed database %s since it is not in list", descriptor.getDatabaseName()));
         }
+        LOGGER.debug("before removing, curr = " + currentDatabaseIndex);
         databaseList.remove(descriptor);
-        LOGGER.info("before curr = " + currentDatabaseIndex);
         if (currentDatabaseIndex == databaseList.size()) {
             currentDatabaseIndex--;
         }
-        LOGGER.info("after curr = " + currentDatabaseIndex);
+        LOGGER.debug("after removing, curr = " + currentDatabaseIndex);
         observerList.eventOccurred(new DatabaseClosedEvent(descriptor.getDatabaseName()));
         if (currentDatabaseIndex == -1) {
             observerList.eventOccurred(new DatabaseListEmptyEvent());
