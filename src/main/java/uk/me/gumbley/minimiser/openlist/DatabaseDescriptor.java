@@ -65,7 +65,7 @@ public final class DatabaseDescriptor {
      * Obtain the database name
      * @return the database name
      */
-    public final String getDatabaseName() {
+    public String getDatabaseName() {
         return dbName;
     }
 
@@ -73,14 +73,14 @@ public final class DatabaseDescriptor {
      * Obtain the database path.
      * @return the database path, which may be an empty string, but never null. 
      */
-    public final String getDatabasePath() {
+    public String getDatabasePath() {
         return (String) getAttribute(AttributeIdentifier.Path);
     }
     
     /**
      * {@inheritDoc}
      */
-    public final String toString() {
+    public String toString() {
         return dbName;
     }
 
@@ -88,7 +88,7 @@ public final class DatabaseDescriptor {
      * {@inheritDoc}
      */
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
@@ -99,7 +99,7 @@ public final class DatabaseDescriptor {
      * {@inheritDoc}
      */
     @Override
-    public final boolean equals(final Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
