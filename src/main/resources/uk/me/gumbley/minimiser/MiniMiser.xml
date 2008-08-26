@@ -2,8 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
-	default-lazy-init="true"
-	>
+	default-lazy-init="true" >
 
 	<!-- persistence layer -->
 	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
@@ -83,6 +82,7 @@
     <bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
+			    <value>databaseEventListenerLifecycle</value>
 				<value>databaseOpenerLifecycle</value>
 				<value>databaseCloserLifecycle</value>
 				<value>mainFrameGeometrySaverLifecycle</value>
@@ -96,18 +96,18 @@
 		<constructor-arg ref="lifecycleList" />	
 	</bean>
 
-	<bean id="delayedExecutorFlushLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DelayedExecutorFlushLifecycle">
-		<constructor-arg ref="delayedExecutor" />	
+	<bean id="databaseEventListenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseEventListenerLifecycle">
+		<constructor-arg ref="databaseEventListenerManager" />
 	</bean>
 	
-	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseCloserLifecycle">
+	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseOpenerLifecycle">
+		<constructor-arg ref="opener" />	
+		<constructor-arg ref="openerAdapterFactory" />	
 		<constructor-arg ref="openDatabaseList" />	
 		<constructor-arg ref="prefs" />	
 	</bean>
 
-	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseOpenerLifecycle">
-		<constructor-arg ref="opener" />	
-		<constructor-arg ref="openerAdapterFactory" />	
+	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseCloserLifecycle">
 		<constructor-arg ref="openDatabaseList" />	
 		<constructor-arg ref="prefs" />	
 	</bean>
@@ -116,9 +116,28 @@
 		<constructor-arg ref="windowGeometryStore" />	
 		<constructor-arg ref="mainFrame" />
 	</bean>
+
+	<bean id="delayedExecutorFlushLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DelayedExecutorFlushLifecycle">
+		<constructor-arg ref="delayedExecutor" />	
+	</bean>
 	
 	<!-- models, other singletons and utilities -->
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" lazy-init="true" />
+
+	<bean id="databaseEventListenerManager" class="uk.me.gumbley.minimiser.openlist.DatabaseEventListenerManager">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="databaseEventListenerList" />	
+	</bean>
+
+	<bean id="databaseEventListenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+<!--				<value>one</value>
+				<value>two</value> -->
+			</list>
+		</property>
+	</bean>
 
 	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl" lazy-init="true">
 		<constructor-arg ref="prefs" />

@@ -8,6 +8,9 @@ package uk.me.gumbley.minimiser.openlist;
  *
  */
 public abstract class DatabaseNameEvent extends DatabaseEvent {
+    // WOZERE rename this to DatabaseDescriptorEvent?
+    // change contents
+    
     private final String dbName;
 
     /**

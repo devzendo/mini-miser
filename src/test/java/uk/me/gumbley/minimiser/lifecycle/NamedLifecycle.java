@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.lifecycle;
 
+import uk.me.gumbley.minimiser.util.OrderMonitor;
+
 /**
  * A lifecycle that has a name and records its startup and shutdown.
  * @author matt

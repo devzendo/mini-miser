@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
+import uk.me.gumbley.minimiser.util.OrderMonitor;
 
 
 /**

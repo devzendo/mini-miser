@@ -40,7 +40,7 @@
 	</bean>
 
 	<!-- ordering test -->
-	<bean id="orderMonitor" class="uk.me.gumbley.minimiser.lifecycle.OrderMonitor">
+	<bean id="orderMonitor" class="uk.me.gumbley.minimiser.util.OrderMonitor">
 	</bean>
 
 	<bean id="a" class="uk.me.gumbley.minimiser.lifecycle.NamedLifecycle">

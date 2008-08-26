@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.lifecycle;
+package uk.me.gumbley.minimiser.util;
 
 import java.util.ArrayList;
 import java.util.List;

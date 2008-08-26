@@ -9,6 +9,11 @@ CURRENT TASKS:
 * remove minimiserdatabasedescriptor - replace with dd + setattribute
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
+* database name event needs renaming to databasedetail event
+* this needs changing to take a databasedescriptor & all code needs to work
+  with this. why does it implement equals and hashcode?
+  
+
 * add the tab pane container - responsibility is adding/removing cards for open/
   closed databases (upon calls from OpenDatabaseList listener), adding/removing
   tabs for open/closed views (upon calls form menu actionlisteners), switching
@@ -46,6 +51,8 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
     database name and tab name
   * the currently open tabs for each database are persisted and restored
   * the currently selected tab for each database is persisted and restored
+
+* gui lifecycle needs to be repackaged - app lifecycle?
     
 * need a message box with an option to never display this message again, with
   the flag to ignore this keyed message being stored in prefs.
