@@ -48,6 +48,7 @@ public final class AboutDialog extends JDialog implements
     /**
      * Creates the reusable dialog.
      * @param parentFrame the parent frame
+     * @param cursor the cursor manager
      */
     public AboutDialog(final Frame parentFrame, final CursorManager cursor) {
         super(parentFrame, true);
@@ -228,6 +229,7 @@ public final class AboutDialog extends JDialog implements
     /**
      * Create an About Dialog.
      * @param parentFrame the parent frame
+     * @param cursor the cursor manager
      */
     public static void showAbout(final Frame parentFrame, final CursorManager cursor) {
         GUIUtils.invokeLaterOnEventThread(new Runnable() {

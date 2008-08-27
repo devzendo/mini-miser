@@ -4,7 +4,7 @@ package uk.me.gumbley.minimiser.lifecycle;
  * @author matt
  *
  */
-public class OneLifecycle implements Lifecycle {
+public final class OneLifecycle implements Lifecycle {
     private String state = "new-init";
     /**
      * 

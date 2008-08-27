@@ -9,7 +9,7 @@ import java.util.List;
  * @author matt
  *
  */
-public class OrderMonitor {
+public final class OrderMonitor {
     private List<String> ordering;
     private Object lock;
     /**

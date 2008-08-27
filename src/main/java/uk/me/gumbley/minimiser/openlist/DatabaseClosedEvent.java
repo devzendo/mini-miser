@@ -7,12 +7,12 @@ package uk.me.gumbley.minimiser.openlist;
  * @author matt
  *
  */
-public final class DatabaseClosedEvent extends DatabaseNameEvent {
+public final class DatabaseClosedEvent extends DatabaseDescriptorEvent {
     /**
      * Create a DatabaseClosedEvent describing a specific database.
-     * @param databaseName the name of the database that has closed.
+     * @param databaseDescriptor the descriptor of the database that has closed.
      */
-    public DatabaseClosedEvent(final String databaseName) {
-        super(databaseName);
+    public DatabaseClosedEvent(final DatabaseDescriptor databaseDescriptor) {
+        super(databaseDescriptor);
     }
 }

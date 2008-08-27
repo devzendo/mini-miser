@@ -53,7 +53,7 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
      */
     @Test
     public void openDatabasesShouldBeClosedOnLifecycleShutdown() {
-        LOGGER.info("** openDatabasesShouldBeClosedOnLifecycleShutdown");
+        LOGGER.info(">>> openDatabasesShouldBeClosedOnLifecycleShutdown");
         createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
             @SuppressWarnings("unchecked")
             public void runOnCreatedDbs() {
@@ -96,6 +96,7 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
                 }
             }
         });
+        LOGGER.info("<<< openDatabasesShouldBeClosedOnLifecycleShutdown");
     }
     
     /**
@@ -113,6 +114,7 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
      */
     @Test
     public void openDatabasesShouldBeStoredOnShutdown() {
+        LOGGER.info(">>> openDatabasesShouldBeStoredOnShutdown");
         Assert.assertEquals(0, prefs.getOpenFiles().length);
         
         openDatabaseList.addOpenedDatabase(new DatabaseDescriptor("one", "/tmp/one"));
@@ -122,6 +124,7 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
         Assert.assertEquals(1, prefs.getOpenFiles().length);
         final String openFile = prefs.getOpenFiles()[0];
         Assert.assertEquals(DatabasePairEncapsulator.escape("one", "/tmp/one"), openFile);
+        LOGGER.info("<<< openDatabasesShouldBeStoredOnShutdown");
     }
     
     /**
@@ -129,6 +132,7 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
      */
     @Test
     public void lastCurrentDatabaseShouldBeRecordedOnShutdown() {
+        LOGGER.info(">>> lastCurrentDatabaseShouldBeRecordedOnShutdown");
         Assert.assertNull(prefs.getLastActiveFile());
 
         openDatabaseList.addOpenedDatabase(new DatabaseDescriptor("one", "/tmp/one"));
@@ -136,6 +140,7 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
         lifecycleManager.shutdown();
 
         Assert.assertEquals("one", prefs.getLastActiveFile());
+        LOGGER.info("<<< lastCurrentDatabaseShouldBeRecordedOnShutdown");
     }
     
     /**
@@ -143,11 +148,13 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
      */
     @Test
     public void lastCurrentDatabaseShouldBeNullIfNothingOpenOnShutdown() {
+        LOGGER.info(">>> lastCurrentDatabaseShouldBeNullIfNothingOpenOnShutdown");
         Assert.assertNull(prefs.getLastActiveFile());
 
         lifecycleManager.shutdown();
 
         Assert.assertNull(prefs.getLastActiveFile());
+        LOGGER.info("<<< )lastCurrentDatabaseShouldBeNullIfNothingOpenOnShutdown");
     }
     
     /**
@@ -155,6 +162,7 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
      */
     @Test
     public void lastCurrentDatabaseShouldBeNullIfLastOpenDatabaseClosedBeforeShutdown() {
+        LOGGER.info(">>> lastCurrentDatabaseShouldBeNullIfLastOpenDatabaseClosedBeforeShutdown");
         Assert.assertNull(prefs.getLastActiveFile());
 
         final DatabaseDescriptor descriptor = new DatabaseDescriptor("one", "/tmp/one");
@@ -165,5 +173,6 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
         lifecycleManager.shutdown();
 
         Assert.assertNull(prefs.getLastActiveFile());
+        LOGGER.info("<<< lastCurrentDatabaseShouldBeNullIfLastOpenDatabaseClosedBeforeShutdown");
     }
 }

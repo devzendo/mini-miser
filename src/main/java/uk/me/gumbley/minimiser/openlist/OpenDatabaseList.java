@@ -63,12 +63,12 @@ public final class OpenDatabaseList {
             LOGGER.info("Adding " + descriptor.getDatabaseName());
             databaseList.add(descriptor);
             currentDatabaseIndex = databaseList.size() - 1;
-            observerList.eventOccurred(new DatabaseOpenedEvent(descriptor.getDatabaseName(), descriptor.getDatabasePath()));
+            observerList.eventOccurred(new DatabaseOpenedEvent(descriptor));
         } else {
             LOGGER.info("Switching to " + descriptor.getDatabaseName());
             currentDatabaseIndex = databaseList.indexOf(descriptor);
         }
-        observerList.eventOccurred(new DatabaseSwitchedEvent(descriptor.getDatabaseName()));
+        observerList.eventOccurred(new DatabaseSwitchedEvent(descriptor));
     }
 
     /**
@@ -89,11 +89,11 @@ public final class OpenDatabaseList {
             currentDatabaseIndex--;
         }
         LOGGER.debug("after removing, curr = " + currentDatabaseIndex);
-        observerList.eventOccurred(new DatabaseClosedEvent(descriptor.getDatabaseName()));
+        observerList.eventOccurred(new DatabaseClosedEvent(descriptor));
         if (currentDatabaseIndex == -1) {
             observerList.eventOccurred(new DatabaseListEmptyEvent());
         } else {
-            observerList.eventOccurred(new DatabaseSwitchedEvent(databaseList.get(currentDatabaseIndex).getDatabaseName()));
+            observerList.eventOccurred(new DatabaseSwitchedEvent(databaseList.get(currentDatabaseIndex)));
         }
     }
 
@@ -128,7 +128,7 @@ public final class OpenDatabaseList {
             if (descriptor.getDatabaseName().equals(databaseName)) {
                 LOGGER.info("Switching to " + databaseName);
                 currentDatabaseIndex = i;
-                observerList.eventOccurred(new DatabaseSwitchedEvent(databaseName));
+                observerList.eventOccurred(new DatabaseSwitchedEvent(descriptor));
                 return;
             }
         }

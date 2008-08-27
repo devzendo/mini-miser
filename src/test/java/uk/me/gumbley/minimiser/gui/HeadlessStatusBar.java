@@ -7,7 +7,7 @@ import uk.me.gumbley.minimiser.util.DelayedExecutor;
  * @author matt
  *
  */
-public class HeadlessStatusBar extends AbstractStatusBar {
+public final class HeadlessStatusBar extends AbstractStatusBar {
     private String displayedMessage = "";
     
     /**

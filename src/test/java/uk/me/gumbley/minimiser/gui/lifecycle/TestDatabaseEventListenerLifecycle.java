@@ -18,7 +18,7 @@ import uk.me.gumbley.minimiser.util.OrderMonitor;
  *
  */
 @ApplicationContext("uk/me/gumbley/minimiser/gui/lifecycle/DatabaseEventListenerLifecycleTestCase.xml")
-public class TestDatabaseEventListenerLifecycle extends SpringLoaderUnittestCase {
+public final class TestDatabaseEventListenerLifecycle extends SpringLoaderUnittestCase {
 
     private LifecycleManager lifecycleManager;
     private OpenDatabaseList openDatabaseList;

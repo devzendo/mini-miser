@@ -15,7 +15,7 @@ import uk.me.gumbley.minimiser.util.OrderMonitor;
  *
  */
 @ApplicationContext("uk/me/gumbley/minimiser/lifecycle/LifecycleTestCase.xml")
-public class TestLifecycleManager extends SpringLoaderUnittestCase {
+public final class TestLifecycleManager extends SpringLoaderUnittestCase {
     
     private LifecycleManager lifecycleManager;
 

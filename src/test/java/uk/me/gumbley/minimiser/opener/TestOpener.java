@@ -238,7 +238,7 @@ public final class TestOpener extends PersistenceUnittestCase {
      */
     @Test(timeout = 8000)
     public void progressNotificationsOnPlainOpen() {
-        LOGGER.info("** progressNotificationsOnPlainOpen");
+        LOGGER.info(">>> progressNotificationsOnPlainOpen");
         final String dbName = "progressplain";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
             @SuppressWarnings("unchecked")
@@ -282,6 +282,7 @@ public final class TestOpener extends PersistenceUnittestCase {
                 }
             }
         });
+        LOGGER.info("<<< progressNotificationsOnPlainOpen");
     }
     
     /**
@@ -289,7 +290,7 @@ public final class TestOpener extends PersistenceUnittestCase {
      */
     @Test(timeout = 8000)
     public void progressNotificationsAndCorrectPasswordEnteredOnEncryptedOpen() {
-        LOGGER.info("** progressNotificationsAndCorrectPasswordEnteredOnEncryptedOpen");
+        LOGGER.info(">>> progressNotificationsAndCorrectPasswordEnteredOnEncryptedOpen");
         final String dbName = "progressenc";
         final String dbPassword = "Squeamish Ossifrage";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
@@ -340,6 +341,7 @@ public final class TestOpener extends PersistenceUnittestCase {
                 }
             }
         });
+        LOGGER.info("<<< progressNotificationsAndCorrectPasswordEnteredOnEncryptedOpen");
     }
     
     /**
@@ -347,7 +349,7 @@ public final class TestOpener extends PersistenceUnittestCase {
      */
     @Test(timeout = 8000)
     public void progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen() {
-        LOGGER.info("** progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen");
+        LOGGER.info(">>> progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen");
         final String dbName = "progressencabandon";
         final String dbPassword = "Squeamish Ossifrage";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
@@ -396,6 +398,7 @@ public final class TestOpener extends PersistenceUnittestCase {
                 }
             }
         });
+        LOGGER.info("<<< progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen");
     }
     
     /**
@@ -403,7 +406,7 @@ public final class TestOpener extends PersistenceUnittestCase {
      */
     @Test(timeout = 8000)
     public void progressNotificationsAndCorrectPasswordEnteredSecondTimeOnEncryptedOpen() {
-        LOGGER.info("** progressNotificationsAndCorrectPasswordSecondTimeEnteredOnEncryptedOpen");
+        LOGGER.info(">>> progressNotificationsAndCorrectPasswordSecondTimeEnteredOnEncryptedOpen");
         final String dbName = "progressenc";
         final String[] dbPasswordAttempts = new String[] {"Squeamish Ossifrage", "Tantric Obstacles"};
         final AtomicInteger passwordAttempt = new AtomicInteger(1);
@@ -462,6 +465,7 @@ public final class TestOpener extends PersistenceUnittestCase {
                 }
             }
         });
+        LOGGER.info("<<< progressNotificationsAndCorrectPasswordSecondTimeEnteredOnEncryptedOpen");
     }
     
     /**
@@ -470,7 +474,7 @@ public final class TestOpener extends PersistenceUnittestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void progressNotificationsExceptionOnOpenOfNonExistant() {
-        LOGGER.info("** progressNotificationsExceptionOnOpenOfNonExistant");
+        LOGGER.info(">>> progressNotificationsExceptionOnOpenOfNonExistant");
         final String dbName = "wah";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
@@ -494,6 +498,7 @@ public final class TestOpener extends PersistenceUnittestCase {
         progressRecorder.assertSeriousProblemNotReceived();
 
         obs.assertDatabaseNotOpen();
+        LOGGER.info("<<< progressNotificationsExceptionOnOpenOfNonExistant");
     }
     
     /**
@@ -501,7 +506,7 @@ public final class TestOpener extends PersistenceUnittestCase {
      */
     @Test
     public void progressNotificationsExceptionOnOpenOfCorrupt() {
-        LOGGER.info("** progressNotificationsExceptionOnOpenOfCorrupt");
+        LOGGER.info(">>> progressNotificationsExceptionOnOpenOfCorrupt");
         final String dbName = "corrupt";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
             @SuppressWarnings("unchecked")
@@ -539,5 +544,6 @@ public final class TestOpener extends PersistenceUnittestCase {
                 obs.assertDatabaseNotOpen();
             }
         });
+        LOGGER.info("<<< progressNotificationsExceptionOnOpenOfCorrupt");
     }
 }

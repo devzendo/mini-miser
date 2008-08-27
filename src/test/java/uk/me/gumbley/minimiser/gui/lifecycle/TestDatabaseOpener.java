@@ -78,7 +78,7 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
      */
     @Test
     public void shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup() {
-        LOGGER.info("*** shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup start");
+        LOGGER.info(">>> shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup");
         createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
             public void runOnCreatedDbs() {
 
@@ -96,6 +96,7 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
                 }
             }
         });
+        LOGGER.info("<<< shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup");
     }
     
     /**
@@ -103,7 +104,7 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
      */
     @Test
     public void shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup() {
-        LOGGER.info("*** shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup start");
+        LOGGER.info(">>> shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup");
         createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
             public void runOnCreatedDbs() {
                 
@@ -122,6 +123,7 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
                 }
             }
         });
+        LOGGER.info("<<< shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup");
     }
 
     private void closeOpenDatabases() {

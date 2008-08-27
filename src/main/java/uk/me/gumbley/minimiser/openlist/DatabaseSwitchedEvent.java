@@ -8,12 +8,12 @@ package uk.me.gumbley.minimiser.openlist;
  * @author matt
  *
  */
-public final class DatabaseSwitchedEvent extends DatabaseNameEvent {
+public final class DatabaseSwitchedEvent extends DatabaseDescriptorEvent {
     /**
      * Create a DatabaseSwitchedEvent describing a specific database.
-     * @param databaseName the name of the database that is now current.
+     * @param databaseDescriptor the descriptor of the database that is now current
      */
-    public DatabaseSwitchedEvent(final String databaseName) {
-        super(databaseName);
+    public DatabaseSwitchedEvent(final DatabaseDescriptor databaseDescriptor) {
+        super(databaseDescriptor);
     }
 }

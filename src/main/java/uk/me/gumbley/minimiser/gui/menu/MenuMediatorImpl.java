@@ -1,9 +1,7 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
-import java.awt.Frame;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.MainFrameTitle;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
@@ -101,7 +99,7 @@ public final class MenuMediatorImpl implements MenuMediator {
             } else if (event instanceof DatabaseOpenedEvent) {
                 final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) event;
                 menu.enableCloseMenu(true);
-                recentFilesList.add(new DatabaseDescriptor(doe.getDatabaseName(), doe.getDatabasePath()));
+                recentFilesList.add(doe.getDatabaseDescriptor());
                 menu.addDatabase(doe.getDatabaseName());
             } else if (event instanceof DatabaseSwitchedEvent) {
                 final String databaseName = ((DatabaseSwitchedEvent) event).getDatabaseName();

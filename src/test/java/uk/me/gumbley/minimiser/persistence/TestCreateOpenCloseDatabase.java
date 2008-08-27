@@ -47,7 +47,9 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test(expected = DataAccessResourceFailureException.class)
     public void testNullDatabaseThrowsUpOnOpen() {
+        LOGGER.info(">>> testNullDatabaseThrowsUpOnOpen");
         accessFactory.openDatabase(null, "");
+        LOGGER.info("<<< testNullDatabaseThrowsUpOnOpen");
     }
     
     /**
@@ -55,7 +57,9 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test(expected = DataAccessResourceFailureException.class)
     public void testEmptyDatabaseThrowsUpOnOpen() {
+        LOGGER.info(">>> testEmptyDatabaseThrowsUpOnOpen");
         accessFactory.openDatabase("", "");
+        LOGGER.info("<<< testEmptyDatabaseThrowsUpOnOpen");
     }
     
     /**
@@ -63,10 +67,11 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test(expected = DataAccessResourceFailureException.class)
     public void testNonExistantDatabaseThrowsUpOnOpen() {
-        LOGGER.info("*** testNonExistantDatabaseThrowsUpOnOpen");
+        LOGGER.info(">>> testNonExistantDatabaseThrowsUpOnOpen");
         final String dbDir = getAbsoluteDatabaseDirectory("nonexistant");
         Assert.assertFalse(new File(dbDir).exists());
         accessFactory.openDatabase(dbDir, null);
+        LOGGER.info("<<< testNonExistantDatabaseThrowsUpOnOpen");
     }
 
     /**
@@ -74,7 +79,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testGoodPlaintextDatabaseCanBeOpened() {
-        LOGGER.info("*** testGoodPlaintextDatabaseCanBeOpened start");
+        LOGGER.info(">>> testGoodPlaintextDatabaseCanBeOpened");
         final String dbName = "testopen";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
@@ -94,6 +99,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             }
             
         });
+        LOGGER.info("<<< testGoodPlaintextDatabaseCanBeOpened");
     }
 
     /**
@@ -102,7 +108,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testGoodEncryptedDatabaseCanBeOpened() {
-        LOGGER.info("*** testGoodEncryptedDatabaseCanBeOpened start");
+        LOGGER.info(">>> testGoodEncryptedDatabaseCanBeOpened");
         final String dbName = "testopenenc";
         final String dbPassword = "Qwerty123";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
@@ -121,6 +127,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             }
             
         });
+        LOGGER.info("<<< testGoodEncryptedDatabaseCanBeOpened");
     }
 
     /**
@@ -129,7 +136,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testGoodEncryptedDatabaseCantBeOpenedWithOtherPassword() {
-        LOGGER.info("*** testGoodEncryptedDatabaseCantBeOpenedWithOtherPassword start");
+        LOGGER.info(">>> testGoodEncryptedDatabaseCantBeOpenedWithOtherPassword");
         final String dbName = "testopenenc";
         final String dbCreationPassword = "Qwerty123";
         final String dbEvilHackerPassword = "Fossi11ized";
@@ -156,6 +163,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             }
             
         });
+        LOGGER.info("<<< testGoodEncryptedDatabaseCantBeOpenedWithOtherPassword");
     }
 
     /**
@@ -164,7 +172,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testGoodEncryptedDatabaseCantBeOpenedWithEmptyPassword() {
-        LOGGER.info("*** testGoodEncryptedDatabaseCantBeOpenedWithEmptyPassword start");
+        LOGGER.info(">>> testGoodEncryptedDatabaseCantBeOpenedWithEmptyPassword");
         final String dbName = "testopenenc";
         final String dbCreationPassword = "Qwerty123";
         final String dbEvilHackerPassword = "";
@@ -191,6 +199,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             }
             
         });
+        LOGGER.info("<<< testGoodEncryptedDatabaseCantBeOpenedWithEmptyPassword");
     }
 
     /**
@@ -198,7 +207,9 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test(expected = DataAccessResourceFailureException.class)
     public void testNullDatabaseThrowsUpOnCreate() {
+        LOGGER.info(">>> testNullDatabaseThrowsUpOnCreate");
         accessFactory.createDatabase(null, "");
+        LOGGER.info("<<< testNullDatabaseThrowsUpOnCreate");
     }
     
     /**
@@ -206,7 +217,9 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test(expected = DataAccessResourceFailureException.class)
     public void testEmptyDatabaseThrowsUpOnCreate() {
+        LOGGER.info(">>> testEmptyDatabaseThrowsUpOnCreate");
         accessFactory.createDatabase("", "");
+        LOGGER.info("<<< testEmptyDatabaseThrowsUpOnCreate");
     }
     
     /**
@@ -214,7 +227,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testCreatePlaintextDatabase() {
-        LOGGER.info("*** testCreatePlaintextDatabase start");
+        LOGGER.info(">>> testCreatePlaintextDatabase");
         final String dbName = "testcreate";
         // should we be able to create this db?
         // TODO my assumption about the databse directory + dbname was wrong.
@@ -227,7 +240,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, "");
         final boolean shouldBeRandom = false;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
-        LOGGER.info("*** testCreatePlaintextDatabase done");
+        LOGGER.info("<<< testCreatePlaintextDatabase");
     }
 
     /**
@@ -235,7 +248,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testCreatePlaintextDatabaseWithListener() {
-        LOGGER.info("*** testCreatePlaintextDatabaseWithListener start");
+        LOGGER.info(">>> testCreatePlaintextDatabaseWithListener");
         final AtomicInteger count = new AtomicInteger(0);
         final Observer<PersistenceObservableEvent> observer = new Observer<PersistenceObservableEvent>() {
             public void eventOccurred(final PersistenceObservableEvent observableEvent) {
@@ -251,7 +264,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         final int numberOfDatabaseCreationSteps = accessFactory.getNumberOfDatabaseCreationSteps();
         Assert.assertTrue(count.get() == numberOfDatabaseCreationSteps);
         LOGGER.info("Database creation steps: currently " + count.get());
-        LOGGER.info("*** testCreatePlaintextDatabaseWithListener done");
+        LOGGER.info("<<< testCreatePlaintextDatabaseWithListener");
     }
     
     private void checkDatabaseInvariants(final String dbName,
@@ -297,13 +310,13 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testCreateEncryptedDatabase() {
-        LOGGER.info("*** testCreateEncryptedDatabase start");
+        LOGGER.info(">>> testCreateEncryptedDatabase");
         final String dbName = "encrypted";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, SQUEAMISH_OSSIFRAGE);
         final boolean shouldBeRandom = true;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
-        LOGGER.info("*** testCreateEncryptedDatabase done");
+        LOGGER.info("<<< testCreateEncryptedDatabase");
     }
     
     /**
@@ -311,11 +324,11 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testThereAreDatabaseCreationSteps() {
-        LOGGER.info("*** testThereAreDatabaseCreationSteps start");
+        LOGGER.info(">>> testThereAreDatabaseCreationSteps");
         final int numberOfDatabaseCreationSteps = accessFactory.getNumberOfDatabaseCreationSteps();
         Assert.assertTrue(numberOfDatabaseCreationSteps > 0);
         LOGGER.info("There are " + numberOfDatabaseCreationSteps + " DB creation steps");
-        LOGGER.info("*** testThereAreDatabaseCreationSteps start");
+        LOGGER.info("<<< testThereAreDatabaseCreationSteps");
     }
     
     /**
@@ -325,7 +338,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test(expected = IllegalStateException.class)
     public void testGetVersionDaoFailsOnClosedDatabase() throws IllegalStateException {
-        LOGGER.info("*** testGetVersionDaoFailsOnClosedDatabase start");
+        LOGGER.info(">>> testGetVersionDaoFailsOnClosedDatabase");
         final String dbName = "testgetdao";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
@@ -346,6 +359,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             deleteDatabaseFiles(dbName);
             LOGGER.info("... done");
         }
+        LOGGER.info("<<< testGetVersionDaoFailsOnClosedDatabase");
     }
     
     // Tests the closer code ---------------------------------------------------
@@ -355,7 +369,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
      */
     @Test
     public void testGoodPlaintextDatabaseCanBeOpenedThenClosed() {
-        LOGGER.info("*** testGoodPlaintextDatabaseCanBeOpenedThenClosed start");
+        LOGGER.info(">>> testGoodPlaintextDatabaseCanBeOpenedThenClosed");
         final String dbName = "testcloser";
         createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
@@ -368,6 +382,6 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             }
             
         });
+        LOGGER.info("<<< testGoodPlaintextDatabaseCanBeOpenedThenClosed");
     }
-    
 }

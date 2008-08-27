@@ -50,8 +50,8 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("testdb");
 
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent("testdb", "")));
-        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("testdb")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent(databaseDescriptor)));
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(databaseDescriptor)));
         EasyMock.replay(obs);
 
         Assert.assertFalse(list.containsDatabase(databaseDescriptor));
@@ -146,13 +146,15 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void openDatabaseDoesntFireRemovedListener() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("testdb");
+        
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent("testdb", "")));
-        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("testdb")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseOpenedEvent(databaseDescriptor)));
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(databaseDescriptor)));
         EasyMock.replay(obs);
         list.addDatabaseEventObserver(obs);
         
-        list.addOpenedDatabase(new DatabaseDescriptor("testdb"));
+        list.addOpenedDatabase(databaseDescriptor);
         
         list.removeDatabaseEventObserver(obs);
         
@@ -175,7 +177,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
 
         
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("one")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(databaseDescriptor)));
         EasyMock.replay(obs);
         list.addDatabaseEventObserver(obs);
 
@@ -244,18 +246,18 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void closeOnlyDatabaseFiresListener() {
-        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("testdb");
-        list.addOpenedDatabase(databaseDescriptor);
+        final DatabaseDescriptor testdb = new DatabaseDescriptor("testdb");
+        list.addOpenedDatabase(testdb);
         
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent("testdb")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent(testdb)));
         obs.eventOccurred(EasyMock.isA(DatabaseListEmptyEvent.class));
         EasyMock.replay(obs);
         list.addDatabaseEventObserver(obs);
 
-        Assert.assertTrue(list.containsDatabase(databaseDescriptor));
-        list.removeClosedDatabase(databaseDescriptor);
-        Assert.assertFalse(list.containsDatabase(databaseDescriptor));
+        Assert.assertTrue(list.containsDatabase(testdb));
+        list.removeClosedDatabase(testdb);
+        Assert.assertFalse(list.containsDatabase(testdb));
         
         EasyMock.verify(obs);
     }
@@ -273,8 +275,8 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         list.addOpenedDatabase(databaseDescriptorTwo);
         
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent("one")));
-        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("two")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent(databaseDescriptorOne)));
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(databaseDescriptorTwo)));
         EasyMock.replay(obs);
         list.addDatabaseEventObserver(obs);
 
@@ -294,16 +296,18 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void closeLastDatabaseFiresListener() {
-        list.addOpenedDatabase(new DatabaseDescriptor("one"));
-        list.addOpenedDatabase(new DatabaseDescriptor("two"));
+        final DatabaseDescriptor one = new DatabaseDescriptor("one");
+        list.addOpenedDatabase(one);
+        final DatabaseDescriptor two = new DatabaseDescriptor("two");
+        list.addOpenedDatabase(two);
         
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent("two")));
-        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("one")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent(two)));
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(one)));
         EasyMock.replay(obs);
         list.addDatabaseEventObserver(obs);
         
-        list.removeClosedDatabase(new DatabaseDescriptor("two"));
+        list.removeClosedDatabase(two);
         
         EasyMock.verify(obs);
     }
@@ -315,20 +319,22 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Test
     public void closeDatabaseDoesntFireRemovedListener() {
-        list.addOpenedDatabase(new DatabaseDescriptor("testdb"));
-        list.addOpenedDatabase(new DatabaseDescriptor("securedb"));
+        final DatabaseDescriptor testdb = new DatabaseDescriptor("testdb");
+        list.addOpenedDatabase(testdb);
+        final DatabaseDescriptor securedb = new DatabaseDescriptor("securedb");
+        list.addOpenedDatabase(securedb);
         
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent("testdb")));
-        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("securedb")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseClosedEvent(testdb)));
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(securedb)));
         EasyMock.replay(obs);
         list.addDatabaseEventObserver(obs);
 
-        list.removeClosedDatabase(new DatabaseDescriptor("testdb"));
+        list.removeClosedDatabase(testdb);
         
         list.removeDatabaseEventObserver(obs);
         
-        list.removeClosedDatabase(new DatabaseDescriptor("securedb"));
+        list.removeClosedDatabase(securedb);
         
         EasyMock.verify(obs);
     }
@@ -366,10 +372,11 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     @Test
     public void testSwitchExistingDatabase() {
         list.addOpenedDatabase(new DatabaseDescriptor("testdb"));
-        list.addOpenedDatabase(new DatabaseDescriptor("securedb"));
+        final DatabaseDescriptor securedb = new DatabaseDescriptor("securedb");
+        list.addOpenedDatabase(securedb);
         
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent("securedb")));
+        obs.eventOccurred(EasyMock.eq(new DatabaseSwitchedEvent(securedb)));
         EasyMock.replay(obs);
         
         list.addDatabaseEventObserver(obs);

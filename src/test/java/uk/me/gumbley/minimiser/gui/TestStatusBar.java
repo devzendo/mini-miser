@@ -13,7 +13,7 @@ import uk.me.gumbley.minimiser.util.DelayedExecutor;
  * @author matt
  *
  */
-public class TestStatusBar {
+public final class TestStatusBar {
     
     private static final String HELLO = "hello";
     private static final String TEST = "test";

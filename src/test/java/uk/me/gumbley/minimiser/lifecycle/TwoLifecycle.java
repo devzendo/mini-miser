@@ -4,7 +4,7 @@ package uk.me.gumbley.minimiser.lifecycle;
  * @author matt
  *
  */
-public class TwoLifecycle implements Lifecycle {
+public final class TwoLifecycle implements Lifecycle {
     private final OneLifecycle oneLifecycle;
     /**
      * @param one the one that's configured in

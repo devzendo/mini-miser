@@ -10,12 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
-import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
 

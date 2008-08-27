@@ -2,6 +2,8 @@ MiniMiser - a simple personal finance manager program
 -----------------------------------------------------
 Current outstanding small tasks:
 
+BUILD FAILURE:
+
 BUGS:
 * BUG: Currency symbols don't render correctly on Windows
 
@@ -15,20 +17,22 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   
 
 * add the tab pane container - responsibility is adding/removing cards for open/
-  closed databases (upon calls from OpenDatabaseList listener), adding/removing
-  tabs for open/closed views (upon calls form menu actionlisteners), switching
-  current card to match the current database (upon calls from OpenDatabaseList
+  closed databases (upon calls from an OpenDatabaseList listener), adding/removing
+  tabs for open/closed views (upon calls from menu actionlisteners), switching
+  current card to match the current database (upon calls from an OpenDatabaseList
   listener), providing notification mechanism for open/close/switch tab
   
   - create a springbeanlistloader that loads ODL listeners, before database
     opener/close lifecycle
-  - instantiate tab pane manager to creatr the empty card layout panel, after
+  - instantiate tab pane manager to create the empty card layout panel, after
     the menu, before starting the lifecycles
-  - create tabbedpanelifecycle odl listener that adds jtabbedpanes to
+  - create tabbedpane database event listener that adds jtabbedpanes to
     the dd.
-  - add an old listener that's bound to th eODL after ythe tabbedpanelifefecycleodllistener
-    that is a passthru adapter to the tabpanemanager - so that the tabpanemanager
-    (which implements odl listener) can get the jtabbedpane out of the dd
+  - add a database event listener that's bound to the ODL after the
+    tabbedpane database event listener
+    that is an adapter to the tabpanemanager - so that the tabpanemanager
+    (which does not implement odl listener but has similar semantics for open/
+    switch/close) can get the jtabbedpane out of the dd
     (ordering of these operations is sensitive) and set in the card layout.
     This adapter also enables switch and close behaviour to be handled directly
     by the tab pane manager.
