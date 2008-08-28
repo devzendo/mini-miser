@@ -3,18 +3,14 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUILD FAILURE:
+* need a (fake) X server running on sirius
 
 BUGS:
 * BUG: Currency symbols don't render correctly on Windows
 
 CURRENT TASKS:
-* remove minimiserdatabasedescriptor - replace with dd + setattribute
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
-* database name event needs renaming to databasedetail event
-* this needs changing to take a databasedescriptor & all code needs to work
-  with this. why does it implement equals and hashcode?
-  
 
 * add the tab pane container - responsibility is adding/removing cards for open/
   closed databases (upon calls from an OpenDatabaseList listener), adding/removing

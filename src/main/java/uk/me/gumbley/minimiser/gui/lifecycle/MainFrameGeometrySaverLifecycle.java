@@ -10,7 +10,7 @@ import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
  * @author matt
  *
  */
-public class MainFrameGeometrySaverLifecycle implements Lifecycle {
+public final class MainFrameGeometrySaverLifecycle implements Lifecycle {
     private final WindowGeometryStore windowGeometryStore;
     private final JFrame frame;
 

@@ -8,7 +8,7 @@ import uk.me.gumbley.minimiser.util.DelayedExecutor;
  * @author matt
  *
  */
-public class DelayedExecutorFlushLifecycle implements Lifecycle {
+public final class DelayedExecutorFlushLifecycle implements Lifecycle {
     private final DelayedExecutor delayedExecutor;
 
     /**

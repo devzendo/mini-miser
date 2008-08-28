@@ -1,5 +1,9 @@
 package uk.me.gumbley.minimiser.gui.tabpanemanager;
 
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+
 /**
  * The Tab Pane Manager's responsibilities are:
  * <ul>
@@ -30,4 +34,51 @@ public interface TabPaneManager {
          */
         SQL
     }
+
+    /**
+     * Gets the main panel controlled by the card layout
+     * @return the main panel
+     */
+    JPanel getMainPanel();
+    
+    /**
+     * How many tab panes have been added?
+     * @return the number of tab panes?
+     */
+    int getNumberOfTabPanes();
+
+    /**
+     * Add the tab pane that's stored in the DatabaseDescriptor.
+     * Do nothing if there's no tab pane stored.
+     * Replace any existing tab pane with the same name.
+     * @param databaseDescriptor the database Descriptor.
+     */
+    void addTabPane(DatabaseDescriptor databaseDescriptor);
+
+    /**
+     * Get the tab pane for a named database
+     * @param databaseName the database name
+     * @return the tab pane, or null if there isn't one.
+     */
+    JTabbedPane getTabPane(String databaseName);
+    
+    /**
+     * Removes a tab pane referenced by a DatabaseDescriptor.
+     * Do nothing if there's no tab pane stored for this descriptor.
+     * @param databaseDescriptor the database descriptor.
+     */
+    void removeTabPane(DatabaseDescriptor databaseDescriptor);
+
+    /**
+     * Switch to this previously added tab pane.
+     * Do nothing if there's no tab pane stored for this descriptor.
+     * @param databaseDescriptor the database descriptor
+     */
+    void switchToTabPane(DatabaseDescriptor databaseDescriptor);
+    
+    /**
+     * Show a blank panel instead of any other tab panes.
+     * Used when the list of tab panes has emptied.
+     */
+    void hideTabPanes();
 }

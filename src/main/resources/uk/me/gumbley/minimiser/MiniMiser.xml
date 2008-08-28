@@ -38,6 +38,9 @@
 		<constructor-arg ref="menuWiring" />
 	</bean>
 
+	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" lazy-init="true" >
+	</bean>
+
 	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilder" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
 		<constructor-arg ref="springLoader" />

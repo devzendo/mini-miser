@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.util.DelayedExecutor;
  * 
  * @author matt
  */
-public class MainFrameStatusBar extends AbstractStatusBar {
+public final class MainFrameStatusBar extends AbstractStatusBar {
     private static final Logger LOGGER = Logger
             .getLogger(MainFrameStatusBar.class);
     private JProgressBar progressBar;

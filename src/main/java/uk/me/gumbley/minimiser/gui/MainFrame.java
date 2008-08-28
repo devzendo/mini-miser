@@ -24,6 +24,7 @@ import uk.me.gumbley.minimiser.gui.menu.Menu;
 import uk.me.gumbley.minimiser.gui.menu.MenuBuilder;
 import uk.me.gumbley.minimiser.gui.menu.MenuMediator;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
+import uk.me.gumbley.minimiser.gui.tabpanemanager.TabPaneManager;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
@@ -74,7 +75,11 @@ public class MainFrame {
         
         // Menu
         mainFrame.add(createMenu(), BorderLayout.NORTH);
-        mainFrame.add(createBlankPanel(), BorderLayout.CENTER);
+        
+        // Main panel
+        final TabPaneManager tabPaneManager = springLoader.getBean("tabPaneManager", TabPaneManager.class);
+        mainFrame.add(tabPaneManager.getMainPanel(), BorderLayout.CENTER);
+        
         if (!windowGeometryStore.hasStoredGeometry(mainFrame)) {
             mainFrame.pack();
         }
@@ -108,7 +113,7 @@ public class MainFrame {
         Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.WINDOW_EVENT_MASK);
     }
 
-    private Component createBlankPanel() {
+    private Component createTabPaneManagerPanel() {
         final JPanel blankPanel = new JPanel();
         blankPanel.setPreferredSize(new Dimension(640, 480));
         return blankPanel;
