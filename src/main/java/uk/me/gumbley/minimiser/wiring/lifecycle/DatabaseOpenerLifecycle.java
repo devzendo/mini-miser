@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.lifecycle;
+package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;

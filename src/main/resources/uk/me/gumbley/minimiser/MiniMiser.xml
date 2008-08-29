@@ -99,28 +99,28 @@
 		<constructor-arg ref="lifecycleList" />	
 	</bean>
 
-	<bean id="databaseEventListenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseEventListenerLifecycle">
+	<bean id="databaseEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseEventListenerLifecycle">
 		<constructor-arg ref="databaseEventListenerManager" />
 	</bean>
 	
-	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseOpenerLifecycle">
+	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseOpenerLifecycle">
 		<constructor-arg ref="opener" />	
 		<constructor-arg ref="openerAdapterFactory" />	
 		<constructor-arg ref="openDatabaseList" />	
 		<constructor-arg ref="prefs" />	
 	</bean>
 
-	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseCloserLifecycle">
+	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseCloserLifecycle">
 		<constructor-arg ref="openDatabaseList" />	
 		<constructor-arg ref="prefs" />	
 	</bean>
 
-	<bean id="mainFrameGeometrySaverLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.MainFrameGeometrySaverLifecycle">
+	<bean id="mainFrameGeometrySaverLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MainFrameGeometrySaverLifecycle">
 		<constructor-arg ref="windowGeometryStore" />	
 		<constructor-arg ref="mainFrame" />
 	</bean>
 
-	<bean id="delayedExecutorFlushLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DelayedExecutorFlushLifecycle">
+	<bean id="delayedExecutorFlushLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DelayedExecutorFlushLifecycle">
 		<constructor-arg ref="delayedExecutor" />	
 	</bean>
 	
@@ -136,12 +136,22 @@
 	<bean id="databaseEventListenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
-<!--				<value>one</value>
-				<value>two</value> -->
+				<value>tabPaneCreatingDatabaseEventListener</value>
+				<value>tabPaneManagerDatabaseEventListener</value>
+<!--				<value>two</value> -->
 			</list>
 		</property>
 	</bean>
 
+
+	<bean id="tabPaneCreatingDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneCreatingDatabaseEventListener" lazy-init="true" >
+		<constructor-arg ref="prefs" />
+	</bean>
+	
+	<bean id="tabPaneManagerDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneManagerDatabaseEventListener" lazy-init="true" >
+		<constructor-arg ref="tabPaneManager" />
+	</bean>
+	
 	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl" lazy-init="true">
 		<constructor-arg ref="prefs" />
 	</bean>

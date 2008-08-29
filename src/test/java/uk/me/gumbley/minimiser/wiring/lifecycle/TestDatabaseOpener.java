@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.lifecycle;
+package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
  * @author matt
  *
  */
-@ApplicationContext("uk/me/gumbley/minimiser/gui/lifecycle/LifecycleTestCase.xml")
+@ApplicationContext("uk/me/gumbley/minimiser/wiring/lifecycle/LifecycleTestCase.xml")
 public final class TestDatabaseOpener extends PersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestDatabaseCloser.class);

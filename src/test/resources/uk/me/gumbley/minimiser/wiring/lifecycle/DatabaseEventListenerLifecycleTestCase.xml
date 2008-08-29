@@ -18,7 +18,7 @@
 		<constructor-arg ref="lifecycleList" />	
 	</bean>
 
-	<bean id="databaseEventListenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseEventListenerLifecycle">
+	<bean id="databaseEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseEventListenerLifecycle">
 		<constructor-arg ref="listenerManager" />
 	</bean>
 

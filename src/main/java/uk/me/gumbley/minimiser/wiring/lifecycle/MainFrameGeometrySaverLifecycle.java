@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.lifecycle;
+package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import javax.swing.JFrame;
 import uk.me.gumbley.minimiser.gui.WindowGeometryStore;

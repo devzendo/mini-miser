@@ -42,6 +42,22 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     }
     
     /**
+     * Adding null shouldn't fire listeners or increase list size.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void openingNullDoesNothing() {
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        EasyMock.replay(obs);
+        
+        list.addOpenedDatabase(null);
+        
+        EasyMock.verify(obs);
+        Assert.assertNull(list.getCurrentDatabase());
+        Assert.assertFalse(list.containsDatabase(null));
+    }
+    
+    /**
      * Open a database, a listener is fired
      */
     @SuppressWarnings("unchecked")
@@ -220,6 +236,22 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         Assert.assertTrue(list.containsDatabase(new DatabaseDescriptor("one", "/tmp/other"))); // ignores path
     }
 
+    /**
+     * Removing null shouldn't fire listeners or decrease list size.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void removingNullDoesNothing() {
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        EasyMock.replay(obs);
+        
+        list.removeClosedDatabase(null);
+        
+        EasyMock.verify(obs);
+        Assert.assertNull(list.getCurrentDatabase());
+        Assert.assertFalse(list.containsDatabase(null));
+    }
+    
     /**
      * Can't remove a database that isn't there
      */

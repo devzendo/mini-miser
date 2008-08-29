@@ -74,7 +74,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
      * 
      */
     @Test
-    public void addNullDatabaseDescriptorWithNoTabbedPaneDoesntAdd() {
+    public void addNullDatabaseDescriptorDoesntAdd() {
         tabPaneManager.addTabPane(null);
         
         Assert.assertEquals(0, tabPaneManager.getNumberOfTabPanes());

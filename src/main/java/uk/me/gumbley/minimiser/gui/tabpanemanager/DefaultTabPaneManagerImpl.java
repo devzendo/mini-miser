@@ -1,8 +1,12 @@
 package uk.me.gumbley.minimiser.gui.tabpanemanager;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
  * Extends the core Tab Pane Manager functionality with GUI code.
@@ -25,10 +29,20 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
     public DefaultTabPaneManagerImpl() {
         super();
         mainPanel = new JPanel();
-        blankPanel = new JPanel();
+        blankPanel = createBlankPanel();
         cardLayout = new CardLayout(5, 5);
         mainPanel.setLayout(cardLayout);
         cardLayout.addLayoutComponent(blankPanel, BLANK_PANEL_NAME);
+        //cardLayout.show(mainPanel, BLANK_PANEL_NAME);
+        //cardLayout.invalidateLayout(mainPanel);
+    }
+
+    private JPanel createBlankPanel() {
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        final JLabel label = new JLabel(AppName.getAppName() + " v" + AppVersion.getVersion());
+        panel.add(label, BorderLayout.CENTER);
+        return panel;
     }
     
     /**

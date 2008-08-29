@@ -59,6 +59,9 @@ public final class OpenDatabaseList {
      * @param descriptor info about the database.
      */
     public void addOpenedDatabase(final DatabaseDescriptor descriptor) {
+        if (descriptor == null) {
+            return;
+        }
         if (!databaseList.contains(descriptor)) {
             LOGGER.info("Adding " + descriptor.getDatabaseName());
             databaseList.add(descriptor);
@@ -79,6 +82,9 @@ public final class OpenDatabaseList {
      * @param descriptor info about the database.
      */
     public void removeClosedDatabase(final DatabaseDescriptor descriptor) {
+        if (descriptor == null) {
+            return;
+        }
         if (!databaseList.contains(descriptor)) {
             throw new IllegalStateException(
                 String.format("Could not remove closed database %s since it is not in list", descriptor.getDatabaseName()));

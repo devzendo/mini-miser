@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.lifecycle;
+package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import java.util.List;
 import org.junit.Assert;
@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.util.OrderMonitor;
  * @author matt
  *
  */
-@ApplicationContext("uk/me/gumbley/minimiser/gui/lifecycle/DatabaseEventListenerLifecycleTestCase.xml")
+@ApplicationContext("uk/me/gumbley/minimiser/wiring/lifecycle/DatabaseEventListenerLifecycleTestCase.xml")
 public final class TestDatabaseEventListenerLifecycle extends SpringLoaderUnittestCase {
 
     private LifecycleManager lifecycleManager;

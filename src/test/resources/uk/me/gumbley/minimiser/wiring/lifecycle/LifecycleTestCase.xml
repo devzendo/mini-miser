@@ -18,7 +18,7 @@
 		<constructor-arg ref="closeLifecycleList" />
 	</bean>
 
-	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseCloserLifecycle">
+	<bean id="databaseCloserLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseCloserLifecycle">
 		<constructor-arg ref="openDatabaseList" />	
 		<constructor-arg ref="prefs" />	
 	</bean>
@@ -37,7 +37,7 @@
 		<constructor-arg ref="openLifecycleList" />
 	</bean>
 
-	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.gui.lifecycle.DatabaseOpenerLifecycle">
+	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseOpenerLifecycle">
 		<constructor-arg ref="opener" />	
 		<constructor-arg ref="openerAdapterFactory" />	
 		<constructor-arg ref="openDatabaseList" />	
@@ -49,7 +49,7 @@
 
 	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
 	
-	<bean id="prefs" class="uk.me.gumbley.minimiser.gui.lifecycle.StubOpenListPrefs" />
+	<bean id="prefs" class="uk.me.gumbley.minimiser.wiring.lifecycle.StubOpenListPrefs" />
 
 	<bean id="opener" class="uk.me.gumbley.minimiser.opener.DefaultOpenerImpl">
 		<constructor-arg ref="accessFactory" />
