@@ -1,11 +1,13 @@
 package uk.me.gumbley.minimiser.wiring.databaseeventlistener;
 
+import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabPaneManager;
 import uk.me.gumbley.minimiser.openlist.DatabaseClosedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseListEmptyEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
 
 /**
  * Adapts between database events and the tab pane manager's card layout.
@@ -15,6 +17,8 @@ import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
  */
 public final class TabPaneManagerDatabaseEventListener implements Observer<DatabaseEvent> {
 
+    private static final Logger LOGGER = Logger
+            .getLogger(TabPaneManagerDatabaseEventListener.class);
     private final TabPaneManager paneManager;
 
     /**
@@ -29,6 +33,7 @@ public final class TabPaneManagerDatabaseEventListener implements Observer<Datab
      * {@inheritDoc}
      */
     public void eventOccurred(final DatabaseEvent databaseEvent) {
+        LOGGER.info("Received a " + databaseEvent.getClass().getSimpleName());
         if (databaseEvent instanceof DatabaseOpenedEvent) {
             final DatabaseOpenedEvent openEvent = (DatabaseOpenedEvent) databaseEvent;
             paneManager.addTabPane(openEvent.getDatabaseDescriptor());
@@ -37,6 +42,9 @@ public final class TabPaneManagerDatabaseEventListener implements Observer<Datab
             paneManager.removeTabPane(closedEvent.getDatabaseDescriptor());
         } else if (databaseEvent instanceof DatabaseListEmptyEvent) {
             paneManager.hideTabPanes();
+        } else if (databaseEvent instanceof DatabaseSwitchedEvent) {
+            final DatabaseSwitchedEvent switchedEvent = (DatabaseSwitchedEvent) databaseEvent;
+            paneManager.switchToTabPane(switchedEvent.getDatabaseDescriptor());
         }
     }
 }

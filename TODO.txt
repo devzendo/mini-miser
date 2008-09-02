@@ -3,14 +3,45 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUILD FAILURE:
-* need a (fake) X server running on sirius
+* need a (fake) X server running on sirius - added the java.awt.headless
+  configuration
 
 BUGS:
-* BUG: Currency symbols don't render correctly on Windows
-
+* if you have a db open in the previous list, and open a second instance,
+  you get a nasty 'open in another process' dialog.
+  
 CURRENT TASKS:
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
+* the tab pane set:
+  * TabPageCreatingDatabaseEventListener - restores / creates tab set upon
+    open.
+  * Always uses a custom (non-EDT) thread.
+  * Needs to find list of tabs to create.
+  * Needs to use a factory to instantiate the list of tabs
+  * Factory:
+    * called on non-EDT, given the JTabbedPane
+    * stash the current database descriptor in the DatabaseDescriptorFactory
+      at the start of the instantiation
+    * define interface for tabs that defines JPanel createComponents() method
+    * foreach tab
+      * load prototype tab bean, resolving dependencies, NOT on EDT
+      * createComponents gets called to create panel on EDT, panel is added to
+        the relevant tab on the tabbed pane (on the EDT)
+    * remove current database descriptor from the DatabaseDescriptorFactory
+  * Opening a new tab:
+    * View menu ActionListener runs on EDT
+    * Must dispatch to a custom worker thread.
+    * Uses the factory to instantiate the list of one tab - factory
+      operation is identical to above.
+  * Closing an existing tab
+    * ????
+  * form the View menu from the set of available tabs, add a checkmark to
+    currently visible tabs
+  * need an OpenTabList object to manage this? Instance per Database, bound
+    into the DatabaseDescriptor.
+  * switch tab listener?  
+  * persist current open tab list on exit
 
 * add the tab pane container - responsibility is adding/removing cards for open/
   closed databases (upon calls from an OpenDatabaseList listener), adding/removing
@@ -52,8 +83,7 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   * the currently open tabs for each database are persisted and restored
   * the currently selected tab for each database is persisted and restored
 
-* gui lifecycle needs to be repackaged - app lifecycle?
-    
+* temporarily remove currency panel on new database wizard    
 * need a message box with an option to never display this message again, with
   the flag to ignore this keyed message being stored in prefs.
 * use this when the SQL view is first opened - this is a developer-only
@@ -77,10 +107,9 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * if 'SQL view available' flag gets disabled in prefs, close any currently-
   open SQL views.
 
-* decide which currencies to support
-* add currency object, entries for all supported currencies
-* display flags in pretty list in currency wizard page
-* choose a sensible default-selected currency based on system locale
+* Update available checker.
+
+* Bug reporting dialog - direct to bug database
 
 
 * review all TODOs
@@ -175,4 +204,12 @@ Accounts:
   Reconcile
   Calendar
   Standing Order List
+
+LATER RELEASES:
+
+* decide which currencies to support
+* add currency object, entries for all supported currencies
+* display flags in pretty list in currency wizard page
+* choose a sensible default-selected currency based on system locale
+* BUG: Currency symbols don't render correctly on Windows
   

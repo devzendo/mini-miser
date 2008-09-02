@@ -139,10 +139,16 @@ public final class MenuImpl implements Menu {
                     public void actionPerformed(final ActionEvent e) {
                         new Thread(new Runnable() {
                             public void run() {
-                                Thread.currentThread().setName("RecentOpener:" + recentDbName);
-                                Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
-                                LOGGER.info("Opening recent database '" + recentDbName + "'");
-                                openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                                try {
+                                    Thread.currentThread().setName("RecentOpener:" + recentDbName);
+                                    Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
+                                    LOGGER.info("Opening recent database '" + recentDbName + "'");
+                                    openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                                } catch (final Throwable t) {
+                                    LOGGER.error("Recent opener thread caught unexpected " + t.getClass().getSimpleName(), t);
+                                } finally {
+                                    LOGGER.debug("Open recent complete");
+                                }
                             }
                         }).start();
                     }

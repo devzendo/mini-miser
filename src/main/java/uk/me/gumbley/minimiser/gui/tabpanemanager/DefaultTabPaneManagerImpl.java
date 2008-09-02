@@ -1,12 +1,10 @@
 package uk.me.gumbley.minimiser.gui.tabpanemanager;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.version.AppVersion;
+import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * Extends the core Tab Pane Manager functionality with GUI code.
@@ -15,6 +13,8 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  *
  */
 public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
+    private static final Logger LOGGER = Logger
+            .getLogger(DefaultTabPaneManagerImpl.class);
     private static final String BLANK_PANEL_NAME = "*special*blank*panel*";
 
     private JPanel mainPanel;
@@ -29,20 +29,11 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
     public DefaultTabPaneManagerImpl() {
         super();
         mainPanel = new JPanel();
-        blankPanel = createBlankPanel();
-        cardLayout = new CardLayout(5, 5);
+        blankPanel = new JPanel();
+        cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
-        cardLayout.addLayoutComponent(blankPanel, BLANK_PANEL_NAME);
-        //cardLayout.show(mainPanel, BLANK_PANEL_NAME);
-        //cardLayout.invalidateLayout(mainPanel);
-    }
-
-    private JPanel createBlankPanel() {
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        final JLabel label = new JLabel(AppName.getAppName() + " v" + AppVersion.getVersion());
-        panel.add(label, BorderLayout.CENTER);
-        return panel;
+        mainPanel.add(blankPanel, BLANK_PANEL_NAME);
+        cardLayout.show(mainPanel, BLANK_PANEL_NAME);
     }
     
     /**
@@ -58,7 +49,12 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
      */
     @Override
     public void tabPaneAdded(final String databaseName, final JTabbedPane tabbedPane) {
-        cardLayout.addLayoutComponent(tabbedPane, databaseName);
+        LOGGER.info("Tab Pane added for database '" + databaseName + "'");
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                mainPanel.add(tabbedPane, databaseName);
+            }
+        });
     }
 
     /**
@@ -66,7 +62,12 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
      */
     @Override
     public void tabPaneRemoved(final String databaseName, final JTabbedPane tabbedPane) {
-        cardLayout.removeLayoutComponent(tabbedPane);
+        LOGGER.info("Tab Pane removed for database '" + databaseName + "'");
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                mainPanel.remove(tabbedPane);
+            }
+        });
     }
 
     /**
@@ -74,13 +75,23 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
      */
     @Override
     public void tabPaneSwitched(final String databaseName, final JTabbedPane tabbedPane) {
-        cardLayout.show(mainPanel, databaseName);
+        LOGGER.info("Tab Pane switch for database '" + databaseName + "'");
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                cardLayout.show(mainPanel, databaseName);
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void hideTabPanes() {
-        cardLayout.show(mainPanel, BLANK_PANEL_NAME);
+        LOGGER.info("Hide all Tab Panes");
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                cardLayout.show(mainPanel, BLANK_PANEL_NAME);
+            }
+        });
     }
 }

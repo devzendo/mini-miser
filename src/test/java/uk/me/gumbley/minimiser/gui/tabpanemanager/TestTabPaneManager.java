@@ -199,7 +199,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
         
         Assert.assertSame(tabbedPane1, tabPaneManager.getLastSwitchedTabbedPane());
         
-        final DatabaseDescriptor dd2 = new DatabaseDescriptor("one");
+        final DatabaseDescriptor dd2 = new DatabaseDescriptor("two");
         final JTabbedPane tabbedPane2 = new JTabbedPane();
         dd2.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane2);
         tabPaneManager.addTabPane(dd2);

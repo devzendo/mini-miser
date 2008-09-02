@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.gui.tabpanemanager;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JTabbedPane;
+import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 
@@ -14,7 +15,8 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
  *
  */
 public abstract class AbstractTabPaneManager implements TabPaneManager {
-    
+    private static final Logger LOGGER = Logger
+            .getLogger(AbstractTabPaneManager.class);
     private final Map<String, JTabbedPane> namedTabbedPanes;
     
     /**
@@ -41,6 +43,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
         if (databaseDescriptor == null) {
             return;
         }
+        LOGGER.info("Adding tab pane for database ' " + databaseDescriptor.getDatabaseName() + "'");
         final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
         if (tabbedPane == null) {
             return;
@@ -67,6 +70,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
             return;
         }
         final String databaseName = databaseDescriptor.getDatabaseName();
+        LOGGER.info("Removing tab pane for database ' " + databaseName + "'");
         final JTabbedPane tabbedPane = namedTabbedPanes.get(databaseName);
         if (tabbedPane == null) {
             return;
@@ -83,6 +87,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
             return;
         }
         final String databaseName = databaseDescriptor.getDatabaseName();
+        LOGGER.info("Switching to tab pane for database ' " + databaseName + "'");
         final JTabbedPane tabbedPane = namedTabbedPanes.get(databaseName);
         if (tabbedPane == null) {
             return;

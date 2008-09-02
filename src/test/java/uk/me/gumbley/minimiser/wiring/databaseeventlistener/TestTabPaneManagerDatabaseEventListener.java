@@ -146,4 +146,33 @@ public final class TestTabPaneManagerDatabaseEventListener extends LoggingTestCa
         Assert.assertNull(tabPaneManager.getTabPane("one"));
         Assert.assertTrue(tabPaneManager.isCleared());
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void switchNullSwitchesNothing() {
+        openDatabaseList.switchDatabase(null);
+        Assert.assertNull(tabPaneManager.getLastSwitchedTabbedPane());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void switchActuallySwitches() {
+        final DatabaseDescriptor dd1 = new DatabaseDescriptor("one");
+        final JTabbedPane tabbedPane1 = new JTabbedPane();
+        dd1.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane1);
+        openDatabaseList.addOpenedDatabase(dd1);
+        
+        Assert.assertSame(tabbedPane1, tabPaneManager.getLastSwitchedTabbedPane());
+        
+        final DatabaseDescriptor dd2 = new DatabaseDescriptor("two");
+        final JTabbedPane tabbedPane2 = new JTabbedPane();
+        dd2.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane2);
+        openDatabaseList.addOpenedDatabase(dd2);
+        
+        Assert.assertSame(tabbedPane2, tabPaneManager.getLastSwitchedTabbedPane());
+    }
 }
