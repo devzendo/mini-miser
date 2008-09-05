@@ -26,6 +26,8 @@ public final class DefaultPrefsImpl implements Prefs {
     private static final String SECTION_LASTACTIVEFILE = "last_active_file";
     private static final String LAST_ACTIVE_FILE = "last";
 
+    private static final String SECTION_OPENTABS_PREFIX = "opentabs_";
+
     /**
      * Create a Prefs object backed by a file
      * @param prefsFile the file path
@@ -128,5 +130,19 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void clearLastActiveFile() {
         iniFile.removeValue(SECTION_LASTACTIVEFILE, LAST_ACTIVE_FILE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getOpenTabs(final String databaseName) {
+        return iniFile.getArray(SECTION_OPENTABS_PREFIX + databaseName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setOpenTabs(final String databaseName, final String[] tabNames) {
+        iniFile.setArray(SECTION_OPENTABS_PREFIX + databaseName, tabNames);
     }
 }

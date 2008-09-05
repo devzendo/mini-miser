@@ -92,4 +92,17 @@ public final class StubOpenListPrefs implements Prefs {
     public void clearLastActiveFile() {
         lastActiveFile = null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getOpenTabs(final String databaseName) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setOpenTabs(final String databaseName, final String[] tabNames) {
+    }
 }

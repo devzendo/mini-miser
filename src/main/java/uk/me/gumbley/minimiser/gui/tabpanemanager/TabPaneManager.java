@@ -22,20 +22,6 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 public interface TabPaneManager {
     
     /**
-     * Identifiers for the possible set of tabs that may be enabled, depending
-     * on current state, and in some cases, prefs flags.
-     * 
-     * @author matt
-     *
-     */
-    public enum TabIdentifier {
-        /**
-         * The SQL debug/developer tab
-         */
-        SQL
-    }
-
-    /**
      * Gets the main panel controlled by the card layout
      * @return the main panel
      */

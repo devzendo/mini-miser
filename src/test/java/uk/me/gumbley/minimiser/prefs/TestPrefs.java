@@ -129,4 +129,39 @@ public final class TestPrefs extends LoggingTestCase {
         prefs.clearLastActiveFile();
         Assert.assertNull(prefs.getLastActiveFile());
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void unstoredDatabaseHasNoTabsReturned() {
+        final String[] openTabNames = prefs.getOpenTabs("one");
+        Assert.assertNotNull(openTabNames);
+        Assert.assertEquals(0, openTabNames.length);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void storedEmptyDatabaseHasNoTabsOpen() {
+        prefs.setOpenTabs("one", new String[0]);
+        final String[] openTabNames = prefs.getOpenTabs("one");
+        Assert.assertNotNull(openTabNames);
+        Assert.assertEquals(0, openTabNames.length);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void storedDatabaseWithTabsStored() {
+        prefs.setOpenTabs("one", new String[] {"tabone", "tabtwo", "tabthree"});
+        final String[] openTabNames = prefs.getOpenTabs("one");
+        Assert.assertNotNull(openTabNames);
+        Assert.assertEquals(3, openTabNames.length);
+        Assert.assertEquals("tabone", openTabNames[0]);
+        Assert.assertEquals("tabtwo", openTabNames[1]);
+        Assert.assertEquals("tabthree", openTabNames[2]);
+    }
 }
