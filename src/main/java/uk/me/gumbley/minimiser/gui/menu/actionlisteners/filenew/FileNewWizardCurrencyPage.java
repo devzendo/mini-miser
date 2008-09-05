@@ -41,10 +41,10 @@ public final class FileNewWizardCurrencyPage extends MiniMiserWizardPage {
         sizedPanel.add(label, BorderLayout.NORTH);
         
         final Vector<String> currencies = new Vector<String>();
-        // TODO sex this up with flags
-        currencies.add("UK Sterling Â£");
+        // TODO sex this up with country flags
+        currencies.add("UK Sterling £");
         currencies.add("US Dollar $");
-        currencies.add("EU Euro â‚¬");
+        currencies.add("EU Euro €");
         currencies.add("HK Dollar $");
         currencies.add("THB Baht B");
         currencyList = new JList(currencies);
