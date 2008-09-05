@@ -51,12 +51,9 @@ public class TestTabListPrefs extends LoggingTestCase {
      */
     @Test
     public void allPermanentTabsInOpenListAndInRightOrder() {
-        final List<TabIdentifier> openTabs = tabListPrefs.getOpenTabs();
+        final List<TabIdentifier> openTabs = tabListPrefs.getOpenTabs("none");
         Assert.assertNotNull(openTabs);
-        List<TabIdentifier> permanentTabIdentifiers = TabIdentifier.getPermanentTabIdentifiers();
-        for (final TabIdentifier perm : permanentTabIdentifiers) {
-            Assert.assertTrue(openTabs.contains(perm));
-        }
-        // TODO and in right order?
+        final List<TabIdentifier> permanentTabIdentifiers = TabIdentifier.getPermanentTabIdentifiers();
+        Assert.assertEquals(permanentTabIdentifiers, openTabs);
     }
 }
