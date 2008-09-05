@@ -85,8 +85,8 @@ public final class MenuImpl implements Menu {
         final JMenu menu = new JMenu("Help");
         menu.setMnemonic('H');
         
-        createMenuItem(MenuIdentifier.HelpWelcome, "Welcome", 'W', menu);
-        createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
+        //createMenuItem(MenuIdentifier.HelpWelcome, "Welcome", 'W', menu);
+        //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
         createMenuItem(MenuIdentifier.HelpAbout, "About " + AppName.getAppName(), 'A', menu);
         
         return menu;
