@@ -13,6 +13,9 @@ BUGS:
 CURRENT TASKS:
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
+* the background to the tabs is the same colour as the tabs, making the tabs
+  hard to see (on windows).
+  Ditto the tabs in the about box.
 * the tab pane set:
   * TabPageCreatingDatabaseEventListener - restores / creates tab set upon
     open.
