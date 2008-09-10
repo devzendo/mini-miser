@@ -1,13 +1,8 @@
-package uk.me.gumbley.minimiser.gui.tabpanefactory;
+package uk.me.gumbley.minimiser.gui.tabpanemanager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-import uk.me.gumbley.minimiser.gui.tabpanemanager.TabIdentifier;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -22,8 +17,7 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  * @author matt
  *
  */
-public class TabListPrefs {
-    private static final Logger LOGGER = Logger.getLogger(TabListPrefs.class);
+public final class TabListPrefs {
     private final Prefs prefs;
 
     /**

@@ -13,9 +13,9 @@
 		</property>
 	</bean>
 	
-	<bean id="listenerManager" class="uk.me.gumbley.minimiser.openlist.DatabaseEventListenerManager">
+	<bean id="listenerManager" class="uk.me.gumbley.minimiser.opentablist.TabEventListenerManager">
 		<constructor-arg ref="springLoader" />
-		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="listenerList" />	
 	</bean>
 
@@ -31,6 +31,6 @@
 	
 	<bean id="orderMonitor" class="uk.me.gumbley.minimiser.util.OrderMonitor" />
 
-	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" lazy-init="true" />
+	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
 </beans>

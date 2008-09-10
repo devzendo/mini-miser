@@ -5,4 +5,11 @@
 	
 	<bean id="databaseDescriptor" class="uk.me.gumbley.minimiser.openlist.DatabaseDescriptorFactory" />
 	
+	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
+
+	<bean id="tabPaneFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabPaneFactoryImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="openTabList" />
+	</bean>
+	
 </beans>

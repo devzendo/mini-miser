@@ -11,7 +11,9 @@ BUGS:
   you get a nasty 'open in another process' dialog.
   
 CURRENT TASKS:
-
+* adding stub problem report to the DefaultTabPaneFactoryImpl and adding
+  tests to detect tab bean not found problem reports.
+  
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * the background to the tabs is the same colour as the tabs, making the tabs
   hard to see (on windows).
@@ -137,6 +139,9 @@ DRY / TDD improvements:
 * tests for opening a database that had had the opening software termiated on
   it - what about lock files being present on startup?
 
+* change to injecting the StubProblemReporter into all places that
+  currently use the ProblemDialog.
+  
 NIGGLES:
 * change the frame title / tab set depending on the selected database - when
   opening many databases on startup, the display "thrashes". It should not do

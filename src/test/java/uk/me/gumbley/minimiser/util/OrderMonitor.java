@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * Detector for ordering of calls.
@@ -10,6 +11,7 @@ import java.util.List;
  *
  */
 public final class OrderMonitor {
+    private static final Logger LOGGER = Logger.getLogger(OrderMonitor.class);
     private List<String> ordering;
     private Object lock;
     /**
@@ -27,6 +29,7 @@ public final class OrderMonitor {
      */
     public void add(final String string) {
         synchronized (lock) {
+            LOGGER.info("Adding '" + string + "'");
             ordering.add(string);
         }
     }
@@ -45,6 +48,7 @@ public final class OrderMonitor {
      */
     public void reset() {
         synchronized (lock) {
+            LOGGER.info("Resetting");
             ordering.clear();
         }
     }

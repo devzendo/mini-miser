@@ -8,7 +8,7 @@
 	<bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
-				<value>databaseEventListenerLifecycle</value>
+				<value>tabEventListenerLifecycle</value>
 			</list>
 		</property>
 	</bean>
@@ -18,7 +18,7 @@
 		<constructor-arg ref="lifecycleList" />	
 	</bean>
 
-	<bean id="databaseEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseEventListenerLifecycle">
+	<bean id="tabEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.TabEventListenerLifecycle">
 		<constructor-arg ref="listenerManager" />
 	</bean>
 
@@ -31,9 +31,9 @@
 		</property>
 	</bean>
 	
-	<bean id="listenerManager" class="uk.me.gumbley.minimiser.openlist.DatabaseEventListenerManager">
+	<bean id="listenerManager" class="uk.me.gumbley.minimiser.opentablist.TabEventListenerManager">
 		<constructor-arg ref="springLoader" />
-		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="listenerList" />	
 	</bean>
 
@@ -44,6 +44,6 @@
 	
 	<bean id="orderMonitor" class="uk.me.gumbley.minimiser.util.OrderMonitor" />
 
-	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" />
+	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
 </beans>

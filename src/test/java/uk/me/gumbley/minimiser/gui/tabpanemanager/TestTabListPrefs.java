@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tabpanefactory;
+package uk.me.gumbley.minimiser.gui.tabpanemanager;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.me.gumbley.minimiser.gui.tabpanemanager.TabIdentifier;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -19,7 +19,7 @@ import uk.me.gumbley.minimiser.prefs.TestPrefs;
  * @author matt
  *
  */
-public class TestTabListPrefs extends LoggingTestCase {
+public final class TestTabListPrefs extends LoggingTestCase {
     private Prefs prefs;
     private File prefsFile;
     

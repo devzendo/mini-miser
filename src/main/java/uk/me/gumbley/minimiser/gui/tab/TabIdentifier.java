@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tabpanemanager;
+package uk.me.gumbley.minimiser.gui.tab;
 
 import java.util.ArrayList;
 import java.util.Collections;

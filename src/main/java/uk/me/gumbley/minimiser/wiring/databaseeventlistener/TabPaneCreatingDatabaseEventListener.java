@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
@@ -16,12 +17,11 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 
 
 /**
- * A database has been opened, so create a JTabbedPane for it, populate it with
- * the previously-open view tabs, or, if none have been stored (perhaps this is
- * the first time this database has been opened?) populate it with the Overview
- * view tab.
+ * A database has been opened, so create a JTabbedPane for it,
+ * populate it with {the previously-open view tabs UNION the
+ * permanent tabs}
  * 
- * Note: not developed TDD.
+ * TODO WOZERE: not developed TDD.
  * 
  * @author matt
  *
@@ -29,7 +29,7 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 public final class TabPaneCreatingDatabaseEventListener implements Observer<DatabaseEvent> {
     private static final Logger LOGGER = Logger
         .getLogger(TabPaneCreatingDatabaseEventListener.class);    
-    private final Prefs prefs;
+    private final TabListPrefs prefs;
     
     // Used by the run-on-EDT code in createTabbedPaneOnEventThread
     private final Object lock = new Object();
@@ -41,7 +41,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
      * @param prefsStore the prefs, from which previous tab view lists will be
      * read
      */
-    public TabPaneCreatingDatabaseEventListener(final Prefs prefsStore) {
+    public TabPaneCreatingDatabaseEventListener(final TabListPrefs prefsStore) {
         prefs = prefsStore;
     }
 

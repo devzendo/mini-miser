@@ -1,15 +1,16 @@
-package uk.me.gumbley.minimiser.openlist;
+package uk.me.gumbley.minimiser.util;
 
+import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.util.OrderMonitor;
 
 /**
- * A database event listener that has a name and records its event occurrences.
+ * An observable event listener that has a name and records its event
+ * occurrences.
  * 
  * @author matt
  *
  */
-public final class NamedListener implements Observer<DatabaseEvent> {
+public final class NamedListener implements Observer<ObservableEvent> {
     private final OrderMonitor orderMonitor;
     private final String listenerName;
 
@@ -32,7 +33,7 @@ public final class NamedListener implements Observer<DatabaseEvent> {
     /**
      * {@inheritDoc}
      */
-    public void eventOccurred(final DatabaseEvent observableEvent) {
+    public void eventOccurred(final ObservableEvent observableEvent) {
         orderMonitor.add(listenerName + ' ' + observableEvent.getClass().getSimpleName());
     }
 }
