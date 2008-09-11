@@ -50,6 +50,8 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
         EasyMock.replay(obs);
         
+        list.addDatabaseEventObserver(obs);
+        
         list.addOpenedDatabase(null);
         
         EasyMock.verify(obs);
