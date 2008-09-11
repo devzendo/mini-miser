@@ -7,9 +7,19 @@
 	
 	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
+	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.StubProblemReporter" />
+
 	<bean id="tabPaneFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabPaneFactoryImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="openTabList" />
+		<constructor-arg ref="problemReporter" />
+	</bean>
+
+	<bean id="tabOVERVIEW" scope="prototype" class="uk.me.gumbley.minimiser.gui.tabpanefactory.StubRecordingTab" >
+		<constructor-arg ref="databaseDescriptor" />
+	</bean>
+	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tabpanefactory.StubRecordingTab" >
+		<constructor-arg ref="databaseDescriptor" />
 	</bean>
 	
 </beans>

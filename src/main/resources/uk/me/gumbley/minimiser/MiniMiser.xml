@@ -41,6 +41,8 @@
 	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" lazy-init="true" >
 	</bean>
 
+	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.DefaultProblemReporterImpl" />
+
 	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilder" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
 		<constructor-arg ref="springLoader" />
@@ -79,6 +81,23 @@
 	<bean id="menuALHelpAbout" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpAboutActionListener" lazy-init="true" >
 		<constructor-arg ref="mainFrame" />	
 		<constructor-arg ref="cursorManager" />
+	</bean>
+    
+    
+    <!-- tab factory and tab definitions -->
+    <bean id="tabPaneFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabPaneFactoryImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="openTabList" />
+		<constructor-arg ref="problemReporter" />
+	</bean>
+
+	<!-- tab definitions must have prototype scope -->
+	<bean id="tabOVERVIEW" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >
+		<constructor-arg ref="databaseDescriptor" />
+	</bean>
+	
+	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >
+		<constructor-arg ref="databaseDescriptor" />
 	</bean>
     
     <!-- lifecycle management -->

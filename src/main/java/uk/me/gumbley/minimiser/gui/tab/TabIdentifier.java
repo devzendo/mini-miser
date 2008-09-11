@@ -30,7 +30,12 @@ public enum TabIdentifier {
     /**
      * The overview tab 
      */
-    OVERVIEW("Overview", true);
+    OVERVIEW("Overview", true),
+    
+    /**
+     * The Categories tab 
+     */
+    CATEGORIES("Categories", false);
     
     private final String displayName;
     private final boolean tabPermanent;

@@ -13,7 +13,6 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
-import uk.me.gumbley.minimiser.prefs.Prefs;
 
 
 /**
@@ -52,23 +51,31 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         // this is called on a background thread - Recent Opener,
         // Open Wizard background, or Lifecycle startup.
         assert !SwingUtilities.isEventDispatchThread();
-        LOGGER.info("creating tabbed pane...");
+        
         if (databaseEvent instanceof DatabaseOpenedEvent) {
             final DatabaseOpenedEvent openEvent = (DatabaseOpenedEvent) databaseEvent;
-            final JTabbedPane pane = createTabbedPaneOnEventThread(openEvent.getDatabaseDescriptor()); 
-            openEvent.getDatabaseDescriptor().setAttribute(AttributeIdentifier.TabbedPane, pane);
+            final DatabaseDescriptor databaseDescriptor = openEvent.getDatabaseDescriptor();
+            
+            // Create the JTabbedPane
+            LOGGER.info("Creating tabbed pane for database '" + databaseDescriptor.getDatabaseName() + "'");
+            final JTabbedPane pane = createTabbedPaneOnEventThread(databaseDescriptor); 
+            databaseDescriptor.setAttribute(AttributeIdentifier.TabbedPane, pane);
+            
+            // Load the tabs into the openTabList.
+            // They'll be added to the JTabbedPane by a TabEventListener
+            // WOZERE - need that listener, and rewrite this class with TDD
         }
     }
 
     private JTabbedPane createTabbedPaneOnEventThread(final DatabaseDescriptor descriptor) {
         if (SwingUtilities.isEventDispatchThread()) {
-            return createTabbedPane(descriptor);
+            return createTabbedPane();
         } else {
             final CountDownLatch latch = new CountDownLatch(1);
             GUIUtils.runOnEventThread(new Runnable() {
                 public void run() {
                     synchronized (lock) {
-                        tabbedPane = createTabbedPane(descriptor);
+                        tabbedPane = createTabbedPane();
                     }
                     latch.countDown();
                 }
@@ -84,10 +91,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         }
     }
         
-    private synchronized JTabbedPane createTabbedPane(final DatabaseDescriptor descriptor) {
-        assert SwingUtilities.isEventDispatchThread();
-        LOGGER.info("Creating tabbed pane views for database '" + descriptor.getDatabaseName() + "'");
-        // WOZERE - must run on EDT, and return tabbedpane to calling thread.
+    private synchronized JTabbedPane createTabbedPane() {
         
         final JTabbedPane pane = new JTabbedPane();
         // restore previous open view tabs from prefs, or if not any, default to

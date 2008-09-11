@@ -1,10 +1,12 @@
 package uk.me.gumbley.minimiser.wiring.databaseeventlistener;
 
 import org.easymock.EasyMock;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.opentablist.OpenTabList;
 import uk.me.gumbley.minimiser.prefs.Prefs;
@@ -45,7 +47,15 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs);
         openDatabaseList.addDatabaseEventObserver(adapter);
         
-        // WOZERE need a fake tab factory
+        // WOZERE need a fake tab factory injecting into TabPaneCreatingDatabaseEventListener
+        
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("db");
+        openDatabaseList.addOpenedDatabase(databaseDescriptor);
+        
+        // WOZERE the JTabbedPane should now have been added to the DD
+        // WOZERE the SQL tab should have been added to the openTabList
+        Assert.fail("Unfinished - WOZERE");
+        
     }
     
 }
