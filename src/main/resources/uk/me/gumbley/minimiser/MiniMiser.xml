@@ -41,7 +41,9 @@
 	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" lazy-init="true" >
 	</bean>
 
-	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.DefaultProblemReporterImpl" />
+	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.DefaultProblemReporterImpl">
+		<constructor-arg ref="mainFrame" />	
+	</bean>
 
 	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilder" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
