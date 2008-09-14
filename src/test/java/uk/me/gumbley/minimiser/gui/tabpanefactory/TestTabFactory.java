@@ -12,7 +12,6 @@ import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.AbstractDatabaseDescriptorFactoryUnittestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.opentablist.OpenTabList;
 import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 import uk.me.gumbley.minimiser.opentablist.TabEvent;
@@ -25,11 +24,11 @@ import uk.me.gumbley.minimiser.springloader.ApplicationContext;
  * @author matt
  *
  */
-@ApplicationContext("uk/me/gumbley/minimiser/gui/tabpanefactory/TabPaneFactoryTestCase.xml")
-public final class TestTabPaneFactory extends AbstractDatabaseDescriptorFactoryUnittestCase {
+@ApplicationContext("uk/me/gumbley/minimiser/gui/tabpanefactory/TabFactoryTestCase.xml")
+public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnittestCase {
 
     private static final String DATABASE = "database";
-    private TabPaneFactory tabPaneFactory;
+    private TabFactory tabFactory;
     private OpenTabList openTabList;
     private StubProblemReporter problemReporter;
     
@@ -42,7 +41,7 @@ public final class TestTabPaneFactory extends AbstractDatabaseDescriptorFactoryU
      */
     @Before
     public void getPrerequisites() {
-        tabPaneFactory = getSpringLoader().getBean("tabPaneFactory", TabPaneFactory.class);
+        tabFactory = getSpringLoader().getBean("tabFactory", TabFactory.class);
         openTabList = getSpringLoader().getBean("openTabList", OpenTabList.class);
         problemReporter = getSpringLoader().getBean("problemReporter", StubProblemReporter.class);
     }
@@ -65,7 +64,7 @@ public final class TestTabPaneFactory extends AbstractDatabaseDescriptorFactoryU
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getNonDeclaredTabIdentifiersToOpen();
-        tabPaneFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
+        tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
 
         Assert.assertNotNull(problemReporter.getDoing());
         Assert.assertTrue(problemReporter.getException() instanceof org.springframework.beans.factory.NoSuchBeanDefinitionException);
@@ -80,7 +79,7 @@ public final class TestTabPaneFactory extends AbstractDatabaseDescriptorFactoryU
         
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
-        tabPaneFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
+        tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
         
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
         Assert.assertNotNull(tabsForDatabase);
@@ -106,7 +105,7 @@ public final class TestTabPaneFactory extends AbstractDatabaseDescriptorFactoryU
         
         descriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
-        tabPaneFactory.loadTabs(descriptor, tabIdentifiersToOpen);
+        tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
         
         Assert.assertEquals(1, StubRecordingTab.getConstructCount());
         
@@ -165,6 +164,7 @@ public final class TestTabPaneFactory extends AbstractDatabaseDescriptorFactoryU
     /**
      * 
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void doesntLoadTabIfItHasAlreadyBeenLoaded() {
         final TabDescriptor overviewTabDescriptor = new TabDescriptor(TabIdentifier.OVERVIEW);
@@ -178,7 +178,7 @@ public final class TestTabPaneFactory extends AbstractDatabaseDescriptorFactoryU
         
         descriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
-        tabPaneFactory.loadTabs(descriptor, tabIdentifiersToOpen);
+        tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
         
         Assert.assertEquals(0, StubRecordingTab.getConstructCount());
 

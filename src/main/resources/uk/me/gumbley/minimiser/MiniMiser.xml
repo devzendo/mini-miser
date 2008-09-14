@@ -85,7 +85,7 @@
     
     
     <!-- tab factory and tab definitions -->
-    <bean id="tabPaneFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabPaneFactoryImpl">
+    <bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabFactoryImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="problemReporter" />
@@ -97,6 +97,10 @@
 	</bean>
 	
 	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >
+		<constructor-arg ref="databaseDescriptor" />
+	</bean>
+
+	<bean id="tabCATEGORIES" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >
 		<constructor-arg ref="databaseDescriptor" />
 	</bean>
     
@@ -165,7 +169,6 @@
 			<list>
 				<value>tabPaneCreatingDatabaseEventListener</value>
 				<value>tabPaneManagerDatabaseEventListener</value>
-<!--				<value>two</value> -->
 			</list>
 		</property>
 	</bean>
@@ -173,6 +176,7 @@
 
 	<bean id="tabPaneCreatingDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneCreatingDatabaseEventListener" lazy-init="true" >
 		<constructor-arg ref="tabListPrefs" />
+		<constructor-arg ref="tabFactory" />
 	</bean>
 	
 	<bean id="tabPaneManagerDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneManagerDatabaseEventListener" lazy-init="true" >

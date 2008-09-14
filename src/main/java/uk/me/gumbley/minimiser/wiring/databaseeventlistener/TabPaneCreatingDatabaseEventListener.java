@@ -1,13 +1,14 @@
 package uk.me.gumbley.minimiser.wiring.databaseeventlistener;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
+import uk.me.gumbley.minimiser.gui.tabpanefactory.TabFactory;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
@@ -18,7 +19,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 /**
  * A database has been opened, so create a JTabbedPane for it,
  * populate it with {the previously-open view tabs UNION the
- * permanent tabs}
+ * permanent tabs} y adding these tabs to the open tab list.
  * 
  * TODO WOZERE: not developed TDD.
  * 
@@ -27,8 +28,10 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
  */
 public final class TabPaneCreatingDatabaseEventListener implements Observer<DatabaseEvent> {
     private static final Logger LOGGER = Logger
-        .getLogger(TabPaneCreatingDatabaseEventListener.class);    
+        .getLogger(TabPaneCreatingDatabaseEventListener.class);   
+    
     private final TabListPrefs prefs;
+    private final TabFactory tabFactory;
     
     // Used by the run-on-EDT code in createTabbedPaneOnEventThread
     private final Object lock = new Object();
@@ -39,9 +42,13 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
      * Construct the tab pane creator.
      * @param prefsStore the prefs, from which previous tab view lists will be
      * read
+     * @param factory the TabFactory which will create all the above tabs
+     * and add them to the OpenTabList
      */
-    public TabPaneCreatingDatabaseEventListener(final TabListPrefs prefsStore) {
+    public TabPaneCreatingDatabaseEventListener(final TabListPrefs prefsStore,
+            final TabFactory factory) {
         prefs = prefsStore;
+        tabFactory = factory;
     }
 
     /**
@@ -62,20 +69,28 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
             databaseDescriptor.setAttribute(AttributeIdentifier.TabbedPane, pane);
             
             // Load the tabs into the openTabList.
+            LOGGER.info("Loading permanent and stored tabs for database '" + databaseDescriptor.getDatabaseName() + "'");
             // They'll be added to the JTabbedPane by a TabEventListener
-            // WOZERE - need that listener, and rewrite this class with TDD
+            loadPermanentAndStoredTabs(databaseDescriptor);
         }
+    }
+
+    private void loadPermanentAndStoredTabs(final DatabaseDescriptor databaseDescriptor) {
+        final List<TabIdentifier> permanentAndOpenTabs = prefs.getOpenTabs(databaseDescriptor.getDatabaseName());
+        LOGGER.info("Permanent and stored tabs: " + permanentAndOpenTabs);
+        tabFactory.loadTabs(databaseDescriptor,
+                            permanentAndOpenTabs);
     }
 
     private JTabbedPane createTabbedPaneOnEventThread(final DatabaseDescriptor descriptor) {
         if (SwingUtilities.isEventDispatchThread()) {
-            return createTabbedPane();
+            return new JTabbedPane();
         } else {
             final CountDownLatch latch = new CountDownLatch(1);
             GUIUtils.runOnEventThread(new Runnable() {
                 public void run() {
                     synchronized (lock) {
-                        tabbedPane = createTabbedPane();
+                        tabbedPane = new JTabbedPane();
                     }
                     latch.countDown();
                 }
@@ -89,31 +104,5 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
                 return tabbedPane;
             }
         }
-    }
-        
-    private synchronized JTabbedPane createTabbedPane() {
-        
-        final JTabbedPane pane = new JTabbedPane();
-        // restore previous open view tabs from prefs, or if not any, default to
-        // overview tab?
-        pane.add("Tab One", createPanel1());
-        pane.add("Tab Two", createPanel2());
-        pane.add("Tab Three", createPanel3());
-        return pane;
-    }
-    private JPanel createPanel1() {
-        final JPanel panel = new JPanel();
-        panel.add(new JButton("One"));
-        return panel;
-    }
-    private JPanel createPanel2() {
-        final JPanel panel = new JPanel();
-        panel.add(new JButton("Two"));
-        return panel;
-    }
-    private JPanel createPanel3() {
-        final JPanel panel = new JPanel();
-        panel.add(new JButton("Three"));
-        return panel;
     }
 }

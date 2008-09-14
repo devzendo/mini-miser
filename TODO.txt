@@ -4,15 +4,17 @@ Current outstanding small tasks:
 
 BUILD FAILURE:
 * need a (fake) X server running on sirius - added the java.awt.headless
-  configuration
+  configuration - this is configured, need to test
 
 BUGS:
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
   
 CURRENT TASKS:
-* adding stub problem report to the DefaultTabPaneFactoryImpl and adding
-  tests to detect tab bean not found problem reports.
+* need to rename tabpanefactory package to tabfactory
+* need to pass the databasedescriptor ? around in tabevents so that the
+  tabdisplayingtabeventlistener can attach the tab to the right database's
+  jtabbedpane.
   
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * the background to the tabs is the same colour as the tabs, making the tabs

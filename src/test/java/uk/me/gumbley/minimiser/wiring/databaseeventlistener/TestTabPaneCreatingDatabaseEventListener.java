@@ -1,14 +1,20 @@
 package uk.me.gumbley.minimiser.wiring.databaseeventlistener;
 
+import java.util.List;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
+import uk.me.gumbley.minimiser.gui.tabpanefactory.StubTabFactory;
+import uk.me.gumbley.minimiser.gui.tabpanefactory.TabFactory;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.opentablist.OpenTabList;
+import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -24,8 +30,10 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  */
 public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestCase {
 
+    private static final String DATABASE = "db";
     private OpenDatabaseList openDatabaseList;
     private OpenTabList openTabList;
+    private TabFactory tabFactory;
     private TabPaneCreatingDatabaseEventListener adapter;
 
     /**
@@ -34,28 +42,35 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
     @Before
     public void getPrerequisites() {
         openDatabaseList = new OpenDatabaseList();
+        openTabList = new OpenTabList();
+        tabFactory = new StubTabFactory(openTabList);
     }
     
+    /**
+     * 
+     */
     @Test
-    public void tabsGetAddedWhenPrefsHoldsThen() {
+    public void openingDatabaseCausesTabsStoredInPrefsAndPermanentTabsToBeAddedToTheOpenTabList() {
         final Prefs prefs = EasyMock.createMock(Prefs.class);
-        EasyMock.expect(prefs.getOpenTabs("db")).andReturn(new String[] {"SQL"});
+        EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {"SQL"});
         EasyMock.replay(prefs);
 
         final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
         
-        adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs);
+        adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, tabFactory);
         openDatabaseList.addDatabaseEventObserver(adapter);
         
-        // WOZERE need a fake tab factory injecting into TabPaneCreatingDatabaseEventListener
-        
-        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("db");
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         openDatabaseList.addOpenedDatabase(databaseDescriptor);
         
-        // WOZERE the JTabbedPane should now have been added to the DD
-        // WOZERE the SQL tab should have been added to the openTabList
-        Assert.fail("Unfinished - WOZERE");
+        // The JTabbedPane should now have been added to the DD
+        Assert.assertNotNull(databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane));
         
+        // The SQL tab should have been added to the openTabList
+        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        Assert.assertNotNull(tabsForDatabase);
+        Assert.assertEquals(2, tabsForDatabase.size());
+        Assert.assertEquals(TabIdentifier.SQL, tabsForDatabase.get(0).getTabIdentifier());
+        Assert.assertEquals(TabIdentifier.OVERVIEW, tabsForDatabase.get(1).getTabIdentifier());
     }
-    
 }

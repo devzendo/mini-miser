@@ -9,7 +9,7 @@
 
 	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.StubProblemReporter" />
 
-	<bean id="tabPaneFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabPaneFactoryImpl">
+	<bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabFactoryImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="problemReporter" />

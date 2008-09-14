@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.opentablist;
 
+
 /**
  * Something has happened to a specific tab, this is the notification you
  * receive from the OpenTabList, if you're an observer.
@@ -11,7 +12,7 @@ public abstract class TabDescriptorEvent extends TabEvent {
     private final TabDescriptor tabDescriptor;
 
     /**
-     * Create a DatabaseEvent describing a specific tab.
+     * Create a TabEvent describing a specific tab.
      * @param descriptor the tab descriptor of the tab that
      * has opened.
      */

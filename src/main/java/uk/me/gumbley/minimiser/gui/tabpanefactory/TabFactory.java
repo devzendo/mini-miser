@@ -5,13 +5,13 @@ import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
- * The factory for creating one, or a list of tab panes given
+ * The factory for creating one, or a list of tabs given
  * a database descriptor, and adding them to the TabOpenList.
  * 
  * @author matt
  *
  */
-public interface TabPaneFactory {
+public interface TabFactory {
 
     /**
      * Load the supplied list of tabs, and add them to the

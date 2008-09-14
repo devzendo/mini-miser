@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui.tabpanefactory;
 
 import java.util.List;
 import javax.swing.SwingUtilities;
+import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.minimiser.gui.dialog.ProblemReporter;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
@@ -18,7 +19,9 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * @author matt
  *
  */
-public final class DefaultTabPaneFactoryImpl implements TabPaneFactory {
+public final class DefaultTabFactoryImpl implements TabFactory {
+    private static final Logger LOGGER = Logger
+            .getLogger(DefaultTabFactoryImpl.class);
     
     private final SpringLoader springLoader;
     private final OpenTabList openTabList;
@@ -34,7 +37,7 @@ public final class DefaultTabPaneFactoryImpl implements TabPaneFactory {
      * @param tabList the OpenTabList
      * @param reporter the problem reporter for serious problems
      */
-    public DefaultTabPaneFactoryImpl(final SpringLoader loader, final OpenTabList tabList, final ProblemReporter reporter) {
+    public DefaultTabFactoryImpl(final SpringLoader loader, final OpenTabList tabList, final ProblemReporter reporter) {
         this.springLoader = loader;
         this.openTabList = tabList;
         this.problemReporter = reporter;
@@ -47,7 +50,7 @@ public final class DefaultTabPaneFactoryImpl implements TabPaneFactory {
      * @param loader the SpringLoader
      * @param tabList the OpenTabList
      */
-    public DefaultTabPaneFactoryImpl(final SpringLoader loader, final OpenTabList tabList) {
+    public DefaultTabFactoryImpl(final SpringLoader loader, final OpenTabList tabList) {
         this(loader, tabList, null);
     }
     
@@ -84,6 +87,7 @@ public final class DefaultTabPaneFactoryImpl implements TabPaneFactory {
 
     private void loadTabAndAddToOpenList(final String databaseName, final TabIdentifier identifier) {
         try {
+            LOGGER.info("Loading " + identifier + " tab");
             final Tab tab = springLoader.getBean("tab" + identifier.toString(), Tab.class);
             callInitComponentOnSwingEventThread(tab);
             openTabList.addTab(databaseName, new TabDescriptor(identifier, tab));

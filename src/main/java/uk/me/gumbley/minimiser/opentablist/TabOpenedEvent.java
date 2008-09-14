@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.opentablist;
 
+
 /**
  * A tab has been opened, this is the notification you receive from the 
  * OpenTabList, if you're an observer.
