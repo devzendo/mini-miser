@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tabpanefactory;
+package uk.me.gumbley.minimiser.gui.tabfactory;
 
 import java.util.List;
 import javax.swing.SwingUtilities;
@@ -77,7 +77,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         final String databaseName = databaseDescriptor.getDatabaseName();
         for (TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
-                loadTabAndAddToOpenList(databaseName, identifier);
+                loadTabAndAddToOpenList(databaseDescriptor, identifier);
             }
         }
         
@@ -85,12 +85,12 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         databaseDescriptorFactory.clearDatabaseDescriptor();
     }
 
-    private void loadTabAndAddToOpenList(final String databaseName, final TabIdentifier identifier) {
+    private void loadTabAndAddToOpenList(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
         try {
             LOGGER.info("Loading " + identifier + " tab");
             final Tab tab = springLoader.getBean("tab" + identifier.toString(), Tab.class);
             callInitComponentOnSwingEventThread(tab);
-            openTabList.addTab(databaseName, new TabDescriptor(identifier, tab));
+            openTabList.addTab(databaseDescriptor, new TabDescriptor(identifier, tab));
         } catch (final RuntimeException re) {
             problemReporter.reportProblem("while loading the " + identifier.getDisplayableName() + " tab", re);
         }

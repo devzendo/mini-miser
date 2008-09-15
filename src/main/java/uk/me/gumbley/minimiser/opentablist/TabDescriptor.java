@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.opentablist;
 
-import java.awt.Component;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 
@@ -38,23 +37,6 @@ public final class TabDescriptor {
         this(id, null);
     }
     
-    /**
-     * Get the tab's graphical component.
-     * <p>
-     * Use getTab().getComponent() instead.
-     * 
-     * @deprecated
-     * 
-     * @return the graphical component, or null if no tab has been set.
-     */
-    public Component getComponent() {
-        if (tab != null) {
-            return tab.getComponent();
-        } else {
-            return null;
-        }
-    }
-
     /**
      * Get the tab's TabIdentifier
      * 

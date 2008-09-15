@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
  * Maintains a list of open tabs, for each open database, and fires events
@@ -43,9 +44,13 @@ public final class OpenTabList {
      * addDatabase isn't really needed, as you can add tabs to a nonexistant
      * database with addTab, but it's here for symmetry with removeDatabase
      * for which no other mechanism exists.
-     * @param databaseName the name of the database to add.
+     * @param database the database to add.
      */
-    public void addDatabase(final String databaseName) {
+    public void addDatabase(final DatabaseDescriptor database) {
+        if (database == null) {
+            throw new IllegalArgumentException("null database descriptor supplied");
+        }
+        final String databaseName = database.getDatabaseName();
         checkDatabaseName(databaseName);
         createTabSet(databaseName);
     }
@@ -59,17 +64,18 @@ public final class OpenTabList {
     /**
      * Add a tab descriptor to a tab. If the tab already exists, an
      * IllegalStateException will be thrown.
-     * @param databaseName the database name
+     * @param database the database
      * @param tab the tab
      */
-    public void addTab(final String databaseName, final TabDescriptor tab) {
-        addDatabase(databaseName);
+    public void addTab(final DatabaseDescriptor database, final TabDescriptor tab) {
+        addDatabase(database);
+        final String databaseName = database.getDatabaseName(); 
         final Set<TabDescriptor> tabSet = tabMap.get(databaseName);
         if (tabSet.contains(tab)) {
             throw new IllegalStateException("Tab '" + tab.getTabIdentifier().toString() + "' already exists for database '" + databaseName + "'");
         }
         tabSet.add(tab);
-        observerList.eventOccurred(new TabOpenedEvent(tab));
+        observerList.eventOccurred(new TabOpenedEvent(database, tab));
     }
 
     private void createTabSet(final String databaseName) {
@@ -114,5 +120,47 @@ public final class OpenTabList {
      */
     public void removeTabEventObserver(final Observer<TabEvent> obs) {
         observerList.removeListener(obs);
+    }
+
+    /**
+     * Given the current list for a database, at which position should the
+     * given tab identifier's tab be inserted?
+     * <p>
+     * Tabs are placed on the JTabbedPane in TabIdentifier order.
+     * <p>
+     * An IllegalStateException will be thrown if an attempt to get the insertion
+     * position of an existing tab is requested - there can be no duplicates.
+     * @param databaseName the database whose list is to be consulted
+     * @param tabId the tab identifier that should be added
+     * @return the integer position at which the tab should be inserted, or -1
+     * if the named database has not been added yet.
+     */
+    public int getInsertionPosition(final String databaseName, final TabIdentifier tabId) {
+        checkDatabaseName(databaseName);
+        if (!tabMap.containsKey(databaseName)) {
+            return -1;
+        }
+        final Set<TabDescriptor> tabSet = tabMap.get(databaseName);
+        if (tabSet.contains(new TabDescriptor(tabId, null))) {
+            throw new IllegalStateException("Database '" + databaseName
+                + "' already contains tab identifier " + tabId
+                + ": cannot obtain the insertion point of a duplicate");
+        }
+        if (tabSet.size() == 0) {
+            return 0;
+        }
+        // since I'm using a TreeSet, existingTabIds is ordered on TabIdentifier order
+        final TabDescriptor[] existingTabDescs = tabSet.toArray(new TabDescriptor[0]);
+        final TabIdentifier[] existingTabIds = new TabIdentifier[existingTabDescs.length];
+        for (int i = 0; i < existingTabDescs.length; i++) {
+            existingTabIds[i] = existingTabDescs[i].getTabIdentifier();
+        }
+        for (int i = 0; i < existingTabIds.length; i++) {
+            final TabIdentifier existingId = existingTabIds[i];
+            if (existingId.ordinal() > tabId.ordinal()) {
+                return i;
+            }
+        }
+        return existingTabIds.length;
     }
 }

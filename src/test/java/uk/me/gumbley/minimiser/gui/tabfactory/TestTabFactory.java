@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tabpanefactory;
+package uk.me.gumbley.minimiser.gui.tabfactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import uk.me.gumbley.minimiser.springloader.ApplicationContext;
  * @author matt
  *
  */
-@ApplicationContext("uk/me/gumbley/minimiser/gui/tabpanefactory/TabFactoryTestCase.xml")
+@ApplicationContext("uk/me/gumbley/minimiser/gui/tabfactory/TabFactoryTestCase.xml")
 public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnittestCase {
 
     private static final String DATABASE = "database";
@@ -168,7 +168,8 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
     @Test
     public void doesntLoadTabIfItHasAlreadyBeenLoaded() {
         final TabDescriptor overviewTabDescriptor = new TabDescriptor(TabIdentifier.OVERVIEW);
-        openTabList.addTab(DATABASE, overviewTabDescriptor);
+        descriptor = new DatabaseDescriptor(DATABASE);
+        openTabList.addTab(descriptor, overviewTabDescriptor);
 
         final Observer<TabEvent> obs = EasyMock.createStrictMock(Observer.class);
         EasyMock.replay(obs);
@@ -176,7 +177,6 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         
         StubRecordingTab.clearConstructCount();
         
-        descriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
         tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
         

@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
-import uk.me.gumbley.minimiser.gui.tabpanefactory.TabFactory;
+import uk.me.gumbley.minimiser.gui.tabfactory.TabFactory;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;

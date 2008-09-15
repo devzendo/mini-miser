@@ -87,7 +87,7 @@
     
     
     <!-- tab factory and tab definitions -->
-    <bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabpanefactory.DefaultTabFactoryImpl">
+    <bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabfactory.DefaultTabFactoryImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="problemReporter" />

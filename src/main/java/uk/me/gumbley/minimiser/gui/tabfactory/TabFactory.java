@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tabpanefactory;
+package uk.me.gumbley.minimiser.gui.tabfactory;
 
 import java.util.List;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;

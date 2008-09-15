@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.opentablist.OpenTabList;
 import uk.me.gumbley.minimiser.opentablist.StubTab;
 import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
@@ -49,7 +50,7 @@ public final class TestTabEventListenerLifecycle extends SpringLoaderUnittestCas
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
         final TabDescriptor one = new TabDescriptor(TabIdentifier.SQL, stubTab);
-        openTabList.addTab("one", one);
+        openTabList.addTab(new DatabaseDescriptor("one"), one);
         final List<String> addOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(0, addOrdering.size());
     }
@@ -65,7 +66,7 @@ public final class TestTabEventListenerLifecycle extends SpringLoaderUnittestCas
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
         final TabDescriptor one = new TabDescriptor(TabIdentifier.SQL, stubTab);
-        openTabList.addTab("one", one);
+        openTabList.addTab(new DatabaseDescriptor("one"), one);
         
         final List<String> addOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(1, addOrdering.size());
@@ -81,7 +82,8 @@ public final class TestTabEventListenerLifecycle extends SpringLoaderUnittestCas
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
         final TabDescriptor one = new TabDescriptor(TabIdentifier.SQL, stubTab);
-        openTabList.addTab("db", one);
+        final DatabaseDescriptor dbDescriptor = new DatabaseDescriptor("db");
+        openTabList.addTab(dbDescriptor, one);
 
         final List<String> addOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(1, addOrdering.size());
@@ -92,7 +94,7 @@ public final class TestTabEventListenerLifecycle extends SpringLoaderUnittestCas
         final Label label2 = new Label();
         final StubTab stubTab2 = new StubTab(label2);
         final TabDescriptor two = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab2);
-        openTabList.addTab("db", two);
+        openTabList.addTab(dbDescriptor, two);
 
         final List<String> addAgainOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(0, addAgainOrdering.size());

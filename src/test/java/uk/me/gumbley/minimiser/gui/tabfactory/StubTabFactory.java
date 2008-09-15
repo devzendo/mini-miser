@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tabpanefactory;
+package uk.me.gumbley.minimiser.gui.tabfactory;
 
 import java.util.List;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
@@ -32,7 +32,7 @@ public final class StubTabFactory implements TabFactory {
         final String databaseName = databaseDescriptor.getDatabaseName();
         for (TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
-                openTabList.addTab(databaseName, new TabDescriptor(identifier, new StubRecordingTab(databaseDescriptor)));
+                openTabList.addTab(databaseDescriptor, new TabDescriptor(identifier, new StubRecordingTab(databaseDescriptor)));
             }
         }
     }

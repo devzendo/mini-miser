@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.opentablist;
 
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+
 
 /**
  * A tab has been opened, this is the notification you receive from the 
@@ -8,13 +10,15 @@ package uk.me.gumbley.minimiser.opentablist;
  * @author matt
  *
  */
-public final class TabOpenedEvent extends TabDescriptorEvent {
+public final class TabOpenedEvent extends TabEvent {
 
     /**
      * Create a TabOpenedEvent describing a specific tab.
+     * @param databaseDescriptor the descriptor of the database that owns
+     * this tab
      * @param tabDescriptor the descriptor of the tab that has opened.
      */
-    public TabOpenedEvent(final TabDescriptor tabDescriptor) {
-        super(tabDescriptor);
+    public TabOpenedEvent(final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
+        super(databaseDescriptor, tabDescriptor);
     }
 }

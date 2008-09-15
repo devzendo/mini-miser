@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 import uk.me.gumbley.minimiser.util.OrderMonitor;
@@ -50,7 +51,7 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
         final TabDescriptor tab = new TabDescriptor(TabIdentifier.SQL, stubTab);
-        openTabList.addTab("one", tab);
+        openTabList.addTab(new DatabaseDescriptor("one"), tab);
         final List<String> addOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(0, addOrdering.size());
     }
@@ -69,13 +70,13 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
         final TabDescriptor tab = new TabDescriptor(TabIdentifier.SQL, stubTab);
-        openTabList.addTab("one", tab);
+        openTabList.addTab(new DatabaseDescriptor("one"), tab);
 
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase("one");
         Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(1, tabsForDatabase.size());
         Assert.assertEquals(TabIdentifier.SQL, tabsForDatabase.get(0).getTabIdentifier());
-        Assert.assertSame(label, tabsForDatabase.get(0).getComponent());
+        Assert.assertSame(label, tabsForDatabase.get(0).getTab().getComponent());
         
         final List<String> addOrdering = orderMonitor.getOrdering();
         LOGGER.debug("addOrdering is '" + addOrdering + "'");
@@ -96,7 +97,7 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
         final TabDescriptor tab = new TabDescriptor(TabIdentifier.SQL, stubTab);
-        openTabList.addTab("one", tab);
+        openTabList.addTab(new DatabaseDescriptor("one"), tab);
 
         final List<String> addOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(2, addOrdering.size());
@@ -108,7 +109,7 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
         final Label label2 = new Label();
         final StubTab stubTab2 = new StubTab(label2);
         final TabDescriptor tab2 = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab2);
-        openTabList.addTab("two", tab2);
+        openTabList.addTab(new DatabaseDescriptor("two"), tab2);
 
         final List<String> addAgainOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(0, addAgainOrdering.size());
