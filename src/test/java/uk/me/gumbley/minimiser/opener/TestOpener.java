@@ -236,7 +236,7 @@ public final class TestOpener extends PersistenceUnittestCase {
     /**
      * 
      */
-    @Test(timeout = 8000)
+    @Test(timeout = 9000)
     public void progressNotificationsOnPlainOpen() {
         LOGGER.info(">>> progressNotificationsOnPlainOpen");
         final String dbName = "progressplain";
