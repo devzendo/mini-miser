@@ -40,7 +40,7 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
      * {@inheritDoc}
      */
     @Before
-    public void getPrerequisites() {
+    public void getTabFactoryPrerequisites() {
         tabFactory = getSpringLoader().getBean("tabFactory", TabFactory.class);
         openTabList = getSpringLoader().getBean("openTabList", OpenTabList.class);
         problemReporter = getSpringLoader().getBean("problemReporter", StubProblemReporter.class);

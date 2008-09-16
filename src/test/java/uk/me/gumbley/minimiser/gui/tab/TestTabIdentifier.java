@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
-import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
+
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 
 
