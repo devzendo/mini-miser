@@ -65,7 +65,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
     /**
      * {@inheritDoc}
      */
-    public void removeTabPane(final DatabaseDescriptor databaseDescriptor) {
+    public final void removeTabPane(final DatabaseDescriptor databaseDescriptor) {
         if (databaseDescriptor == null) {
             return;
         }
@@ -82,7 +82,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
     /**
      * {@inheritDoc}
      */
-    public void switchToTabPane(final DatabaseDescriptor databaseDescriptor) {
+    public final void switchToTabPane(final DatabaseDescriptor databaseDescriptor) {
         if (databaseDescriptor == null) {
             return;
         }
