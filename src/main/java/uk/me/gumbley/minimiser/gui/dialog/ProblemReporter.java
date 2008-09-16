@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.gui.dialog;
 
-import java.awt.Frame;
 
 /**
  * A mechanism for reporting serious problems to the user.

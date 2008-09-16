@@ -6,7 +6,7 @@ package uk.me.gumbley.minimiser.gui.dialog;
  * 
  * @author matt
  */
-public class StubProblemReporter implements ProblemReporter {
+public final class StubProblemReporter implements ProblemReporter {
     private String doing;
     private Exception exception;
 
