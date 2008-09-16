@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
@@ -20,6 +21,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
  *
  */
 public final class OpenTabList {
+    private static final Logger LOGGER = Logger.getLogger(OpenTabList.class);
     private Map<String, Set<TabDescriptor>> tabMap = new HashMap<String, Set<TabDescriptor>>();
     private final ObserverList<TabEvent> observerList = new ObserverList<TabEvent>();
 
@@ -52,6 +54,7 @@ public final class OpenTabList {
         }
         final String databaseName = database.getDatabaseName();
         checkDatabaseName(databaseName);
+        LOGGER.info("Adding database '" + databaseName + "'");
         createTabSet(databaseName);
     }
 
@@ -74,6 +77,7 @@ public final class OpenTabList {
         if (tabSet.contains(tab)) {
             throw new IllegalStateException("Tab '" + tab.getTabIdentifier().toString() + "' already exists for database '" + databaseName + "'");
         }
+        LOGGER.info("Adding tab '" + tab.getTabIdentifier() + "' for database '" + databaseName + "'");
         tabSet.add(tab);
         observerList.eventOccurred(new TabOpenedEvent(database, tab));
     }
@@ -137,10 +141,12 @@ public final class OpenTabList {
      */
     public int getInsertionPosition(final String databaseName, final TabIdentifier tabId) {
         checkDatabaseName(databaseName);
+        LOGGER.debug("Getting insertion point for database '" + databaseName + "' tab id '" + tabId + "'");
         if (!tabMap.containsKey(databaseName)) {
             return -1;
         }
         final Set<TabDescriptor> tabSet = tabMap.get(databaseName);
+        LOGGER.debug("Tab set for this db is: " + tabSet);
         if (tabSet.contains(new TabDescriptor(tabId, null))) {
             throw new IllegalStateException("Database '" + databaseName
                 + "' already contains tab identifier " + tabId

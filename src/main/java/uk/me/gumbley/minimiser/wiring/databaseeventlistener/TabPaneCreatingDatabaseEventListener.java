@@ -55,11 +55,11 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
      * {@inheritDoc}
      */
     public void eventOccurred(final DatabaseEvent databaseEvent) {
-        // this is called on a background thread - Recent Opener,
-        // Open Wizard background, or Lifecycle startup.
-        assert !SwingUtilities.isEventDispatchThread();
-        
         if (databaseEvent instanceof DatabaseOpenedEvent) {
+            // this is called on a background thread - Recent Opener,
+            // Open Wizard background, or Lifecycle startup.
+            assert !SwingUtilities.isEventDispatchThread();
+
             final DatabaseOpenedEvent openEvent = (DatabaseOpenedEvent) databaseEvent;
             final DatabaseDescriptor databaseDescriptor = openEvent.getDatabaseDescriptor();
             
