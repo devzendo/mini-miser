@@ -157,6 +157,8 @@
 	<!-- models, other singletons and utilities -->
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" />
 
+	<bean id="databaseDescriptor" class="uk.me.gumbley.minimiser.openlist.DatabaseDescriptorFactory" />
+	
 	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
     <!-- - - database event listeners - - -->
@@ -196,12 +198,17 @@
 	<bean id="tabEventListenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
+				<value>tabDisplayingTabEventListener</value>
 <!--				<value>one</value>
 				<value>two</value> -->
 			</list>
 		</property>
 	</bean>
 
+	<bean id="tabDisplayingTabEventListener" class="uk.me.gumbley.minimiser.wiring.tabeventlistener.TabDisplayingTabEventListener">
+		<constructor-arg ref="openTabList" />
+	</bean>
+	
 
 	<!-- miscellaneous -->	
 	
