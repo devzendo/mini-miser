@@ -19,7 +19,7 @@ public abstract class AbstractDatabaseDescriptorFactoryUnittestCase extends Spri
      * 
      */
     @Before
-    public void getPrerequisites() {
+    public final void getPrerequisites() {
         databaseDescriptorFactory = getDatabaseDescriptorFactory();
         Assert.assertNotNull(databaseDescriptorFactory);
     }
@@ -28,7 +28,7 @@ public abstract class AbstractDatabaseDescriptorFactoryUnittestCase extends Spri
      * Get the database descriptor that's stored in the DatabaseDescriptorFactory
      * @return the currently stored database descriptor.
      */
-    protected DatabaseDescriptor getDatabaseDescriptor() {
+    protected final DatabaseDescriptor getDatabaseDescriptor() {
         return getSpringLoader().getBean("databaseDescriptor", DatabaseDescriptor.class);
     }
 
@@ -36,7 +36,7 @@ public abstract class AbstractDatabaseDescriptorFactoryUnittestCase extends Spri
      * Get the DatabaseDescriptorFactory
      * @return the database descriptor factory 
      */
-    protected DatabaseDescriptorFactory getDatabaseDescriptorFactory() {
+    protected final DatabaseDescriptorFactory getDatabaseDescriptorFactory() {
         return getSpringLoader().getBean("&databaseDescriptor", DatabaseDescriptorFactory.class);
     }
 }
