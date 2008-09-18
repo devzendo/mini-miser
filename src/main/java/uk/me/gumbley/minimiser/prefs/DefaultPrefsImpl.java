@@ -145,4 +145,28 @@ public final class DefaultPrefsImpl implements Prefs {
     public void setOpenTabs(final String databaseName, final String[] tabNames) {
         iniFile.setArray(SECTION_OPENTABS_PREFIX + databaseName, tabNames);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearTabHidden(final String tabName) {
+        // TODO Auto-generated method stub
+        // WOZERE
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTabHidden(final String tabName) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTabHidden(final String tabName) {
+        // TODO Auto-generated method stub
+        
+    }
 }

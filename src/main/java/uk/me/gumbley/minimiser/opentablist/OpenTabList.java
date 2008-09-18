@@ -43,9 +43,15 @@ public final class OpenTabList {
 
     /**
      * Adds a named database to the open tab list, containing no tabs.
+     * <p>
      * addDatabase isn't really needed, as you can add tabs to a nonexistant
      * database with addTab, but it's here for symmetry with removeDatabase
      * for which no other mechanism exists.
+     * <p>
+     * However, we need the insertion point for each tab before we add it,
+     * and you can't get the insertion point if the database has not been
+     * added, so we call this before adding any tabs.
+     *  
      * @param database the database to add.
      */
     public void addDatabase(final DatabaseDescriptor database) {
@@ -55,7 +61,7 @@ public final class OpenTabList {
         final String databaseName = database.getDatabaseName();
         checkDatabaseName(databaseName);
         LOGGER.info("Adding database '" + databaseName + "'");
-        createTabSet(databaseName);
+        createTabSetIfItDoesntExist(databaseName);
     }
 
     private void checkDatabaseName(final String databaseName) {
@@ -82,7 +88,7 @@ public final class OpenTabList {
         observerList.eventOccurred(new TabOpenedEvent(database, tab));
     }
 
-    private void createTabSet(final String databaseName) {
+    private void createTabSetIfItDoesntExist(final String databaseName) {
         if (!tabMap.containsKey(databaseName)) {
             final Comparator<TabDescriptor> comparator = new Comparator<TabDescriptor>() {
                 public int compare(final TabDescriptor o1, final TabDescriptor o2) {

@@ -164,4 +164,16 @@ public final class TestPrefs extends LoggingTestCase {
         Assert.assertEquals("tabtwo", openTabNames[1]);
         Assert.assertEquals("tabthree", openTabNames[2]);
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void tabsCanBeHidden() {
+        Assert.assertFalse(prefs.isTabHidden("SQL"));
+        prefs.setTabHidden("SQL");
+        Assert.assertTrue(prefs.isTabHidden("SQL"));
+        prefs.clearTabHidden("SQL");
+        Assert.assertFalse(prefs.isTabHidden("SQL"));
+    }
 }

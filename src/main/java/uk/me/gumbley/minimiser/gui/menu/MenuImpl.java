@@ -15,6 +15,7 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
@@ -32,6 +33,7 @@ public final class MenuImpl implements Menu {
 
     private JMenuBar menuBar;
     private JMenu fileMenu;
+    private JMenu viewMenu;
     private JMenu windowMenu;
     private JMenu helpMenu;
 
@@ -58,10 +60,13 @@ public final class MenuImpl implements Menu {
                     menuBar = new JMenuBar();
                     fileMenu = createFileMenu();
                     buildFileMenu(); // initially we'll have no recent files list
+                    viewMenu = createViewMenu();
+                    buildViewMenu();
                     windowMenu = createWindowMenu();
                     helpMenu = createHelpMenu();
     
                     menuBar.add(fileMenu);
+                    menuBar.add(viewMenu);
                     menuBar.add(windowMenu);
                     menuBar.add(helpMenu);
                     
@@ -121,7 +126,56 @@ public final class MenuImpl implements Menu {
 
         createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
     }
+
+    // EDT
+    private JMenu createViewMenu() {
+        final JMenu menu = new JMenu("View");
+        menu.setMnemonic('V');
+        return menu;
+    }
     
+    // EDT
+    private void buildViewMenu() {
+        viewMenu.removeAll();
+        if (databases.size() == 0) {
+            viewMenu.setEnabled(false);
+            LOGGER.debug("view menu is empty");
+            return;
+        }
+
+        for (final TabIdentifier tabId : TabIdentifier.values()) {
+            if (!tabId.isTabPermanent() && !isViewMenuItemHidden(tabId)) {
+                final JMenuItem menuItem = new JMenuItem(tabId.getDisplayableName());
+                menuItem.setMnemonic(tabId.getMnemonic());
+                menuItem.addActionListener(new ActionListener() {
+                    public void actionPerformed(final ActionEvent e) {
+                        new Thread(new Runnable() {
+                            public void run() {
+                                try {
+                                    Thread.currentThread().setName("ViewOpener:" + tabId.getDisplayableName());
+                                    Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
+                                    LOGGER.info("Opening view '" + tabId.getDisplayableName() + "'");
+                                    //openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                                } catch (final Throwable t) {
+                                    LOGGER.error("View opener thread caught unexpected " + t.getClass().getSimpleName(), t);
+                                } finally {
+                                    LOGGER.debug("Open view complete");
+                                }
+                            }
+                        }).start();
+                    }
+                });
+                viewMenu.add(menuItem);
+            }
+        }
+        viewMenu.setEnabled(true);
+    }
+
+    private boolean isViewMenuItemHidden(final TabIdentifier tabId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     // EDT
     private JMenu buildRecentList() {
         final JMenu submenu = new JMenu("Open recent");
@@ -237,6 +291,7 @@ public final class MenuImpl implements Menu {
             public void run() {
                 synchronized (lock) {
                     databases.add(dbName);
+                    buildViewMenu();
                     buildWindowMenu();
                     enableCloseAllMenu();
                 }
@@ -253,6 +308,7 @@ public final class MenuImpl implements Menu {
                 synchronized (lock) {
                     databases.clear();
                     currentDatabaseIndex = -1;
+                    buildViewMenu();
                     buildWindowMenu();
                     enableCloseMenu(false);
                     enableCloseAllMenu();
@@ -269,6 +325,7 @@ public final class MenuImpl implements Menu {
             public void run() {
                 synchronized (lock) {
                     databases.remove(dbName);
+                    buildViewMenu();
                     buildWindowMenu();
                     enableCloseAllMenu();
                 }
@@ -284,6 +341,7 @@ public final class MenuImpl implements Menu {
             public void run() {
                 synchronized (lock) {
                     currentDatabaseIndex = databases.indexOf(dbName);
+                    buildViewMenu();
                     buildWindowMenu();
                 }
             }

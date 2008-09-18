@@ -1,17 +1,24 @@
 package uk.me.gumbley.minimiser.gui.tabfactory;
 
 import java.awt.Component;
+import java.awt.Label;
 import javax.swing.SwingUtilities;
+import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
  * A Tab that's given a database descriptor, and allows it to be checked for.
+ * Has a label as its component.
+ * 
  * @author matt
  *
  */
 public final class StubRecordingTab implements Tab {
+    private static final Logger LOGGER = Logger
+            .getLogger(StubRecordingTab.class);
     private final DatabaseDescriptor databaseDescriptor;
+    private volatile Label label;
     private final boolean constructedOnEventThread;
     private boolean initComponentCalledOnEventThread = false;
     private boolean initComponentIsCalled = false;
@@ -23,6 +30,7 @@ public final class StubRecordingTab implements Tab {
      * @param descriptor the database descritpor
      */
     public StubRecordingTab(final DatabaseDescriptor descriptor) {
+        LOGGER.debug("Creating StubRecordingTab for " + descriptor.getDatabaseName());
         this.databaseDescriptor = descriptor;
         constructedOnEventThread = SwingUtilities.isEventDispatchThread();
         constructCount++;
@@ -30,16 +38,19 @@ public final class StubRecordingTab implements Tab {
     /**
      * {@inheritDoc}
      */
-    public Component getComponent() {
-        return null;
+    public synchronized Component getComponent() {
+        LOGGER.debug("Label " + label + " being returned from getComponent()");
+        return label;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void initComponent() {
+    public synchronized void initComponent() {
+        LOGGER.debug("initComponent being called");
         initComponentCalledOnEventThread = SwingUtilities.isEventDispatchThread();
         initComponentIsCalled = true;
+        label = new Label();
     }
     
     /** 

@@ -3,10 +3,11 @@ package uk.me.gumbley.minimiser.gui.tabfactory;
 import java.util.List;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 
 /**
  * The factory for creating one, or a list of tabs given
- * a database descriptor, and adding them to the TabOpenList.
+ * a database descriptor.
  * 
  * @author matt
  *
@@ -14,8 +15,9 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 public interface TabFactory {
 
     /**
-     * Load the supplied list of tabs, and add them to the
-     * TabOpenList. Tabs are only loaded if they do not already
+     * Load the supplied list of tabs.
+     * <p>
+     * Tabs are only loaded if they do not already
      * exist on the list - tabs are unique per TabIdentifier.
      * <p>
      * Tabs are loaded as beans from the Application Context,
@@ -31,6 +33,7 @@ public interface TabFactory {
      * are to be loaded.
      * @param tabIdentifiers the List of TabIdentifiers to
      * load.
+     * @return the list of loaded TabDescriptors
      */
-    void loadTabs(DatabaseDescriptor databaseDescriptor, List<TabIdentifier> tabIdentifiers);
+    List<TabDescriptor> loadTabs(DatabaseDescriptor databaseDescriptor, List<TabIdentifier> tabIdentifiers);
 }

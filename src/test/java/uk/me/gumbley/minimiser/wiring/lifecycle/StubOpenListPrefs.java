@@ -105,4 +105,24 @@ public final class StubOpenListPrefs implements Prefs {
      */
     public void setOpenTabs(final String databaseName, final String[] tabNames) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearTabHidden(final String tabName) {
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTabHidden(final String tabName) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTabHidden(final String tabName) {
+    }
 }

@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.gui.tabfactory;
 
+import java.awt.Label;
 import java.util.ArrayList;
 import java.util.List;
 import org.easymock.EasyMock;
@@ -19,7 +20,7 @@ import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 
 
 /**
- * Tests the operation of the TabpaneFactory
+ * Tests the operation of the TabPaneFactory
  * 
  * @author matt
  *
@@ -79,9 +80,8 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
-        tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
-        
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
+
         Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(1, tabsForDatabase.size());
         Assert.assertEquals(TabIdentifier.OVERVIEW, tabsForDatabase.get(0).getTabIdentifier());
@@ -105,11 +105,10 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         
         descriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
-        tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
+        final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
         
         Assert.assertEquals(1, StubRecordingTab.getConstructCount());
         
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
         final TabDescriptor tabDescriptor = tabsForDatabase.get(0);
         final Tab tab = tabDescriptor.getTab();
 
@@ -159,6 +158,8 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         
         Assert.assertTrue(stubTab.isInitComponentCalled());
         Assert.assertTrue(stubTab.isInitComponentsCalledOnEventThread());
+        
+        Assert.assertTrue(stubTab.getComponent() instanceof Label);
     }
 
     /**

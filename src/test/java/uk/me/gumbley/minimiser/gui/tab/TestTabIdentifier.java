@@ -35,6 +35,17 @@ public final class TestTabIdentifier extends LoggingTestCase {
      * 
      */
     @Test
+    public void verifyTabMnemonics() {
+        for (TabIdentifier tabId : TabIdentifier.values()) {
+            final char mnemonic = tabId.getMnemonic();
+            Assert.assertTrue(Character.isLetterOrDigit(mnemonic));
+        }
+    }
+    
+    /**
+     * 
+     */
+    @Test
     public void translateNullArrayOfNames() {
         final List<TabIdentifier> list = TabIdentifier.toTabIdentifiers(null);
         Assert.assertNotNull(list);

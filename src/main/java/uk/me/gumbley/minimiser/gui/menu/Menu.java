@@ -43,7 +43,10 @@ public interface Menu {
          * 
          */
         FileExit,
+        
         // Window menu is handled internally by the menu
+        // View menu is handled internally by the menu
+        
         /**
          * 
          */

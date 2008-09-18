@@ -177,10 +177,10 @@
 		</property>
 	</bean>
 
-
 	<bean id="tabPaneCreatingDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneCreatingDatabaseEventListener" lazy-init="true" >
 		<constructor-arg ref="tabListPrefs" />
 		<constructor-arg ref="tabFactory" />
+		<constructor-arg ref="openTabList" />
 	</bean>
 	
 	<bean id="tabPaneManagerDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneManagerDatabaseEventListener" lazy-init="true" >
@@ -198,16 +198,12 @@
 	<bean id="tabEventListenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
-				<value>tabDisplayingTabEventListener</value>
 <!--				<value>one</value>
 				<value>two</value> -->
 			</list>
 		</property>
 	</bean>
 
-	<bean id="tabDisplayingTabEventListener" class="uk.me.gumbley.minimiser.wiring.tabeventlistener.TabDisplayingTabEventListener">
-		<constructor-arg ref="openTabList" />
-	</bean>
 	
 
 	<!-- miscellaneous -->	

@@ -1,12 +1,15 @@
 package uk.me.gumbley.minimiser.wiring.databaseeventlistener;
 
+import java.awt.Component;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.gui.tabfactory.TabFactory;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs;
@@ -14,6 +17,8 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
+import uk.me.gumbley.minimiser.opentablist.OpenTabList;
+import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 
 
 /**
@@ -32,10 +37,12 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
     
     private final TabListPrefs prefs;
     private final TabFactory tabFactory;
+    private final OpenTabList openTabList;
     
     // Used by the run-on-EDT code in createTabbedPaneOnEventThread
     private final Object lock = new Object();
     private JTabbedPane tabbedPane;
+
     
 
     /**
@@ -44,11 +51,14 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
      * read
      * @param factory the TabFactory which will create all the above tabs
      * and add them to the OpenTabList
+     * @param tabList the OpenTabList used to determine the insertion order
+     * and that's added to when tabs are loaded
      */
     public TabPaneCreatingDatabaseEventListener(final TabListPrefs prefsStore,
-            final TabFactory factory) {
+            final TabFactory factory, final OpenTabList tabList) {
         prefs = prefsStore;
         tabFactory = factory;
+        openTabList = tabList;
     }
 
     /**
@@ -63,22 +73,66 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
             final DatabaseOpenedEvent openEvent = (DatabaseOpenedEvent) databaseEvent;
             final DatabaseDescriptor databaseDescriptor = openEvent.getDatabaseDescriptor();
             
+            final String databaseName = databaseDescriptor.getDatabaseName();
             // Create the JTabbedPane
-            LOGGER.info("Creating tabbed pane for database '" + databaseDescriptor.getDatabaseName() + "'");
-            final JTabbedPane pane = createTabbedPaneOnEventThread(databaseDescriptor); 
-            databaseDescriptor.setAttribute(AttributeIdentifier.TabbedPane, pane);
+            LOGGER.info("Creating tabbed pane for database '" + databaseName + "'");
+            final JTabbedPane databaseTabbedPane = createTabbedPaneOnEventThread(databaseDescriptor); 
+            databaseDescriptor.setAttribute(AttributeIdentifier.TabbedPane, databaseTabbedPane);
             
-            // Load the tabs into the openTabList.
-            LOGGER.info("Loading permanent and stored tabs for database '" + databaseDescriptor.getDatabaseName() + "'");
-            // They'll be added to the JTabbedPane by a TabEventListener
-            loadPermanentAndStoredTabs(databaseDescriptor);
+            // Add this database to the open tab list, so we can calculate
+            // insertion points for tabs on the JTabbedPane.
+            openTabList.addDatabase(databaseDescriptor);
+            
+            // Load the tabs
+            LOGGER.info("Loading permanent and stored tabs for database '" + databaseName + "'");
+            final List<TabDescriptor> loadedTabDescriptors = loadPermanentAndStoredTabs(databaseDescriptor);
+            
+            // Add each ones component into the JTabbedPane.
+            for (TabDescriptor tabDescriptor : loadedTabDescriptors) {
+                // We need the insertion point for the JTabbedPane
+                final TabDescriptor finalTabDescriptor = tabDescriptor; 
+                final int insertionPoint = openTabList.getInsertionPosition(databaseName, tabDescriptor.getTabIdentifier());
+                // TODO perhaps the OpenTabList should be throwing the IllegalStateException here?
+                if (insertionPoint == -1) {
+                    throw new IllegalStateException("Cannot get insertion point for tab: database '" 
+                        + databaseDescriptor.getDatabaseName() + "' not added to open tab list");
+                }
+                
+                // Add the tab's component to the JTabbedPane on the EDT 
+                final String displayableName = finalTabDescriptor.getTabIdentifier().getDisplayableName();
+                final Tab tab = finalTabDescriptor.getTab();
+                LOGGER.debug("Tab " + displayableName + " implemented by " + tab.getClass().getSimpleName());
+                final Component tabComponent = tab.getComponent();
+                GUIUtils.runOnEventThread(new Runnable() {
+                    public void run() {
+                        final Component componentToAdd;
+                        if (tabComponent == null) {
+                            LOGGER.warn("Tab " + displayableName
+                                + " has created a null component to add to the tabbed pane; replacing with a blank JPanel");
+                            componentToAdd = new JPanel();
+                        } else {
+                            componentToAdd = tabComponent;
+                        }
+                        LOGGER.debug("Adding a '" + componentToAdd.getClass().getSimpleName() + "' for tab " + displayableName);
+                        databaseTabbedPane.add(
+                            componentToAdd,
+                            displayableName,
+                            insertionPoint);
+                    }
+                });
+                
+                // Add the loaded tab into the OpenTabList.
+                openTabList.addTab(databaseDescriptor, tabDescriptor);
+            }   
         }
     }
 
-    private void loadPermanentAndStoredTabs(final DatabaseDescriptor databaseDescriptor) {
+    private List<TabDescriptor> loadPermanentAndStoredTabs(final DatabaseDescriptor databaseDescriptor) {
         final List<TabIdentifier> permanentAndOpenTabs = prefs.getOpenTabs(databaseDescriptor.getDatabaseName());
         LOGGER.info("Permanent and stored tabs: " + permanentAndOpenTabs);
-        tabFactory.loadTabs(databaseDescriptor,
+        // TODO perhaps the check for existence of tabs in the OpenTabList should be
+        // done here and not in the tab factory?
+        return tabFactory.loadTabs(databaseDescriptor,
                             permanentAndOpenTabs);
     }
 

@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.gui.tabfactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
@@ -65,7 +66,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
     /**
      * {@inheritDoc}
      */
-    public void loadTabs(final DatabaseDescriptor databaseDescriptor, final List<TabIdentifier> tabIdentifiers) {
+    public List<TabDescriptor> loadTabs(final DatabaseDescriptor databaseDescriptor, final List<TabIdentifier> tabIdentifiers) {
         assert !SwingUtilities.isEventDispatchThread();
 
         // Set the database descriptor in the factory so that it can be
@@ -75,24 +76,31 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         
         // Now load each tab
         final String databaseName = databaseDescriptor.getDatabaseName();
+        final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>(); 
         for (TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
-                loadTabAndAddToOpenList(databaseDescriptor, identifier);
+                final Tab loadedTab = loadTabAndAddToOpenList(databaseDescriptor, identifier);
+                if (loadedTab != null) { // TODO need test for failure to load causes lack of addition to list
+                    tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));
+                }
             }
         }
         
         // Clear database descriptor in factory
         databaseDescriptorFactory.clearDatabaseDescriptor();
+        
+        return tabDescriptorList;
     }
 
-    private void loadTabAndAddToOpenList(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
+    private Tab loadTabAndAddToOpenList(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
         try {
             LOGGER.info("Loading " + identifier + " tab");
             final Tab tab = springLoader.getBean("tab" + identifier.toString(), Tab.class);
             callInitComponentOnSwingEventThread(tab);
-            openTabList.addTab(databaseDescriptor, new TabDescriptor(identifier, tab));
+            return tab;
         } catch (final RuntimeException re) {
             problemReporter.reportProblem("while loading the " + identifier.getDisplayableName() + " tab", re);
+            return null;
         }
     }
 

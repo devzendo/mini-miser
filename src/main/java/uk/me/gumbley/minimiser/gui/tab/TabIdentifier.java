@@ -25,20 +25,21 @@ public enum TabIdentifier {
     /**
      * The SQL debug/developer tab
      */
-    SQL("SQL", false),
+    SQL("SQL", false, 'S'),
 
     /**
      * The overview tab 
      */
-    OVERVIEW("Overview", true),
+    OVERVIEW("Overview", true, 'O'),
     
     /**
      * The Categories tab 
      */
-    CATEGORIES("Categories", false);
+    CATEGORIES("Categories", false, 'C');
     
     private final String displayName;
     private final boolean tabPermanent;
+    private final char mnemonic;
     
     private static List<TabIdentifier> permanentIds;
     static {
@@ -54,10 +55,12 @@ public enum TabIdentifier {
      * Construct a TabIdentifier.
      * @param name the displayable name of this tab
      * @param permanent is this tab permanent? Can it be closed?
+     * @param mne the tab's mnemonic, for the menu
      */
-    TabIdentifier(final String name, final boolean permanent) {
+    TabIdentifier(final String name, final boolean permanent, final char mne) {
         this.displayName = name;
         this.tabPermanent = permanent;
+        this.mnemonic = mne;
     }
 
     /**
@@ -73,6 +76,13 @@ public enum TabIdentifier {
      */
     public boolean isTabPermanent() {
         return tabPermanent;
+    }
+
+    /**
+     * @return the tab mnemonic for the menu
+     */
+    public char getMnemonic() {
+        return mnemonic;
     }
     
     /**
