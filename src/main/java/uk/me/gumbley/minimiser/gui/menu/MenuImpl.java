@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -17,6 +19,7 @@ import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * The Swing Menu.
@@ -40,22 +43,28 @@ public final class MenuImpl implements Menu {
     private ObserverList<DatabaseNameChoice> windowMenuChoiceObservers;
     private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
     private MenuWiring menuWiring;
-    
+    private Prefs prefs;  // TODO remove coupling
+    private Map<String, Boolean> hiddenTabs;
+
     /**
      * Create the Menu
      * @param wiring the MenuWiring singleton
+     * @param preferences the Prefs singleton
      */
-    public MenuImpl(final MenuWiring wiring) {
+    public MenuImpl(final MenuWiring wiring, final Prefs preferences) {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
                     menuWiring = wiring;
+                    prefs = preferences; // TODO remove coupling
                     databases = new ArrayList<String>();
                     currentDatabaseIndex = -1;
                     recentDatabaseDescriptors = new DatabaseDescriptor[0];
             
                     windowMenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
                     openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
+
+                    hiddenTabs = new HashMap<String, Boolean>();
         
                     menuBar = new JMenuBar();
                     fileMenu = createFileMenu();
@@ -172,8 +181,7 @@ public final class MenuImpl implements Menu {
     }
 
     private boolean isViewMenuItemHidden(final TabIdentifier tabId) {
-        // TODO Auto-generated method stub
-        return false;
+        return prefs.isTabHidden(tabId.toString()); // TODO remove coupling
     }
 
     // EDT
@@ -410,5 +418,19 @@ public final class MenuImpl implements Menu {
                 }
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void rebuildViewMenu() {
+        buildViewMenu();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setTabHidden(final String tabName, final boolean tabHidden) {
+        hiddenTabs.put(tabName, tabHidden);
     }
 }

@@ -1,0 +1,66 @@
+OldNotes.txt
+============
+
+This is a collection of old design sketches for various aspects of the system
+as added to the ongoing TODO.txt, then moved here when complete.
+
+How tabs are created
+--------------------
+* the tab pane set:
+  * TabPageCreatingDatabaseEventListener - restores / creates tab set upon
+    open.
+  * Always uses a custom (non-EDT) thread.
+  * Needs to find list of tabs to create.
+  * Needs to use a factory to instantiate the list of tabs
+  * Factory:
+    * called on non-EDT, given the JTabbedPane
+    * stash the current database descriptor in the DatabaseDescriptorFactory
+      at the start of the instantiation
+    * define interface for tabs that defines JPanel createComponents() method
+    * foreach tab
+      * load prototype tab bean, resolving dependencies, NOT on EDT
+      * createComponents gets called to create panel on EDT, panel is added to
+        the relevant tab on the tabbed pane (on the EDT)
+    * remove current database descriptor from the DatabaseDescriptorFactory
+
+How multiple databases are managed with a card layout
+-----------------------------------------------------
+* add the tab pane container - responsibility is adding/removing cards for open/
+  closed databases (upon calls from an OpenDatabaseList listener), adding/removing
+  tabs for open/closed views (upon calls from menu actionlisteners), switching
+  current card to match the current database (upon calls from an OpenDatabaseList
+  listener), providing notification mechanism for open/close/switch tab
+  
+  - create a springbeanlistloader that loads ODL listeners, before database
+    opener/close lifecycle
+  - instantiate tab pane manager to create the empty card layout panel, after
+    the menu, before starting the lifecycles
+  - create tabbedpane database event listener that adds jtabbedpanes to
+    the dd.
+  - add a database event listener that's bound to the ODL after the
+    tabbedpane database event listener
+    that is an adapter to the tabpanemanager - so that the tabpanemanager
+    (which does not implement odl listener but has similar semantics for open/
+    switch/close) can get the jtabbedpane out of the dd
+    (ordering of these operations is sensitive) and set in the card layout.
+    This adapter also enables switch and close behaviour to be handled directly
+    by the tab pane manager.
+    
+  * creates a card layout
+  * creates a new card for each new database in the ODL
+  * switches to the appropriate card on switch database
+  * there is a tab enumeration for the possible view tabs
+  * view menu shows views that are currently available
+  * availability depends on
+    * prefs flags (SQL view)
+    * code been written and bound - like menu action listeners and the menu
+      builder
+  * tabs can be opened or closed. open from the view menu. close? checkboxes in
+    view menu?
+  * tabs are ordered in the jtabbedpane by their enumeration order
+  * tabs can get their database from their base class, which gets it from the
+    tab container (jtabbedpane holder) which gets it upon new database opening.
+  * open/close/switch tab can be listened for - notifications include the
+    database name and tab name
+  * the currently open tabs for each database are persisted and restored
+  * the currently selected tab for each database is persisted and restored

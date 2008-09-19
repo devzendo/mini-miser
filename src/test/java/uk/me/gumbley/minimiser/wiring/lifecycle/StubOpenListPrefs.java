@@ -1,6 +1,8 @@
 package uk.me.gumbley.minimiser.wiring.lifecycle;
 
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 
 /**
  * Prefs that get/set the database list from memory.
@@ -124,5 +126,11 @@ public final class StubOpenListPrefs implements Prefs {
      * {@inheritDoc}
      */
     public void setTabHidden(final String tabName) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addChangeListener(final Observer<PrefsEvent> observer) {
     }
 }

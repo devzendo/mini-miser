@@ -11,35 +11,21 @@ BUGS:
   you get a nasty 'open in another process' dialog.
   
 CURRENT TASKS:
-* need to pass the databasedescriptor ? around in tabevents so that the
-  tabdisplayingtabeventlistener can attach the tab to the right database's
-  jtabbedpane.
-  
+* remove coupling between menuimpl and prefs - for tab hidden. menumediator
+  needs to handle this.
+* need a prefs-changed listener, with section identifiers so we don't rebuild
+  the view menu on every window move - the menumediator's prefs listener would
+  only trap tab-hidden prefs changes, update the menu's hidden tab settings
+  for each tab identifier, then get the menu to rebuild the view menu.
+* if 'SQL view available' flag enabled, enable the SQL view (this has been
+  generalised in prefs to allow any tab to be hidden, but the prefs dialog
+  would only have the SQL one hidable)
+* if 'SQL view available' flag gets disabled in prefs, close any currently-
+  open SQL views (with a notification)
+    
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
-* the background to the tabs is the same colour as the tabs, making the tabs
-  hard to see (on windows).
-  Ditto the tabs in the about box.
-* Mac:
-  * menu should be on the standard apple menu bar
-  * title should be set properly
-  * there are white patches on the dialogs
   
 * the tab pane set:
-  * TabPageCreatingDatabaseEventListener - restores / creates tab set upon
-    open.
-  * Always uses a custom (non-EDT) thread.
-  * Needs to find list of tabs to create.
-  * Needs to use a factory to instantiate the list of tabs
-  * Factory:
-    * called on non-EDT, given the JTabbedPane
-    * stash the current database descriptor in the DatabaseDescriptorFactory
-      at the start of the instantiation
-    * define interface for tabs that defines JPanel createComponents() method
-    * foreach tab
-      * load prototype tab bean, resolving dependencies, NOT on EDT
-      * createComponents gets called to create panel on EDT, panel is added to
-        the relevant tab on the tabbed pane (on the EDT)
-    * remove current database descriptor from the DatabaseDescriptorFactory
   * Opening a new tab:
     * View menu ActionListener runs on EDT
     * Must dispatch to a custom worker thread.
@@ -53,42 +39,6 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
     into the DatabaseDescriptor.
   * switch tab listener?  
   * persist current open tab list on exit
-
-* add the tab pane container - responsibility is adding/removing cards for open/
-  closed databases (upon calls from an OpenDatabaseList listener), adding/removing
-  tabs for open/closed views (upon calls from menu actionlisteners), switching
-  current card to match the current database (upon calls from an OpenDatabaseList
-  listener), providing notification mechanism for open/close/switch tab
-  
-  - create a springbeanlistloader that loads ODL listeners, before database
-    opener/close lifecycle
-  - instantiate tab pane manager to create the empty card layout panel, after
-    the menu, before starting the lifecycles
-  - create tabbedpane database event listener that adds jtabbedpanes to
-    the dd.
-  - add a database event listener that's bound to the ODL after the
-    tabbedpane database event listener
-    that is an adapter to the tabpanemanager - so that the tabpanemanager
-    (which does not implement odl listener but has similar semantics for open/
-    switch/close) can get the jtabbedpane out of the dd
-    (ordering of these operations is sensitive) and set in the card layout.
-    This adapter also enables switch and close behaviour to be handled directly
-    by the tab pane manager.
-    
-  * creates a card layout
-  * creates a new card for each new database in the ODL
-  * switches to the appropriate card on switch database
-  * there is a tab enumeration for the possible view tabs
-  * view menu shows views that are currently available
-  * availability depends on
-    * prefs flags (SQL view)
-    * code been written and bound - like menu action listeners and the menu
-      builder
-  * tabs can be opened or closed. open from the view menu. close? checkboxes in
-    view menu?
-  * tabs are ordered in the jtabbedpane by their enumeration order
-  * tabs can get their database from their base class, which gets it from the
-    tab container (jtabbedpane holder) which gets it upon new database opening.
   * open/close/switch tab can be listened for - notifications include the
     database name and tab name
   * the currently open tabs for each database are persisted and restored
@@ -114,15 +64,26 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   * have the 'SQL view available' checkbox on there
   * add ability for checkbox-style flags to be got/set easily in prefs
 
-* if 'SQL view available' flag enabled, enable the SQL view
-* if 'SQL view available' flag gets disabled in prefs, close any currently-
-  open SQL views.
+* how are tabs that are initially hidden set hidden in prefs? there needs to be
+  a set of default prefs that are stored on prefs creation.
+  
 
 * Update available checker.
 
 * Bug reporting dialog - direct to bug database
 
+CROSS-PLATFORM UI ISSUES:
+* the background to the tabs is the same colour as the tabs, making the tabs
+  hard to see (on windows).
+  Ditto the tabs in the about box.
+* Mac:
+  * menu should be on the standard apple menu bar
+  * title should be set properly
+  * there are white patches on the dialogs
 
+
+
+-- final tasks before release --
 * review all TODOs
 * review code complexity, coverage, etc.
 

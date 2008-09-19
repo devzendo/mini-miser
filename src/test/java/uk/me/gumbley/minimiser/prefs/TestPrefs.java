@@ -2,10 +2,13 @@ package uk.me.gumbley.minimiser.prefs;
 
 import java.io.File;
 import java.io.IOException;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.prefs.Prefs.PrefsSection;
 
 
 /**
@@ -175,5 +178,31 @@ public final class TestPrefs extends LoggingTestCase {
         Assert.assertTrue(prefs.isTabHidden("SQL"));
         prefs.clearTabHidden("SQL");
         Assert.assertFalse(prefs.isTabHidden("SQL"));
+    }
+    
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void changeListenersFiredOnAppropriateChanges() {
+
+        final Observer<PrefsEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.eq(new PrefsEvent(PrefsSection.HIDDEN_TABS)));
+        EasyMock.replay(obs);
+
+        prefs.addChangeListener(obs);
+        
+        prefs.setTabHidden("SQL");
+        
+        EasyMock.verify(obs);
+        
+        EasyMock.reset(obs);
+        obs.eventOccurred(EasyMock.eq(new PrefsEvent(PrefsSection.HIDDEN_TABS)));
+        EasyMock.replay(obs);
+        
+        prefs.clearTabHidden("SQL");
+
+        EasyMock.verify(obs);
     }
 }

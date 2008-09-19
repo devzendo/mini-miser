@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.MainFrameTitle;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
@@ -14,6 +15,8 @@ import uk.me.gumbley.minimiser.openlist.DatabaseListEmptyEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 import uk.me.gumbley.minimiser.recentlist.RecentListChangedEvent;
 
@@ -32,6 +35,7 @@ public final class MenuMediatorImpl implements MenuMediator {
     private final Opener opener;
     private final OpenerAdapterFactory openerAdapterFactory;
     private final MainFrameTitle mainFrameTitle;
+    private final Prefs prefs;
     
     /**
      * Create a Mediator between application events and the menu
@@ -41,10 +45,12 @@ public final class MenuMediatorImpl implements MenuMediator {
      * @param ope the opener
      * @param oaf the OpenerAdapterFactory
      * @param mainframetitle the main frame title controller
+     * @param preferences the preferences
      */
     public MenuMediatorImpl(final Menu leMenu, final OpenDatabaseList odl,
             final RecentFilesList recentFiles, final Opener ope,
-            final OpenerAdapterFactory oaf, final MainFrameTitle mainframetitle) {
+            final OpenerAdapterFactory oaf, final MainFrameTitle mainframetitle,
+            final Prefs preferences) {
         LOGGER.info("initialising MenuMediatorImpl");
         menu = leMenu;
         openDatabaseList = odl;
@@ -52,6 +58,7 @@ public final class MenuMediatorImpl implements MenuMediator {
         opener = ope;
         openerAdapterFactory = oaf;
         mainFrameTitle = mainframetitle;
+        prefs = preferences;
         initialiseMenu();
         wireAdapters();
         LOGGER.info("initialised MenuMediatorImpl");
@@ -73,6 +80,8 @@ public final class MenuMediatorImpl implements MenuMediator {
         recentFilesList.addRecentListEventObserver(new RecentListEventObserver());
         // opener -> ODL
         opener.addDatabaseOpenObserver(new DatabaseOpenEventObserver());
+        // prefs -> menu
+        prefs.addChangeListener(new PrefsEventObserver());
     }
     
     /**
@@ -181,4 +190,29 @@ public final class MenuMediatorImpl implements MenuMediator {
             openDatabaseList.addOpenedDatabase(observableEvent.getDatabase());
         }
     }
+    
+    /**
+     * Adapts between the prefs change events and the menu updating the view
+     * menu.
+     * 
+     * @author matt
+     *
+     */
+    private final class PrefsEventObserver implements Observer<PrefsEvent> {
+        /**
+         * {@inheritDoc}
+         */
+        public void eventOccurred(final PrefsEvent observableEvent) {
+            if (observableEvent.getPrefsSection() != Prefs.PrefsSection.HIDDEN_TABS) {
+                return;
+            }
+            for (final TabIdentifier tabId : TabIdentifier.values()) {
+                final boolean tabHidden = prefs.isTabHidden(tabId.toString());
+                menu.setTabHidden(tabId.toString(), tabHidden);
+            }
+            menu.rebuildViewMenu();
+        }
+    }
+
+
 }

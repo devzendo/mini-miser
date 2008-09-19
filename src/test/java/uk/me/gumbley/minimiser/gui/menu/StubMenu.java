@@ -2,7 +2,9 @@ package uk.me.gumbley.minimiser.gui.menu;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JMenuBar;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
@@ -22,6 +24,8 @@ public final class StubMenu implements Menu {
     private boolean recentListBuilt;
     private DatabaseDescriptor[] recentDatabases;
     private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
+    private boolean viewMenuBuilt;
+    private Map<String, Boolean> hiddenTabs;
 
     /**
      * 
@@ -31,7 +35,9 @@ public final class StubMenu implements Menu {
         recentDatabases = new DatabaseDescriptor[0];
         currentDatabaseIndex = -1;
         recentListBuilt = false;
+        viewMenuBuilt = false;
         openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
+        hiddenTabs = new HashMap<String, Boolean>();
     }
     
     /**
@@ -148,5 +154,38 @@ public final class StubMenu implements Menu {
      */
     public void addOpenRecentObserver(final Observer<DatabaseNameAndPathChoice> observer) {
         openRecentSubmenuChoiceObservers.addObserver(observer);
+    }
+
+    /**
+     * Is the named tab hidden?
+     * @param tabName the tabName, as you would get from TabIdentifier::toString
+     * @return true iff hidden?
+     */
+    public boolean isTabHidden(final String tabName) {
+        return hiddenTabs.containsKey(tabName) && hiddenTabs.get(tabName) == Boolean.TRUE;
+    }
+
+    /**
+     * Has the view menu been built?
+     * @return true iff built
+     */
+    public boolean isViewMenuBuilt() {
+        return viewMenuBuilt;
+    }
+
+    /**
+     * Clear the view menu built flag, so further prefs-changing tests can
+     * run
+     */
+    public void resetViewMenuBuiltFlag() {
+        viewMenuBuilt = false;
+    }
+
+    public void rebuildViewMenu() {
+        viewMenuBuilt = true;
+    }
+
+    public void setTabHidden(String tabName, boolean tabHidden) {
+        hiddenTabs.put(tabName, tabHidden);
     }
 }

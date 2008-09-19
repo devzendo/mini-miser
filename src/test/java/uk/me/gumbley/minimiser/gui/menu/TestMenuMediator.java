@@ -1,5 +1,7 @@
  package uk.me.gumbley.minimiser.gui.menu;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -14,6 +16,8 @@ import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.prefs.Prefs;
+import uk.me.gumbley.minimiser.prefs.TestPrefs;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 
 /**
@@ -31,13 +35,16 @@ public final class TestMenuMediator extends LoggingTestCase {
     private StubOpener stubOpener;
     private StubOpenerAdapterFactory stubOpenerAdapterFactory;
     private MainFrameTitle mainFrameTitle;
+    private Prefs prefs;
+    private File prefsFile;
 
     /**
      * Get all necessaries
+     * @throws IOException on prefs file creation failure
      */
     @SuppressWarnings("unchecked")
     @Before
-    public void getMediatorPrerequisites() {
+    public void getMediatorPrerequisites() throws IOException {
         stubMenu = new StubMenu();
         openDatabaseList = new OpenDatabaseList();
         recentFilesList = EasyMock.createStrictMock(RecentFilesList.class);
@@ -45,10 +52,14 @@ public final class TestMenuMediator extends LoggingTestCase {
         stubOpener = new StubOpener();
         stubOpenerAdapterFactory = new StubOpenerAdapterFactory();
         mainFrameTitle = new StubMainFrameTitle();
+        prefs = TestPrefs.createUnitTestPrefsFile();
+        prefsFile = new File(prefs.getAbsolutePath());
+        prefsFile.deleteOnExit();
     }
 
     private void startMediator() {
-        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList, stubOpener, stubOpenerAdapterFactory, mainFrameTitle);
+        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList, stubOpener, 
+            stubOpenerAdapterFactory, mainFrameTitle, prefs);
     }
     
     /**
@@ -326,5 +337,31 @@ public final class TestMenuMediator extends LoggingTestCase {
 
         stubOpener.openDatabase("one", "/tmp/one", null);
         Assert.assertTrue(openedOne.get());
+    }
+    
+    /**
+     * @throws IOException on fail
+     * 
+     */
+    @Test
+    public void hiddenTabsChangedInPrefsRebuildsViewMenu() throws IOException {
+        startMediator();
+        
+        Assert.assertFalse(stubMenu.isTabHidden("SQL"));
+        Assert.assertFalse(stubMenu.isViewMenuBuilt());
+        
+        prefs.setTabHidden("SQL");
+        
+        Assert.assertTrue(stubMenu.isTabHidden("SQL"));
+        Assert.assertTrue(stubMenu.isViewMenuBuilt());
+        
+        stubMenu.resetViewMenuBuiltFlag();
+        Assert.assertTrue(stubMenu.isTabHidden("SQL"));
+        Assert.assertFalse(stubMenu.isViewMenuBuilt());
+        
+        prefs.clearTabHidden("SQL");
+        
+        Assert.assertFalse(stubMenu.isTabHidden("SQL"));
+        Assert.assertTrue(stubMenu.isViewMenuBuilt());
     }
 }

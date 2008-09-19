@@ -127,4 +127,16 @@ public interface Menu {
      * @param observer of open recent requests
      */
     void addOpenRecentObserver(Observer<DatabaseNameAndPathChoice> observer);
+
+    /**
+     * Set a view menu item hidden
+     * @param tabName the menu item name
+     * @param tabHidden true iff hidden
+     */
+    void setTabHidden(String tabName, boolean tabHidden);
+
+    /**
+     * Rebuild the view menu based on the current hidden flags.
+     */
+    void rebuildViewMenu();
 }

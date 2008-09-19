@@ -1,6 +1,8 @@
 package uk.me.gumbley.minimiser.prefs;
 
 import uk.me.gumbley.commoncode.file.INIFile;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * Storage API for user preferences. Encapsulates the storage mechanism.
@@ -11,6 +13,8 @@ import uk.me.gumbley.commoncode.file.INIFile;
 public final class DefaultPrefsImpl implements Prefs {
     private String prefsFilePath;
     private INIFile iniFile;
+    private final ObserverList<PrefsEvent> observerList;
+
 
     // The section names and preference items
     private static final String SECTION_UI = "ui";
@@ -28,6 +32,8 @@ public final class DefaultPrefsImpl implements Prefs {
 
     private static final String SECTION_OPENTABS_PREFIX = "opentabs_";
 
+    private static final String SECTION_HIDDENTABS_PREFIX = "hiddentabs";
+
     /**
      * Create a Prefs object backed by a file
      * @param prefsFile the file path
@@ -35,6 +41,7 @@ public final class DefaultPrefsImpl implements Prefs {
     public DefaultPrefsImpl(final String prefsFile) {
         prefsFilePath = prefsFile;
         iniFile = new INIFile(prefsFilePath);
+        observerList = new ObserverList<PrefsEvent>();
     }
     
     /**
@@ -150,23 +157,29 @@ public final class DefaultPrefsImpl implements Prefs {
      * {@inheritDoc}
      */
     public void clearTabHidden(final String tabName) {
-        // TODO Auto-generated method stub
-        // WOZERE
+        iniFile.removeValue(SECTION_HIDDENTABS_PREFIX, tabName);
+        observerList.eventOccurred(new PrefsEvent(PrefsSection.HIDDEN_TABS));
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isTabHidden(final String tabName) {
-        // TODO Auto-generated method stub
-        return false;
+        return iniFile.getBooleanValue(SECTION_HIDDENTABS_PREFIX, tabName);
     }
 
     /**
      * {@inheritDoc}
      */
     public void setTabHidden(final String tabName) {
-        // TODO Auto-generated method stub
-        
+        iniFile.setBooleanValue(SECTION_HIDDENTABS_PREFIX, tabName, true);
+        observerList.eventOccurred(new PrefsEvent(PrefsSection.HIDDEN_TABS));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addChangeListener(final Observer<PrefsEvent> observer) {
+        observerList.addObserver(observer);
     }
 }
