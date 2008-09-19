@@ -7,19 +7,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * The Swing Menu.
@@ -163,7 +165,8 @@ public final class MenuImpl implements Menu {
                                     Thread.currentThread().setName("ViewOpener:" + tabId.getDisplayableName());
                                     Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
                                     LOGGER.info("Opening view '" + tabId.getDisplayableName() + "'");
-                                    //openRecentSubmenuChoiceObservers.eventOccurred(new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                                    //openRecentSubmenuChoiceObservers.eventOccurred(
+                                    //new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
                                 } catch (final Throwable t) {
                                     LOGGER.error("View opener thread caught unexpected " + t.getClass().getSimpleName(), t);
                                 } finally {

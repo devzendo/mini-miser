@@ -10,7 +10,14 @@ package uk.me.gumbley.minimiser.persistence.domain;
  * @author matt
  *
  */
-public class CurrentSchemaVersion {
+public final class CurrentSchemaVersion {
+    
+    /**
+     * Don't construct
+     */
+    private CurrentSchemaVersion() {
+        // no instances
+    }
     /**
      * The current schema version.
      */

@@ -22,6 +22,7 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  *
  */
 public abstract class MiniMiserWizardPage extends WizardPage {
+    private static final long serialVersionUID = 8120003372114550270L;
     private static final Logger LOGGER = Logger.getLogger(MiniMiserWizardPage.class);
     private static Dimension pageDimension = null;
     

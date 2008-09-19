@@ -34,7 +34,7 @@ public final class DatabaseDescriptorFactory implements FactoryBean {
     /**
      * {@inheritDoc}
      */
-    public Class getObjectType() {
+    public Class<?> getObjectType() {
         return DatabaseDescriptor.class;
     }
 

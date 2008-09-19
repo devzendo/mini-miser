@@ -100,7 +100,6 @@ public final class TestMenuMediator extends LoggingTestCase {
     /**
      * 
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void recentListGetsAddedWhenOpenListIsAddedTo() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");

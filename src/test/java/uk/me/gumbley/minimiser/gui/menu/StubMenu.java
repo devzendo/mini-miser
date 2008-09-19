@@ -17,6 +17,10 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
  * @author matt
  *
  */
+/**
+ * @author matt
+ *
+ */
 public final class StubMenu implements Menu {
     private boolean closeMenuEnabled;
     private List<String> databases;
@@ -181,11 +185,17 @@ public final class StubMenu implements Menu {
         viewMenuBuilt = false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void rebuildViewMenu() {
         viewMenuBuilt = true;
     }
 
-    public void setTabHidden(String tabName, boolean tabHidden) {
+    /**
+     * {@inheritDoc}
+     */
+    public void setTabHidden(final String tabName, final boolean tabHidden) {
         hiddenTabs.put(tabName, tabHidden);
     }
 }

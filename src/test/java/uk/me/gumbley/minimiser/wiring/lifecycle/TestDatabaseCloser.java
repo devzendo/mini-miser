@@ -55,7 +55,6 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
     public void openDatabasesShouldBeClosedOnLifecycleShutdown() {
         LOGGER.info(">>> openDatabasesShouldBeClosedOnLifecycleShutdown");
         createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
-            @SuppressWarnings("unchecked")
             public void runOnCreatedDbs() {
                 final MiniMiserDatabase[] openDatabases = new MiniMiserDatabase[dbDetails.length];
                 LOGGER.info("... re-opening");

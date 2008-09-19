@@ -85,7 +85,6 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     /**
      * Open a database, it's made current
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void openDatabaseMakesItCurrent() {
         final DatabaseDescriptor one = new DatabaseDescriptor("one");

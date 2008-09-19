@@ -6,7 +6,15 @@ package uk.me.gumbley.minimiser.persistence.domain;
  * @author matt
  *
  */
-public class VersionableEntity {
+public final class VersionableEntity {
+    
+    /**
+     * don't construct 
+     */
+    private VersionableEntity() {
+        // no instances
+    }
+    
     /**
      *  A Versions row with the entity SCHEMA_VERSION defines the version of
      *  this database's schema.
