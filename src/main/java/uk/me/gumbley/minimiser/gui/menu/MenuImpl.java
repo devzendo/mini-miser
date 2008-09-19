@@ -43,20 +43,17 @@ public final class MenuImpl implements Menu {
     private ObserverList<DatabaseNameChoice> windowMenuChoiceObservers;
     private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
     private MenuWiring menuWiring;
-    private Prefs prefs;  // TODO remove coupling
     private Map<String, Boolean> hiddenTabs;
 
     /**
      * Create the Menu
      * @param wiring the MenuWiring singleton
-     * @param preferences the Prefs singleton
      */
-    public MenuImpl(final MenuWiring wiring, final Prefs preferences) {
+    public MenuImpl(final MenuWiring wiring) {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
                     menuWiring = wiring;
-                    prefs = preferences; // TODO remove coupling
                     databases = new ArrayList<String>();
                     currentDatabaseIndex = -1;
                     recentDatabaseDescriptors = new DatabaseDescriptor[0];
@@ -153,7 +150,9 @@ public final class MenuImpl implements Menu {
         }
 
         for (final TabIdentifier tabId : TabIdentifier.values()) {
-            if (!tabId.isTabPermanent() && !isViewMenuItemHidden(tabId)) {
+            final boolean viewMenuItemHidden = isViewMenuItemHidden(tabId);
+            LOGGER.debug("View menu item " + tabId + " hidden:" + viewMenuItemHidden);
+            if (!tabId.isTabPermanent() && !viewMenuItemHidden) {
                 final JMenuItem menuItem = new JMenuItem(tabId.getDisplayableName());
                 menuItem.setMnemonic(tabId.getMnemonic());
                 menuItem.addActionListener(new ActionListener() {
@@ -181,7 +180,8 @@ public final class MenuImpl implements Menu {
     }
 
     private boolean isViewMenuItemHidden(final TabIdentifier tabId) {
-        return prefs.isTabHidden(tabId.toString()); // TODO remove coupling
+        final Boolean hidden = hiddenTabs.get(tabId.toString());
+        return hidden != null && hidden;
     }
 
     // EDT

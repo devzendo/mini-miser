@@ -36,7 +36,6 @@
     
 	<bean id="menu" class="uk.me.gumbley.minimiser.gui.menu.MenuImpl" lazy-init="true" >
 		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="prefs" />
 	</bean>
 
 	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" lazy-init="true" >
