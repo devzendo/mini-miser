@@ -9,7 +9,15 @@ BUILD FAILURE:
 BUGS:
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
-  
+* on mac, after opening / closing recent encrypted and clear files, and
+  switching, tabs disappear on encrypted one.
+  Open both
+  close enc
+  open recent enc, enter password
+  boom.
+* on mac, was sue I did open recent on encrypted, and it opened, without
+  prompting for password. may have already had it open, in which case it was
+  a switch.
 CURRENT TASKS:
 * remove coupling between menuimpl and prefs - for tab hidden. menumediator
   needs to handle this.
