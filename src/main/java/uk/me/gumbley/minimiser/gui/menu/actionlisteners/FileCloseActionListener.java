@@ -32,10 +32,23 @@ public final class FileCloseActionListener extends AbstractFileCloseActionListen
     public void actionPerformed(final ActionEvent e) {
         getCursorMan().hourglassViaEventThread();
         try {
-            if (!closeCurrentDatabase()) {
-                LOGGER.info("Stopping the Close");
-                return;
-            }
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.currentThread().setName("Closer");
+                        Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
+
+                        if (!closeCurrentDatabase()) {
+                            LOGGER.info("Stopping the Close");
+                            return;
+                        }        
+                    } catch (final Throwable t) {
+                        LOGGER.error("Closer thread caught unexpected " + t.getClass().getSimpleName(), t);
+                    } finally {
+                        LOGGER.debug("Closer complete");
+                    }
+                }
+            }).start();
         } finally {
             getCursorMan().normalViaEventThread();
         }
