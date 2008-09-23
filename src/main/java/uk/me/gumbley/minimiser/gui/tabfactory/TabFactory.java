@@ -36,4 +36,13 @@ public interface TabFactory {
      * @return the list of loaded TabDescriptors
      */
     List<TabDescriptor> loadTabs(DatabaseDescriptor databaseDescriptor, List<TabIdentifier> tabIdentifiers);
+
+    /**
+     * Close a list of tabs.
+     * 
+     * @param databaseDescriptor the database for which the tabs
+     * are to be loaded.
+     * @param tabsForDatabase the tabs that are to be closed.
+     */
+    void closeTabs(DatabaseDescriptor databaseDescriptor, List<TabDescriptor> tabsForDatabase);
 }

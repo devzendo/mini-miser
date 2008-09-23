@@ -427,13 +427,23 @@ public final class MenuImpl implements Menu {
      * {@inheritDoc}
      */
     public void rebuildViewMenu() {
-        buildViewMenu();
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    LOGGER.debug("Rebuilding view menu");
+                    buildViewMenu();
+                }
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     public void setTabHidden(final String tabName, final boolean tabHidden) {
-        hiddenTabs.put(tabName, tabHidden);
+        LOGGER.debug("Tab " + tabName + " is " + (tabHidden ? "" : "not ") + "hidden");
+        synchronized (lock) {
+            hiddenTabs.put(tabName, tabHidden);
+        }
     }
 }

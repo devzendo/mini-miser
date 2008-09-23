@@ -18,6 +18,7 @@ import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 public final class StubTabFactory implements TabFactory {
     private final OpenTabList openTabList;
     // Used by the run-on-EDT code in callInitComponentOnSwingEventThread
+    // and callDisposeComponentOnSwingEventThread
     private final Object lock = new Object();
     
     /**
@@ -47,6 +48,41 @@ public final class StubTabFactory implements TabFactory {
     }
     
     /**
+     * {@inheritDoc}
+     */
+    public void closeTabs(final DatabaseDescriptor databaseDescriptor, final List<TabDescriptor> tabsForDatabase) {
+        for (final TabDescriptor tabDescriptor : tabsForDatabase) {
+            final Tab tab = tabDescriptor.getTab();
+            if (tab != null) {
+                tab.destroy();
+                callDisposeComponentOnSwingEventThread(tab);
+            }
+        }
+
+    }
+    
+    /**
+     * Call the disposeComponent method on the Swing Event Thread.
+     * Precondition: this code is never executed on the EDT - there's an 
+     * assertion in the calling method for this.
+     * 
+     * @param tab the tab to dispose whose component is to be disposed.
+     */
+    private void callDisposeComponentOnSwingEventThread(final Tab tab) {
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    tab.disposeComponent();
+                }
+            }
+        });
+        // this might be voodoo, but it might help update caches on multiprocessors?
+        synchronized (lock) {
+            return;
+        }
+    }
+    
+    /**
      * Call the initComponent method on the Swing Event Thread.
      * Precondition: this code is never executed on the EDT - there's an
      * assertion in the calling method for this.
@@ -66,5 +102,4 @@ public final class StubTabFactory implements TabFactory {
             return;
         }
     }
-
 }

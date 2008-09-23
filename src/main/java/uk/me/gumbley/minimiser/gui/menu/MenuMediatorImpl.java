@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.MainFrameTitle;
+import uk.me.gumbley.minimiser.gui.menu.helpers.ViewMenuUpdater;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
@@ -203,16 +204,11 @@ public final class MenuMediatorImpl implements MenuMediator {
          * {@inheritDoc}
          */
         public void eventOccurred(final PrefsEvent observableEvent) {
+            LOGGER.debug("Prefs event: " + observableEvent.getPrefsSection());
             if (observableEvent.getPrefsSection() != Prefs.PrefsSection.HIDDEN_TABS) {
                 return;
             }
-            for (final TabIdentifier tabId : TabIdentifier.values()) {
-                final boolean tabHidden = prefs.isTabHidden(tabId.toString());
-                menu.setTabHidden(tabId.toString(), tabHidden);
-            }
-            menu.rebuildViewMenu();
+            ViewMenuUpdater.updateViewMenuFromPrefsHiddenTabs(prefs, menu);
         }
     }
-
-
 }

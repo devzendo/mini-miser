@@ -79,7 +79,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>(); 
         for (TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
-                final Tab loadedTab = loadTabAndAddToOpenList(databaseDescriptor, identifier);
+                final Tab loadedTab = loadTab(databaseDescriptor, identifier);
                 if (loadedTab != null) { // TODO need test for failure to load causes lack of addition to list
                     tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));
                 }
@@ -92,7 +92,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         return tabDescriptorList;
     }
 
-    private Tab loadTabAndAddToOpenList(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
+    private Tab loadTab(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
         try {
             LOGGER.info("Loading " + identifier + " tab");
             final Tab tab = springLoader.getBean("tab" + identifier.toString(), Tab.class);
@@ -103,6 +103,30 @@ public final class DefaultTabFactoryImpl implements TabFactory {
             return null;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void closeTabs(final DatabaseDescriptor databaseDescriptor, final List<TabDescriptor> tabsForDatabase) {
+        assert !SwingUtilities.isEventDispatchThread();
+        
+        if (tabsForDatabase == null || tabsForDatabase.size() == 0) {
+            LOGGER.warn("Cannot close a null or empty list of tabs");
+            return;
+        }
+        
+        for (final TabDescriptor tabDescriptor : tabsForDatabase) {
+            final Tab tab = tabDescriptor.getTab();
+            if (tab == null) {
+                LOGGER.warn("Tab for tab descriptor " + tabDescriptor.getTabIdentifier() + " is null; cannot close");
+            } else {
+                LOGGER.info("Destroying " + tabDescriptor.getTabIdentifier() + " tab");
+                tab.destroy();
+                callDisposeComponentOnSwingEventThread(tab);
+            }
+        }
+    }
+
 
     /**
      * Call the initComponent method on the Swing Event Thread.
@@ -116,6 +140,27 @@ public final class DefaultTabFactoryImpl implements TabFactory {
             public void run() {
                 synchronized (lock) {
                     tab.initComponent();
+                }
+            }
+        });
+        // this might be voodoo, but it might help update caches on multiprocessors?
+        synchronized (lock) {
+            return;
+        }
+    }
+
+    /**
+     * Call the disposeComponent method on the Swing Event Thread.
+     * Precondition: this code is never executed on the EDT - there's an 
+     * assertion in the calling method for this.
+     * 
+     * @param tab the tab to dispose whose component is to be disposed.
+     */
+    private void callDisposeComponentOnSwingEventThread(final Tab tab) {
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    tab.disposeComponent();
                 }
             }
         });

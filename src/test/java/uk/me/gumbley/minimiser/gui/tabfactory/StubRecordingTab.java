@@ -22,6 +22,10 @@ public final class StubRecordingTab implements Tab {
     private final boolean constructedOnEventThread;
     private boolean initComponentCalledOnEventThread = false;
     private boolean initComponentIsCalled = false;
+    private boolean disposeComponentIsCalled = false;
+    private boolean destroyIsCalled = false;
+    private boolean destroyedOnNonEventThread = false;
+    private boolean disposeComponentCalledOnEventThread = false;;
     
     private static volatile int constructCount = 0;
 
@@ -98,5 +102,53 @@ public final class StubRecordingTab implements Tab {
      */
     public static void clearConstructCount() {
         constructCount = 0;
+    }
+    
+    /**
+     * Was disposeComponent called at all?
+     * @return true iff called
+     */
+    public boolean isDisposeComponentCalled() {
+        return disposeComponentIsCalled;
+    }
+    
+    /**
+     * Was destroy called at all?
+     * @return true iff called
+     */
+    public boolean isDestroyCalled() {
+        return destroyIsCalled;
+    }
+    
+    /**
+     * Was destroy called on a non event thread?
+     * @return true iff called on a non event thread
+     */
+    public boolean isDestroyedOnNonEventThread() {
+        return destroyedOnNonEventThread;
+    }
+    
+    /**
+     * Was disposeComponent called on an event thread?
+     * @return true iff called on an event thread.
+     */
+    public boolean isDisposedOnEventThread() {
+        return disposeComponentCalledOnEventThread;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy() {
+        destroyIsCalled = true;
+        destroyedOnNonEventThread = !SwingUtilities.isEventDispatchThread();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void disposeComponent() {
+        disposeComponentIsCalled = true;
+        disposeComponentCalledOnEventThread = SwingUtilities.isEventDispatchThread();
     }
 }

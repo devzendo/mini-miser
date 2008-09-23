@@ -38,4 +38,20 @@ public final class DemoTab implements Tab {
         panel = new JPanel();
         panel.add(new JButton("This is a demo tab for the " + databaseDescriptor.getDatabaseName() + " database"));
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy() {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void disposeComponent() {
+        // TODO Auto-generated method stub
+        
+    }
 }

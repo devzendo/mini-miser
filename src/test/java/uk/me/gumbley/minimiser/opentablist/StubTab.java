@@ -34,4 +34,18 @@ public final class StubTab implements Tab {
     public void initComponent() {
         // do nothing
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void destroy() {
+        // do nothing
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disposeComponent() {
+        // do nothing
+    }
 }

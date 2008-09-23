@@ -20,7 +20,6 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
  */
 public final class TestOpenTabList extends LoggingTestCase {
     private OpenTabList openList;
-    private List<TabDescriptor> oneTabs;
 
     /**
      * 
@@ -84,7 +83,7 @@ public final class TestOpenTabList extends LoggingTestCase {
     public void addDatabaseGetsEmptyTabList() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
-        oneTabs = openList.getTabsForDatabase("one");
+        final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(0, oneTabs.size());
     }
@@ -101,7 +100,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         final TabDescriptor tab = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab);
         openList.addTab(databaseDescriptor, tab);
         
-        oneTabs = openList.getTabsForDatabase("one");
+        final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(1, oneTabs.size());
         Assert.assertEquals(TabIdentifier.OVERVIEW, oneTabs.get(0).getTabIdentifier());
@@ -124,7 +123,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         
         Assert.assertTrue(openList.containsTab("one", TabIdentifier.OVERVIEW));
         
-        oneTabs = openList.getTabsForDatabase("one");
+        final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(1, oneTabs.size());
         Assert.assertEquals(TabIdentifier.OVERVIEW, oneTabs.get(0).getTabIdentifier());
@@ -143,7 +142,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         final TabDescriptor tab = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab);
         openList.addTab(databaseDescriptor, tab);
         
-        oneTabs = openList.getTabsForDatabase("one");
+        final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertEquals(1, oneTabs.size());
         
         openList.addDatabase(databaseDescriptor);
@@ -167,7 +166,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         final TabDescriptor sqlTab = new TabDescriptor(TabIdentifier.SQL, sqlStubTab);
         openList.addTab(databaseDescriptor, sqlTab);
 
-        oneTabs = openList.getTabsForDatabase("one");
+        final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(2, oneTabs.size());
         Assert.assertEquals(TabIdentifier.SQL, oneTabs.get(0).getTabIdentifier());
@@ -322,4 +321,96 @@ public final class TestOpenTabList extends LoggingTestCase {
         Assert.assertEquals(0, openList.getInsertionPosition("one", TabIdentifier.SQL));
     }
 
+    /**
+     * 
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void removingTabFromNullDatabaseThrows() {
+        openList.removeTab(null, new TabDescriptor(TabIdentifier.OVERVIEW));
+    }
+
+    /**
+     * 
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void removingNullTabFromNullDatabaseThrows() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        openList.removeTab(databaseDescriptor, null);
+    }
+
+    /**
+     * 
+     */
+    @Test(expected = IllegalStateException.class)
+    public void removingTabFromNonExistantDatabaseThrows() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        
+        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+    }
+
+    /**
+     * 
+     */
+    @Test(expected = IllegalStateException.class)
+    public void removingNonExistantTabThrows() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        openList.addDatabase(databaseDescriptor);
+        
+        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void removingExistingTabOk() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        openList.addDatabase(databaseDescriptor);
+        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.SQL));
+
+        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
+        Assert.assertNotNull(oneTabs);
+        Assert.assertEquals(1, oneTabs.size());
+        Assert.assertEquals(TabIdentifier.SQL, oneTabs.get(0).getTabIdentifier());
+        
+        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.SQL));
+        final List<TabDescriptor> zeroTabs = openList.getTabsForDatabase("one");
+        Assert.assertNotNull(zeroTabs);
+        Assert.assertEquals(0, zeroTabs.size());
+    }
+
+    /**
+     * 
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void removingNullDatabaseThrows() {
+        openList.removeDatabase(null);
+    }
+
+    /**
+     * 
+     */
+    @Test(expected = IllegalStateException.class)
+    public void removingNonEmptyDatabaseThrows() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        openList.addDatabase(databaseDescriptor);
+        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+
+        openList.removeDatabase(databaseDescriptor);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void removingDatabaseRemovesIt() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        openList.addDatabase(databaseDescriptor);
+        
+        openList.removeDatabase(databaseDescriptor);
+        final List<TabDescriptor> zeroTabs = openList.getTabsForDatabase("one");
+        Assert.assertNull(zeroTabs);
+    }
 }

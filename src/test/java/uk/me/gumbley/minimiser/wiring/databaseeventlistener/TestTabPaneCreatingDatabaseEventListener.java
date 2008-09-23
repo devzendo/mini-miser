@@ -28,7 +28,8 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  * creation and population of the database descriptor's
  * TabbedPane attribute. Tests that tabs defined for the various
  * TabIdentifiers are loaded and attached if they are permanent
- * or stored in prefs as an open tab.
+ * or stored in prefs as an open tab. Tests that they are disposed of
+ * and removed from the open tab list on close.
  * 
  * 
  * @author matt
@@ -113,5 +114,43 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         Assert.assertTrue(component1IsLabel);
         Assert.assertTrue(tab0NameOk);
         Assert.assertTrue(tab1NameOk);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void closingOpenDatabaseRemovesFromTheOpenTabList() {
+        final Prefs prefs = EasyMock.createMock(Prefs.class);
+        EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {"SQL"});
+        EasyMock.replay(prefs);
+
+        final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
+        
+        adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, tabFactory, openTabList);
+        openDatabaseList.addDatabaseEventObserver(adapter);
+        
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
+        openDatabaseList.addOpenedDatabase(databaseDescriptor);
+
+        // Remember the tabs, they'll be disposed of by the close and not
+        // obtainable by getTabsForDatabase, but we want to make sure they've
+        // been disposed correctly.
+        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        final StubRecordingTab overviewTab = (StubRecordingTab) tabsForDatabase.get(0).getTab();
+        final StubRecordingTab sqlTab = (StubRecordingTab) tabsForDatabase.get(1).getTab();
+
+        // Now close it and the open tab list should have been cleared
+        openDatabaseList.removeClosedDatabase(databaseDescriptor);
+
+        Assert.assertNull(openTabList.getTabsForDatabase(DATABASE));
+        
+        // The TabFactory test tests for the correct calls on the correct
+        // threads, but let's make sure that the TabFactory is actually being
+        // called!
+        Assert.assertTrue(overviewTab.isDisposeComponentCalled());
+        Assert.assertTrue(overviewTab.isDisposedOnEventThread());
+        Assert.assertTrue(sqlTab.isDisposeComponentCalled());
+        Assert.assertTrue(sqlTab.isDisposedOnEventThread());
     }
 }

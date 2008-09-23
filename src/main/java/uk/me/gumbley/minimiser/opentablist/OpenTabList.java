@@ -175,4 +175,60 @@ public final class OpenTabList {
         }
         return existingTabIds.length;
     }
+
+    /**
+     * Remove a tab from a database. If the tab does not exist, an
+     * IllegalStateException will be thrown.
+     * @param databaseDescriptor the database containing the tab
+     * @param tabDescriptor the tab
+     */
+    public void removeTab(final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
+        if (databaseDescriptor == null) {
+            throw new IllegalArgumentException("null database descriptor supplied");
+        }
+        if (tabDescriptor == null) {
+            throw new IllegalArgumentException("null tab descriptor supplied");
+        }
+        final String databaseName = databaseDescriptor.getDatabaseName();
+        checkDatabaseName(databaseName);
+        LOGGER.info("Removing " + tabDescriptor.getTabIdentifier() + " tab from database '" + databaseName + "'");
+        if (!tabMap.containsKey(databaseName)) {
+            final String warning = "Tab " + tabDescriptor.getTabIdentifier() + " tab does not exist in database '" + databaseName + "'";
+            LOGGER.warn(warning);
+            throw new IllegalStateException(warning);
+        }
+        final Set<TabDescriptor> tabSet = tabMap.get(databaseName);
+        if (!tabSet.contains(tabDescriptor)) {
+            final String warning = "No such tab " + tabDescriptor.getTabIdentifier() + " in database '" + databaseName + "'";
+            LOGGER.warn(warning);
+            throw new IllegalStateException(warning);
+        }
+        tabSet.remove(tabDescriptor);
+    }
+
+    /**
+     * Remove a database that should be empty of tabs. If the database contains
+     * tabs, an IllegalStateException will be thrown.
+     * @param databaseDescriptor the database to remove
+     */
+    public void removeDatabase(final DatabaseDescriptor databaseDescriptor) {
+        if (databaseDescriptor == null) {
+            throw new IllegalArgumentException("null database descriptor supplied");
+        }
+        final String databaseName = databaseDescriptor.getDatabaseName();
+        checkDatabaseName(databaseName);
+        LOGGER.info("Removing database '" + databaseName + "'");
+        if (!tabMap.containsKey(databaseName)) {
+            final String warning = "Database '" + databaseName + "' does not exist";
+            LOGGER.warn(warning);
+            throw new IllegalStateException(warning);
+        }
+        final Set<TabDescriptor> tabSet = tabMap.get(databaseName);
+        if (tabSet.size() != 0) {
+            final String warning = "Database has " + tabSet.size() + " tab(s); cannot delete database while populated";
+            LOGGER.warn(warning);
+            throw new IllegalStateException(warning);
+        }
+        tabMap.remove(databaseName);
+    }
 }

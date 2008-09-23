@@ -100,7 +100,7 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         return toOpenTabs;
     }
 
-    private void setUpStubRecordingTest() {
+    private List<TabDescriptor> setUpStubRecordingTest() {
         StubRecordingTab.clearConstructCount();
         
         descriptor = new DatabaseDescriptor(DATABASE);
@@ -114,6 +114,8 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
 
         Assert.assertTrue(tab instanceof StubRecordingTab);
         stubTab = (StubRecordingTab) tab;
+        
+        return tabsForDatabase;
     }
 
     /**
@@ -184,5 +186,25 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         Assert.assertEquals(0, StubRecordingTab.getConstructCount());
 
         EasyMock.verify(obs);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void tabComponentIsDestroyedOnCorrectThreads() {
+        final List<TabDescriptor> tabsForDatabase = setUpStubRecordingTest();
+
+        Assert.assertFalse(stubTab.isDestroyCalled());
+        Assert.assertFalse(stubTab.isDestroyedOnNonEventThread());
+        Assert.assertFalse(stubTab.isDisposeComponentCalled());
+        Assert.assertFalse(stubTab.isDisposedOnEventThread());
+        
+        tabFactory.closeTabs(descriptor, tabsForDatabase);
+
+        Assert.assertTrue(stubTab.isDestroyCalled());
+        Assert.assertTrue(stubTab.isDestroyedOnNonEventThread());
+        Assert.assertTrue(stubTab.isDisposeComponentCalled());
+        Assert.assertTrue(stubTab.isDisposedOnEventThread());
     }
 }

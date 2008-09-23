@@ -112,6 +112,7 @@
 		<property name="sourceList">
 			<list>
 			    <value>tabEventListenerLifecycle</value>
+			    <value>viewMenuInitialiserLifecycle</value>
 			    <value>databaseEventListenerLifecycle</value>
 				<value>databaseOpenerLifecycle</value>
 				<value>databaseCloserLifecycle</value>
@@ -124,6 +125,11 @@
 	<bean id="lifecycleManager" class="uk.me.gumbley.minimiser.lifecycle.DefaultLifecycleManagerImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="lifecycleList" />	
+	</bean>
+	
+	<bean id="viewMenuInitialiserLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.ViewMenuInitialiserLifecycle">
+		<constructor-arg ref="prefs" />	
+		<constructor-arg ref="menu" />	
 	</bean>
 	
 	<bean id="tabEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.TabEventListenerLifecycle">

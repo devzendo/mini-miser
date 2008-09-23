@@ -7,27 +7,12 @@ BUILD FAILURE:
   configuration - this is configured, need to test
 
 BUGS:
-* if you have a db open in the previous list, and open a second instance,
-  you get a nasty 'open in another process' dialog.
-* on mac, after opening / closing recent encrypted and clear files, and
-  switching, tabs disappear on encrypted one.
-  Open both
-  close enc
-  open recent enc, enter password
-  boom.
 * on mac, was sue I did open recent on encrypted, and it opened, without
   prompting for password. may have already had it open, in which case it was
   a switch.
+* if you have a db open in the previous list, and open a second instance,
+  you get a nasty 'open in another process' dialog.
 CURRENT TASKS:
-* remove coupling between menuimpl and prefs - for tab hidden. menumediator
-  needs to handle this.
-* need a prefs-changed listener, with section identifiers so we don't rebuild
-  the view menu on every window move - the menumediator's prefs listener would
-  only trap tab-hidden prefs changes, update the menu's hidden tab settings
-  for each tab identifier, then get the menu to rebuild the view menu.
-* if 'SQL view available' flag enabled, enable the SQL view (this has been
-  generalised in prefs to allow any tab to be hidden, but the prefs dialog
-  would only have the SQL one hidable)
 * if 'SQL view available' flag gets disabled in prefs, close any currently-
   open SQL views (with a notification)
     
