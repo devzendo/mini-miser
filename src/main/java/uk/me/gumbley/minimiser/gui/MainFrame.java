@@ -227,6 +227,7 @@ public class MainFrame {
         menu.refreshRecentList(recentList.getRecentDatabases());
         // TODO SMELL why not have it populated correctly at first?
         // we could pass in the recent strings to a ctor?
+        // NOTE the view menu is initially populated via a lifecycle
         LOGGER.info("Got the menu");
         menu.addMenuActionListener(MenuIdentifier.FileExit, exitAL);
         // wire up dependencies
