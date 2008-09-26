@@ -2,7 +2,6 @@ package uk.me.gumbley.minimiser.gui;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
@@ -78,7 +77,9 @@ public class MainFrame {
         
         // Main panel
         final TabPaneManager tabPaneManager = springLoader.getBean("tabPaneManager", TabPaneManager.class);
-        mainFrame.add(tabPaneManager.getMainPanel(), BorderLayout.CENTER);
+        final JPanel mainPanel = tabPaneManager.getMainPanel();
+        mainPanel.setPreferredSize(new Dimension(640, 480));
+        mainFrame.add(mainPanel, BorderLayout.CENTER);
         
         if (!windowGeometryStore.hasStoredGeometry(mainFrame)) {
             mainFrame.pack();
@@ -111,12 +112,6 @@ public class MainFrame {
             }
         };
         Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.WINDOW_EVENT_MASK);
-    }
-
-    private Component createTabPaneManagerPanel() {
-        final JPanel blankPanel = new JPanel();
-        blankPanel.setPreferredSize(new Dimension(640, 480));
-        return blankPanel;
     }
 
     private void createMainFrame() {
