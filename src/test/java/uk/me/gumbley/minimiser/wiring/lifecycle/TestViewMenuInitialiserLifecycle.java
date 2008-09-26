@@ -19,6 +19,11 @@ import uk.me.gumbley.minimiser.prefs.TestPrefs;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 
 
+/**
+ * Tests the lifecycle that initialises the View Menu
+ * @author matt
+ *
+ */
 public final class TestViewMenuInitialiserLifecycle {
 
     private StubMenu stubMenu;
@@ -31,8 +36,9 @@ public final class TestViewMenuInitialiserLifecycle {
     private File prefsFile;
 
     /**
-     * @throws IOException
+     * @throws IOException on failure
      */
+    @SuppressWarnings("unchecked")
     @Before
     public void getPrerequisites() throws IOException {
         stubMenu = new StubMenu();
