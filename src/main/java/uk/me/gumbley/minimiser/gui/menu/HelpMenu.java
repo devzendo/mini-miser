@@ -30,7 +30,7 @@ public final class HelpMenu extends AbstractMenuGroup {
         
         //createMenuItem(MenuIdentifier.HelpWelcome, "Welcome", 'W', menu);
         //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
-        menu.createMenuItem(MenuIdentifier.HelpAbout, "About " + AppName.getAppName(), 'A', helpmenu);
+        createMenuItem(MenuIdentifier.HelpAbout, "About " + AppName.getAppName(), 'A', helpmenu);
     }
 
     /**

@@ -38,14 +38,14 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     @Override
     public void rebuildMenuGroup() {
         viewMenu.removeAll();
-        if (getMainMenu().getNumberOfDatabases() == 0) {
+        if (getMenuState().getNumberOfDatabases() == 0) {
             viewMenu.setEnabled(false);
             LOGGER.debug("view menu is empty");
             return;
         }
 
         for (final TabIdentifier tabId : TabIdentifier.values()) {
-            final boolean viewMenuItemHidden = getMainMenu().isViewMenuItemHidden(tabId.toString());
+            final boolean viewMenuItemHidden = getMenuState().isViewMenuItemHidden(tabId.toString());
             //final boolean tabPresent = isTabPresent(tabId);
             LOGGER.debug("View menu item " + tabId + " hidden:" + viewMenuItemHidden);
             if (!tabId.isTabPermanent() && !viewMenuItemHidden) {

@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.MainFrameTitle;
 import uk.me.gumbley.minimiser.gui.menu.helpers.ViewMenuUpdater;
-import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;

@@ -7,6 +7,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 
 /**
@@ -19,6 +21,7 @@ import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
  */
 public final class FileMenu extends AbstractRebuildableMenuGroup {
     private static final Logger LOGGER = Logger.getLogger(FileMenu.class);
+    private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
     private JMenu fileMenu;
 
     /**
@@ -30,6 +33,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
      */
     public FileMenu(final MenuWiring wiring, final MenuState state, final MenuImpl menu) {
         super(wiring, state, menu);
+        openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
         
         fileMenu = new JMenu("File");
         fileMenu.setMnemonic('F');
@@ -48,14 +52,14 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     @Override
     public void rebuildMenuGroup() {
         fileMenu.removeAll();
-        getMainMenu().createMenuItem(MenuIdentifier.FileNew, "New...", 'N', fileMenu);
-        getMainMenu().createMenuItem(MenuIdentifier.FileOpen, "Open...", 'O', fileMenu);
+        createMenuItem(MenuIdentifier.FileNew, "New...", 'N', fileMenu);
+        createMenuItem(MenuIdentifier.FileOpen, "Open...", 'O', fileMenu);
         fileMenu.add(buildRecentList());
 
         fileMenu.add(new JSeparator());
 
-        getMainMenu().createMenuItem(MenuIdentifier.FileClose, "Close", 'C', fileMenu);
-        getMainMenu().createMenuItem(MenuIdentifier.FileCloseAll, "Close all", 'l', fileMenu);
+        createMenuItem(MenuIdentifier.FileClose, "Close", 'C', fileMenu);
+        createMenuItem(MenuIdentifier.FileCloseAll, "Close all", 'l', fileMenu);
 
         // TODO enable import / export in 0.2
 //        fileMenu.add(new JSeparator());
@@ -65,7 +69,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
 
         fileMenu.add(new JSeparator());
 
-        getMainMenu().createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
+        createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
     }
 
     
@@ -73,12 +77,12 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     private JMenu buildRecentList() {
         final JMenu submenu = new JMenu("Open recent");
         submenu.setMnemonic('r');
-        if (getMainMenu().getNumberOfRecentDatabaseDescriptors() == 0) {
+        if (getMenuState().getNumberOfRecentDatabaseDescriptors() == 0) {
             submenu.setEnabled(false);
         } else {
-            for (int i = 0; i < getMainMenu().getNumberOfRecentDatabaseDescriptors(); i++) {
-                final String recentDbName = getMainMenu().getRecentDatabaseDescriptor(i).getDatabaseName();
-                final String recentDbPath = getMainMenu().getRecentDatabaseDescriptor(i).getDatabasePath();
+            for (int i = 0; i < getMenuState().getNumberOfRecentDatabaseDescriptors(); i++) {
+                final String recentDbName = getMenuState().getRecentDatabaseDescriptor(i).getDatabaseName();
+                final String recentDbPath = getMenuState().getRecentDatabaseDescriptor(i).getDatabasePath();
                 final int mnemonic = 1 + i;
                 final JMenuItem menuItem = new JMenuItem("" + mnemonic + " " + recentDbName);
                 menuItem.setMnemonic(KeyEvent.VK_0 + mnemonic);
@@ -90,8 +94,8 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
                                     Thread.currentThread().setName("RecentOpener:" + recentDbName);
                                     Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
                                     LOGGER.info("Opening recent database '" + recentDbName + "'");
-                                    getMainMenu().dispatchToRecentSubmenuChoiceObservers(
-                                        new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                                        openRecentSubmenuChoiceObservers.eventOccurred(
+                                            new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
                                 } catch (final Throwable t) {
                                     LOGGER.error("Recent opener thread caught unexpected " + t.getClass().getSimpleName(), t);
                                 } finally {
@@ -120,7 +124,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
      * Enable the close all menu item, if there are any open databases.
      */
     public void enableCloseAllMenuIfDatabasesOpen() {
-        final int numberOfDatabases = getMainMenu().getNumberOfDatabases();
+        final int numberOfDatabases = getMenuState().getNumberOfDatabases();
         LOGGER.debug("Close All Menu - size of database list is "  + numberOfDatabases);
         getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileCloseAll, numberOfDatabases != 0);
     }
@@ -135,5 +139,13 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
         // TODO enable import / export in 0.2
         // getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileImport, enabled);
         // getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileExport, enabled);
+    }
+
+    /**
+     * Add a recent menu observer
+     * @param observer the observer
+     */
+    public void addOpenRecentObserver(final Observer<DatabaseNameAndPathChoice> observer) {
+        openRecentSubmenuChoiceObservers.addObserver(observer);
     }
 }
