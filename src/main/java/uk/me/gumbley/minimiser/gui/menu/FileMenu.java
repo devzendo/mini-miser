@@ -10,6 +10,9 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 
 /**
  * The File Menu is rebuilt when the Open Recent -> list is changed. It has
@@ -23,16 +26,23 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     private static final Logger LOGGER = Logger.getLogger(FileMenu.class);
     private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
     private JMenu fileMenu;
+    private final OpenDatabaseList openDatabaseList;
+    private final RecentFilesList recentFilesList;
 
     /**
      * Construct the File Menu.
      * 
      * @param wiring the menu wiring
      * @param state the menu state
-     * @param menu the main menu
+     * @param databaseList the OpenDatabaseList
+     * @param recentList the RecentFilesList
      */
-    public FileMenu(final MenuWiring wiring, final MenuState state, final MenuImpl menu) {
-        super(wiring, state, menu);
+    public FileMenu(final MenuWiring wiring, final MenuState state,
+            final OpenDatabaseList databaseList,
+            final RecentFilesList recentList) {
+        super(wiring, state);
+        this.openDatabaseList = databaseList;
+        this.recentFilesList = recentList;
         openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
         
         fileMenu = new JMenu("File");
@@ -77,12 +87,14 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     private JMenu buildRecentList() {
         final JMenu submenu = new JMenu("Open recent");
         submenu.setMnemonic('r');
-        if (getMenuState().getNumberOfRecentDatabaseDescriptors() == 0) {
+        final int numberOfRecentFiles = recentFilesList.getNumberOfEntries();
+        if (numberOfRecentFiles == 0) {
             submenu.setEnabled(false);
         } else {
-            for (int i = 0; i < getMenuState().getNumberOfRecentDatabaseDescriptors(); i++) {
-                final String recentDbName = getMenuState().getRecentDatabaseDescriptor(i).getDatabaseName();
-                final String recentDbPath = getMenuState().getRecentDatabaseDescriptor(i).getDatabasePath();
+            final DatabaseDescriptor[] recentDatabases = recentFilesList.getRecentDatabases();
+            for (int i = 0; i < numberOfRecentFiles; i++) {
+                final String recentDbName = recentDatabases[i].getDatabaseName();
+                final String recentDbPath = recentDatabases[i].getDatabasePath();
                 final int mnemonic = 1 + i;
                 final JMenuItem menuItem = new JMenuItem("" + mnemonic + " " + recentDbName);
                 menuItem.setMnemonic(KeyEvent.VK_0 + mnemonic);
@@ -124,7 +136,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
      * Enable the close all menu item, if there are any open databases.
      */
     public void enableCloseAllMenuIfDatabasesOpen() {
-        final int numberOfDatabases = getMenuState().getNumberOfDatabases();
+        final int numberOfDatabases = openDatabaseList.getNumberOfDatabases();
         LOGGER.debug("Close All Menu - size of database list is "  + numberOfDatabases);
         getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileCloseAll, numberOfDatabases != 0);
     }

@@ -13,11 +13,14 @@ BUGS:
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
 CURRENT TASKS:
-* refactoring menuimpl - way too coupled. each menu should be a separate
-  object, but they share some state, and need to trigger each other's
-  rebuilds. menuimpl could then just be a delegator to these individual
-  menus
-
+* refactoring menuimpl and the menus - loading state from the rest of the
+  objects (prefs, opentablist, opendatabaselist), rather than replicating it
+  in menustate. had added a factory to stash menustate, but this can go when
+  the access via the springloader to the rest of the system objects is
+  complete.
+* tools options dialog - need basic graphoical framework, spring bean loading
+  for each tab, and a shadow prefs that collects the changes in prefs, and
+  commits to the real prefs on OK.
 * checkboxes and actionlistener on view menu items
 * actionlistener loads/closes tabs, updates its checkbox.
     

@@ -132,7 +132,8 @@ public final class MiniMiser {
         // Now load up Spring...
         final long startSpring = System.currentTimeMillis();
         final SpringLoader sl = SpringLoaderFactory
-                .initialise("uk/me/gumbley/minimiser/MiniMiser.xml");
+                .initialise("uk/me/gumbley/minimiser/MiniMiser.xml",
+                            "uk/me/gumbley/minimiser/Menu.xml");
         final long stopSpring = System.currentTimeMillis();
         final long springElapsed = stopSpring - startSpring;
         LOGGER.debug("SpringLoader initialised in "

@@ -12,8 +12,6 @@
 
 	<bean id="mainFrameTitle" class="uk.me.gumbley.minimiser.gui.MainFrameTitleFactory" />
 
-	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.menu.MenuWiring" lazy-init="true" />
-	
 	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" lazy-init="true" />
 
 	<bean id="windowGeometryStore" class="uk.me.gumbley.minimiser.gui.WindowGeometryStore" lazy-init="true" >
@@ -33,10 +31,6 @@
 	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" lazy-init="true" >
         <constructor-arg ref="delayedExecutor" />
     </bean>
-    
-	<bean id="menu" class="uk.me.gumbley.minimiser.gui.menu.MenuImpl" lazy-init="true" >
-		<constructor-arg ref="menuWiring" />
-	</bean>
 
 	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" lazy-init="true" >
 	</bean>
@@ -45,48 +39,6 @@
 		<constructor-arg ref="mainFrame" />	
 	</bean>
 
-	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilder" lazy-init="true" >
-		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="springLoader" />
-	</bean>
-
-	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl" lazy-init="true" >
-		<constructor-arg ref="menu" />
-		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="recentFilesList" />
-		<constructor-arg ref="opener" />
-		<constructor-arg ref="openerAdapterFactory" />
-		<constructor-arg ref="mainFrameTitle" />
-		<constructor-arg ref="prefs" />
-	</bean>
-	
-    <!-- menu action listeners -->
-	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileNewActionListener" lazy-init="true" >
-		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="accessFactory" />
-		<constructor-arg ref="cursorManager" />
-	</bean>
-	<bean id="menuALFileOpen" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileOpenActionListener" lazy-init="true" >
-		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="cursorManager" />
-		<constructor-arg ref="opener" />
-	</bean>
-	<bean id="menuALFileClose" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseActionListener" lazy-init="true" >
-		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="cursorManager" />
-	</bean>
-	<bean id="menuALFileCloseAll" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseAllActionListener" lazy-init="true" >
-		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="cursorManager" />
-	</bean>
-
-
-	<bean id="menuALHelpAbout" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpAboutActionListener" lazy-init="true" >
-		<constructor-arg ref="mainFrame" />	
-		<constructor-arg ref="cursorManager" />
-	</bean>
-    
-    
     <!-- tab factory and tab definitions -->
     <bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabfactory.DefaultTabFactoryImpl">
 		<constructor-arg ref="springLoader" />

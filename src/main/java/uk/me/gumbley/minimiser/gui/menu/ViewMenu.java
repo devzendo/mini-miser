@@ -6,6 +6,9 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
+import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.opentablist.OpenTabList;
+import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * The View menu is rebuildable on initialisation and when prefs' hidden tabs
@@ -18,16 +21,27 @@ import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 public final class ViewMenu extends AbstractRebuildableMenuGroup {
     private static final Logger LOGGER = Logger.getLogger(ViewMenu.class);
     private JMenu viewMenu;
+    private final OpenDatabaseList openDatabaseList;
+    private final OpenTabList openTabList;
+    private final Prefs prefs;
 
     /**
      * Construct the view menu
      * 
      * @param wiring the menu wiring
      * @param state the menus state
-     * @param menu the main menu
+     * @param databaseList the Open Database List
+     * @param tabList the Open Tab List
+     * @param preferences the Preferences
      */
-    public ViewMenu(final MenuWiring wiring, final MenuState state, final MenuImpl menu) {
-        super(wiring, state, menu);
+    public ViewMenu(final MenuWiring wiring, final MenuState state, 
+            final OpenDatabaseList databaseList,
+            final OpenTabList tabList,
+            final Prefs preferences) {
+        super(wiring, state);
+        this.openDatabaseList = databaseList;
+        this.openTabList = tabList;
+        this.prefs = preferences;
         viewMenu = new JMenu("View");
         viewMenu.setMnemonic('V');
     }
@@ -38,15 +52,14 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     @Override
     public void rebuildMenuGroup() {
         viewMenu.removeAll();
-        if (getMenuState().getNumberOfDatabases() == 0) {
+        if (openDatabaseList.getNumberOfDatabases() == 0) {
             viewMenu.setEnabled(false);
             LOGGER.debug("view menu is empty");
             return;
         }
 
         for (final TabIdentifier tabId : TabIdentifier.values()) {
-            final boolean viewMenuItemHidden = getMenuState().isViewMenuItemHidden(tabId.toString());
-            //final boolean tabPresent = isTabPresent(tabId);
+            final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.toString());
             LOGGER.debug("View menu item " + tabId + " hidden:" + viewMenuItemHidden);
             if (!tabId.isTabPermanent() && !viewMenuItemHidden) {
                 final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(tabId.getDisplayableName());
@@ -75,10 +88,6 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
         }
         viewMenu.setEnabled(true);
     }
-//    
-//    private boolean isTabPresent(final TabIdentifier tabId) {
-//        return false;
-//    }
 
     /**
      * {@inheritDoc}

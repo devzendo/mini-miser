@@ -50,6 +50,10 @@ public interface Menu {
         /**
          * 
          */
+        ToolsOptions,
+        /**
+         * 
+         */
         HelpWelcome,
         /**
          * 

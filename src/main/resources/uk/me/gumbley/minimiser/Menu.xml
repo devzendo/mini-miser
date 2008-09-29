@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true" >
+
+	<!-- gui layer -->
+	<bean id="menuWiring" class="uk.me.gumbley.minimiser.gui.menu.MenuWiring" />
+	
+	<bean id="menu" class="uk.me.gumbley.minimiser.gui.menu.MenuImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="menuWiring" />
+	</bean>
+
+	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilder">
+		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="springLoader" />
+	</bean>
+
+	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="recentFilesList" />
+		<constructor-arg ref="opener" />
+		<constructor-arg ref="openerAdapterFactory" />
+		<constructor-arg ref="mainFrameTitle" />
+		<constructor-arg ref="prefs" />
+	</bean>
+
+	<!-- menus -->
+	<bean id="fileMenu" class="uk.me.gumbley.minimiser.gui.menu.FileMenu">
+		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="menuState" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="recentFilesList" />
+	</bean>
+
+	<bean id="viewMenu" class="uk.me.gumbley.minimiser.gui.menu.ViewMenu">
+		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="menuState" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="openTabList" />
+		<constructor-arg ref="prefs" />
+	</bean>
+
+	<bean id="toolsMenu" class="uk.me.gumbley.minimiser.gui.menu.ToolsMenu">
+		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="menuState" />
+	</bean>
+			
+	<bean id="windowMenu" class="uk.me.gumbley.minimiser.gui.menu.WindowMenu">
+		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="menuState" />
+		<constructor-arg ref="openDatabaseList" />
+	</bean>
+
+	<bean id="helpMenu" class="uk.me.gumbley.minimiser.gui.menu.HelpMenu">
+		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="menuState" />
+	</bean>
+	
+    <!-- menu action listeners -->
+	<bean id="menuALFileNew" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileNewActionListener">
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="accessFactory" />
+		<constructor-arg ref="cursorManager" />
+	</bean>
+	<bean id="menuALFileOpen" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileOpenActionListener">
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="cursorManager" />
+		<constructor-arg ref="opener" />
+	</bean>
+	<bean id="menuALFileClose" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseActionListener">
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="cursorManager" />
+	</bean>
+	<bean id="menuALFileCloseAll" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseAllActionListener">
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="cursorManager" />
+	</bean>
+
+
+	<bean id="menuALToolsOptions" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.ToolsOptionsActionListener">
+		<constructor-arg ref="mainFrame" />	
+		<constructor-arg ref="cursorManager" />
+		<constructor-arg ref="prefs" />
+	</bean>
+
+
+	<bean id="menuALHelpAbout" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpAboutActionListener">
+		<constructor-arg ref="mainFrame" />	
+		<constructor-arg ref="cursorManager" />
+	</bean>
+	
+	<!-- miscellaneous -->
+	<bean id="menuState" class="uk.me.gumbley.minimiser.gui.menu.MenuStateFactory" />
+	
+</beans>

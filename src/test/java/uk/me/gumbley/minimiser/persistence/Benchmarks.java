@@ -40,6 +40,7 @@ public final class Benchmarks extends PersistenceUnittestCase {
      * create db, put some data in, and time a select by PK and select count
      */
     @Test
+    @Ignore
     public void testBenchmarkSelectAndCountForPersist() {
         LOGGER.info("*** testBenchmarkSelectAndCountForPersist start");
         final String dbName = "benchmark";

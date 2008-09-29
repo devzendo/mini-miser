@@ -34,7 +34,9 @@ public final class MenuBuilder {
         loadAndWire(MenuIdentifier.FileOpen);
         loadAndWire(MenuIdentifier.FileClose);
         loadAndWire(MenuIdentifier.FileCloseAll);
-        
+
+        loadAndWire(MenuIdentifier.ToolsOptions);
+
         loadAndWire(MenuIdentifier.HelpAbout);
     }
 

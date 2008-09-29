@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
  * The Swing Menu.
@@ -16,6 +17,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 public final class MenuImpl implements Menu {
     private static final Logger LOGGER = Logger.getLogger(MenuImpl.class);
     private Object lock = new Object();
+    private SpringLoader springLoader;
     private MenuState menuState;
     private MenuWiring menuWiring;
     
@@ -23,40 +25,51 @@ public final class MenuImpl implements Menu {
     
     private FileMenu fileMenuGroup;
     private AbstractRebuildableMenuGroup viewMenuGroup;
+    private AbstractMenuGroup toolsMenuGroup;
     private WindowMenu windowMenuGroup;
     private AbstractMenuGroup helpMenuGroup;
 
     
     /**
      * Create the Menu
+     * @param loader the SpringLoader singleton
      * @param wiring the MenuWiring singleton
      */
-    public MenuImpl(final MenuWiring wiring) {
+    public MenuImpl(final SpringLoader loader, final MenuWiring wiring) {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
                 synchronized (lock) {
+                    springLoader = loader;
                     menuState = new MenuState();
                     menuWiring = wiring;
+                    
+                    // Initialise MenuState into factory for menu beans to load
+                    final MenuStateFactory menuStateFactory = springLoader.getBean("&menuState", MenuStateFactory.class);
+                    menuStateFactory.setMenuState(menuState);
         
                     // The menu bar
                     menuBar = new JMenuBar();
                     
                     // The File menu - builds itself on construction
-                    fileMenuGroup = new FileMenu(MenuImpl.this.menuWiring, MenuImpl.this.menuState, MenuImpl.this);
+                    fileMenuGroup = springLoader.getBean("fileMenu", FileMenu.class);
                     menuBar.add(fileMenuGroup.getJMenu());
                     
                     // The View menu
-                    viewMenuGroup = new ViewMenu(MenuImpl.this.menuWiring, MenuImpl.this.menuState, MenuImpl.this);
+                    viewMenuGroup = springLoader.getBean("viewMenu", ViewMenu.class);
                     viewMenuGroup.rebuildMenuGroup();
                     menuBar.add(viewMenuGroup.getJMenu());
-                    
+
+                    // The Tools menu
+                    toolsMenuGroup = springLoader.getBean("toolsMenu", ToolsMenu.class);
+                    menuBar.add(toolsMenuGroup.getJMenu());
+
                     // The Window menu
-                    windowMenuGroup = new WindowMenu(MenuImpl.this.menuWiring, MenuImpl.this.menuState, MenuImpl.this);
+                    windowMenuGroup = springLoader.getBean("windowMenu", WindowMenu.class);
                     menuBar.add(windowMenuGroup.getJMenu());
                     
                     // The help menu
-                    helpMenuGroup = new HelpMenu(MenuImpl.this.menuWiring, MenuImpl.this.menuState, MenuImpl.this);
+                    helpMenuGroup = springLoader.getBean("helpMenu", HelpMenu.class); 
                     menuBar.add(helpMenuGroup.getJMenu());
                 }
             }
