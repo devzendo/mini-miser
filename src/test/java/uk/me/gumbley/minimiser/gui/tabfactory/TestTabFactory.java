@@ -20,7 +20,7 @@ import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 
 
 /**
- * Tests the operation of the TabPaneFactory
+ * Tests the operation of the TabFactory
  * 
  * @author matt
  *

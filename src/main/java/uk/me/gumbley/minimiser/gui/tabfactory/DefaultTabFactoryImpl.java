@@ -46,7 +46,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
 
     /**
      * Construct the TabPaneFactory, given the OpenTabList into which
-     * newly created tabs will be added. There's no parent frame; use
+     * newly created tabs will be added. There's no problem reporter; use
      * this variant in unit tests, for simplicity.
      * @param loader the SpringLoader
      * @param tabList the OpenTabList
