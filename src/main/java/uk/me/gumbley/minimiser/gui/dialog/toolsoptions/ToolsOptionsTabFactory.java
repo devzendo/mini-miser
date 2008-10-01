@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.dialog;
+package uk.me.gumbley.minimiser.gui.dialog.toolsoptions;
 
 import java.util.List;
 import uk.me.gumbley.minimiser.prefs.Prefs;

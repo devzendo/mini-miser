@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.gui.dialog.StubProblemReporter;
+import uk.me.gumbley.minimiser.gui.dialog.problem.StubProblemReporter;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.AbstractDatabaseDescriptorFactoryUnittestCase;

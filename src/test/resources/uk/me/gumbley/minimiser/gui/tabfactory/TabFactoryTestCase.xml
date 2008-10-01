@@ -7,7 +7,7 @@
 	
 	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
-	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.StubProblemReporter" />
+	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.problem.StubProblemReporter" />
 
 	<bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabfactory.DefaultTabFactoryImpl">
 		<constructor-arg ref="springLoader" />

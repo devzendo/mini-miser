@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.dialog;
+package uk.me.gumbley.minimiser.gui.dialog.about;
 
 import java.awt.AWTEvent;
 import java.awt.Component;

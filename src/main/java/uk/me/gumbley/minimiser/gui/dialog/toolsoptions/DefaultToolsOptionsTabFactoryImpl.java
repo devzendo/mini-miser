@@ -1,10 +1,11 @@
-package uk.me.gumbley.minimiser.gui.dialog;
+package uk.me.gumbley.minimiser.gui.dialog.toolsoptions;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
 import uk.me.gumbley.minimiser.prefs.ChangeCollectingPrefsFactory;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.springbeanlistloader.AbstractSpringBeanListLoaderImpl;

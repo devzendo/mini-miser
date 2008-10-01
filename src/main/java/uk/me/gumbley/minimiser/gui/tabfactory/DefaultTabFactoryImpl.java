@@ -5,7 +5,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.minimiser.gui.dialog.ProblemReporter;
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;

@@ -1,10 +1,13 @@
-package uk.me.gumbley.minimiser.gui.dialog;
+package uk.me.gumbley.minimiser.gui.dialog.toolsoptions;
 
 import java.awt.Label;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import uk.me.gumbley.minimiser.gui.dialog.problem.StubProblemReporter;
+import uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsTab;
+import uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsTabFactory;
 import uk.me.gumbley.minimiser.prefs.ChangeCollectingPrefsFactory;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
@@ -17,7 +20,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
  * @author matt
  *
  */
-@ApplicationContext("uk/me/gumbley/minimiser/gui/dialog/ToolsOptionsTabFactoryTestCase.xml")
+@ApplicationContext("uk/me/gumbley/minimiser/gui/dialog/toolsoptions/ToolsOptionsTabFactoryTestCase.xml")
 public final class TestToolsOptionsTabFactory extends SpringLoaderUnittestCase {
 
     private ToolsOptionsTabFactory tabFactory;

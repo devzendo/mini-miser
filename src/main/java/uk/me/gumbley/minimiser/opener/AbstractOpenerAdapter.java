@@ -7,8 +7,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.dialog.PasswordEntryDialogHelper;
-import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
+import uk.me.gumbley.minimiser.gui.dialog.passwordentry.PasswordEntryDialogHelper;
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialog;
 
 /**
  * Provides the common app-wide facilities of an OpenerAdapter:

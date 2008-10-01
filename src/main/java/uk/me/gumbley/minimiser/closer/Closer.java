@@ -2,7 +2,7 @@ package uk.me.gumbley.minimiser.closer;
 
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
-import uk.me.gumbley.minimiser.gui.dialog.ProblemDialog;
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialog;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;

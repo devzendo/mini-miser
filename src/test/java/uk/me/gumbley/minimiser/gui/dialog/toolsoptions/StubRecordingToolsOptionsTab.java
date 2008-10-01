@@ -1,9 +1,10 @@
-package uk.me.gumbley.minimiser.gui.dialog;
+package uk.me.gumbley.minimiser.gui.dialog.toolsoptions;
 
 import java.awt.Component;
 import java.awt.Label;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+import uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsTab;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**

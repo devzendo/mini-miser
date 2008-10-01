@@ -5,7 +5,7 @@
 	
 	<bean id="changeCollectingPrefs" class="uk.me.gumbley.minimiser.prefs.ChangeCollectingPrefsFactory" />
 	
-	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.StubProblemReporter" />
+	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.problem.StubProblemReporter" />
 
 	<bean id="toolsOptionsTabList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
@@ -15,13 +15,13 @@
 		</property>
 	</bean>
 
-	<bean id="toolsOptionsTabFactory" class="uk.me.gumbley.minimiser.gui.dialog.DefaultToolsOptionsTabFactoryImpl">
+	<bean id="toolsOptionsTabFactory" class="uk.me.gumbley.minimiser.gui.dialog.toolsoptions.DefaultToolsOptionsTabFactoryImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="problemReporter" />
 		<constructor-arg ref="toolsOptionsTabList" />	
 	</bean>
 
-	<bean id="stub" scope="prototype" class="uk.me.gumbley.minimiser.gui.dialog.StubRecordingToolsOptionsTab" >
+	<bean id="stub" scope="prototype" class="uk.me.gumbley.minimiser.gui.dialog.toolsoptions.StubRecordingToolsOptionsTab" >
 		<constructor-arg ref="changeCollectingPrefs" />
 	</bean>
 

@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.dialog;
+package uk.me.gumbley.minimiser.gui.dialog.problem;
 
 import java.awt.Frame;
 import org.apache.log4j.Logger;

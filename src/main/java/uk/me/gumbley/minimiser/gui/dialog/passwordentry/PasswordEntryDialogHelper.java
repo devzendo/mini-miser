@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.dialog;
+package uk.me.gumbley.minimiser.gui.dialog.passwordentry;
 
 import java.awt.Frame;
 import java.util.concurrent.CountDownLatch;

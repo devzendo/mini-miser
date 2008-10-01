@@ -3,7 +3,7 @@ package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.dialog.ToolsOptionsDialog;
+import uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsDialog;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
