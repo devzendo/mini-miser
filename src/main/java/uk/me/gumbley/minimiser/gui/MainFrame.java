@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -115,8 +116,14 @@ public class MainFrame {
     }
 
     private void createMainFrame() {
+        //Ask for window decorations provided by the look and feel.
+        JFrame.setDefaultLookAndFeelDecorated(true);
+
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
+
+        //Set the frame icon to an image loaded from a file.
+        mainFrame.setIconImage(new ImageIcon("icons/application.gif").getImage());
 
         setMainFrameInFactory();
         
