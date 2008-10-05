@@ -20,6 +20,14 @@ import java.awt.Component;
 public interface ToolsOptionsTab {
     
     /**
+     * What is the name of this tab, to be displayed in its tab in the Dialog's
+     * JTabbedPane?
+     * 
+     * @return the tab name
+     */
+    String getName();
+    
+    /**
      * Always called on the Swing Event thread, this method
      * is used by the Tab to initialise any Swing components
      * necessary to display the View aspect of the ToolsOptionsTab.

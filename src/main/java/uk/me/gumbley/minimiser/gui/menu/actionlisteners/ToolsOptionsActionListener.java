@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsDialog;
+import uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsTabFactory;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -15,17 +16,20 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 public final class ToolsOptionsActionListener extends SnailActionListener {
     private final Frame mainFrame;
     private final Prefs prefs;
+    private final ToolsOptionsTabFactory toolsOptionsTabFactory;
 
     /**
      * @param frame the main frame
      * @param cursor the cursor manager
      * @param preferences the preferences 
+     * @param tabFactory the Tools->Options tab factory
      */
     public ToolsOptionsActionListener(final Frame frame, final CursorManager cursor,
-            final Prefs preferences) {
+            final Prefs preferences, final ToolsOptionsTabFactory tabFactory) {
         super(cursor);
         this.mainFrame = frame;
         this.prefs = preferences;
+        this.toolsOptionsTabFactory = tabFactory;
     }
 
     /**
@@ -34,6 +38,6 @@ public final class ToolsOptionsActionListener extends SnailActionListener {
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
 //        getCursorManager().normal();
-        ToolsOptionsDialog.showOptions(mainFrame, getCursorManager(), prefs);
+        ToolsOptionsDialog.showOptions(mainFrame, getCursorManager(), prefs, toolsOptionsTabFactory);
     }
 }

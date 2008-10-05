@@ -84,6 +84,7 @@
 		<constructor-arg ref="mainFrame" />	
 		<constructor-arg ref="cursorManager" />
 		<constructor-arg ref="prefs" />
+		<constructor-arg ref="toolsOptionsTabFactory" />
 	</bean>
 
 

@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.awt.Label;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
-import uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsTab;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -39,6 +38,13 @@ public final class StubRecordingToolsOptionsTab implements ToolsOptionsTab {
         this.prefs = preferences;
         constructedOnEventThread = SwingUtilities.isEventDispatchThread();
         constructCount++;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return "Stub";
     }
     
     /**

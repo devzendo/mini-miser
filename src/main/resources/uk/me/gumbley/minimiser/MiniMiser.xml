@@ -59,6 +59,29 @@
 		<constructor-arg ref="databaseDescriptor" />
 	</bean>
     
+    
+    <!-- Tools->Options tab factory and tab definitions -->
+    <bean id="toolsOptionsTabList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>advancedToolsOptionsTab</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="changeCollectingPrefs" class="uk.me.gumbley.minimiser.prefs.ChangeCollectingPrefsFactory" />
+
+	<bean id="toolsOptionsTabFactory" class="uk.me.gumbley.minimiser.gui.dialog.toolsoptions.DefaultToolsOptionsTabFactoryImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="problemReporter" />
+		<constructor-arg ref="toolsOptionsTabList" />	
+	</bean>
+	
+	<bean id="advancedToolsOptionsTab" scope="prototype" class="uk.me.gumbley.minimiser.gui.dialog.toolsoptions.tabs.AdvancedTab">
+		<constructor-arg ref="changeCollectingPrefs" />
+	</bean>
+	
+    
     <!-- lifecycle management -->
     <bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
