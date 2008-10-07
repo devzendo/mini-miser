@@ -19,10 +19,9 @@ public final class HelpMenu extends AbstractMenuGroup {
      * Construct the help menu
      * 
      * @param wiring the menu wiring
-     * @param state the menu state
      */
-    public HelpMenu(final MenuWiring wiring, final MenuState state) {
-        super(wiring, state);
+    public HelpMenu(final MenuWiring wiring) {
+        super(wiring);
 
         helpmenu = new JMenu("Help");
         helpmenu.setMnemonic('H');

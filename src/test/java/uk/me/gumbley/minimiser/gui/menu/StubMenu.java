@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.swing.JMenuBar;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
@@ -28,6 +29,7 @@ public final class StubMenu implements Menu {
     private boolean recentListBuilt;
     private DatabaseDescriptor[] recentDatabases;
     private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
+    private ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
     private boolean viewMenuBuilt;
     private Map<String, Boolean> hiddenTabs;
 
@@ -41,6 +43,7 @@ public final class StubMenu implements Menu {
         recentListBuilt = false;
         viewMenuBuilt = false;
         openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
+        viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
         hiddenTabs = new HashMap<String, Boolean>();
     }
     
@@ -197,5 +200,22 @@ public final class StubMenu implements Menu {
      */
     public void setTabHidden(final String tabName, final boolean tabHidden) {
         hiddenTabs.put(tabName, tabHidden);
+    }
+
+    /**
+     * Inject a view menu choice
+     * @param database the database (the current one)
+     * @param tabId the tab that's been opened or closed
+     * @param opened true iff opened
+     */
+    public void injectViewMenuRequest(final DatabaseDescriptor database, final TabIdentifier tabId, final boolean opened) {
+        viewMenuChoiceObservers.eventOccurred(new ViewMenuChoice(database, tabId, opened));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addViewChoiceObserver(final Observer<ViewMenuChoice> observer) {
+        viewMenuChoiceObservers.addObserver(observer);
     }
 }

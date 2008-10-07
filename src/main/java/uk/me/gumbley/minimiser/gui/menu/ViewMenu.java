@@ -5,9 +5,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
-import uk.me.gumbley.minimiser.opentablist.OpenTabList;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -22,26 +24,24 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     private static final Logger LOGGER = Logger.getLogger(ViewMenu.class);
     private JMenu viewMenu;
     private final OpenDatabaseList openDatabaseList;
-    private final OpenTabList openTabList;
     private final Prefs prefs;
+    private ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
 
     /**
      * Construct the view menu
      * 
      * @param wiring the menu wiring
-     * @param state the menus state
      * @param databaseList the Open Database List
-     * @param tabList the Open Tab List
      * @param preferences the Preferences
      */
-    public ViewMenu(final MenuWiring wiring, final MenuState state, 
+    public ViewMenu(final MenuWiring wiring,
             final OpenDatabaseList databaseList,
-            final OpenTabList tabList,
             final Prefs preferences) {
-        super(wiring, state);
+        super(wiring);
         this.openDatabaseList = databaseList;
-        this.openTabList = tabList;
         this.prefs = preferences;
+        viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
+        
         viewMenu = new JMenu("View");
         viewMenu.setMnemonic('V');
     }
@@ -57,7 +57,14 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
             LOGGER.debug("view menu is empty");
             return;
         }
-
+        
+//        final HashSet<TabDescriptor> tabDescriptorSet =
+//            new HashSet<TabDescriptor>(
+//                    openTabList.getTabsForDatabase(
+//                        openDatabaseList.getCurrentDatabase().getDatabaseName()));
+        
+        final DatabaseDescriptor currentDatabase = openDatabaseList.getCurrentDatabase();
+        
         for (final TabIdentifier tabId : TabIdentifier.values()) {
             final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.toString());
             LOGGER.debug("View menu item " + tabId + " hidden:" + viewMenuItemHidden);
@@ -66,23 +73,24 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
                 menuItem.setMnemonic(tabId.getMnemonic());
                 menuItem.addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
+                        final boolean opened = menuItem.isSelected();
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
                                     Thread.currentThread().setName("ViewOpener:" + tabId.getDisplayableName());
                                     Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
-                                    LOGGER.info("Opening view '" + tabId.getDisplayableName() + "'");
-                                    //openRecentSubmenuChoiceObservers.eventOccurred(
-                                    //new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                                    LOGGER.info((opened ? "Opening" : "Closing") + " view '" + tabId.getDisplayableName() + "'");
+                                    viewMenuChoiceObservers.eventOccurred(new ViewMenuChoice(currentDatabase, tabId, opened));
                                 } catch (final Throwable t) {
                                     LOGGER.error("View opener thread caught unexpected " + t.getClass().getSimpleName(), t);
                                 } finally {
-                                    LOGGER.debug("Open view complete");
+                                    LOGGER.debug("View menu choice complete");
                                 }
                             }
                         }).start();
                     }
                 });
+                //menuItem.setSelected(tabDescriptorSet.contains(new TabDescriptor(tabId)));
                 viewMenu.add(menuItem);
             }
         }
@@ -95,5 +103,13 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     @Override
     public JMenu getJMenu() {
         return viewMenu;
+    }
+    
+    /**
+     * Add a recent menu observer
+     * @param observer the observer
+     */
+    public void addViewObserver(final Observer<ViewMenuChoice> observer) {
+        viewMenuChoiceObservers.addObserver(observer);
     }
 }

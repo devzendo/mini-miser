@@ -29,12 +29,11 @@ public final class WindowMenu extends AbstractRebuildableMenuGroup {
      * Construct the Window Menu
      * 
      * @param wiring the menu wiring
-     * @param state the menu state
      * @param databaseList the Open Database List
      */
-    public WindowMenu(final MenuWiring wiring, final MenuState state,
+    public WindowMenu(final MenuWiring wiring,
             final OpenDatabaseList databaseList) {
-        super(wiring, state);
+        super(wiring);
         this.openDatabaseList = databaseList;
         windowMenuChoiceObservers = new ObserverList<DatabaseNameChoice>();
         windowMenu = new JMenu("Window");

@@ -132,6 +132,13 @@ public interface Menu {
      */
     void addOpenRecentObserver(Observer<DatabaseNameAndPathChoice> observer);
 
+
+    /**
+     * Add an observer of view menu choices
+     * @param observer of choices
+     */
+    void addViewChoiceObserver(Observer<ViewMenuChoice> observer);
+
     /**
      * Set a view menu item hidden
      * @param tabName the menu item name

@@ -33,14 +33,13 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
      * Construct the File Menu.
      * 
      * @param wiring the menu wiring
-     * @param state the menu state
      * @param databaseList the OpenDatabaseList
      * @param recentList the RecentFilesList
      */
-    public FileMenu(final MenuWiring wiring, final MenuState state,
+    public FileMenu(final MenuWiring wiring,
             final OpenDatabaseList databaseList,
             final RecentFilesList recentList) {
-        super(wiring, state);
+        super(wiring);
         this.openDatabaseList = databaseList;
         this.recentFilesList = recentList;
         openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();

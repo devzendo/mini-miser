@@ -22,8 +22,8 @@ public final class DemoTab implements Tab {
      */
     public DemoTab(final DatabaseDescriptor descriptor) {
         this.databaseDescriptor = descriptor;
-        
     }
+
     /**
      * {@inheritDoc}
      */

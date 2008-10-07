@@ -13,7 +13,10 @@ import uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl;
 import uk.me.gumbley.minimiser.gui.menu.StubMenu;
 import uk.me.gumbley.minimiser.gui.menu.StubOpener;
 import uk.me.gumbley.minimiser.gui.menu.StubOpenerAdapterFactory;
+import uk.me.gumbley.minimiser.gui.tabfactory.StubTabFactory;
+import uk.me.gumbley.minimiser.gui.tabfactory.TabFactory;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.opentablist.OpenTabList;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
@@ -28,12 +31,14 @@ public final class TestViewMenuInitialiserLifecycle {
 
     private StubMenu stubMenu;
     private OpenDatabaseList openDatabaseList;
+    private OpenTabList openTabList;
     private RecentFilesList recentFilesList;
     private StubOpener stubOpener;
     private StubOpenerAdapterFactory stubOpenerAdapterFactory;
     private MainFrameTitle mainFrameTitle;
     private Prefs prefs;
     private File prefsFile;
+    private TabFactory tabFactory;
 
     /**
      * @throws IOException on failure
@@ -43,6 +48,7 @@ public final class TestViewMenuInitialiserLifecycle {
     public void getPrerequisites() throws IOException {
         stubMenu = new StubMenu();
         openDatabaseList = new OpenDatabaseList();
+        openTabList = new OpenTabList();
         recentFilesList = EasyMock.createStrictMock(RecentFilesList.class);
         recentFilesList.addRecentListEventObserver(EasyMock.isA(Observer.class));
         stubOpener = new StubOpener();
@@ -51,11 +57,12 @@ public final class TestViewMenuInitialiserLifecycle {
         prefs = TestPrefs.createUnitTestPrefsFile();
         prefsFile = new File(prefs.getAbsolutePath());
         prefsFile.deleteOnExit();
+        tabFactory = new StubTabFactory(openTabList);
     }
 
     private void startMediator() {
-        new MenuMediatorImpl(stubMenu, openDatabaseList, recentFilesList, stubOpener, 
-            stubOpenerAdapterFactory, mainFrameTitle, prefs);
+        new MenuMediatorImpl(stubMenu, openDatabaseList, openTabList, recentFilesList, stubOpener, 
+            stubOpenerAdapterFactory, mainFrameTitle, prefs, tabFactory);
     }
     
     /**

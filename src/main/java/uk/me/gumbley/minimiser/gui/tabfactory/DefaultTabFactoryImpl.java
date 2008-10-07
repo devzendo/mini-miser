@@ -71,6 +71,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
 
         // Set the database descriptor in the factory so that it can be
         // retrieved by any tab beans that need it
+        LOGGER.debug("Storing database descriptor " + databaseDescriptor + " in factory for tabs to use");
         final DatabaseDescriptorFactory databaseDescriptorFactory = getDatabaseDescriptorFactory();
         databaseDescriptorFactory.setDatabaseDescriptor(databaseDescriptor);
         
@@ -79,14 +80,18 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>(); 
         for (TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
+                LOGGER.debug("Loading tab " + identifier);
                 final Tab loadedTab = loadTab(databaseDescriptor, identifier);
                 if (loadedTab != null) { // TODO need test for failure to load causes lack of addition to list
                     tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));
                 }
+            } else {
+                LOGGER.debug("Tab " + identifier + " already loaded; not reloading it");
             }
         }
         
         // Clear database descriptor in factory
+        LOGGER.debug("Clearing database descriptor from factory");
         databaseDescriptorFactory.clearDatabaseDescriptor();
         
         return tabDescriptorList;

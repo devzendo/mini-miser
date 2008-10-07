@@ -1,15 +1,13 @@
 package uk.me.gumbley.minimiser.wiring.databaseeventlistener;
 
-import java.awt.Component;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.gui.tab.Tab;
+import uk.me.gumbley.minimiser.gui.menu.helpers.ViewMenuHelper;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.gui.tabfactory.TabFactory;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs;
@@ -80,9 +78,8 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
 
         final DatabaseDescriptor databaseDescriptor = openEvent.getDatabaseDescriptor();
         
-        final String databaseName = databaseDescriptor.getDatabaseName();
         // Create the JTabbedPane
-        LOGGER.info("Creating tabbed pane for database '" + databaseName + "'");
+        LOGGER.info("Creating tabbed pane for database '" + databaseDescriptor.getDatabaseName() + "'");
         final JTabbedPane databaseTabbedPane = createTabbedPaneOnEventThread(databaseDescriptor); 
         databaseDescriptor.setAttribute(AttributeIdentifier.TabbedPane, databaseTabbedPane);
         
@@ -92,50 +89,13 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         openTabList.addDatabase(databaseDescriptor);
         
         // Load the tabs
-        LOGGER.info("Loading permanent and stored tabs for database '" + databaseName + "'");
+        LOGGER.info("Loading permanent and stored tabs for database '" + databaseDescriptor.getDatabaseName() + "'");
         final List<TabDescriptor> loadedTabDescriptors = loadPermanentAndStoredTabs(databaseDescriptor);
 
         LOGGER.debug(loadedTabDescriptors.size() + " tab(s) loaded; adding components to JTabbedPane");
         // Add each ones component into the JTabbedPane.
         for (TabDescriptor tabDescriptor : loadedTabDescriptors) {
-            // We need the insertion point for the JTabbedPane
-            final TabDescriptor finalTabDescriptor = tabDescriptor; 
-            final String displayableName = finalTabDescriptor.getTabIdentifier().getDisplayableName();
-            final Tab tab = finalTabDescriptor.getTab();
-            LOGGER.debug("Getting insertion point for tab " + displayableName);
-            final int insertionPoint = openTabList.getInsertionPosition(databaseName, tabDescriptor.getTabIdentifier());
-            // TODO perhaps the OpenTabList should be throwing the IllegalStateException here?
-            if (insertionPoint == -1) {
-                final String warning = "Cannot get insertion point for tab: database '" 
-                                        + databaseDescriptor.getDatabaseName() + "' not added to open tab list";
-                LOGGER.warn(warning);
-                throw new IllegalStateException(warning);
-            }
-            
-            // Add the tab's component to the JTabbedPane on the EDT 
-            LOGGER.debug("Tab " + displayableName + " implemented by " + tab.getClass().getSimpleName() + " insertion point " + insertionPoint);
-            final Component tabComponent = tab.getComponent();
-            GUIUtils.runOnEventThread(new Runnable() {
-                public void run() {
-                    final Component componentToAdd;
-                    if (tabComponent == null) {
-                        LOGGER.warn("Tab " + displayableName
-                            + " has created a null component to add to the tabbed pane; replacing with a blank JPanel");
-                        componentToAdd = new JPanel();
-                    } else {
-                        componentToAdd = tabComponent;
-                    }
-                    LOGGER.debug("Adding a '" + componentToAdd.getClass().getSimpleName() + "' for tab " + displayableName);
-                    databaseTabbedPane.add(
-                        componentToAdd,
-                        displayableName,
-                        insertionPoint);
-                }
-            });
-            
-            // Add the loaded tab into the OpenTabList.
-            LOGGER.debug("Adding tab to the OpenTabList");
-            openTabList.addTab(databaseDescriptor, tabDescriptor);
+            ViewMenuHelper.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
         }
         LOGGER.debug("Finished adding components to JTabbedPane and handling DatabaseOpenedEvent");
     }

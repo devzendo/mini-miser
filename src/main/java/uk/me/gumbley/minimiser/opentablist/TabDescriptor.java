@@ -6,6 +6,8 @@ import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 /**
  * A view tab. Contains an identifier, and a Tab (which contains a
  * graphical component).
+ * <p>
+ * Equality for TabDescriptors is intentionally limited to the TabIdentifier.
  * 
  * @author matt
  */

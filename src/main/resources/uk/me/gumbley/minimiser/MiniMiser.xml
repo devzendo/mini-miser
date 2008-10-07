@@ -51,7 +51,7 @@
 		<constructor-arg ref="databaseDescriptor" />
 	</bean>
 	
-	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >
+	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTab" >
 		<constructor-arg ref="databaseDescriptor" />
 	</bean>
 

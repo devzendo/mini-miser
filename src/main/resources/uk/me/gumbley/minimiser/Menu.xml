@@ -20,43 +20,39 @@
 	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl">
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="recentFilesList" />
 		<constructor-arg ref="opener" />
 		<constructor-arg ref="openerAdapterFactory" />
 		<constructor-arg ref="mainFrameTitle" />
 		<constructor-arg ref="prefs" />
+		<constructor-arg ref="tabFactory" />
 	</bean>
 
 	<!-- menus -->
 	<bean id="fileMenu" class="uk.me.gumbley.minimiser.gui.menu.FileMenu">
 		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="menuState" />
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="recentFilesList" />
 	</bean>
 
 	<bean id="viewMenu" class="uk.me.gumbley.minimiser.gui.menu.ViewMenu">
 		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="menuState" />
 		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="prefs" />
 	</bean>
 
 	<bean id="toolsMenu" class="uk.me.gumbley.minimiser.gui.menu.ToolsMenu">
 		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="menuState" />
 	</bean>
 			
 	<bean id="windowMenu" class="uk.me.gumbley.minimiser.gui.menu.WindowMenu">
 		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="menuState" />
 		<constructor-arg ref="openDatabaseList" />
 	</bean>
 
 	<bean id="helpMenu" class="uk.me.gumbley.minimiser.gui.menu.HelpMenu">
 		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="menuState" />
 	</bean>
 	
     <!-- menu action listeners -->
@@ -94,6 +90,5 @@
 	</bean>
 	
 	<!-- miscellaneous -->
-	<bean id="menuState" class="uk.me.gumbley.minimiser.gui.menu.MenuStateFactory" />
 	
 </beans>

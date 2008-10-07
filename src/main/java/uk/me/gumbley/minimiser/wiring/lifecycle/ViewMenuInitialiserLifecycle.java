@@ -1,7 +1,7 @@
 package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import uk.me.gumbley.minimiser.gui.menu.Menu;
-import uk.me.gumbley.minimiser.gui.menu.helpers.ViewMenuUpdater;
+import uk.me.gumbley.minimiser.gui.menu.helpers.ViewMenuHelper;
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -37,6 +37,6 @@ public final class ViewMenuInitialiserLifecycle implements Lifecycle {
      * {@inheritDoc}
      */
     public void startup() {
-        ViewMenuUpdater.updateViewMenuFromPrefsHiddenTabs(prefs, menu);
+        ViewMenuHelper.updateViewMenuFromPrefsHiddenTabs(prefs, menu);
     }
 }

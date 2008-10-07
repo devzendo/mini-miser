@@ -2,6 +2,8 @@ package uk.me.gumbley.minimiser.gui.dialog.toolsoptions.tabs;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
@@ -45,7 +47,8 @@ public final class AdvancedTab implements ToolsOptionsTab {
      */
     public void initComponent() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(16, 16)); // will have to change for more buttons
+        mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        final JPanel innerPanel = new JPanel(new GridLayout(4, 1, 16, 16));
         
         final JCheckBox sqlViewEnabled = new JCheckBox("SQL view enabled?"); 
         synchronized (lock) {
@@ -64,7 +67,13 @@ public final class AdvancedTab implements ToolsOptionsTab {
             }
         });
         
-        mainPanel.add(sqlViewEnabled, BorderLayout.NORTH);
+        innerPanel.add(sqlViewEnabled);
+        
+//        innerPanel.add(new JCheckBox("Does nothing 1"));
+//        innerPanel.add(new JCheckBox("Does nothing 1"));
+//        innerPanel.add(new JCheckBox("Does nothing 1"));
+//
+        mainPanel.add(innerPanel, BorderLayout.NORTH);
     }
 
     /**

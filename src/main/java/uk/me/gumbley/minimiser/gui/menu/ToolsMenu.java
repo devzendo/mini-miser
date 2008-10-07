@@ -1,7 +1,6 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
 import javax.swing.JMenu;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 
 /**
@@ -19,10 +18,9 @@ public final class ToolsMenu extends AbstractMenuGroup {
      * Construct the tools menu
      * 
      * @param wiring the menu wiring
-     * @param state the menu state
      */
-    public ToolsMenu(final MenuWiring wiring, final MenuState state) {
-        super(wiring, state);
+    public ToolsMenu(final MenuWiring wiring) {
+        super(wiring);
 
         toolsMenu = new JMenu("Tools");
         toolsMenu.setMnemonic('T');

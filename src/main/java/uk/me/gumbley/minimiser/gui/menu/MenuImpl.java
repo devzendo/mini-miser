@@ -18,13 +18,12 @@ public final class MenuImpl implements Menu {
     private static final Logger LOGGER = Logger.getLogger(MenuImpl.class);
     private Object lock = new Object();
     private SpringLoader springLoader;
-    private MenuState menuState;
     private MenuWiring menuWiring;
     
     private JMenuBar menuBar;
     
     private FileMenu fileMenuGroup;
-    private AbstractRebuildableMenuGroup viewMenuGroup;
+    private ViewMenu viewMenuGroup;
     private AbstractMenuGroup toolsMenuGroup;
     private WindowMenu windowMenuGroup;
     private AbstractMenuGroup helpMenuGroup;
@@ -41,13 +40,8 @@ public final class MenuImpl implements Menu {
             public void run() {
                 synchronized (lock) {
                     springLoader = loader;
-                    menuState = new MenuState();
                     menuWiring = wiring;
                     
-                    // Initialise MenuState into factory for menu beans to load
-                    final MenuStateFactory menuStateFactory = springLoader.getBean("&menuState", MenuStateFactory.class);
-                    menuStateFactory.setMenuState(menuState);
-        
                     // The menu bar
                     menuBar = new JMenuBar();
                     
@@ -96,7 +90,6 @@ public final class MenuImpl implements Menu {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    menuState.addDatabase(dbName);
                     viewMenuGroup.rebuildMenuGroup();
                     windowMenuGroup.rebuildMenuGroup();
                     fileMenuGroup.enableCloseAllMenuIfDatabasesOpen();
@@ -112,7 +105,6 @@ public final class MenuImpl implements Menu {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    menuState.clearDatabasesList();
                     viewMenuGroup.rebuildMenuGroup();
                     windowMenuGroup.rebuildMenuGroup();
                     fileMenuGroup.enableCloseMenu(false);
@@ -129,7 +121,6 @@ public final class MenuImpl implements Menu {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    menuState.removeDatabase(dbName);
                     viewMenuGroup.rebuildMenuGroup();
                     windowMenuGroup.rebuildMenuGroup();
                     fileMenuGroup.enableCloseAllMenuIfDatabasesOpen();
@@ -145,7 +136,6 @@ public final class MenuImpl implements Menu {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    menuState.switchToDatabase(dbName);
                     viewMenuGroup.rebuildMenuGroup();
                     windowMenuGroup.rebuildMenuGroup();
                 }
@@ -195,7 +185,6 @@ public final class MenuImpl implements Menu {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    menuState.setRecentDatabaseDescriptors(dbPairs);
                     fileMenuGroup.rebuildMenuGroup();
                 }
             }
@@ -231,12 +220,22 @@ public final class MenuImpl implements Menu {
 
     /**
      * {@inheritDoc}
+     * TODO this can be removed
      */
     public void setTabHidden(final String tabName, final boolean tabHidden) {
         LOGGER.debug("Tab " + tabName + " is " + (tabHidden ? "" : "not ") + "hidden");
-        synchronized (lock) {
-            menuState.putHiddenTab(tabName, tabHidden);
-        }
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addViewChoiceObserver(final Observer<ViewMenuChoice> observer) {
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    viewMenuGroup.addViewObserver(observer);
+                }
+            }
+        });
+    }
 }
