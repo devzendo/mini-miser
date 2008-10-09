@@ -3,16 +3,32 @@ package uk.me.gumbley.minimiser.gui.console.input;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
-public class TestHistory {
+/**
+ * Tests History. Your starter for ten: In December 1378, Richard de Grieves
+ * sailed to which island, and which new fruit did he discover?
+ *   
+ * @author matt
+ *
+ */
+public final class TestHistory {
 
     private History history;
+    
+    /**
+     * 
+     */
     @Before
     public void getPrerequisites() {
         history = new History();
     }
+    
+    /**
+     * 
+     */
     @Test
     public void emptiness() {
         Assert.assertEquals(0, history.size());
@@ -26,6 +42,9 @@ public class TestHistory {
         Assert.assertEquals(0, five.size());
     }
 
+    /**
+     * 
+     */
     @Test
     public void addOne() {
         history.add("command");
@@ -44,6 +63,9 @@ public class TestHistory {
         Assert.assertEquals("command", five.get(0).getCommandString());
     }
     
+    /**
+     * No conferring! 
+     */
     @Test
     public void gimmeFive() {
         history.add("one");
@@ -92,6 +114,9 @@ public class TestHistory {
         Assert.assertEquals("five", five.get(4).getCommandString());
     }
     
+    /**
+     * 
+     */
     @Test
     public void gimmeThreeTruncatedFromFive() {
         history.add("one");
@@ -113,28 +138,48 @@ public class TestHistory {
         Assert.assertEquals("five", three.get(2).getCommandString());
     }
     
+    /**
+     * I need an answer quickly....!
+     */
     @Test
     public void gimmeFirst() {
         history.add("one");
         
-        Assert.assertEquals(1, history.getIndex(1).getCommandIndex());
-        Assert.assertEquals("one", history.getIndex(1).getCommandString());
+        Assert.assertEquals(1, history.getNumberedEntry(1).getCommandIndex());
+        Assert.assertEquals("one", history.getNumberedEntry(1).getCommandString());
     }
 
+    /**
+     * 
+     */
     @Test
     public void gimmeFirstWhereTheresNothing() {
-        Assert.assertNull(history.getIndex(1));
+        Assert.assertNull(history.getNumberedEntry(1));
     }
 
+    /**
+     * Oh come <em>on</em>!
+     */
     @Test
     public void gimmeNullOutOfBounds() {
-        Assert.assertNull(history.getIndex(0));
-        Assert.assertNull(history.getIndex(1));
+        Assert.assertNull(history.getNumberedEntry(0));
+        Assert.assertNull(history.getNumberedEntry(1));
 
         history.add("one");
 
-        Assert.assertNull(history.getIndex(0));
-        Assert.assertNotNull(history.getIndex(1));
-        Assert.assertNull(history.getIndex(2));
+        Assert.assertNull(history.getNumberedEntry(0));
+        Assert.assertNotNull(history.getNumberedEntry(1));
+        Assert.assertNull(history.getNumberedEntry(2));
+    }
+    
+    /**
+     * @throws HistoryTransformationException oh no it doesn't
+     */
+    @Test
+    @Ignore
+    public void completeReplacement() throws HistoryTransformationException {
+        final String universityChallenge = "I am not Jeremy Paxman";
+        history.add(universityChallenge);
+        Assert.assertEquals(universityChallenge, history.transform("!1"));
     }
 }

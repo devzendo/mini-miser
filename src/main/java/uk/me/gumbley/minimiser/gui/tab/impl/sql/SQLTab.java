@@ -29,7 +29,6 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 public final class SQLTab implements Tab {
     private final DatabaseDescriptor databaseDescriptor;
     private volatile JPanel mainPanel;
-    private JPanel outputPanel;
     private TextAreaOutputConsole outputConsole;
     private CommandProcessor commandProcessor;
     private TextAreaInputConsole inputConsole;
@@ -55,25 +54,18 @@ public final class SQLTab implements Tab {
     public void initComponent() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(8, 8));
-        
-        outputPanel = new JPanel();
-        mainPanel.add(outputPanel, BorderLayout.CENTER);
-        
-        final JPanel textOutputPanel = new JPanel();
-        outputConsole = new TextAreaOutputConsole();
-        textOutputPanel.add(outputConsole.getTextArea());
-        final JPanel tableOutputPanel = new JPanel();
-        tableOutputPanel.add(new JTable(20, 5)); // example!!
+                
         final JTabbedPane outputTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-        outputTabbedPane.add(textOutputPanel, "Console");
-        outputTabbedPane.add(tableOutputPanel, "Table");
-        outputPanel.add(outputTabbedPane);
+        mainPanel.add(outputTabbedPane, BorderLayout.CENTER);
         
-        final JPanel entryPanel = new JPanel();
+        outputConsole = new TextAreaOutputConsole();
+        outputTabbedPane.add(outputConsole.getTextArea(), "Console");
+
+        outputTabbedPane.add(new JTable(20, 5), "Table");  // example!!
+        
         inputConsole = new TextAreaInputConsole();
-        entryPanel.add(inputConsole.getTextArea());
         inputConsole.addInputConsoleEventListener(new InputConsoleObserver());
-        mainPanel.add(entryPanel, BorderLayout.SOUTH);
+        mainPanel.add(inputConsole.getTextArea(), BorderLayout.SOUTH);
         
         final List<CommandHandler> commandHandlers = new ArrayList<CommandHandler>();
         commandHandlers.add(new HistoryCommandHandler());
@@ -171,6 +163,7 @@ public final class SQLTab implements Tab {
                         outputConsole.info(h.getCommandIndex() + " " + h.getCommandString());
                     }
                 }
+                return true;
             }
             return false;
         }

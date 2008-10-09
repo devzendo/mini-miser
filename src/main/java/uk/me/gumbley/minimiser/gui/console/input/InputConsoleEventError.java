@@ -14,7 +14,7 @@ public final class InputConsoleEventError extends InputConsoleEvent {
 
     /**
      * Construct an event containing a line of input and any errors.
-     * @param line th eline of text
+     * @param line the line of text
      * @param errors the errors in this.
      */
     public InputConsoleEventError(final String line, final String ... errors) {
