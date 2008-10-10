@@ -6,5 +6,13 @@ package uk.me.gumbley.minimiser.gui.console.input;
  *
  */
 @SuppressWarnings("serial")
-public class HistoryTransformationException extends Exception {
+public final class HistoryTransformationException extends Exception {
+
+    /**
+     * History transformation failed for some reason
+     * @param message why?
+     */
+    public HistoryTransformationException(final String message) {
+        super(message);
+    }
 }

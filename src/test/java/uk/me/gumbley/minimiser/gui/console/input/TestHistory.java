@@ -3,7 +3,6 @@ package uk.me.gumbley.minimiser.gui.console.input;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -176,10 +175,53 @@ public final class TestHistory {
      * @throws HistoryTransformationException oh no it doesn't
      */
     @Test
-    @Ignore
     public void completeReplacement() throws HistoryTransformationException {
         final String universityChallenge = "I am not Jeremy Paxman";
         history.add(universityChallenge);
         Assert.assertEquals(universityChallenge, history.transform("!1"));
     }
+    
+    /**
+     * @throws HistoryTransformationException nope
+     */
+    @Test
+    public void multipleReplacements() throws HistoryTransformationException {
+        history.add("one");
+        history.add("two");
+        history.add("three");
+        Assert.assertEquals("let's count to one, two and three!", history.transform("let's count to !1, !2 and !3!"));
+        
+    }
+    
+    /**
+     * @throws HistoryTransformationException on failure
+     */
+    @Test(expected = HistoryTransformationException.class)
+    public void history0IsBunk() throws HistoryTransformationException {
+        history.transform("William Gibson's book, Count !0");
+    }
+    
+    /**
+     * @throws HistoryTransformationException on failure
+     */
+    @Test(expected = HistoryTransformationException.class)
+    public void historyPastEndIsBunk() throws HistoryTransformationException {
+        history.add("one");
+        history.add("two");
+        history.add("three");
+        history.transform("American Independence, July the !4th");
+    }
+    
+    /**
+     * @throws HistoryTransformationException nope
+     */
+    @Test
+    public void plingsWithoutDigitsAreNotTransformed() throws HistoryTransformationException {
+        final String annoyingMetaMaths = "One thing that annoys me about Chaitin's book is the sheer number of exclamation marks he uses!!!";
+        Assert.assertEquals(annoyingMetaMaths, history.transform(annoyingMetaMaths));
+        
+        final String onetwo = "!one !two";
+        Assert.assertEquals(onetwo, history.transform(onetwo));
+    }
+    
 }

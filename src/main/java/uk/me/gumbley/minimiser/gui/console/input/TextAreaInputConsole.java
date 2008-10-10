@@ -1,10 +1,12 @@
 package uk.me.gumbley.minimiser.gui.console.input;
 
 import java.awt.Event;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import org.apache.log4j.Logger;
@@ -34,6 +36,8 @@ public final class TextAreaInputConsole implements InputConsole {
         
         observerList = new ObserverList<InputConsoleEvent>();
         textArea = new JTextArea("<enter your SQL here>");
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize()));
+        textArea.setBorder(BorderFactory.createLoweredBevelBorder());
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
             new EnterAction());
@@ -65,16 +69,16 @@ public final class TextAreaInputConsole implements InputConsole {
         observerList.addObserver(observer);
     }
 
-    private boolean processLine(final String inputLine) {
+    private String processLine(final String inputLine) {
         try {
             final String historyTransformedLine = history.transform(inputLine);
             LOGGER.debug("Processing line '" + inputLine + "'='" + historyTransformedLine);
             observerList.eventOccurred(new InputConsoleEvent(historyTransformedLine));
-            return true;
+            return historyTransformedLine;
         } catch (final HistoryTransformationException e) {
             LOGGER.warn("Line '" + inputLine + "' failed history transformation: " + e.getMessage());
             observerList.eventOccurred(new InputConsoleEventError(inputLine, new String[] {e.getMessage()}));
-            return false;
+            return null;
         }
     }
 
@@ -97,9 +101,10 @@ public final class TextAreaInputConsole implements InputConsole {
         public void actionPerformed(final ActionEvent e) {
             LOGGER.debug("Enter");
             final String line = textArea.getText();
-            if (processLine(line)) {
+            final String transformedLine = processLine(line);
+            if (transformedLine != null) {
                 clearTextArea();
-                history.add(line);
+                history.add(transformedLine);
                 setHistoryIndex(history.size() + 1);
             }
         }

@@ -52,6 +52,7 @@ public final class DriveSQLTab {
                 final JFrame frame = new JFrame("title");
                 frame.setLayout(new BorderLayout());
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setPreferredSize(new Dimension(800, 600));
                 
                 LOGGER.info("Opening database");
                 AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl();

@@ -5,11 +5,11 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.console.input.HistoryObject;
-import uk.me.gumbley.minimiser.gui.console.input.InputConsole;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEvent;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEventError;
 import uk.me.gumbley.minimiser.gui.console.input.TextAreaInputConsole;
@@ -56,12 +56,14 @@ public final class SQLTab implements Tab {
         mainPanel.setLayout(new BorderLayout(8, 8));
                 
         final JTabbedPane outputTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-        mainPanel.add(outputTabbedPane, BorderLayout.CENTER);
+        mainPanel.add(outputTabbedPane, BorderLayout.NORTH);
         
         outputConsole = new TextAreaOutputConsole();
         outputTabbedPane.add(outputConsole.getTextArea(), "Console");
+        // TODO I want the tabbedpane to go from top to the bottom - the complete
+        // height, then below that, the input console. not quite there yet.
 
-        outputTabbedPane.add(new JTable(20, 5), "Table");  // example!!
+        outputTabbedPane.add(new JScrollPane(new JTable(20, 5)), "Table");  // example!!
         
         inputConsole = new TextAreaInputConsole();
         inputConsole.addInputConsoleEventListener(new InputConsoleObserver());
@@ -69,6 +71,7 @@ public final class SQLTab implements Tab {
         
         final List<CommandHandler> commandHandlers = new ArrayList<CommandHandler>();
         commandHandlers.add(new HistoryCommandHandler());
+        commandHandlers.add(new SQLCommandHandler(databaseDescriptor));
         commandProcessor = new CommandProcessor(outputConsole, commandHandlers);
     }
 
@@ -113,7 +116,7 @@ public final class SQLTab implements Tab {
                 return;
             }
             final String inputLine = observableEvent.getInputLine();
-            outputConsole.debug(inputLine);
+            //outputConsole.debug(inputLine);
             processInputLine(inputLine);
         }
 

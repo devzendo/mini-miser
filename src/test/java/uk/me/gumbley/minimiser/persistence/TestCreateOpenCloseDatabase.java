@@ -14,6 +14,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateMiniMiserDatabaseImpl;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
 
@@ -350,6 +351,13 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             // now close and open it
             assertDatabaseShouldBeOpen(dbName);
             LOGGER.info("... closing");
+            
+            // TODO WOZERE - this is an unholy violation and just a kluge to
+            // see if I can parse SQL using h2 directly given a JdbcTemplate.
+            //JdbcTemplateMiniMiserDatabaseImpl it = (JdbcTemplateMiniMiserDatabaseImpl) mmData;
+            //it.parse("select * from versions");
+            
+            
             mmData.close();
             assertDatabaseShouldBeClosed(dbName);
             LOGGER.info("... now trying to getVersionDao");

@@ -15,14 +15,14 @@ import java.util.regex.Pattern;
  */
 public final class History {
     private List<HistoryObject> historyList;
-    private Pattern plingReferencePattern;
+    private Matcher plingNumberMatcher;
     
     /**
      * Construct an empty History.
      */
     public History() {
         historyList = new ArrayList<HistoryObject>();
-        plingReferencePattern = Pattern.compile("!(\\d+)");
+        plingNumberMatcher = Pattern.compile("!(\\d+)").matcher("");
     }
     
     /**
@@ -103,9 +103,25 @@ public final class History {
      * list contains 5 elements and you request !20.
      */
     public String transform(final String inputLine) throws HistoryTransformationException {
-        final Matcher plingMatcher = plingReferencePattern.matcher(inputLine);
-        //if (plingMatcher.)
-        // TODO Auto-generated method stub
-        return null;
+        plingNumberMatcher.reset(inputLine);
+        final StringBuffer sb = new StringBuffer();
+        while (plingNumberMatcher.find()) {
+            System.out.println("sb is '" + sb.toString() + "'");
+            final String historyReferenceString = plingNumberMatcher.group(1);
+            try {
+                final int historyNumber = Integer.parseInt(historyReferenceString);
+                final HistoryObject historyEntry = getNumberedEntry(historyNumber);
+                if (historyEntry == null) {
+                    throw new HistoryTransformationException("History reference " + historyNumber + " does not exist");
+                }
+                System.out.println("replacing with '" + historyEntry.getCommandString());
+                plingNumberMatcher.appendReplacement(sb, historyEntry.getCommandString());
+            } catch (final NumberFormatException nfe) {
+                // should never happen!
+                throw new HistoryTransformationException("History reference '" + historyReferenceString + "' is non-numeric (shouldn't have been matched by regex)");
+            }
+        }
+        plingNumberMatcher.appendTail(sb);
+        return sb.toString();
     }
 }

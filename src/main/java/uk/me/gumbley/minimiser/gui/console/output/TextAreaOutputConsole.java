@@ -1,6 +1,12 @@
 package uk.me.gumbley.minimiser.gui.console.output;
 
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.geom.AffineTransform;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * An OutputConsole that uses a TextArea to logs its information.
@@ -9,48 +15,75 @@ import javax.swing.JTextArea;
  *
  */
 public final class TextAreaOutputConsole implements OutputConsole {
+    private int textAreaContentLength = 0;
     private JTextArea textArea;
+    private JScrollPane scrollPane;
     
     /**
      * Construct a text area-based OutputConsole 
      */
     public TextAreaOutputConsole() {
         textArea = new JTextArea();
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize()));
+        scrollPane = new JScrollPane(textArea);
     }
     
     /**
      * Obtain the text area used by this OutputConsole
      * @return the JTextArea
      */
-    public JTextArea getTextArea() {
-        return textArea;
+    public JComponent getTextArea() {
+        return scrollPane;
     }
 
     /**
      * {@inheritDoc}
      */
     public void debug(final Object obj) {
-        // TODO Auto-generated method stub
+        if (obj != null) {
+            appendText(obj.toString());
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void error(final Object obj) {
-        // TODO Auto-generated method stub
+        if (obj != null) {
+            appendText(obj.toString());
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void info(final Object obj) {
-        // TODO Auto-generated method stub
+        if (obj != null) {
+            appendText(obj.toString());
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void warn(final Object obj) {
-        // TODO Auto-generated method stub
+        if (obj != null) {
+            appendText(obj.toString());
+        }
+    }
+    
+    private void appendText(final String text) {
+        final StringBuilder sb = new StringBuilder(text);
+        if (!text.endsWith("\n")) {
+            sb.append("\n");
+        }
+        final String writeString = sb.toString();
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                textArea.append(writeString);
+                textAreaContentLength += writeString.length();
+                textArea.setCaretPosition(textAreaContentLength);
+            }
+        });
     }
 }
