@@ -1,22 +1,16 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
-import org.h2.command.Parser;
-import org.h2.command.Prepared;
-import org.h2.engine.Session;
-import org.h2.engine.SessionInterface;
-import org.h2.jdbc.JdbcConnection;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
+import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
+import uk.me.gumbley.minimiser.persistence.sql.impl.H2SQLAccess;
 
 /**
  * A MiniMiserDatabase DAO factory that uses a SimpleJdbcTemplate
@@ -35,6 +29,7 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
     private volatile boolean isClosed = true;
     private final VersionDao versionDao;
     private final DataSource dataSource;
+    private SQLAccess sqlAccess;
 
     /**
      * @param url the database URL
@@ -99,25 +94,16 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
         return false;
     }
     
-    // WOZERE - this needs tests writing!
-    // have hacked up testGetVersionDaoFailsOnClosedDatabase to call this and
-    // manually see what happens.
-    public Prepared parse(final String sql) {
-        try {
-            Connection connection = dataSource.getConnection();
-            LOGGER.info("parse: The connection is a " + connection.getClass().getName());
-            JdbcConnection jdbcConnection = (JdbcConnection) connection;
-            SessionInterface session = jdbcConnection.getSession();
-            LOGGER.info("parse: the session is a " + session.getClass().getName());
-            Parser parser = new Parser((Session) session);
-            LOGGER.info("parse: the parser is a " + parser.getClass().getName());
-            Prepared prepared = parser.parseOnly(sql);
-            LOGGER.info("parse: the Prepared is a " + prepared.getClass().getName());
-            LOGGER.info("parse: the prepared: " + prepared.toString());
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    /**
+     * {@inheritDoc}
+     */
+    public SQLAccess getSQLAccess() {
+        synchronized (this) {
+            checkClosed("getSQLAccess");
+            if (sqlAccess == null) {
+                sqlAccess = new H2SQLAccess(dataSource);
+            }
+            return sqlAccess;
         }
-        return null;
     }
 }

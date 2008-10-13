@@ -13,6 +13,7 @@ import uk.me.gumbley.minimiser.gui.console.input.HistoryObject;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEvent;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEventError;
 import uk.me.gumbley.minimiser.gui.console.input.TextAreaInputConsole;
+import uk.me.gumbley.minimiser.gui.console.output.OutputConsole;
 import uk.me.gumbley.minimiser.gui.console.output.TextAreaOutputConsole;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
@@ -27,6 +28,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
  *
  */
 public final class SQLTab implements Tab {
+
     private final DatabaseDescriptor databaseDescriptor;
     private volatile JPanel mainPanel;
     private TextAreaOutputConsole outputConsole;
@@ -63,15 +65,19 @@ public final class SQLTab implements Tab {
         // TODO I want the tabbedpane to go from top to the bottom - the complete
         // height, then below that, the input console. not quite there yet.
 
-        outputTabbedPane.add(new JScrollPane(new JTable(20, 5)), "Table");  // example!!
-        
+        final JTable table = new JTable(20, 5);
+        outputTabbedPane.add(new JScrollPane(table), "Table");  // example!!
+
+        //final TableDisplay multiTableDisplay = new MultiTableDisplay(new ConsoleTableDisplay(outputConsole), new TableConsoleDisplay(table));
+        final TableDisplay multiTableDisplay = new ConsoleTableDisplay(outputConsole);
+
         inputConsole = new TextAreaInputConsole();
         inputConsole.addInputConsoleEventListener(new InputConsoleObserver());
         mainPanel.add(inputConsole.getTextArea(), BorderLayout.SOUTH);
         
         final List<CommandHandler> commandHandlers = new ArrayList<CommandHandler>();
         commandHandlers.add(new HistoryCommandHandler());
-        commandHandlers.add(new SQLCommandHandler(databaseDescriptor));
+        commandHandlers.add(new SQLCommandHandler(outputConsole, multiTableDisplay, databaseDescriptor));
         commandProcessor = new CommandProcessor(outputConsole, commandHandlers);
     }
 
@@ -172,5 +178,72 @@ public final class SQLTab implements Tab {
         }
     }
 
+    /**
+     * A table display that emits fancy headers and rows in ASCII boxes,
+     * a kind of homage to MySQL.
+     * @author matt
+     *
+     */
+    public final class ConsoleTableDisplay extends AbstractTableDisplay {
+        private final OutputConsole console;
+        private String plussesAndMinusses;
+        
+        /**
+         * @param outputConsole the output console
+         */
+        public ConsoleTableDisplay(final OutputConsole outputConsole) {
+            super();
+            console = outputConsole;
+        }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void emitHeading(final List<String> headingNames) {
+            final StringBuilder banner = new StringBuilder();
+            banner.append('+');
+            final StringBuilder header = new StringBuilder();
+            header.append('|');
+            for (int h = 0; h < headingNames.size(); h++) {
+                final int width = getColumnWidth(h);
+                final String headingName = headingNames.get(h);
+                for (int i = 0; i < width; i++) {
+                    banner.append('-');
+                    header.append(i < headingName.length() ? headingName.charAt(i) : ' ');
+                }
+                banner.append('+');
+                header.append('|');
+            }
+            plussesAndMinusses = banner.toString();
+            console.info(plussesAndMinusses);
+            console.info(header.toString());
+            console.info(plussesAndMinusses);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void emitRow(final List<String> row) {
+            final StringBuilder line = new StringBuilder();
+            line.append('|');
+            for (int h = 0; h < row.size(); h++) {
+                final int width = getColumnWidth(h);
+                final String rowText = row.get(h);
+                for (int i = 0; i < width; i++) {
+                    line.append(i < rowText.length() ? rowText.charAt(i) : ' ');
+                }
+                line.append('|');
+            }
+            console.info(line.toString());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void finished() {
+            console.info(plussesAndMinusses);
+        }
+    }
 }
