@@ -11,6 +11,7 @@ import org.h2.command.Parser;
 import org.h2.command.Prepared;
 import org.h2.command.dml.Delete;
 import org.h2.command.dml.Insert;
+import org.h2.command.dml.NoOperation;
 import org.h2.command.dml.Select;
 import org.h2.command.dml.Update;
 import org.h2.engine.Session;
@@ -60,6 +61,7 @@ public final class H2SQLAccess implements SQLAccess {
         map.put(Delete.class, ResultType.Count);
         map.put(Insert.class, ResultType.Count);
         map.put(Update.class, ResultType.Count);
+        
         return map;
     }
 

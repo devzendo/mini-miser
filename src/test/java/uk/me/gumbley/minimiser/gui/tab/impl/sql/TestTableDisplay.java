@@ -30,7 +30,7 @@ public final class TestTableDisplay {
      */
     @Test(expected = IllegalStateException.class)
     public void cantAddRowWithoutPriorHeading() {
-        final List<Object> row = new ArrayList<Object>();
+        final List<String> row = new ArrayList<String>();
         row.add("sample column");
         tableDisplay.addRow(row);
     }
@@ -39,7 +39,7 @@ public final class TestTableDisplay {
      * 
      */
     @Test
-    public void setHeadingEmitsHeading() {
+    public void setHeadingDoesntEmitHeadingUntilFinishedIfNoRowsAdded() {
         Assert.assertEquals(0, tableDisplay.getHeadingEmitCount());
 
         final List<String> headings = new ArrayList<String>();
@@ -48,9 +48,35 @@ public final class TestTableDisplay {
         
         Assert.assertEquals(4, tableDisplay.getColumnWidth(0));
 
+        Assert.assertEquals(0, tableDisplay.getHeadingEmitCount());
+        
+        tableDisplay.finished();
         Assert.assertEquals(1, tableDisplay.getHeadingEmitCount());
     }
-    
+
+    /**
+     * 
+     */
+    @Test
+    public void setHeadingDoesntEmitHeadingWhenFinishedIfRowsAdded() {
+        Assert.assertEquals(0, tableDisplay.getHeadingEmitCount());
+
+        final List<String> headings = new ArrayList<String>();
+        headings.add("Foo!");
+        tableDisplay.setHeadings(headings);
+        
+        Assert.assertEquals(4, tableDisplay.getColumnWidth(0));
+
+        final List<String> row = new ArrayList<String>();
+        row.add("a");
+        tableDisplay.addRow(row);
+
+        Assert.assertEquals(1, tableDisplay.getHeadingEmitCount());
+        
+        tableDisplay.finished();
+        Assert.assertEquals(1, tableDisplay.getHeadingEmitCount());
+    }
+
     /**
      * 
      */
@@ -60,7 +86,7 @@ public final class TestTableDisplay {
         headings.add("Foo!");
         tableDisplay.setHeadings(headings);
         
-        final List<Object> row = new ArrayList<Object>();
+        final List<String> row = new ArrayList<String>();
         row.add("sample column");
         tableDisplay.addRow(row);
         
@@ -76,12 +102,28 @@ public final class TestTableDisplay {
         headings.add("Foo!");
         tableDisplay.setHeadings(headings);
         
-        final List<Object> row = new ArrayList<Object>();
+        final List<String> row = new ArrayList<String>();
         row.add("sample column");
         tableDisplay.addRow(row);
         Assert.assertEquals(13, tableDisplay.getColumnWidth(0));
         
-        Assert.assertEquals(2, tableDisplay.getHeadingEmitCount());
+        Assert.assertEquals(1, tableDisplay.getHeadingEmitCount());
     }
 
+    /**
+     * 
+     */
+    @Test
+    public void multiLineColumnContentsEmitsHeaderAsWideAsTheLongestLine() {
+        final List<String> headings = new ArrayList<String>();
+        headings.add("Foo!");
+        tableDisplay.setHeadings(headings);
+        
+        final List<String> row = new ArrayList<String>();
+        row.add("extraneously\none\ntwo\nthree\n");
+        tableDisplay.addRow(row);
+        Assert.assertEquals(12, tableDisplay.getColumnWidth(0));
+        
+        Assert.assertEquals(1, tableDisplay.getHeadingEmitCount());
+    }
 }

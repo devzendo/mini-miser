@@ -31,32 +31,59 @@ public abstract class AbstractTableDisplay implements TableDisplay {
         for (final String heading : headings) {
             columnWidths.add(heading.length());
         }
-        emitHeading(headings);
-        emitHeading = false;
+        emitHeading = true;
     }
     
     /**
      * {@inheritDoc}
      */
-    public final void addRow(final List<Object> row) {
+    public final void addRow(final List<String> row) {
         if (headings.size() == 0) {
             throw new IllegalStateException("No headings have been set");
         }
-        final List<String> colStrings = new ArrayList<String>();
+        
+        final List<Cell> cells = new ArrayList<Cell>();
+        int maxHeight = 0;
         for (int i = 0; i < row.size(); i++) {
             final Object colObject = row.get(i);
             final String colString = colObject == null ? "(null)" : colObject.toString();
-            if (columnWidths.get(i) < colString.length()) {
-                columnWidths.set(i, colString.length());
-                emitHeading = true;
+            final Cell cell = new Cell();
+            cell.setText(colString);
+            cells.add(cell);
+            if (cell.getHeight() > maxHeight) {
+                maxHeight = cell.getHeight();
             }
-            colStrings.add(colString);
+            if (columnWidths.get(i) < cell.getWidth()) {
+                columnWidths.set(i, cell.getWidth());
+                emitHeading = true;
+            } else {
+                cell.setWidth(columnWidths.get(i));
+            }
         }
         if (emitHeading) {
             emitHeading(headings);
             emitHeading = false;
         }
-        emitRow(colStrings);
+        emitRow(cells);
+    }
+    
+    /**
+     * Obtain the width of a column, which in the case of multiline lines, is
+     * the longest line within the column. In the case of single lines, it's the
+     * length of the line as a whole.
+     * @param columnText the text. Precondition: never null.
+     * @return the width
+     */
+    private int columnWidth(final String columnText) {
+        final String[] lines = columnText.split("\r?\n");
+        int longestLength = 0;
+        for (final String line : lines) {
+            final int length = line.length();
+            if (length > longestLength) {
+                longestLength = length;
+            }
+        }
+        return longestLength;
     }
     
     /**
@@ -71,7 +98,12 @@ public abstract class AbstractTableDisplay implements TableDisplay {
      * determine the width of the columns.
      * @param row the row contents
      */
-    protected abstract void emitRow(final List<String> row);
+    protected abstract void emitRow(final List<Cell> row);
+    
+    /**
+     * Finalise the display after finished has been called. 
+     */
+    protected abstract void finish();
     
     /**
      * {@inheritDoc}
@@ -80,4 +112,14 @@ public abstract class AbstractTableDisplay implements TableDisplay {
         return columnWidths.get(columnIndex);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public final void finished() {
+        if (emitHeading) {
+            emitHeading(headings);
+            emitHeading = false;
+        }
+        finish();
+    }
 }

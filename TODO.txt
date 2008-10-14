@@ -47,7 +47,10 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   * the currently open tabs for each database are persisted and restored
   * the currently selected tab for each database is persisted and restored
 
-* hack up an sql tab
+* sql tab:
+  * command handlers need to have some tests around them
+  * need a help mechanism
+  * sql command handler needs to use the inbuilt h2 HELP SQL command
 
 * temporarily remove currency panel on new database wizard    
 

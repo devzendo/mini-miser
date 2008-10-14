@@ -1,14 +1,18 @@
 package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.console.input.HistoryObject;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEvent;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEventError;
@@ -28,19 +32,21 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
  *
  */
 public final class SQLTab implements Tab {
-
+    private static final Logger LOGGER = Logger.getLogger(SQLTab.class);
     private final DatabaseDescriptor databaseDescriptor;
     private volatile JPanel mainPanel;
     private TextAreaOutputConsole outputConsole;
-    private CommandProcessor commandProcessor;
+    private CommandProcessor commandProcessor; 
     private TextAreaInputConsole inputConsole;
+    private final CursorManager cursorManager;
 
     /**
      * Construct the SQL tab
      * @param descriptor the database descriptor
      */
-    public SQLTab(final DatabaseDescriptor descriptor) {
+    public SQLTab(final DatabaseDescriptor descriptor, final CursorManager cursor) {
         databaseDescriptor = descriptor;
+        cursorManager = cursor;
     }
 
     /**
@@ -55,17 +61,17 @@ public final class SQLTab implements Tab {
      */
     public void initComponent() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(8, 8));
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
                 
         final JTabbedPane outputTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-        mainPanel.add(outputTabbedPane, BorderLayout.NORTH);
+        mainPanel.add(outputTabbedPane);
         
         outputConsole = new TextAreaOutputConsole();
-        outputTabbedPane.add(outputConsole.getTextArea(), "Console");
+        outputTabbedPane.add(new JScrollPane(outputConsole.getTextArea()), "Console");
         // TODO I want the tabbedpane to go from top to the bottom - the complete
         // height, then below that, the input console. not quite there yet.
 
-        final JTable table = new JTable(20, 5);
+        final JTable table = new JTable(1, 1);
         outputTabbedPane.add(new JScrollPane(table), "Table");  // example!!
 
         //final TableDisplay multiTableDisplay = new MultiTableDisplay(new ConsoleTableDisplay(outputConsole), new TableConsoleDisplay(table));
@@ -73,7 +79,7 @@ public final class SQLTab implements Tab {
 
         inputConsole = new TextAreaInputConsole();
         inputConsole.addInputConsoleEventListener(new InputConsoleObserver());
-        mainPanel.add(inputConsole.getTextArea(), BorderLayout.SOUTH);
+        mainPanel.add(inputConsole.getTextArea());
         
         final List<CommandHandler> commandHandlers = new ArrayList<CommandHandler>();
         commandHandlers.add(new HistoryCommandHandler());
@@ -87,7 +93,20 @@ public final class SQLTab implements Tab {
      * @param inputLine the line of input.
      */
     public void processInputLine(final String inputLine) {
-        commandProcessor.processCommand(inputLine);
+        assert SwingUtilities.isEventDispatchThread();
+        cursorManager.hourglass();
+        new SwingWorker() {
+
+            @Override
+            public Object construct() {
+                commandProcessor.processCommand(inputLine);
+                return null;
+            }
+            
+            public void finished() {
+                cursorManager.normal();
+            }
+        }.start();
     }
 
     /**
@@ -122,7 +141,8 @@ public final class SQLTab implements Tab {
                 return;
             }
             final String inputLine = observableEvent.getInputLine();
-            //outputConsole.debug(inputLine);
+            final int nextHistoryNumber = inputConsole.getNextHistoryNumber(); // hasn't been stashed in history yet 
+            outputConsole.debug(nextHistoryNumber + " > " + inputLine);
             processInputLine(inputLine);
         }
 
@@ -225,24 +245,28 @@ public final class SQLTab implements Tab {
          * {@inheritDoc}
          */
         @Override
-        protected void emitRow(final List<String> row) {
-            final StringBuilder line = new StringBuilder();
-            line.append('|');
-            for (int h = 0; h < row.size(); h++) {
-                final int width = getColumnWidth(h);
-                final String rowText = row.get(h);
-                for (int i = 0; i < width; i++) {
-                    line.append(i < rowText.length() ? rowText.charAt(i) : ' ');
+        protected void emitRow(final List<Cell> row) {
+            int maxHeight = 0;
+            for (final Cell cell : row) {
+                if (cell.getHeight() > maxHeight) {
+                    maxHeight = cell.getHeight();
                 }
-                line.append('|');
             }
-            console.info(line.toString());
+            for (int y = 0; y < maxHeight; y++) {
+                final StringBuilder line = new StringBuilder();
+                line.append('|');
+                for (final Cell cell : row) {
+                    line.append(cell.getPaddedLine(y));
+                    line.append('|');
+                }
+                console.info(line.toString());
+            }
         }
 
         /**
          * {@inheritDoc}
          */
-        public void finished() {
+        public void finish() {
             console.info(plussesAndMinusses);
         }
     }

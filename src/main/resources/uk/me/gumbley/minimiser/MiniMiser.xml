@@ -53,6 +53,7 @@
 	
 	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTab" >
 		<constructor-arg ref="databaseDescriptor" />
+		<constructor-arg ref="cursorManager" />
 	</bean>
 
 	<bean id="tabCATEGORIES" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >

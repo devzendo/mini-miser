@@ -22,7 +22,7 @@ public interface TableDisplay {
      * no headings have been set.
      * @param row the row of data.
      */
-    void addRow(List<Object> row);
+    void addRow(List<String> row);
     
     /**
      * How wide is this column, or how wide has it become after rows have been

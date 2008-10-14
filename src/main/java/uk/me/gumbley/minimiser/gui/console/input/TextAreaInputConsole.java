@@ -1,8 +1,12 @@
 package uk.me.gumbley.minimiser.gui.console.input;
 
+import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -26,6 +30,7 @@ public final class TextAreaInputConsole implements InputConsole {
     private JTextArea textArea;
     private History history;
     private int historyIndex;
+    private boolean firstFocus;
     
     /**
      * Create a TextAreaInputConsole 
@@ -33,11 +38,24 @@ public final class TextAreaInputConsole implements InputConsole {
     public TextAreaInputConsole() {
         history = new History();
         historyIndex = 1;
+       
+        firstFocus = true;
         
         observerList = new ObserverList<InputConsoleEvent>();
         textArea = new JTextArea("<enter your SQL here>");
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize()));
+        textArea.setRows(3); // pointless, but worth a try
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize() - 2));
         textArea.setBorder(BorderFactory.createLoweredBevelBorder());
+        
+        textArea.addFocusListener(new FocusAdapter() {
+            public void focusGained(final FocusEvent e) {
+                if (firstFocus) {
+                    firstFocus = false;
+                    clearTextArea();
+                }
+                
+            }
+        });
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
             new EnterAction());
@@ -50,7 +68,6 @@ public final class TextAreaInputConsole implements InputConsole {
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),
             new DownAction());
-
     }
     
     /**
@@ -150,6 +167,18 @@ public final class TextAreaInputConsole implements InputConsole {
      */
     public List<HistoryObject> getLastHistory(final int number) {
         return history.getLast(number);
+    }
+
+    /**
+     * @return the next history number. Can be called by InputConsoleEvent
+     * observers to determine the history number that a command will be stored
+     * under, if it succeeds in being transformed as a history command (or
+     * passed through if it isn't a history command)
+     * TODO this code is a bit smelly, relying on the order of observers
+     * being called and ignoring history transformation failure.
+     */
+    public int getNextHistoryNumber() {
+        return history.size() + 1;
     }
 
 

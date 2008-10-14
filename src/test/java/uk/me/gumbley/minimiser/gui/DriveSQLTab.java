@@ -54,6 +54,9 @@ public final class DriveSQLTab {
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setPreferredSize(new Dimension(800, 600));
                 
+                final CursorManager cursorManager = new CursorManager();
+                cursorManager.setMainFrame(frame);
+                
                 LOGGER.info("Opening database");
                 AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl();
                 final String dbPath = "/home/matt/Desktop/crap/clear-test-1/clear-test-1";
@@ -62,7 +65,7 @@ public final class DriveSQLTab {
                 databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDatabase);
                 LOGGER.info("Database open");
                 
-                SQLTab sqlTab = new SQLTab(databaseDescriptor);
+                SQLTab sqlTab = new SQLTab(databaseDescriptor, cursorManager);
                 sqlTab.initComponent();
                 frame.add(sqlTab.getComponent());
                 

@@ -48,13 +48,14 @@ public final class StubTableDisplay extends AbstractTableDisplay {
      * {@inheritDoc}
      */
     @Override
-    protected void emitRow(final List<String> row) {
+    protected void emitRow(final List<Cell> row) {
         rowEmitCount++;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void finished() {
+    public void finish() {
+        // nothing
     }
 }

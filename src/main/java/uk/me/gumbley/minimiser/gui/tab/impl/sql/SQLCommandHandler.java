@@ -82,21 +82,7 @@ public final class SQLCommandHandler implements CommandHandler {
             tableDisplay.setHeadings(getHeadingsFromMetaData(metaData));
             if (resultSet.first()) {
                 do {
-                    final List<Object> rowStrings = new ArrayList<Object>();
-                    for (int i = 0; i < metaData.getColumnCount(); i++) {
-                        final Object colObject = resultSet.getObject(i + 1);
-                        
-                        if (resultSet.wasNull()) {
-                            rowStrings.add("NULL");
-                        } else {
-                            if (colObject == null) {
-                                rowStrings.add("null");
-                            } else {
-                                rowStrings.add(colObject);
-                            }
-                        }
-                    }
-                    tableDisplay.addRow(rowStrings);
+                    tableDisplay.addRow(stringifyResultSet(resultSet, metaData));
                 } while (resultSet.next());
                 tableDisplay.finished();
             } else {
@@ -118,6 +104,24 @@ public final class SQLCommandHandler implements CommandHandler {
                 return true;
             }
         }
+    }
+
+    private List<String> stringifyResultSet(final ResultSet resultSet, final ResultSetMetaData metaData) throws SQLException {
+        final List<String> rowStrings = new ArrayList<String>();
+        for (int i = 0; i < metaData.getColumnCount(); i++) {
+            final Object colObject = resultSet.getObject(i + 1);
+            
+            if (resultSet.wasNull()) {
+                rowStrings.add("NULL");
+            } else {
+                if (colObject == null) {
+                    rowStrings.add("null");
+                } else {
+                    rowStrings.add(colObject.toString());
+                }
+            }
+        }
+        return rowStrings;
     }
 
     private List<String> getHeadingsFromMetaData(final ResultSetMetaData metaData) {
