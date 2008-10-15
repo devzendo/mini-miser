@@ -55,7 +55,6 @@ public final class SQLCommandHandler implements CommandHandler {
         if (sqlAccess != null) {
             try {
                 final SQLAccess.ResultType type = sqlAccess.parse(command);
-                outputConsole.info("The result type is " + type);
                 switch (type) {
                     case Count: return handleCount(command);
                     case SuccessFailure: return handleSuccessFailure(command);

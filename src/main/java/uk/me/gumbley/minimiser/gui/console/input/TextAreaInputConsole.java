@@ -1,16 +1,14 @@
 package uk.me.gumbley.minimiser.gui.console.input;
 
-import java.awt.Dimension;
 import java.awt.Event;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import org.apache.log4j.Logger;
@@ -28,6 +26,7 @@ public final class TextAreaInputConsole implements InputConsole {
             .getLogger(TextAreaInputConsole.class);
     private ObserverList<InputConsoleEvent> observerList;
     private JTextArea textArea;
+    private JScrollPane scrollPane;
     private History history;
     private int historyIndex;
     private boolean firstFocus;
@@ -35,6 +34,7 @@ public final class TextAreaInputConsole implements InputConsole {
     /**
      * Create a TextAreaInputConsole 
      */
+    @SuppressWarnings("serial")
     public TextAreaInputConsole() {
         history = new History();
         historyIndex = 1;
@@ -42,10 +42,8 @@ public final class TextAreaInputConsole implements InputConsole {
         firstFocus = true;
         
         observerList = new ObserverList<InputConsoleEvent>();
-        textArea = new JTextArea("<enter your SQL here>");
-        textArea.setRows(3); // pointless, but worth a try
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize() - 2));
-        textArea.setBorder(BorderFactory.createLoweredBevelBorder());
+        textArea = new ConsoleTextArea("<enter your SQL here>");
+        textArea.setRows(3);
         
         textArea.addFocusListener(new FocusAdapter() {
             public void focusGained(final FocusEvent e) {
@@ -58,24 +56,60 @@ public final class TextAreaInputConsole implements InputConsole {
         });
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
-            new EnterAction());
+            new AbstractAction() {
+                public void actionPerformed(final ActionEvent e) {
+                    LOGGER.debug("Enter");
+                    final String line = textArea.getText();
+                    final String transformedLine = processLine(line);
+                    if (transformedLine != null) {
+                        clearTextArea();
+                        history.add(transformedLine);
+                        setHistoryIndex(history.size() + 1);
+                    }
+                }
+            }
+        );
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Event.CTRL_MASK),
-            new CtrlUAction());
+            new AbstractAction() {
+                public void actionPerformed(final ActionEvent e) {
+                    LOGGER.debug("Ctrl-U");
+                    clearTextArea();
+                }
+            }
+        );
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),
-            new UpAction());
+            new AbstractAction() {
+                public void actionPerformed(final ActionEvent e) {
+                    if (historyIndex == 1) {
+                        LOGGER.debug("No previous history past this point");
+                        return;
+                    }
+                    LOGGER.debug("Previous history");
+                    setTextArea(history.getNumberedEntry(setHistoryIndex(Math.max(1, historyIndex - 1))).getCommandString());
+                }
+            }
+        );
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),
-            new DownAction());
+            new AbstractAction() {
+                public void actionPerformed(final ActionEvent e) {
+                    LOGGER.debug("Next history");
+                    setTextArea(history.getNumberedEntry(setHistoryIndex(Math.min(history.size(), historyIndex + 1))).getCommandString());
+                }
+            }
+        );
+        
+        scrollPane = new JScrollPane(textArea);
     }
     
     /**
      * Get the text area used by this input console
-     * @return the JTextArea
+     * @return the JTextArea in a JScrollPane
      */
-    public JTextArea getTextArea() {
-        return textArea;
+    public JComponent getTextArea() {
+        return scrollPane;
     }
 
     /**
@@ -99,7 +133,7 @@ public final class TextAreaInputConsole implements InputConsole {
         }
     }
 
-    private void setTextArea(String commandString) {
+    private void setTextArea(final String commandString) {
         textArea.setText(commandString);
     }
 
@@ -111,48 +145,6 @@ public final class TextAreaInputConsole implements InputConsole {
         LOGGER.debug("historyIndex is now " + newIndex);
         historyIndex = newIndex;
         return historyIndex;
-    }
-    
-    @SuppressWarnings("serial")
-    private final class EnterAction extends AbstractAction {
-        public void actionPerformed(final ActionEvent e) {
-            LOGGER.debug("Enter");
-            final String line = textArea.getText();
-            final String transformedLine = processLine(line);
-            if (transformedLine != null) {
-                clearTextArea();
-                history.add(transformedLine);
-                setHistoryIndex(history.size() + 1);
-            }
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private final class CtrlUAction extends AbstractAction {
-        public void actionPerformed(final ActionEvent e) {
-            LOGGER.debug("Ctrl-U");
-            clearTextArea();
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private final class UpAction extends AbstractAction {
-        public void actionPerformed(final ActionEvent e) {
-            if (historyIndex == 1) {
-                LOGGER.debug("No previous history past this point");
-                return;
-            }
-            LOGGER.debug("Previous history");
-            setTextArea(history.getNumberedEntry(setHistoryIndex(Math.max(1, historyIndex - 1))).getCommandString());
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private final class DownAction extends AbstractAction {
-        public void actionPerformed(final ActionEvent e) {
-            LOGGER.debug("Next history");
-            setTextArea(history.getNumberedEntry(setHistoryIndex(Math.min(history.size(), historyIndex + 1))).getCommandString());
-        }
     }
 
     /**
@@ -180,6 +172,4 @@ public final class TextAreaInputConsole implements InputConsole {
     public int getNextHistoryNumber() {
         return history.size() + 1;
     }
-
-
 }

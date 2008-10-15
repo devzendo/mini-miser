@@ -66,8 +66,11 @@ public final class TestCell {
      */
     @Test
     public void bannerLinesAreCorrect() {
+        cell.setText       ("one");
+        Assert.assertEquals("---+", cell.getBannerLine());
+        
         cell.setText("hello world\nthis is a very long line");
-        Assert.assertEquals("-----------------------+", cell.getBannerLine());
+        Assert.assertEquals      ("------------------------+", cell.getBannerLine());
     }
     
     /**
@@ -80,14 +83,17 @@ public final class TestCell {
         cell.setWidth(20);
         Assert.assertEquals(20, cell.getWidth());
         Assert.assertEquals("hello world         ", cell.getPaddedLine(0));
+        Assert.assertEquals("--------------------+", cell.getBannerLine());
         
         cell.setWidth(5);
         Assert.assertEquals(5, cell.getWidth());
         Assert.assertEquals("hello", cell.getPaddedLine(0));
+        Assert.assertEquals("-----+", cell.getBannerLine());
         
         cell.setWidth(11);
         Assert.assertEquals(11, cell.getWidth());
         Assert.assertEquals("hello world", cell.getPaddedLine(0));
+        Assert.assertEquals("-----------+", cell.getBannerLine());
         
     }
 }

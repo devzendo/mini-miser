@@ -72,7 +72,7 @@ public final class Cell {
      */
     public String getBannerLine() {
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < width - 1; i++) {
+        for (int i = 0; i < width; i++) {
             sb.append('-');
         }
         sb.append('+');

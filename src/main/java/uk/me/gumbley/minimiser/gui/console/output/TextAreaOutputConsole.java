@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui.console.output;
 
 import java.awt.Font;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 
@@ -14,6 +15,7 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 public final class TextAreaOutputConsole implements OutputConsole {
     private int textAreaContentLength = 0;
     private JTextArea textArea;
+    private JScrollPane scrollPane;
     
     /**
      * Construct a text area-based OutputConsole 
@@ -22,14 +24,16 @@ public final class TextAreaOutputConsole implements OutputConsole {
         textArea = new JTextArea();
         textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize() - 2));
         textArea.setEditable(false);
+        
+        scrollPane = new JScrollPane(textArea);
     }
     
     /**
      * Obtain the text area used by this OutputConsole
-     * @return the JTextArea
+     * @return the JTextArea in a JScrollPane
      */
     public JComponent getTextArea() {
-        return textArea;
+        return scrollPane;
     }
 
     /**

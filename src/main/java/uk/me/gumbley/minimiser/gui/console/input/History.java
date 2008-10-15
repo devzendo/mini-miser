@@ -118,7 +118,9 @@ public final class History {
                 plingNumberMatcher.appendReplacement(sb, historyEntry.getCommandString());
             } catch (final NumberFormatException nfe) {
                 // should never happen!
-                throw new HistoryTransformationException("History reference '" + historyReferenceString + "' is non-numeric (shouldn't have been matched by regex)");
+                throw new HistoryTransformationException("History reference '"
+                    + historyReferenceString 
+                    + "' is non-numeric (shouldn't have been matched by regex)");
             }
         }
         plingNumberMatcher.appendTail(sb);

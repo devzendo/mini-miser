@@ -11,7 +11,6 @@ import org.h2.command.Parser;
 import org.h2.command.Prepared;
 import org.h2.command.dml.Delete;
 import org.h2.command.dml.Insert;
-import org.h2.command.dml.NoOperation;
 import org.h2.command.dml.Select;
 import org.h2.command.dml.Update;
 import org.h2.engine.Session;
@@ -41,12 +40,12 @@ public final class H2SQLAccess implements SQLAccess {
         preparedToResultTypeMap = initialisePreparedToResultTypeMap();
         try {
             connection = dataSource.getConnection();
-            LOGGER.debug("H2SQLAccess: The connection is a " + connection.getClass().getName());
+            //LOGGER.debug("H2SQLAccess: The connection is a " + connection.getClass().getName());
             final JdbcConnection jdbcConnection = (JdbcConnection) connection;
             final SessionInterface session = jdbcConnection.getSession();
-            LOGGER.debug("H2SQLAccess: the session is a " + session.getClass().getName());
+            //LOGGER.debug("H2SQLAccess: the session is a " + session.getClass().getName());
             parser = new Parser((Session) session);
-            LOGGER.debug("H2SQLAccess: the parser is a " + parser.getClass().getName());
+            //LOGGER.debug("H2SQLAccess: the parser is a " + parser.getClass().getName());
         } catch (final SQLException e) {
             final String warning = "Could not obtain H2 Parser from DataSource:" + e.getMessage() + "; SQL error code " + e.getErrorCode();
             LOGGER.warn(warning, e);
@@ -72,11 +71,11 @@ public final class H2SQLAccess implements SQLAccess {
     public ResultType parse(final String sql) {
         try {
             final Prepared prepared = parser.parseOnly(sql);
-            LOGGER.info("parse: the Prepared is a " + prepared.getClass().getName());
-            LOGGER.info("parse: the prepared: " + prepared.toString());
+            //LOGGER.info("parse: the Prepared is a " + prepared.getClass().getName());
+            //LOGGER.info("parse: the prepared: " + prepared.toString());
             final ResultType resultType = preparedToResultTypeMap.get(prepared.getClass());
             if (resultType != null) {
-                LOGGER.debug("parse: the result type is " + resultType);
+                //LOGGER.debug("parse: the result type is " + resultType);
                 return resultType;
             }
             final String warning = "No ResultType map entry found for Prepared type " + prepared.getClass().getSimpleName();

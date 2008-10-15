@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
-import java.util.List;
 
 /**
  * A simple table display that allows the AbstractTableDisplay base functions
@@ -40,7 +39,7 @@ public final class StubTableDisplay extends AbstractTableDisplay {
      * {@inheritDoc}
      */
     @Override
-    protected void emitHeading(final List<String> headingNames) {
+    protected void emitHeading(final Row headings) {
         headingEmitCount++;
     }
 
@@ -48,7 +47,7 @@ public final class StubTableDisplay extends AbstractTableDisplay {
      * {@inheritDoc}
      */
     @Override
-    protected void emitRow(final List<Cell> row) {
+    protected void emitRow(final Row row) {
         rowEmitCount++;
     }
 

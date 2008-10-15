@@ -10,15 +10,17 @@ import java.util.List;
  */
 public abstract class AbstractTableDisplay implements TableDisplay {
 
-    private List<String> headings;
+    private Row headings;
     private List<Integer> columnWidths;
     private boolean emitHeading;
+    private int headingHeight;
     
     /**
      * Construct an Abstract Table Display
      */
     public AbstractTableDisplay() {
-        headings = new ArrayList<String>();
+        headings = new Row();
+        headingHeight = 0;
         columnWidths = new ArrayList<Integer>();
     }
 
@@ -26,11 +28,21 @@ public abstract class AbstractTableDisplay implements TableDisplay {
      * {@inheritDoc}
      */
     public final void setHeadings(final List<String> headingNames) {
-        headings = new ArrayList<String>(headingNames);
+        headings = new Row();
         columnWidths = new ArrayList<Integer>(headings.size());
-        for (final String heading : headings) {
+        for (int i = 0; i < headingNames.size(); i++) {
+            final String heading = headingNames.get(i);
+            final Cell headingCell = new Cell();
+            headingCell.setText(heading);
+            headings.addCell(headingCell);
             columnWidths.add(heading.length());
+            if (columnWidths.get(i) < headingCell.getWidth()) {
+                columnWidths.set(i, headingCell.getWidth());
+            } else {
+                headingCell.setWidth(columnWidths.get(i));
+            }
         }
+        headingHeight = headings.getHeight();
         emitHeading = true;
     }
     
@@ -42,23 +54,21 @@ public abstract class AbstractTableDisplay implements TableDisplay {
             throw new IllegalStateException("No headings have been set");
         }
         
-        final List<Cell> cells = new ArrayList<Cell>();
-        int maxHeight = 0;
+        final Row cells = new Row();
         for (int i = 0; i < row.size(); i++) {
             final Object colObject = row.get(i);
             final String colString = colObject == null ? "(null)" : colObject.toString();
             final Cell cell = new Cell();
             cell.setText(colString);
-            cells.add(cell);
-            if (cell.getHeight() > maxHeight) {
-                maxHeight = cell.getHeight();
-            }
+            cells.addCell(cell);
             if (columnWidths.get(i) < cell.getWidth()) {
                 columnWidths.set(i, cell.getWidth());
                 emitHeading = true;
             } else {
                 cell.setWidth(columnWidths.get(i));
             }
+            // keep the heading cell widths maximised
+            headings.get(i).setWidth(columnWidths.get(i));
         }
         if (emitHeading) {
             emitHeading(headings);
@@ -68,37 +78,18 @@ public abstract class AbstractTableDisplay implements TableDisplay {
     }
     
     /**
-     * Obtain the width of a column, which in the case of multiline lines, is
-     * the longest line within the column. In the case of single lines, it's the
-     * length of the line as a whole.
-     * @param columnText the text. Precondition: never null.
-     * @return the width
-     */
-    private int columnWidth(final String columnText) {
-        final String[] lines = columnText.split("\r?\n");
-        int longestLength = 0;
-        for (final String line : lines) {
-            final int length = line.length();
-            if (length > longestLength) {
-                longestLength = length;
-            }
-        }
-        return longestLength;
-    }
-    
-    /**
      * Emit the heading names supplied. Subclasses should call 
      * getColumnWidth(column) to determine the width of the columns.
-     * @param headingNames the names of the headings
+     * @param headingCells the cells containing the names of the headings
      */
-    protected abstract void emitHeading(final List<String> headingNames);
+    protected abstract void emitHeading(final Row headingCells);
 
     /**
      * Emit the row supplied. Subclasses should call getColumnWidth(column) to
      * determine the width of the columns.
-     * @param row the row contents
+     * @param rowCells the row contents
      */
-    protected abstract void emitRow(final List<Cell> row);
+    protected abstract void emitRow(final Row rowCells);
     
     /**
      * Finalise the display after finished has been called. 
