@@ -122,10 +122,7 @@ public class MainFrame {
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
 
-        //Set the frame icon to an image loaded from a file.
-        final ImageIcon appIcon = createImageIcon("icons/application.gif");
-        LOGGER.info("icon is " + appIcon);
-        mainFrame.setIconImage(appIcon.getImage());
+        mainFrame.setIconImage(createImageIcon("icons/application.gif").getImage());
 
         setMainFrameInFactory();
         
