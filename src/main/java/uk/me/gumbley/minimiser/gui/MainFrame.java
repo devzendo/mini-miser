@@ -10,13 +10,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.minimiser.common.AppName;
@@ -116,14 +119,13 @@ public class MainFrame {
     }
 
     private void createMainFrame() {
-        //Ask for window decorations provided by the look and feel.
-        JFrame.setDefaultLookAndFeelDecorated(true);
-
         mainFrame = new JFrame(AppName.getAppName() + " v"
                 + AppVersion.getVersion());
 
         //Set the frame icon to an image loaded from a file.
-        mainFrame.setIconImage(new ImageIcon("icons/application.gif").getImage());
+        final ImageIcon appIcon = createImageIcon("icons/application.gif");
+        LOGGER.info("icon is " + appIcon);
+        mainFrame.setIconImage(appIcon.getImage());
 
         setMainFrameInFactory();
         
@@ -160,6 +162,18 @@ public class MainFrame {
         });
     }
 
+    /**
+     *  Returns an ImageIcon, or null if the path was invalid.
+     */
+    private ImageIcon createImageIcon(final String path) {
+        final java.net.URL imgURL = getClass().getClassLoader().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            LOGGER.warn("Couldn't find file: " + path);
+            return null;
+        }
+    }
     private void createAndSetMainFrameTitleInFactory() {
         final MainFrameTitleFactory mainFrameTitleFactory = springLoader.getBean("&mainFrameTitle", MainFrameTitleFactory.class);
         mainFrameTitleFactory.setMainFrameTitle(new DefaultMainFrameTitleImpl(mainFrame));
