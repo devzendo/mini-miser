@@ -106,7 +106,6 @@ public final class History {
         plingNumberMatcher.reset(inputLine);
         final StringBuffer sb = new StringBuffer();
         while (plingNumberMatcher.find()) {
-            System.out.println("sb is '" + sb.toString() + "'");
             final String historyReferenceString = plingNumberMatcher.group(1);
             try {
                 final int historyNumber = Integer.parseInt(historyReferenceString);
@@ -114,7 +113,6 @@ public final class History {
                 if (historyEntry == null) {
                     throw new HistoryTransformationException("History reference " + historyNumber + " does not exist");
                 }
-                System.out.println("replacing with '" + historyEntry.getCommandString());
                 plingNumberMatcher.appendReplacement(sb, historyEntry.getCommandString());
             } catch (final NumberFormatException nfe) {
                 // should never happen!

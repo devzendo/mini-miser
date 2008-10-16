@@ -2,8 +2,6 @@ package uk.me.gumbley.minimiser.gui.console.input;
 
 import java.awt.Event;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -16,7 +14,13 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
- * An InputConsole that uses a JTextArea to input data.
+ * An InputConsole that uses a JTextArea to input data, with input map handlers
+ * for common history functions:
+ * <ul>
+ * <li> next / previous history
+ * <li> clear line
+ * <li> enter to submit command
+ * </ul>
  * 
  * @author matt
  *
@@ -29,7 +33,6 @@ public final class TextAreaInputConsole implements InputConsole {
     private JScrollPane scrollPane;
     private History history;
     private int historyIndex;
-    private boolean firstFocus;
     
     /**
      * Create a TextAreaInputConsole 
@@ -39,21 +42,8 @@ public final class TextAreaInputConsole implements InputConsole {
         history = new History();
         historyIndex = 1;
        
-        firstFocus = true;
-        
         observerList = new ObserverList<InputConsoleEvent>();
         textArea = new ConsoleTextArea("<enter your SQL here>");
-        textArea.setRows(3);
-        
-        textArea.addFocusListener(new FocusAdapter() {
-            public void focusGained(final FocusEvent e) {
-                if (firstFocus) {
-                    firstFocus = false;
-                    clearTextArea();
-                }
-                
-            }
-        });
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
             new AbstractAction() {

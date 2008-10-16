@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tab.impl.sql;
+package uk.me.gumbley.minimiser.tabledisplay;
 
 /**
  * A Cell holds the contents of a single cell in a display of rows (of data or

@@ -3,11 +3,8 @@ package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
@@ -18,6 +15,7 @@ import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEventError;
 import uk.me.gumbley.minimiser.gui.console.input.TextAreaInputConsole;
 import uk.me.gumbley.minimiser.gui.console.output.TextAreaOutputConsole;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.tabledisplay.TableDisplay;
 
 /**
  * The SQL Tab's main panel. A developer-friendly (and moderately user-friendly,
@@ -47,6 +45,7 @@ public final class SQLTabPanel extends JPanel {
 
         this.setLayout(new BorderLayout());
         
+        // OUTPUT --------------------------------------------------------------
         final JTabbedPane outputTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
         this.add(outputTabbedPane, BorderLayout.CENTER);
         
@@ -55,21 +54,21 @@ public final class SQLTabPanel extends JPanel {
         // TODO I want the tabbedpane to go from top to the bottom - the complete
         // height, then below that, the input console. not quite there yet.
 
-        final JTable table = new JTable(1, 1);
-        final JPanel tablePanel = new JPanel(new BorderLayout());
-        tablePanel.add(new JScrollPane(table), BorderLayout.NORTH);
-        outputTabbedPane.add(tablePanel, "Table");  // example!!
+        final ResultTable resultTable = new ResultTable();
+        outputTabbedPane.add(resultTable.getTable(), "Table");  // example!!
 
-        //final TableDisplay multiTableDisplay = new MultiTableDisplay(new ConsoleTableDisplay(outputConsole), new TableConsoleDisplay(table));
+        final TableDisplay tableTableDisplay = new TableTableDisplay(resultTable);
         final TableDisplay consoleTableDisplay = new ConsoleTableDisplay(outputConsole);
 
+        // INPUT ---------------------------------------------------------------
         inputConsole = new TextAreaInputConsole();
         inputConsole.addInputConsoleEventListener(new InputConsoleObserver());
         this.add(inputConsole.getTextArea(), BorderLayout.SOUTH);
         
+        // Command Handlers ----------------------------------------------------
         final List<CommandHandler> commandHandlers = new ArrayList<CommandHandler>();
         commandHandlers.add(new HistoryCommandHandler());
-        commandHandlers.add(new SQLCommandHandler(outputConsole, consoleTableDisplay, databaseDescriptor));
+        commandHandlers.add(new SQLCommandHandler(databaseDescriptor, outputConsole, consoleTableDisplay, tableTableDisplay));
         commandProcessor = new CommandProcessor(outputConsole, commandHandlers);
     }
 

@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tab.impl.sql;
+package uk.me.gumbley.minimiser.tabledisplay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,12 @@ public abstract class AbstractTableDisplay implements TableDisplay {
     private Row headings;
     private List<Integer> columnWidths;
     private boolean emitHeading;
-    private int headingHeight;
     
     /**
      * Construct an Abstract Table Display
      */
     public AbstractTableDisplay() {
         headings = new Row();
-        headingHeight = 0;
         columnWidths = new ArrayList<Integer>();
     }
 
@@ -42,7 +40,6 @@ public abstract class AbstractTableDisplay implements TableDisplay {
                 headingCell.setWidth(columnWidths.get(i));
             }
         }
-        headingHeight = headings.getHeight();
         emitHeading = true;
     }
     

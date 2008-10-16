@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tab.impl.sql;
+package uk.me.gumbley.minimiser.tabledisplay;
 
 import org.junit.Assert;
 import org.junit.Before;

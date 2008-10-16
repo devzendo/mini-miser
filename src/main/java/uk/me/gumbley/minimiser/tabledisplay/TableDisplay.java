@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.tab.impl.sql;
+package uk.me.gumbley.minimiser.tabledisplay;
 
 import java.util.List;
 

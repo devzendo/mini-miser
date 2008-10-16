@@ -1,6 +1,9 @@
 package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
 import uk.me.gumbley.minimiser.gui.console.output.OutputConsole;
+import uk.me.gumbley.minimiser.tabledisplay.AbstractTableDisplay;
+import uk.me.gumbley.minimiser.tabledisplay.Cell;
+import uk.me.gumbley.minimiser.tabledisplay.Row;
 
 /**
  * A table display that emits fancy headers and rows in ASCII boxes,
