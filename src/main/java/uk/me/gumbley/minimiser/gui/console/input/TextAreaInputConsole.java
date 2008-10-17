@@ -35,15 +35,16 @@ public final class TextAreaInputConsole implements InputConsole {
     private int historyIndex;
     
     /**
-     * Create a TextAreaInputConsole 
+     * Create a TextAreaInputConsole
+     * @param initialText the text to display in the console initially 
      */
     @SuppressWarnings("serial")
-    public TextAreaInputConsole() {
+    public TextAreaInputConsole(final String initialText) {
         history = new History();
         historyIndex = 1;
        
         observerList = new ObserverList<InputConsoleEvent>();
-        textArea = new ConsoleTextArea("<enter your SQL here>");
+        textArea = new ConsoleTextArea(initialText);
 
         textArea.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
             new AbstractAction() {

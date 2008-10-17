@@ -8,8 +8,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.gui.console.input.HistoryObject;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEvent;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEventError;
 import uk.me.gumbley.minimiser.gui.console.input.TextAreaInputConsole;
@@ -51,8 +51,6 @@ public final class SQLTabPanel extends JPanel {
         
         outputConsole = new TextAreaOutputConsole();
         outputTabbedPane.add(outputConsole.getTextArea(), "Console");
-        // TODO I want the tabbedpane to go from top to the bottom - the complete
-        // height, then below that, the input console. not quite there yet.
 
         final ResultTable resultTable = new ResultTable();
         outputTabbedPane.add(resultTable.getTable(), "Table");  // example!!
@@ -61,15 +59,24 @@ public final class SQLTabPanel extends JPanel {
         final TableDisplay consoleTableDisplay = new ConsoleTableDisplay(outputConsole);
 
         // INPUT ---------------------------------------------------------------
-        inputConsole = new TextAreaInputConsole();
+        inputConsole = new TextAreaInputConsole("<enter your SQL here>");
         inputConsole.addInputConsoleEventListener(new InputConsoleObserver());
         this.add(inputConsole.getTextArea(), BorderLayout.SOUTH);
         
         // Command Handlers ----------------------------------------------------
         final List<CommandHandler> commandHandlers = new ArrayList<CommandHandler>();
-        commandHandlers.add(new HistoryCommandHandler());
-        commandHandlers.add(new SQLCommandHandler(databaseDescriptor, outputConsole, consoleTableDisplay, tableTableDisplay));
+        // SQLCommandHandler must go last, so everything else gets a chance at
+        // processing help commands before we let H2 handle the majority.
+        commandHandlers.add(new HistoryCommandHandler(outputConsole, inputConsole));
+        commandHandlers.add(new SQLCommandHandler(outputConsole, databaseDescriptor, consoleTableDisplay, tableTableDisplay));
         commandProcessor = new CommandProcessor(outputConsole, commandHandlers);
+        
+        outputConsole.info("This is a diagnostic facility for " + AppName.getAppName() + " internals and for working on H2 databases via SQL.");
+        for (final CommandHandler handler : commandHandlers) {
+            for (final String text : handler.getIntroText()) {
+                outputConsole.info(text);
+            }
+        }
     }
 
     
@@ -79,21 +86,29 @@ public final class SQLTabPanel extends JPanel {
      */
     public void processInputLine(final String inputLine) {
         assert SwingUtilities.isEventDispatchThread();
-        cursorManager.hourglass();
-        new SwingWorker() {
-
-            @Override
-            public Object construct() {
-                commandProcessor.processCommand(inputLine);
-                return null;
-            }
-            
-            public void finished() {
-                cursorManager.normal();
-            }
-        } .start();
+        if (inputLine.length() > 0) {
+            cursorManager.hourglass();
+            new SwingWorker() {
+    
+                @Override
+                public Object construct() {
+                    commandProcessor.processCommand(inputLine);
+                    return null;
+                }
+                
+                public void finished() {
+                    cursorManager.normal();
+                }
+            } .start();
+        }
     }
 
+    /**
+     * Close all resources
+     */
+    public void finished() {
+        outputConsole.finished();
+    }
 
     /**
      * Observes input lines, either reports them as errors in the output console
@@ -139,45 +154,6 @@ public final class SQLTabPanel extends JPanel {
                     outputConsole.warn(errorString);
                 }
             }
-        }
-    }
-
-    /**
-     * Handles the history commands.
-     * 
-     * @author matt
-     *
-     */
-    private final class HistoryCommandHandler implements CommandHandler {
-        /**
-         * {@inheritDoc}
-         */
-        public boolean handleCommand(final String command) {
-            final String[] words = command.trim().split("\\s+");
-            if (words == null || words.length == 0) {
-                return false;
-            }
-            if (words[0].equalsIgnoreCase("history") || words[0].equalsIgnoreCase("h")) {
-                List<HistoryObject> history;
-                if (words.length > 1) {
-                    try {
-                        final int num = Integer.parseInt(words[1]);
-                        history = inputConsole.getLastHistory(num); 
-                    } catch (final NumberFormatException nfe) {
-                        outputConsole.warn("'" + words[1] + "' is not numeric in history command");
-                        return true; // don't pass on to anyone else
-                    }
-                } else {
-                    history = inputConsole.getHistory();
-                }
-                if (history != null && history.size() > 0) {
-                    for (final HistoryObject h : history) {
-                        outputConsole.info(h.getCommandIndex() + " " + h.getCommandString());
-                    }
-                }
-                return true;
-            }
-            return false;
         }
     }
 }

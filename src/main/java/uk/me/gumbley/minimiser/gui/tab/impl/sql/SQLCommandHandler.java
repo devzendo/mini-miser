@@ -1,10 +1,11 @@
-    package uk.me.gumbley.minimiser.gui.tab.impl.sql;
+package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.string.StringUtils;
@@ -23,7 +24,7 @@ import uk.me.gumbley.minimiser.tabledisplay.TableDisplay;
  * @author matt
  *
  */
-public final class SQLCommandHandler implements CommandHandler {
+final class SQLCommandHandler implements CommandHandler {
     private static final Logger LOGGER = Logger
             .getLogger(SQLCommandHandler.class);
     private final OutputConsole outputConsole;
@@ -32,11 +33,11 @@ public final class SQLCommandHandler implements CommandHandler {
     private TableDisplay[] tableDisplays;
 
     /**
-     * @param database the database to use the SQL commands against
      * @param console the output console
+     * @param database the database to use the SQL commands against
      * @param displays a number of the table display abstractions
      */
-    public SQLCommandHandler(final DatabaseDescriptor database, final OutputConsole console, final TableDisplay ...displays) {
+    public SQLCommandHandler(final OutputConsole console, final DatabaseDescriptor database, final TableDisplay ...displays) {
         this.outputConsole = console;
         this.tableDisplays = displays;
         this.databaseDescriptor = database;
@@ -76,6 +77,16 @@ public final class SQLCommandHandler implements CommandHandler {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getIntroText() {
+        return Arrays.asList(new String[] {
+                "help [anything] - show H2's online help for anything",
+                "<H2 SQL commands> - execute H2 SQL commands (see help [anything], above)",
+        }); 
+    }
+    
     /**
      * Mini Template Method [GoF] for "doing JDBC stuff" and having exceptions
      * handled in a common manner, suitable for the SQL tab.

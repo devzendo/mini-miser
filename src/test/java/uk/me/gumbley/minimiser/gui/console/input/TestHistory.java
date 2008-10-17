@@ -215,13 +215,41 @@ public final class TestHistory {
     /**
      * @throws HistoryTransformationException nope
      */
-    @Test
-    public void plingsWithoutDigitsAreNotTransformed() throws HistoryTransformationException {
-        final String annoyingMetaMaths = "One thing that annoys me about Chaitin's book is the sheer number of exclamation marks he uses!!!";
-        Assert.assertEquals(annoyingMetaMaths, history.transform(annoyingMetaMaths));
-        
+    @Test(expected = HistoryTransformationException.class)
+    public void plingEarlierWordThatDoesntMatch() throws HistoryTransformationException {
         final String onetwo = "!one !two";
-        Assert.assertEquals(onetwo, history.transform(onetwo));
+        history.transform(onetwo);
     }
     
+    /**
+     * @throws HistoryTransformationException nope
+     */
+    @Test
+    public void plingsThatPrefixEarlierEntriesAreTransformed() throws HistoryTransformationException {
+        history.add("select * from versions");
+        history.add("selina scott used to be a newsreader, where is she now?");
+        Assert.assertEquals("selina scott used to be a newsreader, where is she now?", history.transform("!sel"));
+    }
+    
+    /**
+     * @throws HistoryTransformationException nope
+     */
+    @Test
+    public void multiplePlingPrefixReplacement() throws HistoryTransformationException {
+        history.add("salmon");
+        history.add("chanted");
+        history.add("evening");
+        Assert.assertEquals("salmon chanted evening", history.transform("!s !c !e"));
+    }
+    
+    /**
+     * @throws HistoryTransformationException nope
+     */
+    @Test
+    public void mixPlingRefsAndPrefixes() throws HistoryTransformationException {
+        history.add("one");
+        history.add("two");
+        history.add("three");
+        Assert.assertEquals("one two three", history.transform("!1 !tw !3"));
+    }
 }

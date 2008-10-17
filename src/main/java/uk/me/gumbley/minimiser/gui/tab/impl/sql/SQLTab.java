@@ -1,7 +1,6 @@
 package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
 import java.awt.Component;
-import javax.swing.JPanel;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
@@ -18,7 +17,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 public final class SQLTab implements Tab {
     private final DatabaseDescriptor databaseDescriptor;
     private final CursorManager cursorManager;
-    private volatile JPanel mainPanel;
+    private volatile SQLTabPanel mainPanel;
 
     /**
      * Construct the SQL tab
@@ -48,14 +47,12 @@ public final class SQLTab implements Tab {
      * {@inheritDoc}
      */
     public void destroy() {
-        // TODO Auto-generated method stub
-        
     }
     
     /**
      * {@inheritDoc}
      */
     public void disposeComponent() {
-        // TODO Auto-generated method stub
+        mainPanel.finished();
     }
 }

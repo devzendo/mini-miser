@@ -9,6 +9,9 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * An OutputConsole that uses a TextArea to logs its information.
+ * <p>
+ * It uses a background thread to ensure that constant updates to the JTextArea
+ * are batched rather than drip-fed.
  * 
  * @author matt
  *
@@ -17,7 +20,10 @@ public final class TextAreaOutputConsole implements OutputConsole {
     private int textAreaContentLength = 0;
     private JTextArea textArea;
     private JScrollPane scrollPane;
+    
+    private Object lock;
     private StringBuilder updateText;
+    private boolean bAlive;
     
     /**
      * Construct a text area-based OutputConsole 
@@ -29,14 +35,20 @@ public final class TextAreaOutputConsole implements OutputConsole {
         scrollPane = new JScrollPane(textArea);
 
         updateText = new StringBuilder();
+        startUpdateThread();
+    }
+
+    private void startUpdateThread() {
+        bAlive = true;
+        lock = new Object();
         final Thread updateThread = new Thread(new Runnable() {
 
             public void run() {
-                while (Thread.currentThread().isAlive()) {
-                    synchronized (updateText) {
+                while (bAlive) {
+                    synchronized (lock) {
                         if (updateText.length() > 0) {
                             final String out = updateText.toString();
-                            updateText.delete(0, updateText.length() - 1);
+                            updateText = new StringBuilder();
                             GUIUtils.invokeLaterOnEventThread(new Runnable() {
                                 public void run() {
                                     textArea.append(out);
@@ -45,16 +57,22 @@ public final class TextAreaOutputConsole implements OutputConsole {
                                 }
                             });
                         }
-                        ThreadUtils.waitNoInterruption(100);
                     }
+                    ThreadUtils.waitNoInterruption(100);
                 }
-                
             }
             
         });
         updateThread.setDaemon(true);
         updateThread.setName("Console updater");
         updateThread.start();
+    }
+
+    /**
+     * Free all resources (i.e. the update thread) 
+     */
+    public void finished() {
+        bAlive = false;
     }
     
     /**
@@ -102,20 +120,13 @@ public final class TextAreaOutputConsole implements OutputConsole {
     }
     
     private void appendText(final String text) {
-        synchronized (updateText) {
-            updateText.append(text);
-            if (!text.endsWith("\n")) {
-                updateText.append("\n");
+        if (text.length() > 0) {
+            synchronized (lock) {
+                updateText.append(text);
+                if (!text.endsWith("\n")) {
+                    updateText.append("\n");
+                }
             }
         }
-//        final StringBuilder sb = new StringBuilder(text);
-//        final String writeString = sb.toString();
-//        GUIUtils.invokeLaterOnEventThread(new Runnable() {
-//            public void run() {
-//                textArea.append(writeString);
-//                textAreaContentLength += writeString.length();
-//                textArea.setCaretPosition(textAreaContentLength);
-//            }
-//        });
     }
 }

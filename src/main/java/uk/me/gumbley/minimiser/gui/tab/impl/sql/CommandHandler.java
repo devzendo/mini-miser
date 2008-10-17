@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
+import java.util.List;
+
 /**
  * A CommandHandler handles commands - that is, there will be several
  * CommandHandlers in the system that handle commands for different subsystems.
@@ -17,4 +19,11 @@ public interface CommandHandler {
      * @return true iff handled, false if not.
      */
     boolean handleCommand(String command);
+    
+    /**
+     * If the handler has any introduction text, to display on startup,
+     * return its List of Strings here.
+     * @return A List of intro Strings
+     */
+    List<String> getIntroText();
 }

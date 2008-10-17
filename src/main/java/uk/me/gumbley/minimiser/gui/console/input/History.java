@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 public final class History {
     private List<HistoryObject> historyList;
     private Matcher plingNumberMatcher;
+    private Matcher plingWordMatcher;
     
     /**
      * Construct an empty History.
@@ -23,6 +24,7 @@ public final class History {
     public History() {
         historyList = new ArrayList<HistoryObject>();
         plingNumberMatcher = Pattern.compile("!(\\d+)").matcher("");
+        plingWordMatcher = Pattern.compile("!(\\S+)").matcher("");
     }
     
     /**
@@ -93,6 +95,9 @@ public final class History {
      * <ul>
      * <li> <b>!<history number></b> - replace the operator with the contents
      *      of the given history entry
+     * <li> <b>!start-of-earlier-history-entry</b> - replace the operator with
+     *      with the contents of the last history entry that started with the
+     *      given text
      * </ul>
      * <p>
      * @param inputLine the input line of text, which may contain history
@@ -100,9 +105,16 @@ public final class History {
      * @return the original or transformed line
      * @throws HistoryTransformationException if the line contains a history
      * transform operator that cannot be transformed, e.g. if the history
-     * list contains 5 elements and you request !20.
+     * list contains 5 elements and you request !20. Or, if !word does not
+     * match any entry. 
      */
     public String transform(final String inputLine) throws HistoryTransformationException {
+        final String plingNumberTransformed = transformPlingNumber(inputLine);
+        final String plingWordTransformed = transformPlingEarlierWord(plingNumberTransformed);
+        return plingWordTransformed;
+    }
+
+    private String transformPlingNumber(final String inputLine) throws HistoryTransformationException {
         plingNumberMatcher.reset(inputLine);
         final StringBuffer sb = new StringBuffer();
         while (plingNumberMatcher.find()) {
@@ -122,6 +134,31 @@ public final class History {
             }
         }
         plingNumberMatcher.appendTail(sb);
+        return sb.toString();
+    }
+    
+    private String transformPlingEarlierWord(final String inputLine) throws HistoryTransformationException {
+        plingWordMatcher.reset(inputLine);
+        final StringBuffer sb = new StringBuffer();
+        while (plingWordMatcher.find()) {
+            final String earlierWord = plingWordMatcher.group(1);
+            System.out.println("earlierword '" + earlierWord + "'");
+            boolean replaced = false;
+            for (int h = historyList.size() - 1; h >= 0; h--) {
+                final HistoryObject historyEntry = historyList.get(h);
+                System.out.println("entry to compare: '" + historyEntry.getCommandString() + "'");
+                if (historyEntry.getCommandString().startsWith(earlierWord)) {
+                    plingWordMatcher.appendReplacement(sb, historyEntry.getCommandString());
+                    replaced = true;
+                    System.out.println("replaced");
+                    break;
+                }
+            }
+            if (!replaced) {
+                throw new HistoryTransformationException("Reference to earlier history '!" + earlierWord + "' does not exist");
+            }
+        }
+        plingWordMatcher.appendTail(sb);
         return sb.toString();
     }
 }
