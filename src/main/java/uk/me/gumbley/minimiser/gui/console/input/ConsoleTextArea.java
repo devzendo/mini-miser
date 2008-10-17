@@ -23,7 +23,7 @@ public final class ConsoleTextArea extends JTextArea {
      */
     public ConsoleTextArea(final String title) {
         super(title);
-        setFont(new Font("Monospaced", Font.PLAIN, getFont().getSize() - 2));
+        setFont(new Font("Monospaced", Font.PLAIN, getFont().getSize()));
         setBorder(BorderFactory.createLoweredBevelBorder());
         setRows(3);
 

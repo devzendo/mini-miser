@@ -10,8 +10,13 @@ BUGS:
   you get a nasty 'open in another process' dialog.
 * sometimes on startup the hourglass sticks - happened soon after adding
   tools->options dialog
-  
+* windows - view menu - switching databases doesn't reset the view menu
+  checkmarks - e.g. open sql on one db, open another db. switch to orig, sql
+  view present, checkmark missing 
+
 CURRENT TASKS:
+* refactoring persistence tests
+* need a sequence/table in the persistence layer
 * refactoring menuimpl and the menus - loading state from the rest of the
   objects (prefs, opentablist, opendatabaselist), rather than replicating it
   in menustate. had added a factory to stash menustate, but this can go when
@@ -24,7 +29,7 @@ CURRENT TASKS:
 
 * checkboxes and actionlistener on view menu items
 * actionlistener loads/closes tabs, updates its checkbox.
-* application icon isn't being loaded correctly
+
     
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   
@@ -49,8 +54,6 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 
 * sql tab:
   * command handlers need to have some tests around them
-  * need a help mechanism
-  * sql command handler needs to use the inbuilt h2 HELP SQL command
 
 * temporarily remove currency panel on new database wizard    
 
@@ -64,7 +67,6 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   need ~/Library/Application Support/MiniMiser on Mac OS X
   need Documents and Settings/username/whatever on Windows.
 
-* need a sequence/table in the persistence layer
 
 * if 'SQL view available' flag gets disabled in prefs, close any currently-
   open SQL views (with a notification)
@@ -73,9 +75,6 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   a set of default prefs that are stored on prefs creation. perhaps a prefs
   initialiser object that gets triggered to populate initial prefs on creation.
 
-* Update available checker.
-
-* Bug reporting dialog - direct to bug database
 
 CROSS-PLATFORM UI ISSUES:
 * the background to the tabs is the same colour as the tabs, making the tabs
@@ -87,14 +86,12 @@ CROSS-PLATFORM UI ISSUES:
   * there are white patches on the dialogs
 
 
-
 -- final tasks before release --
 * review all TODOs
 * review code complexity, coverage, etc.
 
 * decide final product name
-* create logo
-* System menu on main window and popups needs logo, not standard Java one.
+* create logo, draw nice icons
 * rename product
 
 
@@ -130,14 +127,16 @@ DOCUMENTATION:
 * about dialog
   * switch to HTML version of GPL2 text - text/plain looks poor
   * upgrade to GPL3?
+  * choose licence compatible with all components
 
 * docs to write:
   * technical doc:
     * database schema
     * database schema model with Jude, versioned as of 0.1
     * architecture
-    * coding guidelines
+    * coding guidelines, test driven development, listen to checkstyle
     * how to contribute
+    * environment setup - eclipse, etc
   * user reference guide
   * getting started guide
   
@@ -188,7 +187,8 @@ Accounts:
   Standing Order List
 
 LATER RELEASES:
-
+* Update available checker.
+* Bug reporting dialog - direct to bug database
 * decide which currencies to support
 * add currency object, entries for all supported currencies
 * display flags in pretty list in currency wizard page

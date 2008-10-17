@@ -30,7 +30,7 @@ public final class TextAreaOutputConsole implements OutputConsole {
      */
     public TextAreaOutputConsole() {
         textArea = new JTextArea();
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize() - 2));
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, textArea.getFont().getSize()));
         textArea.setEditable(false);
         scrollPane = new JScrollPane(textArea);
 
