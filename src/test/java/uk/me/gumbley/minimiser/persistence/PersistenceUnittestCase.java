@@ -33,6 +33,23 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
             .getLogger(PersistenceUnittestCase.class);
     private File databaseDirectory;
     private boolean suppressEmptyCheck = false;
+    private AccessFactory accessFactory;
+    
+    /**
+     * Grab the configured AccessFactory from the Spring App Context.
+     */
+    @Before
+    public void getPrerequisites() {
+        accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
+    }
+
+    /**
+     * Allow subclasses to obtain the access factory
+     * @return the AccessFactory
+     */
+    protected final AccessFactory getAccessFactory() {
+        return accessFactory;
+    }
 
     /**
      * Do we have a test database directory specified in test config?

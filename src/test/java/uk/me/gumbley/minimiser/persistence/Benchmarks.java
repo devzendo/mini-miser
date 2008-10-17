@@ -2,7 +2,6 @@ package uk.me.gumbley.minimiser.persistence;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.string.StringUtils;
@@ -19,18 +18,6 @@ public final class Benchmarks extends PersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(Benchmarks.class);
 
-    private AccessFactory accessFactory;
-
-    /**
-     * Grab the configured AccessFactory from the Spring App Context.
-     * TODO not in a unit test!
-     */
-    @Before
-    public void getAccessFactory() {
-        accessFactory = getSpringLoader().getBean("accessFactory",
-            AccessFactory.class);
-    }
-
     /**
      * When updating, we need to know whether a row exists so we can do an
      * insert (if it doesn't already exist) or an update (if it exists).
@@ -45,7 +32,7 @@ public final class Benchmarks extends PersistenceUnittestCase {
         LOGGER.info("*** testBenchmarkSelectAndCountForPersist start");
         final String dbName = "benchmark";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final MiniMiserDatabase mmData = accessFactory.createDatabase(
+        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(
             dbDirPlusDbName, "");
         try {
             final VersionDao versionDao = mmData.getVersionDao();
@@ -112,7 +99,7 @@ public final class Benchmarks extends PersistenceUnittestCase {
         try {
             final long start = System.currentTimeMillis();
             final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-            final MiniMiserDatabase mmData = accessFactory.createDatabase(
+            final MiniMiserDatabase mmData = getAccessFactory().createDatabase(
                 dbDirPlusDbName, encrypted ? "secret squirrel" : "");
             try {
                 final VersionDao versionDao = mmData.getVersionDao();
