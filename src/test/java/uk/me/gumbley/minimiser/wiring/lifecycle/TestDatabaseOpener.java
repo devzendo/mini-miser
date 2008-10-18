@@ -79,7 +79,7 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
     @Test
     public void shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup() {
         LOGGER.info(">>> shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup");
-        createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
+        doCreateDatabasesBoilerplate(accessFactory, dbDetails, new RunOnCreatedDbs() {
             public void runOnCreatedDbs() {
 
                 Assert.assertEquals(0, openDatabaseList.getNumberOfDatabases());
@@ -105,7 +105,7 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
     @Test
     public void shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup() {
         LOGGER.info(">>> shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup");
-        createDatabasesWithPluggableBehaviourBeforeDeletion(accessFactory, dbDetails, new RunOnCreatedDbs() {
+        doCreateDatabasesBoilerplate(accessFactory, dbDetails, new RunOnCreatedDbs() {
             public void runOnCreatedDbs() {
                 
                 prefs.setLastActiveFile("two");

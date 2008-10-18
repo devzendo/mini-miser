@@ -69,7 +69,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
     public void testGoodPlaintextDatabaseCanBeOpened() {
         LOGGER.info(">>> testGoodPlaintextDatabaseCanBeOpened");
         final String dbName = "testopen";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 final MiniMiserDatabase openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
@@ -99,7 +99,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         LOGGER.info(">>> testGoodEncryptedDatabaseCanBeOpened");
         final String dbName = "testopenenc";
         final String dbPassword = "Qwerty123";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(getAccessFactory(), dbName, dbPassword, new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(getAccessFactory(), dbName, dbPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 final MiniMiserDatabase openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
@@ -128,7 +128,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         final String dbName = "testopenenc";
         final String dbCreationPassword = "Qwerty123";
         final String dbEvilHackerPassword = "Fossi11ized";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(getAccessFactory(), dbName, dbCreationPassword, new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(getAccessFactory(), dbName, dbCreationPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 MiniMiserDatabase openedDatabase = null;
@@ -164,7 +164,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         final String dbName = "testopenenc";
         final String dbCreationPassword = "Qwerty123";
         final String dbEvilHackerPassword = "";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(getAccessFactory(), dbName, dbCreationPassword, new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(getAccessFactory(), dbName, dbCreationPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
                 MiniMiserDatabase openedDatabase = null;
@@ -360,7 +360,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
     public void testGoodPlaintextDatabaseCanBeOpenedThenClosed() {
         LOGGER.info(">>> testGoodPlaintextDatabaseCanBeOpenedThenClosed");
         final String dbName = "testcloser";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 final MiniMiserDatabase openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
                 final DatabaseDescriptor dd = new DatabaseDescriptor(dbName, dbDirPlusDbName);

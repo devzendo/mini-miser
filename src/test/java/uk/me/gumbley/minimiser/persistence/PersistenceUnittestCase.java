@@ -333,13 +333,13 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
 
     /**
      * Creates a db, closes it, then allows pluggable behaviour, before deleting it.
-     * @param accessFactory the access factory to use when creating
+     * @param access the access factory to use when creating
      * @param dbName the name of the database
      * @param dbPassword the password for this database, if encrypted. "" if not.
      * @param runOnCreatedDb some behaviour to run when the db is created, before deleting
      */
-    protected final void createDatabaseWithPluggableBehaviourBeforeDeletion(
-            final AccessFactory accessFactory,
+    protected final void doCreateDatabaseBoilerplate (
+            final AccessFactory access,
             final String dbName,
             final String dbPassword,
             final RunOnCreatedDb runOnCreatedDb) {
@@ -349,7 +349,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
         LOGGER.info(String.format("... dbPassword = '%s'", dbPassword));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, dbPassword);
+        final MiniMiserDatabase mmData = access.createDatabase(dbDirPlusDbName, dbPassword);
         LOGGER.info("... created");
         try {
             // now close and open it
@@ -365,6 +365,117 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
             LOGGER.info("... done");
         }
     }
+    
+    /**
+     * Run this oer multiple databases
+     * @author matt
+     *
+     */
+    protected interface RunOnCreatedDbs {
+        /**
+         * Run some custom behaviour for databases that have been created
+         * and will be deleted afterwards.
+         */
+        void runOnCreatedDbs();
+    }
+
+    /**
+     * Creates several dbs, close them, then allows pluggable behaviour, before
+     * deleting the databases.
+     * @param access the access factory to use when creating
+     * @param dbDetails the create/open details of the databases
+     * @param runOnCreatedDbs some behaviour to run when the dbs are created,
+     * before deleting
+     */
+    protected final void doCreateDatabasesBoilerplate (
+        final AccessFactory access,
+        final DatabaseOpenDetails[] dbDetails,
+        final RunOnCreatedDbs runOnCreatedDbs) {
+        if (dbDetails == null || dbDetails.length == 0) {
+            return;
+        }
+        try {
+            for (DatabaseOpenDetails detail : dbDetails) {
+                final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
+                LOGGER.info(String.format("... dbName = %s", detail.getName()));
+                LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
+                LOGGER.info(String.format("... dbPassword = '%s'", detail.getPassword()));
+                // create it...
+                LOGGER.info("... creating");
+                final MiniMiserDatabase mmData = access.createDatabase(dbDirPlusDbName, detail.getPassword());
+                LOGGER.info("... created");
+                // now close and open it
+                assertDatabaseShouldBeOpen(detail.getName());
+                LOGGER.info("... closing");
+                mmData.close();
+                assertDatabaseShouldBeClosed(detail.getName());
+            }
+            runOnCreatedDbs.runOnCreatedDbs();
+            for (DatabaseOpenDetails details : dbDetails) {
+                assertDatabaseShouldBeClosed(details.getName());
+            }
+        } finally {
+            for (DatabaseOpenDetails details : dbDetails) {
+                LOGGER.info("... deleting");
+                deleteDatabaseFiles(details.getName());
+                LOGGER.info("... done");
+            }
+        }
+    }
+    
+    
+    
+    
+    /**
+     * Run some custom behaviour for a given database that's been created
+     * and will be closed and deleted afterwards.
+     * @author matt
+     *
+     */
+    protected interface RunOnMiniMiserDatabase {
+        /**
+         * Run some custom behaviour for a given database that's been created
+         * and will be deleted afterwards.
+         * @param openedDatabase the database
+         */
+        void runOnMiniMiserDatabase(MiniMiserDatabase openedDatabase);
+    }
+    
+    /**
+     * Creates a db then allows pluggable behaviour, before closing and
+     * deleting it. Doesn't do any exhaustive file open checking. 
+     * @param access the access factory to use when creating
+     * @param dbName the name of the database
+     * @param dbPassword the password for this database, if encrypted. "" if not.
+     * @param runOnMiniMiserDatabase some behaviour to run when the db is created, before deleting
+     */
+    protected final void doSimpleCreateDatabaseBoilerPlate (
+            final AccessFactory access,
+            final String dbName,
+            final String dbPassword,
+            final RunOnMiniMiserDatabase runOnMiniMiserDatabase) {
+        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        LOGGER.info(String.format("... dbName = %s", dbName));
+        LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
+        LOGGER.info(String.format("... dbPassword = '%s'", dbPassword));
+        // create it...
+        LOGGER.info("... creating");
+        final MiniMiserDatabase mmData = access.createDatabase(dbDirPlusDbName, dbPassword);
+        LOGGER.info("... created");
+        try {
+            try {
+                runOnMiniMiserDatabase.runOnMiniMiserDatabase(mmData);
+            } finally {
+                LOGGER.info("... closing");
+                mmData.close();
+            }
+        } finally {
+            LOGGER.info("... deleting");
+            deleteDatabaseFiles(dbName);
+            LOGGER.info("... done");
+        }
+    }
+    
     
     /**
      * Details needed to create and open a database
@@ -397,63 +508,6 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
          */
         public String getPassword() {
             return password;
-        }
-    }
-
-    /**
-     * Run this oer multiple databases
-     * @author matt
-     *
-     */
-    protected interface RunOnCreatedDbs {
-        /**
-         * Run some custom behaviour for databases that have been created
-         * and will be deleted afterwards.
-         */
-        void runOnCreatedDbs();
-    }
-
-    /**
-     * Creates several dbs, close them, then allows pluggable behaviour, before
-     * deleting the databases.
-     * @param accessFactory the access factory to use when creating
-     * @param dbDetails the create/open details of the databases
-     * @param runOnCreatedDbs some behaviour to run when the dbs are created,
-     * before deleting
-     */
-    protected final void createDatabasesWithPluggableBehaviourBeforeDeletion(
-        final AccessFactory accessFactory,
-        final DatabaseOpenDetails[] dbDetails,
-        final RunOnCreatedDbs runOnCreatedDbs) {
-        if (dbDetails == null || dbDetails.length == 0) {
-            return;
-        }
-        try {
-            for (DatabaseOpenDetails detail : dbDetails) {
-                final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
-                LOGGER.info(String.format("... dbName = %s", detail.getName()));
-                LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
-                LOGGER.info(String.format("... dbPassword = '%s'", detail.getPassword()));
-                // create it...
-                LOGGER.info("... creating");
-                final MiniMiserDatabase mmData = accessFactory.createDatabase(dbDirPlusDbName, detail.getPassword());
-                LOGGER.info("... created");
-                // now close and open it
-                assertDatabaseShouldBeOpen(detail.getName());
-                LOGGER.info("... closing");
-                mmData.close();
-                assertDatabaseShouldBeClosed(detail.getName());
-            }
-            runOnCreatedDbs.runOnCreatedDbs();
-            for (DatabaseOpenDetails details : dbDetails) {
-                assertDatabaseShouldBeClosed(details.getName());
-            }
-        } finally {
-            for (DatabaseOpenDetails details : dbDetails) {
-                LOGGER.info("... deleting");
-                deleteDatabaseFiles(details.getName());
-                LOGGER.info("... done");
-            }
         }
     }
 }

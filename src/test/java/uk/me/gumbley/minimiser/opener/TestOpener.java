@@ -240,7 +240,7 @@ public final class TestOpener extends PersistenceUnittestCase {
     public void progressNotificationsOnPlainOpen() {
         LOGGER.info(">>> progressNotificationsOnPlainOpen");
         final String dbName = "progressplain";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(accessFactory, dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 
                 final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
@@ -292,7 +292,7 @@ public final class TestOpener extends PersistenceUnittestCase {
         LOGGER.info(">>> progressNotificationsAndCorrectPasswordEnteredOnEncryptedOpen");
         final String dbName = "progressenc";
         final String dbPassword = "Squeamish Ossifrage";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
 
                 final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
@@ -350,7 +350,7 @@ public final class TestOpener extends PersistenceUnittestCase {
         LOGGER.info(">>> progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen");
         final String dbName = "progressencabandon";
         final String dbPassword = "Squeamish Ossifrage";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 
                 final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
@@ -407,7 +407,7 @@ public final class TestOpener extends PersistenceUnittestCase {
         final String dbName = "progressenc";
         final String[] dbPasswordAttempts = new String[] {"Squeamish Ossifrage", "Tantric Obstacles"};
         final AtomicInteger passwordAttempt = new AtomicInteger(1);
-        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, dbPasswordAttempts[0], new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(accessFactory, dbName, dbPasswordAttempts[0], new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 
                 final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
@@ -503,7 +503,7 @@ public final class TestOpener extends PersistenceUnittestCase {
     public void progressNotificationsExceptionOnOpenOfCorrupt() {
         LOGGER.info(">>> progressNotificationsExceptionOnOpenOfCorrupt");
         final String dbName = "corrupt";
-        createDatabaseWithPluggableBehaviourBeforeDeletion(accessFactory, dbName, "", new RunOnCreatedDb() {
+        doCreateDatabaseBoilerplate(accessFactory, dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
 
                 // Corrupt the database
