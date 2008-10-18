@@ -34,6 +34,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 + "entity VARCHAR(40) PRIMARY KEY,"
                 + "version VARCHAR(40)"
                 + ")",
+        "CREATE SEQUENCE Sequence START WITH 1 INCREMENT BY 1",
                 
     };
     private static final int POPULATION_STEPS = 1;

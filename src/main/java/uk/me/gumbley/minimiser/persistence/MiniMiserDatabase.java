@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.persistence;
 
+import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 
@@ -11,9 +12,16 @@ import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
  */
 public interface MiniMiserDatabase {
     /**
+     * VersionDAO added in V1 of the schema.
      * @return the DAO for accessing the Versions table
      */
     VersionDao getVersionDao();
+
+    /**
+     * SequenceDao added in V1 of the schema. 
+     * @return the DAO for accessing the Sequence sequence.
+     */
+    SequenceDao getSequenceDao();
     
     /**
      * Obtain low-lvel access to the database. Can throw an SQLAccessExcception

@@ -7,7 +7,9 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateSequenceDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 import uk.me.gumbley.minimiser.persistence.sql.impl.H2SQLAccess;
@@ -28,6 +30,7 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
     private final SimpleJdbcTemplate jdbcTemplate;
     private volatile boolean isClosed = true;
     private final VersionDao versionDao;
+    private final SequenceDao sequenceDao;
     private final DataSource dataSource;
     private SQLAccess sqlAccess;
 
@@ -44,6 +47,7 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
         this.dataSource = source;
         isClosed = false;
         versionDao = new JdbcTemplateVersionDao(jdbcTemplate);
+        sequenceDao = new JdbcTemplateSequenceDao(jdbcTemplate);
     }
 
     /**
@@ -71,6 +75,14 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabas
         return versionDao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public SequenceDao getSequenceDao() {
+        checkClosed("getSequenceDao");
+        return sequenceDao;
+    }
+    
     private void checkClosed(final String method) {
         if (isClosed) {
             throw new IllegalStateException(String.format("Cannot call %s with a closed database", method));
