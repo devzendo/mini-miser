@@ -380,14 +380,15 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
     }
 
     /**
-     * Creates several dbs, close them, then allows pluggable behaviour, before
-     * deleting the databases.
+     * Creates several dbs, close them, then allows pluggable behaviour on the
+     * closed database, and exhaustive tests for whether the database is open or
+     * closed, before deleting the databases.
      * @param access the access factory to use when creating
      * @param dbDetails the create/open details of the databases
      * @param runOnCreatedDbs some behaviour to run when the dbs are created,
      * before deleting
      */
-    protected final void doCreateDatabasesBoilerplate (
+    protected final void doCreateDatabasesBoilerplateWithOpenClosedTests (
         final AccessFactory access,
         final DatabaseOpenDetails[] dbDetails,
         final RunOnCreatedDbs runOnCreatedDbs) {
