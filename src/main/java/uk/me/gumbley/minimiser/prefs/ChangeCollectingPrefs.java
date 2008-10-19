@@ -189,9 +189,9 @@ public final class ChangeCollectingPrefs implements Prefs {
      * Commit any changes to the underlying Prefs
      */
     public void commit() {
-        for (final String tabName: readHiddenTabs.keySet()) {
-            Boolean originalHidden = readHiddenTabs.get(tabName);
-            Boolean hidden = hiddenTabs.get(tabName);
+        for (final String tabName : readHiddenTabs.keySet()) {
+            final Boolean originalHidden = readHiddenTabs.get(tabName);
+            final Boolean hidden = hiddenTabs.get(tabName);
             if (hidden != originalHidden) {
                 if (hidden) {
                     prefs.setTabHidden(tabName);

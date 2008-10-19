@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.gui.dialog.problem;
 
-import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
 
 
 /**

@@ -39,7 +39,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
      * Grab the configured AccessFactory from the Spring App Context.
      */
     @Before
-    public void getPrerequisites() {
+    public final void getAccessFactoryPrerequisites() {
         accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
     }
 

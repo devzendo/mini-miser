@@ -16,14 +16,13 @@ public class InputConsoleEvent implements ObservableEvent {
      */
     public InputConsoleEvent(final String line) {
         this.inputLine = line;
-        
     }
 
     /**
      * Obtain the line of input text.
      * @return th eline
      */
-    public String getInputLine() {
+    public final String getInputLine() {
         return inputLine;
     }
 }
