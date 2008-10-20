@@ -54,8 +54,8 @@ public final class DefaultOpenerImpl implements Opener {
         LOGGER.info("Opening database '" + dbName + "' from path '" + pathToDatabase + "'");
         openerAdapter.reportProgress(ProgressStage.STARTING, "Starting to open '" + dbName + "'");
 
-        // Try at first with an empty password - if we get a BPE, prompt for
-        // password and retry.
+        // Try at first with an empty password - if we get a BadPasswordException,
+        // prompt for password and retry.
         String dbPassword = "";
         String tryingToOpenMessage = "Opening database '" + dbName + "'";
         while (true) {

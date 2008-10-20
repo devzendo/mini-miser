@@ -2,6 +2,8 @@ package uk.me.gumbley.minimiser.gui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
+import java.util.List;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import org.apache.log4j.Logger;
@@ -10,6 +12,8 @@ import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.opentablist.OpenTabList;
+import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -24,6 +28,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     private static final Logger LOGGER = Logger.getLogger(ViewMenu.class);
     private JMenu viewMenu;
     private final OpenDatabaseList openDatabaseList;
+    private final OpenTabList openTabList;
     private final Prefs prefs;
     private ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
 
@@ -32,13 +37,16 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
      * 
      * @param wiring the menu wiring
      * @param databaseList the Open Database List
+     * @param tabList the Open Tab List
      * @param preferences the Preferences
      */
     public ViewMenu(final MenuWiring wiring,
             final OpenDatabaseList databaseList,
+            final OpenTabList tabList,
             final Prefs preferences) {
         super(wiring);
         this.openDatabaseList = databaseList;
+        this.openTabList = tabList;
         this.prefs = preferences;
         viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
         
@@ -57,13 +65,17 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
             LOGGER.debug("view menu is empty");
             return;
         }
-        
-//        final HashSet<TabDescriptor> tabDescriptorSet =
-//            new HashSet<TabDescriptor>(
-//                    openTabList.getTabsForDatabase(
-//                        openDatabaseList.getCurrentDatabase().getDatabaseName()));
-        
+
         final DatabaseDescriptor currentDatabase = openDatabaseList.getCurrentDatabase();
+        LOGGER.debug("current database is " + currentDatabase);
+        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(
+                                        currentDatabase.getDatabaseName());
+        LOGGER.debug("tab list tabs for this are " + tabsForDatabase);
+        
+        final HashSet<TabDescriptor> tabDescriptorSet = tabsForDatabase == null ?
+                new HashSet<TabDescriptor>() :
+                    new HashSet<TabDescriptor>(
+                            tabsForDatabase);
         
         for (final TabIdentifier tabId : TabIdentifier.values()) {
             final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.toString());
@@ -90,7 +102,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
                         }).start();
                     }
                 });
-                //menuItem.setSelected(tabDescriptorSet.contains(new TabDescriptor(tabId)));
+                menuItem.setSelected(tabDescriptorSet.contains(new TabDescriptor(tabId)));
                 viewMenu.add(menuItem);
             }
         }

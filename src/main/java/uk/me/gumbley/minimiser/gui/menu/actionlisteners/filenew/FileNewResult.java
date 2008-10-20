@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 import org.springframework.dao.DataAccessException;
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
@@ -88,16 +87,12 @@ public final class FileNewResult extends DeferredWizardResult {
             final MiniMiserDatabase database = access.createDatabase(dbFullPath, params.isEncrypted() ? params.getPassword() : "", observer);
             progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
     
-            final Runnable addDatabaseAndNormalCursorSwingTask = new Runnable() {
-                public void run() {
-                    LOGGER.info("Database created; adding to open database list");
-                    final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, dbFullPath);
-                    databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
-                    databaseList.addOpenedDatabase(databaseDescriptor);
-                    cursorMan.normal();
-                }
-            };
-            GUIUtils.runOnEventThread(addDatabaseAndNormalCursorSwingTask);
+            LOGGER.info("Database created; adding to open database list");
+            final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, dbFullPath);
+            databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
+            databaseList.addOpenedDatabase(databaseDescriptor);
+
+            cursorMan.normalViaEventThread();
             progress.finished(null);
         } catch (final DataAccessException dae) {
             LOGGER.warn("Failed to create database " + dbName + ": " + dae.getMessage(), dae);

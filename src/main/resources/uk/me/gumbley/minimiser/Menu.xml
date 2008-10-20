@@ -39,6 +39,7 @@
 	<bean id="viewMenu" class="uk.me.gumbley.minimiser.gui.menu.ViewMenu">
 		<constructor-arg ref="menuWiring" />
 		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="prefs" />
 	</bean>
 

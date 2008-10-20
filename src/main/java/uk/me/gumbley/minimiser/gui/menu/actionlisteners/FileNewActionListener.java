@@ -2,16 +2,13 @@ package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 
 import java.awt.event.ActionEvent;
 import java.util.Map;
-
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
 import org.netbeans.spi.wizard.WizardPage.WizardResultProducer;
-
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewResult;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardChooseFolderPage;
-import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardCurrencyPage;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardIntroPage;
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardSecurityOptionPage;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
@@ -52,7 +49,7 @@ public final class FileNewActionListener extends SnailActionListener {
                 new FileNewWizardIntroPage(),
                 new FileNewWizardChooseFolderPage(databaseList),
                 new FileNewWizardSecurityOptionPage(),
-                new FileNewWizardCurrencyPage(),
+                // TODO add back in a later release new FileNewWizardCurrencyPage(),
         };
         final WizardResultProducer producer = new WizardResultProducer() {
             @SuppressWarnings("unchecked")

@@ -3,20 +3,13 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUGS:
-* on mac, was sue I did open recent on encrypted, and it opened, without
-  prompting for password. may have already had it open, in which case it was
-  a switch.
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
 * sometimes on startup the hourglass sticks - happened soon after adding
-  tools->options dialog
-* windows - view menu - switching databases doesn't reset the view menu
-  checkmarks - e.g. open sql on one db, open another db. switch to orig, sql
-  view present, checkmark missing 
+  tools->options dialog - have added stuck hourglass detector to CursorManager
+  but haven't reproduced it since.
 
 CURRENT TASKS:
-* refactoring persistence tests
-* need a sequence/table in the persistence layer
 * refactoring menuimpl and the menus - loading state from the rest of the
   objects (prefs, opentablist, opendatabaselist), rather than replicating it
   in menustate. had added a factory to stash menustate, but this can go when
@@ -27,24 +20,9 @@ CURRENT TASKS:
   databaselist). These methods still receive data from the menumediator
   listeners, but do nothing with it.  
 
-* checkboxes and actionlistener on view menu items
-* actionlistener loads/closes tabs, updates its checkbox.
-
-    
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   
 * the tab pane set:
-  * Opening a new tab:
-    * View menu ActionListener runs on EDT
-    * Must dispatch to a custom worker thread.
-    * Uses the factory to instantiate the list of one tab - factory
-      operation is identical to above.
-  * Closing an existing tab
-    * ????
-  * form the View menu from the set of available tabs, add a checkmark to
-    currently visible tabs
-  * need an OpenTabList object to manage this? Instance per Database, bound
-    into the DatabaseDescriptor.
   * switch tab listener?  
   * persist current open tab list on exit
   * open/close/switch tab can be listened for - notifications include the

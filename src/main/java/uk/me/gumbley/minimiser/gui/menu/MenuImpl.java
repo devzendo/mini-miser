@@ -82,7 +82,8 @@ public final class MenuImpl implements Menu {
             }
         });
     }
-        /**
+    
+    /**
      * {@inheritDoc}
      */
     // EDT
