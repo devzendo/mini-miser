@@ -38,7 +38,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 
     };
     private static final int POPULATION_STEPS = 1;
-    private static final int STATIC_CREATION_STEPS = 4;
+    private static final int STATIC_CREATION_STEPS = 5;
     
     private static final Observer<PersistenceObservableEvent> IGNORING_LISTENER = new Observer<PersistenceObservableEvent>() {
         public void eventOccurred(final PersistenceObservableEvent observableEvent) {

@@ -1,7 +1,6 @@
 package uk.me.gumbley.minimiser.persistence.dao.impl;
 
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-
 import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
 
 /**
@@ -24,7 +23,8 @@ public final class JdbcTemplateSequenceDao implements SequenceDao {
      * {@inheritDoc}
      */
     public long getNextSequence() {
-        // TODO Auto-generated method stub
-        return 0;
+        return jdbcTemplate.queryForLong(
+            "select next value for sequence Sequence",
+            new Object[0]);
     }
 }

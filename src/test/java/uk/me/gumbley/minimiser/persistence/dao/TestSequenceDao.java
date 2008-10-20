@@ -1,10 +1,10 @@
-package uk.me.gumbley.minimiser.persistence;
+package uk.me.gumbley.minimiser.persistence.dao;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
-
-import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 
 
 /**
@@ -27,13 +27,18 @@ public final class TestSequenceDao extends PersistenceUnittestCase {
             
             public void runOnMiniMiserDatabase(final MiniMiserDatabase openedDatabase) {
                 final SequenceDao sequenceDao = openedDatabase.getSequenceDao();
-                final long seq1 = sequenceDao.getNextSequence();
-                LOGGER.info(String.format("Sequence value is initially %d", seq1));
-                Assert.assertTrue(seq1 != 0);
-                //
-                final long seq2 = sequenceDao.getNextSequence();
-                LOGGER.info(String.format("Sequence value is then %d", seq2));
-                Assert.assertTrue(seq1 < seq2);
+                long last = -1;
+                for (int i = 0; i < 40; i++) {
+                    final long start = System.currentTimeMillis();
+                    final long seq = sequenceDao.getNextSequence();
+                    final long stop = System.currentTimeMillis();
+                    final long duration = stop - start;
+                    LOGGER.info(String.format("Sequence value #%d is %d (took %d ms to generate)",
+                        (i + 1), seq, duration));
+                    Assert.assertTrue(seq > 0);
+                    Assert.assertTrue(seq > last);
+                    last = seq;
+                }
             }
             
         });
