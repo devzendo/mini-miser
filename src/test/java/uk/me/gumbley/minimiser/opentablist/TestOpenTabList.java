@@ -41,7 +41,9 @@ public final class TestOpenTabList extends LoggingTestCase {
      */
     @Test(expected = IllegalArgumentException.class)
     public void emptinessForEmptyString() {
-        Assert.assertNull(openList.getTabsForDatabase(""));
+        final List<TabDescriptor> tabsForDatabase = openList.getTabsForDatabase("");
+        Assert.assertNotNull(tabsForDatabase);
+        Assert.assertEquals(0, tabsForDatabase.size());
     }
     
     /**
@@ -49,7 +51,9 @@ public final class TestOpenTabList extends LoggingTestCase {
      */
     @Test
     public void emptinessForNonExistant() {
-        Assert.assertNull(openList.getTabsForDatabase("nonexistant"));
+        final List<TabDescriptor> tabsForDatabase = openList.getTabsForDatabase("nonexistant");
+        Assert.assertNotNull(tabsForDatabase);
+        Assert.assertEquals(0, tabsForDatabase.size());
     }
     
     /**
@@ -411,6 +415,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         
         openList.removeDatabase(databaseDescriptor);
         final List<TabDescriptor> zeroTabs = openList.getTabsForDatabase("one");
-        Assert.assertNull(zeroTabs);
+        Assert.assertNotNull(zeroTabs);
+        Assert.assertEquals(0, zeroTabs.size());
     }
 }

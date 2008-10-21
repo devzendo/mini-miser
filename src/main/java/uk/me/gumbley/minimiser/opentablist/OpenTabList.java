@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.opentablist;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -29,14 +30,14 @@ public final class OpenTabList {
      * Obtain a list of TabDescriptors for a named database, in TabIdentifier
      * order.
      * @param databaseName the database name
-     * @return the list of TabDescriptors for this database, or null if this
-     * database has not been added yet.
+     * @return the list of TabDescriptors for this database, which can be empty
+     * if this database has not been added yet.
      */
     public List<TabDescriptor> getTabsForDatabase(final String databaseName) {
         checkDatabaseName(databaseName);
         final Set<TabDescriptor> tabSet = tabMap.get(databaseName);
         if (tabSet == null) {
-            return null;
+            return Collections.emptyList();
         }
         return Arrays.asList((TabDescriptor[]) tabSet.toArray(new TabDescriptor[0]));
     }

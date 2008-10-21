@@ -65,7 +65,9 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
         
         final List<String> initialOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(0, initialOrdering.size());
-        Assert.assertNull(openTabList.getTabsForDatabase("one"));
+        final List<TabDescriptor> initialTabsForDatabase = openTabList.getTabsForDatabase("one");
+        Assert.assertNotNull(initialTabsForDatabase);
+        Assert.assertEquals(0, initialTabsForDatabase.size());
 
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);

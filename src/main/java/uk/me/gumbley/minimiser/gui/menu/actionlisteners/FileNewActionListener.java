@@ -65,8 +65,6 @@ public final class FileNewActionListener extends SnailActionListener {
             }
         };
         final Wizard wizard = WizardPage.createWizard(wizardPages, producer);
-        // ... and we've finished setting up, so back to normal... 
-        cursorMan.normal();
         // ... and on with the show...
         wizard.show();
     }

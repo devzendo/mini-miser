@@ -75,7 +75,9 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, tabFactory, openTabList);
         openDatabaseList.addDatabaseEventObserver(adapter);
         
-        Assert.assertNull(openTabList.getTabsForDatabase(DATABASE)); // db not added yet
+        final List<TabDescriptor> emptyTabDescriptors = openTabList.getTabsForDatabase(DATABASE);
+        Assert.assertNotNull(emptyTabDescriptors); // db not added yet
+        Assert.assertEquals(0, emptyTabDescriptors.size());
         
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         openDatabaseList.addOpenedDatabase(databaseDescriptor);
@@ -143,7 +145,9 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         // Now close it and the open tab list should have been cleared
         openDatabaseList.removeClosedDatabase(databaseDescriptor);
 
-        Assert.assertNull(openTabList.getTabsForDatabase(DATABASE));
+        final List<TabDescriptor> clearTabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        Assert.assertNotNull(clearTabsForDatabase);
+        Assert.assertEquals(0, clearTabsForDatabase.size());
         
         // The TabFactory test tests for the correct calls on the correct
         // threads, but let's make sure that the TabFactory is actually being

@@ -72,10 +72,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
                                         currentDatabase.getDatabaseName());
         LOGGER.debug("tab list tabs for this are " + tabsForDatabase);
         
-        final HashSet<TabDescriptor> tabDescriptorSet = tabsForDatabase == null ?
-                new HashSet<TabDescriptor>() :
-                    new HashSet<TabDescriptor>(
-                            tabsForDatabase);
+        final HashSet<TabDescriptor> tabDescriptorSet = new HashSet<TabDescriptor>(tabsForDatabase);
         
         for (final TabIdentifier tabId : TabIdentifier.values()) {
             final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.toString());

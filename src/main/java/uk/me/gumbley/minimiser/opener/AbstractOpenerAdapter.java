@@ -54,7 +54,7 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
      * {@inheritDoc}
      */
     public final void startOpening() {
-        cursorManager.hourglassViaEventThread();
+        cursorManager.hourglassViaEventThread(this.getClass().getSimpleName());
     }
 
     /**
@@ -84,6 +84,6 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
      * {@inheritDoc}
      */
     public final void stopOpening() {
-        cursorManager.normalViaEventThread();
+        cursorManager.normalViaEventThread(this.getClass().getSimpleName());
     }
 }

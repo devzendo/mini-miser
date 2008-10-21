@@ -76,7 +76,9 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
      */
     @Test
     public void loadNewTabIntoTabOpenList() {
-        Assert.assertNull(openTabList.getTabsForDatabase(DATABASE));
+        final List<TabDescriptor> initialTabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        Assert.assertNotNull(initialTabsForDatabase);
+        Assert.assertEquals(0, initialTabsForDatabase.size());
         
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();

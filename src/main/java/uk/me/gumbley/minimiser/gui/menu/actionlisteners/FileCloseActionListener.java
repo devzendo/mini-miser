@@ -30,7 +30,7 @@ public final class FileCloseActionListener extends AbstractFileCloseActionListen
      * {@inheritDoc}
      */
     public void actionPerformed(final ActionEvent e) {
-        getCursorMan().hourglassViaEventThread();
+        getCursorMan().hourglassViaEventThread(this.getClass().getSimpleName());
         try {
             new Thread(new Runnable() {
                 public void run() {
@@ -50,7 +50,7 @@ public final class FileCloseActionListener extends AbstractFileCloseActionListen
                 }
             }).start();
         } finally {
-            getCursorMan().normalViaEventThread();
+            getCursorMan().normalViaEventThread(this.getClass().getSimpleName());
         }
     }
 }

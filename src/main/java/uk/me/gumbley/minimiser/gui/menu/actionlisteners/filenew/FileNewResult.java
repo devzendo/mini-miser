@@ -57,48 +57,49 @@ public final class FileNewResult extends DeferredWizardResult {
         final int maxSteps = access.getNumberOfDatabaseCreationSteps() + SETUP_STEPS;
         final AtomicInteger stepNo = new AtomicInteger(1);
         progress.setProgress("Starting creation", stepNo.incrementAndGet(), maxSteps);
-        cursorMan.hourglassViaEventThread();
-
-        progress.setProgress("Converting params", stepNo.incrementAndGet(), maxSteps);
-        final FileNewParameters params = new FileNewParameters(
-            (String) result.get(FileNewWizardChooseFolderPage.PATH_NAME),
-            (Boolean) result.get(FileNewWizardSecurityOptionPage.ENCRYPTED),
-            (String) result.get(FileNewWizardSecurityOptionPage.PASSWORD),
-            (String) result.get(FileNewWizardCurrencyPage.CURRENCY));
-
-        LOGGER.info("Creating database at " + params.getPath());
-        // need the db path to be /path/to/db/databasename/databasename
-        // i.e. duplicate the directory component at the end
-        progress.setProgress("Getting path", stepNo.incrementAndGet(), maxSteps);
-
-        final File path = new File(params.getPath());
-        final String dbName = path.getName();
-        final String dbFullPath = StringUtils.slashTerminate(path.getAbsolutePath()) + dbName;
-        LOGGER.info("Final db path is " + dbFullPath);
-        progress.setProgress("Creating DB", stepNo.incrementAndGet(), maxSteps);
-
-        final Observer<PersistenceObservableEvent> observer = new Observer<PersistenceObservableEvent>() {
-            public void eventOccurred(final PersistenceObservableEvent observableEvent) {
-                LOGGER.info("DB creation progress: " + observableEvent.getDescription());
-                progress.setProgress(observableEvent.getDescription(), stepNo.incrementAndGet(), maxSteps);
-            }
-        };
+        cursorMan.hourglassViaEventThread(this.getClass().getSimpleName());
         try {
-            final MiniMiserDatabase database = access.createDatabase(dbFullPath, params.isEncrypted() ? params.getPassword() : "", observer);
-            progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
+            progress.setProgress("Converting params", stepNo.incrementAndGet(), maxSteps);
+            final FileNewParameters params = new FileNewParameters(
+                (String) result.get(FileNewWizardChooseFolderPage.PATH_NAME),
+                (Boolean) result.get(FileNewWizardSecurityOptionPage.ENCRYPTED),
+                (String) result.get(FileNewWizardSecurityOptionPage.PASSWORD),
+                (String) result.get(FileNewWizardCurrencyPage.CURRENCY));
     
-            LOGGER.info("Database created; adding to open database list");
-            final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, dbFullPath);
-            databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
-            databaseList.addOpenedDatabase(databaseDescriptor);
-
-            cursorMan.normalViaEventThread();
-            progress.finished(null);
-        } catch (final DataAccessException dae) {
-            LOGGER.warn("Failed to create database " + dbName + ": " + dae.getMessage(), dae);
-            throw dae;
+            LOGGER.info("Creating database at " + params.getPath());
+            // need the db path to be /path/to/db/databasename/databasename
+            // i.e. duplicate the directory component at the end
+            progress.setProgress("Getting path", stepNo.incrementAndGet(), maxSteps);
+    
+            final File path = new File(params.getPath());
+            final String dbName = path.getName();
+            final String dbFullPath = StringUtils.slashTerminate(path.getAbsolutePath()) + dbName;
+            LOGGER.info("Final db path is " + dbFullPath);
+            progress.setProgress("Creating DB", stepNo.incrementAndGet(), maxSteps);
+    
+            final Observer<PersistenceObservableEvent> observer = new Observer<PersistenceObservableEvent>() {
+                public void eventOccurred(final PersistenceObservableEvent observableEvent) {
+                    LOGGER.info("DB creation progress: " + observableEvent.getDescription());
+                    progress.setProgress(observableEvent.getDescription(), stepNo.incrementAndGet(), maxSteps);
+                }
+            };
+            try {
+                final MiniMiserDatabase database = access.createDatabase(dbFullPath, params.isEncrypted() ? params.getPassword() : "", observer);
+                progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
+        
+                LOGGER.info("Database created; adding to open database list");
+                final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, dbFullPath);
+                databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
+                databaseList.addOpenedDatabase(databaseDescriptor);
+    
+                cursorMan.normalViaEventThread(this.getClass().getSimpleName());
+                progress.finished(null);
+            } catch (final DataAccessException dae) {
+                LOGGER.warn("Failed to create database " + dbName + ": " + dae.getMessage(), dae);
+                throw dae;
+            }
         } finally {
-            cursorMan.normalViaEventThread();
+            cursorMan.normalViaEventThread(this.getClass().getSimpleName());
         }
     }
 

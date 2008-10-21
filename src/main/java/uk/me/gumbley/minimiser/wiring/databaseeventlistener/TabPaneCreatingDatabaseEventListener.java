@@ -107,8 +107,8 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         final String databaseName = closedEvent.getDatabaseName();
         final DatabaseDescriptor databaseDescriptor = closedEvent.getDatabaseDescriptor();
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(databaseName);
-        if (tabsForDatabase == null || tabsForDatabase.size() == 0) {
-            LOGGER.warn("Cannot close null or empty list of tabs");
+        if (tabsForDatabase.size() == 0) {
+            LOGGER.warn("Cannot close empty list of tabs");
         } else {
             tabFactory.closeTabs(databaseDescriptor, tabsForDatabase);
             for (final TabDescriptor tabDescriptor : tabsForDatabase) {

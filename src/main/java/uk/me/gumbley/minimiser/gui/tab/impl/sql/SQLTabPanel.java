@@ -87,7 +87,7 @@ public final class SQLTabPanel extends JPanel {
     public void processInputLine(final String inputLine) {
         assert SwingUtilities.isEventDispatchThread();
         if (inputLine.length() > 0) {
-            cursorManager.hourglass();
+            cursorManager.hourglass(this.getClass().getSimpleName());
             new SwingWorker() {
     
                 @Override
@@ -97,7 +97,7 @@ public final class SQLTabPanel extends JPanel {
                 }
                 
                 public void finished() {
-                    cursorManager.normal();
+                    cursorManager.normal(SQLTabPanel.this.getClass().getSimpleName());
                 }
             } .start();
         }
@@ -131,7 +131,7 @@ public final class SQLTabPanel extends JPanel {
             final int nextHistoryNumber = inputConsole.getNextHistoryNumber(); // hasn't been stashed in history yet 
             outputConsole.debug(nextHistoryNumber + " > " + inputLine);
             
-            cursorManager.hourglass();
+            cursorManager.hourglass(this.getClass().getSimpleName());
             new SwingWorker() {
             
                 @Override
@@ -141,7 +141,7 @@ public final class SQLTabPanel extends JPanel {
                 }
                 
                 public void finished() {
-                    cursorManager.normal();
+                    cursorManager.normal(SQLTabPanel.this.getClass().getSimpleName());
                 }
             } .start();
         }

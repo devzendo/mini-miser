@@ -98,7 +98,7 @@ public class MainFrame {
             public void eventDispatched(final AWTEvent event) {
                 if (event.getID() == WindowEvent.WINDOW_OPENED && event.getSource().equals(mainFrame)) {
                     LOGGER.info("Main frame visible; starting lifecycle manager");
-                    cursorManager.hourglass();
+                    cursorManager.hourglass(this.getClass().getSimpleName());
                     final SwingWorker worker = new SwingWorker() {
                         @Override
                         public Object construct() {
@@ -108,7 +108,7 @@ public class MainFrame {
                             return null;
                         }
                         public void finished() {
-                            cursorManager.normal();
+                            cursorManager.normal(this.getClass().getSimpleName());
                         }
                     };
                     worker.start();
@@ -209,7 +209,7 @@ public class MainFrame {
         
         // EDT
         private void doShutdown() {
-            cursorManager.hourglass();
+            cursorManager.hourglass(this.getClass().getSimpleName());
             enableDisableControls(false);
             
             final SwingWorker worker = new SwingWorker() {
@@ -226,7 +226,7 @@ public class MainFrame {
                     if (mainFrame != null) {
                         mainFrame.dispose();
                     }
-                    cursorManager.normal();
+                    cursorManager.normal(this.getClass().getSimpleName());
                     System.exit(0);
                 }
             };

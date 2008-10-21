@@ -165,7 +165,7 @@ public final class AboutDialog extends JDialog implements
             }
             
             public void finished() {
-                cursorManager.normal();
+                cursorManager.normal("AboutDialog");
             }
         };
         workers.add(worker);
@@ -223,7 +223,7 @@ public final class AboutDialog extends JDialog implements
             Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
         }
         setVisible(false);
-        cursorManager.normal();
+        cursorManager.normal("AboutDialog");
     }
 
     /**
