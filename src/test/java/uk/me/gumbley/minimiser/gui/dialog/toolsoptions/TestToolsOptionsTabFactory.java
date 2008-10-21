@@ -22,6 +22,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 public final class TestToolsOptionsTabFactory extends SpringLoaderUnittestCase {
 
     private ToolsOptionsTabFactory tabFactory;
+    @SuppressWarnings("unused")
     private StubProblemReporter problemReporter;
     
     // Used by tests that make use of setUpStubRecordingTest
@@ -43,6 +44,7 @@ public final class TestToolsOptionsTabFactory extends SpringLoaderUnittestCase {
      * Get the ChangeCollectingPrefsFactory
      * @return the change-collecting prefs factory 
      */
+    @SuppressWarnings("unused")
     private ChangeCollectingPrefsFactory getChangeCollectingPrefsFactory() {
         return getSpringLoader().getBean("&changeCollectingPrefs", ChangeCollectingPrefsFactory.class);
     }
