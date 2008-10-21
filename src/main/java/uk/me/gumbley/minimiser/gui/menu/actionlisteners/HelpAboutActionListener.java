@@ -28,7 +28,6 @@ public final class HelpAboutActionListener extends SnailActionListener {
      */
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
-//        getCursorManager().normal();
         AboutDialog.showAbout(mainFrame, getCursorManager());
     }
 }

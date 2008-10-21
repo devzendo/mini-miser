@@ -14,10 +14,6 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * A modal Tools -> Options dialog.
- * TODO need a shadow Prefs - that records what's been changed, and if OK is
- * pressed, commits these changes to the real prefs.
- * TODO WOZERE need a JTabbedPane, an OK and Cancel button, and to load up a
- * list of beans that handle the individual tabs and load each one dynamically.
  * @author matt
  *
  */

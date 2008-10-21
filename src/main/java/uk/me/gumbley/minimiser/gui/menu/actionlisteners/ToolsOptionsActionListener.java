@@ -37,7 +37,6 @@ public final class ToolsOptionsActionListener extends SnailActionListener {
      */
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
-//        getCursorManager().normal();
         ToolsOptionsDialog.showOptions(mainFrame, getCursorManager(), prefs, toolsOptionsTabFactory);
     }
 }
