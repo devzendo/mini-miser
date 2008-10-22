@@ -1,11 +1,11 @@
- package uk.me.gumbley.minimiser.gui.menu;
+package uk.me.gumbley.minimiser.gui.menu;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTabbedPane;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,6 @@ import uk.me.gumbley.minimiser.gui.StubMainFrameTitle;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.gui.tabfactory.StubTabFactory;
 import uk.me.gumbley.minimiser.gui.tabfactory.TabFactory;
-import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
@@ -27,6 +26,8 @@ import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
+import uk.me.gumbley.minimiser.springloader.ApplicationContext;
+import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 
 /**
  * Tests the linkage between the menu items enabling/disabling and
@@ -35,7 +36,8 @@ import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
  * @author matt
  *
  */
-public final class TestMenuMediator extends LoggingTestCase {
+@ApplicationContext("uk/me/gumbley/minimiser/gui/menu/MenuMediatorTestCase.xml")
+public final class TestMenuMediator extends SpringLoaderUnittestCase {
 
     private StubMenu stubMenu;
     private OpenDatabaseList openDatabaseList;
@@ -47,6 +49,7 @@ public final class TestMenuMediator extends LoggingTestCase {
     private Prefs prefs;
     private File prefsFile;
     private TabFactory tabFactory;
+    private static List<String> beanNames;
 
     /**
      * Get all necessaries
@@ -55,23 +58,25 @@ public final class TestMenuMediator extends LoggingTestCase {
     @SuppressWarnings("unchecked")
     @Before
     public void getMediatorPrerequisites() throws IOException {
-        stubMenu = new StubMenu();
-        openDatabaseList = new OpenDatabaseList();
+        stubMenu = getSpringLoader().getBean("menu", StubMenu.class);
+        openDatabaseList = getSpringLoader().getBean("openDatabaseList", OpenDatabaseList.class);
         openTabList = new OpenTabList();
-        recentFilesList = EasyMock.createStrictMock(RecentFilesList.class);
-        recentFilesList.addRecentListEventObserver(EasyMock.isA(Observer.class));
+        recentFilesList = getSpringLoader().getBean("recentFilesList", StubRecentFilesList.class);
         stubOpener = new StubOpener();
         stubOpenerAdapterFactory = new StubOpenerAdapterFactory();
-        mainFrameTitle = new StubMainFrameTitle();
+        mainFrameTitle = getSpringLoader().getBean("mainFrameTitle", StubMainFrameTitle.class);
+        
         prefs = TestPrefs.createUnitTestPrefsFile();
         prefsFile = new File(prefs.getAbsolutePath());
         prefsFile.deleteOnExit();
         tabFactory = new StubTabFactory(openTabList);
+        
+        beanNames = getSpringLoader().getBean("menuWiringList", List.class);
     }
 
     private void startMediator() {
-        new MenuMediatorImpl(stubMenu, openDatabaseList, openTabList, recentFilesList, stubOpener, 
-            stubOpenerAdapterFactory, mainFrameTitle, prefs, tabFactory);
+        new MenuMediatorImpl(getSpringLoader(), stubMenu, openDatabaseList, openTabList, recentFilesList, stubOpener, 
+            stubOpenerAdapterFactory, mainFrameTitle, prefs, tabFactory, beanNames);
     }
     
     /**
@@ -100,40 +105,22 @@ public final class TestMenuMediator extends LoggingTestCase {
      * 
      */
     @Test
-    public void recentMenuGetsWiredUp() {
-        // the expectation is set in the Before section
-        EasyMock.replay(recentFilesList);
-
-        startMediator();
-
-        EasyMock.verify(recentFilesList);
-    }
-    
-    /**
-     * 
-     */
-    @Test
     public void recentListGetsAddedWhenOpenListIsAddedTo() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         
         recentFilesList.add(databaseDescriptor);
-        EasyMock.replay(recentFilesList);
 
         startMediator();
 
         openDatabaseList.addOpenedDatabase(databaseDescriptor);
         
-        EasyMock.verify(recentFilesList);
+        Assert.assertTrue(Arrays.asList(recentFilesList.getRecentDatabases()).contains(databaseDescriptor));
     }
     
     /**
-     * I'm using a stub recent list as coding the event notification in EasyMock
-     * was becoming painful. This test overrides the recent list created in
-     * the before section. 
      */
     @Test
     public void recentMenuGetsRebuiltWhenOpenListIsAddedTo() {
-        recentFilesList = new StubRecentFilesList();
         Assert.assertEquals(0, stubMenu.getRecentDatabases().length);
         startMediator();
 
@@ -146,13 +133,10 @@ public final class TestMenuMediator extends LoggingTestCase {
     }
     
     /**
-     * I'm using a stub recent list as coding the event notification in EasyMock
-     * was becoming painful. This test overrides the recent list created in
-     * the before section. 
+     * 
      */
     @Test
     public void openRecentWhenAlreadyOpenedShouldSwitch() {
-        recentFilesList = new StubRecentFilesList();
         startMediator();
 
         final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one");
@@ -185,18 +169,14 @@ public final class TestMenuMediator extends LoggingTestCase {
     }
     
     /**
-     * I'm using a stub recent list as coding the event notification in EasyMock
-     * was becoming painful. This test overrides the recent list created in
-     * the before section. 
+     * 
      */
     @Test
     public void openRecentWhenNotCurrentlyOpenedShouldOpen() {
-        final StubRecentFilesList stubRecentFilesList = new StubRecentFilesList(); 
-        recentFilesList = stubRecentFilesList;
         startMediator();
 
         final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one");
-        stubRecentFilesList.addDatabaseSilently(databaseDescriptorOne);
+        ((StubRecentFilesList)recentFilesList) .addDatabaseSilently(databaseDescriptorOne);
 
         final AtomicBoolean openedOne = new AtomicBoolean(false);
         openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {

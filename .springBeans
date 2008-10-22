@@ -12,6 +12,7 @@
 		<config>src/test/resources/uk/me/gumbley/minimiser/persistence/PersistenceTestCase.xml</config>
 		<config>src/test/resources/uk/me/gumbley/minimiser/prefs/PrefsTestCase.xml</config>
 		<config>src/test/resources/uk/me/gumbley/minimiser/springloader/TestSpringLoaderLoadingTestBeans.xml</config>
+		<config>src/main/resources/uk/me/gumbley/minimiser/Menu.xml</config>
 	</configs>
 	<configSets>
 	</configSets>
