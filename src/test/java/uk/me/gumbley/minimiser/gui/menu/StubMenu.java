@@ -30,6 +30,7 @@ public final class StubMenu implements Menu {
     private DatabaseDescriptor[] recentDatabases;
     private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
     private ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
+    private ObserverList<DatabaseNameChoice> windowMenuSwitchObservers;
     private boolean viewMenuBuilt;
     private Map<String, Boolean> hiddenTabs;
 
@@ -44,6 +45,7 @@ public final class StubMenu implements Menu {
         viewMenuBuilt = false;
         openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
         viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
+        windowMenuSwitchObservers = new ObserverList<DatabaseNameChoice>();
         hiddenTabs = new HashMap<String, Boolean>();
     }
     
@@ -117,6 +119,7 @@ public final class StubMenu implements Menu {
      * {@inheritDoc}
      */
     public void addDatabaseSwitchObserver(final Observer<DatabaseNameChoice> observer) {
+        windowMenuSwitchObservers.addObserver(observer);
     }
 
     /**
@@ -217,5 +220,14 @@ public final class StubMenu implements Menu {
      */
     public void addViewChoiceObserver(final Observer<ViewMenuChoice> observer) {
         viewMenuChoiceObservers.addObserver(observer);
+    }
+    
+    /**
+     * For unit tests, inject a choice of database to switch to, from the
+     * window menu.
+     * @param database th edatabase descriptor to switch to.
+     */
+    public void injectWindowMenuRequest(final DatabaseDescriptor database) {
+        windowMenuSwitchObservers.eventOccurred(new DatabaseNameChoice(database.getDatabaseName()));
     }
 }

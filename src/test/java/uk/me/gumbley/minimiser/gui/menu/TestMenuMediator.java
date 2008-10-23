@@ -1,33 +1,20 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTabbedPane;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.gui.MainFrameTitle;
-import uk.me.gumbley.minimiser.gui.StubMainFrameTitle;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
-import uk.me.gumbley.minimiser.gui.tabfactory.StubTabFactory;
-import uk.me.gumbley.minimiser.gui.tabfactory.TabFactory;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
-import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
-import uk.me.gumbley.minimiser.opentablist.OpenTabList;
 import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
-import uk.me.gumbley.minimiser.prefs.Prefs;
-import uk.me.gumbley.minimiser.prefs.TestPrefs;
-import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
-import uk.me.gumbley.minimiser.springloader.ApplicationContext;
-import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 
 /**
  * Tests the linkage between the menu items enabling/disabling and
@@ -36,49 +23,8 @@ import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
  * @author matt
  *
  */
-@ApplicationContext("uk/me/gumbley/minimiser/gui/menu/MenuMediatorTestCase.xml")
-public final class TestMenuMediator extends SpringLoaderUnittestCase {
+public final class TestMenuMediator extends MenuMediatorUnittestCase {
 
-    private StubMenu stubMenu;
-    private OpenDatabaseList openDatabaseList;
-    private OpenTabList openTabList;
-    private RecentFilesList recentFilesList;
-    private StubOpener stubOpener;
-    private StubOpenerAdapterFactory stubOpenerAdapterFactory;
-    private MainFrameTitle mainFrameTitle;
-    private Prefs prefs;
-    private File prefsFile;
-    private TabFactory tabFactory;
-    private static List<String> beanNames;
-
-    /**
-     * Get all necessaries
-     * @throws IOException on prefs file creation failure
-     */
-    @SuppressWarnings("unchecked")
-    @Before
-    public void getMediatorPrerequisites() throws IOException {
-        stubMenu = getSpringLoader().getBean("menu", StubMenu.class);
-        openDatabaseList = getSpringLoader().getBean("openDatabaseList", OpenDatabaseList.class);
-        openTabList = new OpenTabList();
-        recentFilesList = getSpringLoader().getBean("recentFilesList", StubRecentFilesList.class);
-        stubOpener = new StubOpener();
-        stubOpenerAdapterFactory = new StubOpenerAdapterFactory();
-        mainFrameTitle = getSpringLoader().getBean("mainFrameTitle", StubMainFrameTitle.class);
-        
-        prefs = TestPrefs.createUnitTestPrefsFile();
-        prefsFile = new File(prefs.getAbsolutePath());
-        prefsFile.deleteOnExit();
-        tabFactory = new StubTabFactory(openTabList);
-        
-        beanNames = getSpringLoader().getBean("menuWiringList", List.class);
-    }
-
-    private void startMediator() {
-        new MenuMediatorImpl(getSpringLoader(), stubMenu, openDatabaseList, openTabList, recentFilesList, stubOpener, 
-            stubOpenerAdapterFactory, mainFrameTitle, prefs, tabFactory, beanNames);
-    }
-    
     /**
      * 
      */
@@ -86,7 +32,7 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
     public void testCloseDisabledWithNothingOpen() {
         startMediator();
 
-        Assert.assertFalse(stubMenu.isCloseEnabled());
+        Assert.assertFalse(getStubMenu().isCloseEnabled());
     }
     
     /**
@@ -97,8 +43,8 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         startMediator();
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
-        openDatabaseList.addOpenedDatabase(databaseDescriptor);
-        Assert.assertTrue(stubMenu.isCloseEnabled());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor);
+        Assert.assertTrue(getStubMenu().isCloseEnabled());
     }
     
     /**
@@ -108,28 +54,28 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
     public void recentListGetsAddedWhenOpenListIsAddedTo() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         
-        recentFilesList.add(databaseDescriptor);
+        getRecentFilesList().add(databaseDescriptor);
 
         startMediator();
 
-        openDatabaseList.addOpenedDatabase(databaseDescriptor);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor);
         
-        Assert.assertTrue(Arrays.asList(recentFilesList.getRecentDatabases()).contains(databaseDescriptor));
+        Assert.assertTrue(Arrays.asList(getRecentFilesList().getRecentDatabases()).contains(databaseDescriptor));
     }
     
     /**
      */
     @Test
     public void recentMenuGetsRebuiltWhenOpenListIsAddedTo() {
-        Assert.assertEquals(0, stubMenu.getRecentDatabases().length);
+        Assert.assertEquals(0, getStubMenu().getRecentDatabases().length);
         startMediator();
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
-        Assert.assertFalse(stubMenu.isRecentListBuilt());
-        openDatabaseList.addOpenedDatabase(databaseDescriptor);
-        Assert.assertTrue(stubMenu.isRecentListBuilt());
-        Assert.assertEquals(1, stubMenu.getRecentDatabases().length);
-        Assert.assertEquals(databaseDescriptor, stubMenu.getRecentDatabases()[0]);
+        Assert.assertFalse(getStubMenu().isRecentListBuilt());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor);
+        Assert.assertTrue(getStubMenu().isRecentListBuilt());
+        Assert.assertEquals(1, getStubMenu().getRecentDatabases().length);
+        Assert.assertEquals(databaseDescriptor, getStubMenu().getRecentDatabases()[0]);
     }
     
     /**
@@ -140,10 +86,10 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         startMediator();
 
         final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one");
-        openDatabaseList.addOpenedDatabase(databaseDescriptorOne);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptorOne);
 
         final AtomicBoolean switchedToOne = new AtomicBoolean(false);
-        openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
+        getOpenDatabaseList().addDatabaseEventObserver(new Observer<DatabaseEvent>() {
             public void eventOccurred(final DatabaseEvent observableEvent) {
                 if (observableEvent instanceof DatabaseSwitchedEvent) {
                     final DatabaseSwitchedEvent dse = (DatabaseSwitchedEvent) observableEvent;
@@ -155,15 +101,15 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         });
 
         final DatabaseDescriptor databaseDescriptorTwo = new DatabaseDescriptor("two");
-        openDatabaseList.addOpenedDatabase(databaseDescriptorTwo);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptorTwo);
 
-        Assert.assertTrue(stubMenu.isRecentListBuilt());
-        Assert.assertEquals(2, stubMenu.getRecentDatabases().length);
-        Assert.assertEquals(databaseDescriptorTwo, stubMenu.getRecentDatabases()[0]);
+        Assert.assertTrue(getStubMenu().isRecentListBuilt());
+        Assert.assertEquals(2, getStubMenu().getRecentDatabases().length);
+        Assert.assertEquals(databaseDescriptorTwo, getStubMenu().getRecentDatabases()[0]);
 
         Assert.assertFalse(switchedToOne.get());
     
-        stubMenu.injectOpenRecentRequest("one", "/tmp/one");
+        getStubMenu().injectOpenRecentRequest("one", "/tmp/one");
 
         Assert.assertTrue("did not switch to already-opened on recent open of already-opened db", switchedToOne.get());
     }
@@ -176,10 +122,10 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         startMediator();
 
         final DatabaseDescriptor databaseDescriptorOne = new DatabaseDescriptor("one");
-        ((StubRecentFilesList)recentFilesList) .addDatabaseSilently(databaseDescriptorOne);
+        ((StubRecentFilesList) getRecentFilesList()).addDatabaseSilently(databaseDescriptorOne);
 
         final AtomicBoolean openedOne = new AtomicBoolean(false);
-        openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
+        getOpenDatabaseList().addDatabaseEventObserver(new Observer<DatabaseEvent>() {
             public void eventOccurred(final DatabaseEvent observableEvent) {
                 if (observableEvent instanceof DatabaseOpenedEvent) {
                     final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) observableEvent;
@@ -192,7 +138,7 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
 
         Assert.assertFalse(openedOne.get());
     
-        stubMenu.injectOpenRecentRequest("one", "/tmp/one");
+        getStubMenu().injectOpenRecentRequest("one", "/tmp/one");
         Assert.assertTrue("did not open not-opened on recent open of not-opened db", openedOne.get());
     }
     
@@ -209,29 +155,29 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
             databaseDescriptorOne.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
         }
         
-        openDatabaseList.addOpenedDatabase(databaseDescriptorOne);
-        openTabList.addDatabase(databaseDescriptorOne);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptorOne);
+        getOpenTabList().addDatabase(databaseDescriptorOne);
 
         startMediator();
         
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase("one");
+        final List<TabDescriptor> tabsForDatabase = getOpenTabList().getTabsForDatabase("one");
         Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(0, tabsForDatabase.size());
         
 
         // open the tab
-        stubMenu.injectViewMenuRequest(databaseDescriptorOne, TabIdentifier.SQL, true);
+        getStubMenu().injectViewMenuRequest(databaseDescriptorOne, TabIdentifier.SQL, true);
 
-        final List<TabDescriptor> tabsForDatabaseWithSql = openTabList.getTabsForDatabase("one");
+        final List<TabDescriptor> tabsForDatabaseWithSql = getOpenTabList().getTabsForDatabase("one");
         Assert.assertNotNull(tabsForDatabaseWithSql);
         Assert.assertEquals(1, tabsForDatabaseWithSql.size());
         final TabDescriptor sql = tabsForDatabaseWithSql.get(0);
         Assert.assertEquals(TabIdentifier.SQL, sql.getTabIdentifier());
         
         // close the tab
-        stubMenu.injectViewMenuRequest(databaseDescriptorOne, TabIdentifier.SQL, false);
+        getStubMenu().injectViewMenuRequest(databaseDescriptorOne, TabIdentifier.SQL, false);
 
-        final List<TabDescriptor> tabsForDatabaseWithNoTabs = openTabList.getTabsForDatabase("one");
+        final List<TabDescriptor> tabsForDatabaseWithNoTabs = getOpenTabList().getTabsForDatabase("one");
         Assert.assertNotNull(tabsForDatabaseWithNoTabs);
         Assert.assertEquals(0, tabsForDatabaseWithNoTabs.size());
     }
@@ -244,12 +190,12 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         startMediator();
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
-        Assert.assertNull(mainFrameTitle.getCurrentDatabaseName());
-        openDatabaseList.addOpenedDatabase(databaseDescriptor);
-        Assert.assertEquals("one", mainFrameTitle.getCurrentDatabaseName());
-        openDatabaseList.removeClosedDatabase(databaseDescriptor);
-        Assert.assertFalse(stubMenu.isCloseEnabled());
-        Assert.assertNull(mainFrameTitle.getCurrentDatabaseName());
+        Assert.assertNull(getMainFrameTitle().getCurrentDatabaseName());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor);
+        Assert.assertEquals("one", getMainFrameTitle().getCurrentDatabaseName());
+        getOpenDatabaseList().removeClosedDatabase(databaseDescriptor);
+        Assert.assertFalse(getStubMenu().isCloseEnabled());
+        Assert.assertNull(getMainFrameTitle().getCurrentDatabaseName());
     }
     
     /**
@@ -261,17 +207,17 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
 
         final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
         final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
-        Assert.assertNull(mainFrameTitle.getCurrentDatabaseName());
-        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
-        Assert.assertEquals("one", mainFrameTitle.getCurrentDatabaseName());
-        openDatabaseList.addOpenedDatabase(databaseDescriptor2);
-        Assert.assertEquals("two", mainFrameTitle.getCurrentDatabaseName());
-        openDatabaseList.removeClosedDatabase(databaseDescriptor1);
-        Assert.assertEquals("two", mainFrameTitle.getCurrentDatabaseName());
-        Assert.assertTrue(stubMenu.isCloseEnabled());
-        openDatabaseList.removeClosedDatabase(databaseDescriptor2);
-        Assert.assertFalse(stubMenu.isCloseEnabled());
-        Assert.assertNull(mainFrameTitle.getCurrentDatabaseName());
+        Assert.assertNull(getMainFrameTitle().getCurrentDatabaseName());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor1);
+        Assert.assertEquals("one", getMainFrameTitle().getCurrentDatabaseName());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor2);
+        Assert.assertEquals("two", getMainFrameTitle().getCurrentDatabaseName());
+        getOpenDatabaseList().removeClosedDatabase(databaseDescriptor1);
+        Assert.assertEquals("two", getMainFrameTitle().getCurrentDatabaseName());
+        Assert.assertTrue(getStubMenu().isCloseEnabled());
+        getOpenDatabaseList().removeClosedDatabase(databaseDescriptor2);
+        Assert.assertFalse(getStubMenu().isCloseEnabled());
+        Assert.assertNull(getMainFrameTitle().getCurrentDatabaseName());
     }
     
     /**
@@ -281,8 +227,8 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
     public void testEmptySwitchList() {
         startMediator();
 
-        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 0);
-        Assert.assertNull(stubMenu.getCurrentDatabase());
+        Assert.assertTrue(getStubMenu().getNumberOfDatabases() == 0);
+        Assert.assertNull(getStubMenu().getCurrentDatabase());
     }
     
     /**
@@ -293,9 +239,9 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         startMediator();
 
         final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
-        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
-        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 1);
-        Assert.assertEquals("one", stubMenu.getCurrentDatabase());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor1);
+        Assert.assertTrue(getStubMenu().getNumberOfDatabases() == 1);
+        Assert.assertEquals("one", getStubMenu().getCurrentDatabase());
     }
     
     /**
@@ -307,12 +253,12 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
 
         final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
         final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
-        Assert.assertNull(mainFrameTitle.getCurrentDatabaseName());
-        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
-        openDatabaseList.addOpenedDatabase(databaseDescriptor2);
-        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 2);
-        Assert.assertEquals("two", stubMenu.getCurrentDatabase());
-        Assert.assertEquals("two", mainFrameTitle.getCurrentDatabaseName());
+        Assert.assertNull(getMainFrameTitle().getCurrentDatabaseName());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor1);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor2);
+        Assert.assertTrue(getStubMenu().getNumberOfDatabases() == 2);
+        Assert.assertEquals("two", getStubMenu().getCurrentDatabase());
+        Assert.assertEquals("two", getMainFrameTitle().getCurrentDatabaseName());
     }
 
     /**
@@ -324,13 +270,32 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
 
         final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
         final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
-        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
-        openDatabaseList.addOpenedDatabase(databaseDescriptor2);
-        openDatabaseList.removeClosedDatabase(databaseDescriptor2);
-        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 1);
-        Assert.assertEquals("one", stubMenu.getCurrentDatabase());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor1);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor2);
+        getOpenDatabaseList().removeClosedDatabase(databaseDescriptor2);
+        Assert.assertTrue(getStubMenu().getNumberOfDatabases() == 1);
+        Assert.assertEquals("one", getStubMenu().getCurrentDatabase());
     }
 
+    /**
+     * 
+     */
+    @Test
+    public void windowMenuSwitchesDatabase() {
+        startMediator();
+
+        final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
+        final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor1);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor2);
+
+        Assert.assertEquals("two", getStubMenu().getCurrentDatabase());
+        
+        getStubMenu().injectWindowMenuRequest(databaseDescriptor1);
+        
+        Assert.assertEquals("one", getStubMenu().getCurrentDatabase());
+        
+    }
     /**
      * 
      */
@@ -339,11 +304,11 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         startMediator();
 
         final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
-        openDatabaseList.addOpenedDatabase(databaseDescriptor1);
-        openDatabaseList.removeClosedDatabase(databaseDescriptor1);
-        Assert.assertTrue(stubMenu.getNumberOfDatabases() == 0);
-        Assert.assertNull(stubMenu.getCurrentDatabase());
-        Assert.assertFalse(stubMenu.isCloseEnabled());
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor1);
+        getOpenDatabaseList().removeClosedDatabase(databaseDescriptor1);
+        Assert.assertTrue(getStubMenu().getNumberOfDatabases() == 0);
+        Assert.assertNull(getStubMenu().getCurrentDatabase());
+        Assert.assertFalse(getStubMenu().isCloseEnabled());
     }
 
     /**
@@ -354,7 +319,7 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
         startMediator();
 
         final AtomicBoolean openedOne = new AtomicBoolean(false);
-        openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
+        getOpenDatabaseList().addDatabaseEventObserver(new Observer<DatabaseEvent>() {
             public void eventOccurred(final DatabaseEvent observableEvent) {
                 if (observableEvent instanceof DatabaseOpenedEvent) {
                     final DatabaseOpenedEvent doe = (DatabaseOpenedEvent) observableEvent;
@@ -365,7 +330,7 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
             }
         });
 
-        stubOpener.openDatabase("one", "/tmp/one", null);
+        getStubOpener().openDatabase("one", "/tmp/one", null);
         Assert.assertTrue(openedOne.get());
     }
     
@@ -377,21 +342,21 @@ public final class TestMenuMediator extends SpringLoaderUnittestCase {
     public void hiddenTabsChangedInPrefsRebuildsViewMenu() throws IOException {
         startMediator();
         
-        Assert.assertFalse(stubMenu.isTabHidden("SQL"));
-        Assert.assertFalse(stubMenu.isViewMenuBuilt());
+        Assert.assertFalse(getStubMenu().isTabHidden("SQL"));
+        Assert.assertFalse(getStubMenu().isViewMenuBuilt());
         
-        prefs.setTabHidden("SQL");
+        getPrefs().setTabHidden("SQL");
         
-        Assert.assertTrue(stubMenu.isTabHidden("SQL"));
-        Assert.assertTrue(stubMenu.isViewMenuBuilt());
+        Assert.assertTrue(getStubMenu().isTabHidden("SQL"));
+        Assert.assertTrue(getStubMenu().isViewMenuBuilt());
         
-        stubMenu.resetViewMenuBuiltFlag();
-        Assert.assertTrue(stubMenu.isTabHidden("SQL"));
-        Assert.assertFalse(stubMenu.isViewMenuBuilt());
+        getStubMenu().resetViewMenuBuiltFlag();
+        Assert.assertTrue(getStubMenu().isTabHidden("SQL"));
+        Assert.assertFalse(getStubMenu().isViewMenuBuilt());
         
-        prefs.clearTabHidden("SQL");
+        getPrefs().clearTabHidden("SQL");
         
-        Assert.assertFalse(stubMenu.isTabHidden("SQL"));
-        Assert.assertTrue(stubMenu.isViewMenuBuilt());
+        Assert.assertFalse(getStubMenu().isTabHidden("SQL"));
+        Assert.assertTrue(getStubMenu().isViewMenuBuilt());
     }
 }

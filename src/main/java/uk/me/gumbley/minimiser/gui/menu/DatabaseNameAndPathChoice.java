@@ -31,7 +31,7 @@ public final class DatabaseNameAndPathChoice implements ObservableEvent {
     /**
      * @return the database path
      */
-    protected String getDatabasePath() {
+    public String getDatabasePath() {
         return databasePath;
     }
 }
