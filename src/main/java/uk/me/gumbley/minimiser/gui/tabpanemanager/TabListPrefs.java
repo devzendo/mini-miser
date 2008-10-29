@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui.tabpanemanager;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -18,6 +19,8 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  *
  */
 public final class TabListPrefs {
+    private static final Logger LOGGER = Logger.getLogger(TabListPrefs.class);
+    
     private final Prefs prefs;
 
     /**
@@ -39,11 +42,60 @@ public final class TabListPrefs {
      * @return the open tab list.
      */
     public List<TabIdentifier> getOpenTabs(final String databaseName) {
+        LOGGER.debug("getOpenTabs for database " + databaseName);
         final List<TabIdentifier> permanentTabIdentifiers = TabIdentifier.getPermanentTabIdentifiers();
         final List<TabIdentifier> openTabIdentifiers = TabIdentifier.toTabIdentifiers(prefs.getOpenTabs(databaseName));
         final List<TabIdentifier> both = new ArrayList<TabIdentifier>();
         both.addAll(permanentTabIdentifiers);
         both.addAll(openTabIdentifiers);
-        return TabIdentifier.sortAndDeDupeTabIdentifiers(both);
+        final List<TabIdentifier> returnTabIdentifiers = TabIdentifier.sortAndDeDupeTabIdentifiers(both);
+        LOGGER.debug("getOpenTabs returning " + returnTabIdentifiers);
+        return returnTabIdentifiers;
+    }
+
+    /**
+     * Store the set of tabs that should be opened - the list stored will not
+     * contain any permanent tabs, nor any duplicates.
+     * 
+     * @param databaseName the database name
+     * @param tabs the tabs to store
+     */
+    public void setOpenTabs(final String databaseName, final List<TabIdentifier> tabs) {
+        LOGGER.debug("setOpenTabs for database " + databaseName + ": " + tabs);
+        final List<TabIdentifier> noPermies = new ArrayList<TabIdentifier>(tabs);
+        noPermies.removeAll(TabIdentifier.getPermanentTabIdentifiers());
+        final List<TabIdentifier> sortedDeDupedNoPermies = TabIdentifier.sortAndDeDupeTabIdentifiers(noPermies);
+        final List<String> sortedDeDupedNoPermiesNames = new ArrayList<String>();
+        for (TabIdentifier tabId : sortedDeDupedNoPermies) {
+            sortedDeDupedNoPermiesNames.add(tabId.toString());
+        }
+        LOGGER.debug("setOpenTabs after removing permanent tabs, sorting and de-duping, storing: " + sortedDeDupedNoPermiesNames);
+        prefs.setOpenTabs(databaseName, sortedDeDupedNoPermiesNames.toArray(new String[0]));
+    }
+    
+    /**
+     * Set the active tab for a given database.
+     * <p>
+     * Delegates directly to the underlying Prefs object.
+     * 
+     * TODO should take a TabIdentifier?
+     * 
+     * @param databaseName the name of the database with an active tab
+     * @param tabName the name of the tab to store against that database
+     */
+    public void setActiveTab(final String databaseName, final String tabName) {
+        LOGGER.debug("setActiveTab for database " + databaseName + ": " + tabName);
+        prefs.setActiveTab(databaseName, tabName);
+    }
+
+    /**
+     * Get the active tab for a given database
+     * @param databaseName the name of the database with an active tab
+     * @return the tab identifier of the previously active tab
+     */
+    public TabIdentifier getActiveTab(final String databaseName) {
+        final String tabName = prefs.getActiveTab(databaseName);
+        LOGGER.debug("getActiveTab for database " + databaseName + ": " + tabName);
+        return TabIdentifier.toTabIdentifier(tabName);
     }
 }

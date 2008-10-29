@@ -64,3 +64,31 @@ How multiple databases are managed with a card layout
     database name and tab name
   * the currently open tabs for each database are persisted and restored
   * the currently selected tab for each database is persisted and restored
+
+Don't Display This Message Again Dialog
+---------------------------------------
+
+* need a message box with an option to never display this message again, with
+  the flag to ignore this keyed message being stored in prefs.
+  * some use cases:
+    * fresh install / upgrades - want to display a welcome message on startup
+      with option to turn off - key for this would relate to the version of
+      the software. either upgrade or fresh install would have a fresh key,
+      so you'd be prompted each time.
+      - would want an option to view welcome message again (ignoring the 'don't
+        show this message again' flag) via the help menu.
+      - after many upgrades, the prefs will fill up with 'don't show this
+        message again' flags, keyed on version numbers
+      - store current software version in prefs:
+        - if not present or different,
+            show the message
+            save current software version
+          else (if same as last time)
+            and static 'startup message' key not present,
+              show the message
+    * message being displayed should be rich, not just plain text
+    * there should be a facility to clear all such flags, so you do see the
+      messages again. from the tools options dialog.
+  * there's an abstract base class, stub for tests, and GUI impl for real - of
+    a message displayer.
+    

@@ -37,12 +37,12 @@ public final class DatabaseCloserLifecycle implements Lifecycle {
      * {@inheritDoc}
      */
     public void shutdown() {
-        persisteActiveDatabase();
+        persistActiveDatabase();
         persistOpenDatabaseList();
         closeDatabases();
     }
 
-    private void persisteActiveDatabase() {
+    private void persistActiveDatabase() {
         final DatabaseDescriptor currentDatabase = openDatabaseList.getCurrentDatabase();
         if (currentDatabase == null) {
             LOGGER.info("There is no currently active database, so clearing record of it");
@@ -70,7 +70,10 @@ public final class DatabaseCloserLifecycle implements Lifecycle {
         LOGGER.info("Closing open databases");
         final List<DatabaseDescriptor> openDatabases = openDatabaseList.getOpenDatabases();
         for (DatabaseDescriptor descriptor : openDatabases) {
+            LOGGER.debug("Closing database " + descriptor.getDatabaseName());
             Closer.close(descriptor);
+            LOGGER.debug("Removing database " + descriptor.getDatabaseName() + " from open database list");
+            openDatabaseList.removeClosedDatabase(descriptor);
         }
         LOGGER.info("Open databases closed");
     }

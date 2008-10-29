@@ -66,7 +66,7 @@ public final class TestTabIdentifier extends LoggingTestCase {
      * 
      */
     @Test
-    public void translateId() {
+    public void translateName() {
         Assert.assertNull(TabIdentifier.toTabIdentifier(null));
         Assert.assertNull(TabIdentifier.toTabIdentifier(""));
         Assert.assertNull(TabIdentifier.toTabIdentifier("wow!"));
@@ -78,7 +78,29 @@ public final class TestTabIdentifier extends LoggingTestCase {
         final TabIdentifier overviewId = TabIdentifier.toTabIdentifier("OVERVIEW");
         Assert.assertNotNull(overviewId);
         Assert.assertSame(TabIdentifier.OVERVIEW, overviewId);
-}
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void translateDisplayName() {
+        Assert.assertNull(TabIdentifier.toTabIdentifier(null));
+        Assert.assertNull(TabIdentifier.toTabIdentifier(""));
+        Assert.assertNull(TabIdentifier.toTabIdentifier("wow!"));
+        
+        final TabIdentifier sqlId = TabIdentifier.toTabIdentifierFromDisplayName("SQL");
+        Assert.assertNotNull(sqlId);
+        Assert.assertSame(TabIdentifier.SQL, sqlId);
+
+        final TabIdentifier overviewId = TabIdentifier.toTabIdentifierFromDisplayName("Overview");
+        Assert.assertNotNull(overviewId);
+        Assert.assertSame(TabIdentifier.OVERVIEW, overviewId);
+
+        final TabIdentifier categoriesId = TabIdentifier.toTabIdentifierFromDisplayName("Categories");
+        Assert.assertNotNull(categoriesId);
+        Assert.assertSame(TabIdentifier.CATEGORIES, categoriesId);
+    }
 
     /**
      * 

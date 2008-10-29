@@ -9,6 +9,8 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
  * prompt for a password, launches the dialog on the EDT, then returns the
  * entered password (or empty string, if user cancelled) to the calling
  * thread.
+ * 
+ * TODO rework this to use the GUIValueObtainer
  *  
  * @author matt
  *

@@ -43,7 +43,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
         if (databaseDescriptor == null) {
             return;
         }
-        LOGGER.info("Adding tab pane for database ' " + databaseDescriptor.getDatabaseName() + "'");
+        LOGGER.info("Adding tab pane for database '" + databaseDescriptor.getDatabaseName() + "'");
         final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
         if (tabbedPane == null) {
             return;
@@ -70,7 +70,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
             return;
         }
         final String databaseName = databaseDescriptor.getDatabaseName();
-        LOGGER.info("Removing tab pane for database ' " + databaseName + "'");
+        LOGGER.info("Removing tab pane for database '" + databaseName + "'");
         final JTabbedPane tabbedPane = namedTabbedPanes.get(databaseName);
         if (tabbedPane == null) {
             return;

@@ -93,4 +93,12 @@ public final class TabDescriptor {
         }
         return true;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return tabIdentifier.toString() + "(tab=" + (tab == null ? "null" : tab.getClass().getSimpleName()) + ")";
+    }
 }

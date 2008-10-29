@@ -68,9 +68,12 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
     private void openTab(final ViewMenuChoice observableEvent) {
         final List<TabIdentifier> tabListOfOne = new ArrayList<TabIdentifier>();
         tabListOfOne.add(observableEvent.getTabId());
-        final List<TabDescriptor> loadedTab = tabFactory.loadTabs(observableEvent.getDatabaseDescriptor(), tabListOfOne);
+        final DatabaseDescriptor databaseDescriptor = observableEvent.getDatabaseDescriptor();
+        final List<TabDescriptor> loadedTab = tabFactory.loadTabs(databaseDescriptor, tabListOfOne);
         
-        ViewMenuHelper.addTabToTabbedPaneAndOpenTabList(openTabList, observableEvent.getDatabaseDescriptor(), loadedTab.get(0));
+        final TabDescriptor tabDescriptor = loadedTab.get(0);
+        ViewMenuHelper.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
+        ViewMenuHelper.switchToTab(databaseDescriptor, tabDescriptor);
     }
 
     private void closeTab(final ViewMenuChoice observableEvent) {

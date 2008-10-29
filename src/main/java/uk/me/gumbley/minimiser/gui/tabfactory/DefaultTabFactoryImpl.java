@@ -15,7 +15,7 @@ import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
- * The default implementation of the TabPaneFactory.
+ * The default implementation of the TabFactory.
  * 
  * @author matt
  *
@@ -82,7 +82,9 @@ public final class DefaultTabFactoryImpl implements TabFactory {
             if (!openTabList.containsTab(databaseName, identifier)) {
                 LOGGER.debug("Loading tab " + identifier);
                 final Tab loadedTab = loadTab(databaseDescriptor, identifier);
-                if (loadedTab != null) { // TODO need test for failure to load causes lack of addition to list
+                if (loadedTab == null) { // TODO need test for failure to load causes lack of addition to list
+                    LOGGER.warn("Could not load tab " + identifier);
+                } else {
                     tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));
                 }
             } else {
@@ -104,6 +106,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
             callInitComponentOnSwingEventThread(tab);
             return tab;
         } catch (final RuntimeException re) {
+            LOGGER.warn("Failed to load tab " + identifier + ": " + re.getMessage(), re);
             problemReporter.reportProblem("while loading the " + identifier.getDisplayableName() + " tab", re);
             return null;
         }

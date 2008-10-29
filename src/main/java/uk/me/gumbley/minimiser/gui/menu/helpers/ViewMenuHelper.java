@@ -1,10 +1,12 @@
 package uk.me.gumbley.minimiser.gui.menu.helpers;
 
 import java.awt.Component;
+import java.util.concurrent.Callable;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
+import uk.me.gumbley.commoncode.gui.GUIValueObtainer;
 import uk.me.gumbley.minimiser.gui.menu.Menu;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
@@ -20,8 +22,10 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
  * <li> sets the view menu items hidden/not hidden in response to
  * prefs change events, and upon startup.
  * <li> uses the TabFactory to load tabs and add them to the JTabbedPane
+ * <li> allows the JTabbedPane for a database to be queried
  * </ol>
  * 
+ * TODO this class is now badly named - it's not just a view menu toolkit.
  * @author matt
  *
  */
@@ -100,10 +104,75 @@ public final class ViewMenuHelper {
         openTabList.addTab(databaseDescriptor, tabDescriptor);
     }
 
+    /**
+     * Switch to a specific tab in the database descriptor's JTabbedPane.
+     * @param databaseDescriptor the DatabaseDescriptor that's having a tab
+     * switched to 
+     * @param tabDescriptor the tab to switch to
+     */
+    public static void switchToTab(final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
+        final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
+
+        // We need the insertion point for the JTabbedPane
+        final TabDescriptor finalTabDescriptor = tabDescriptor; 
+        final Tab tab = finalTabDescriptor.getTab();
+        final String displayableName = finalTabDescriptor.getTabIdentifier().getDisplayableName();
+        LOGGER.debug("Switching to tab " + displayableName);
+        
+        // Switch to the tab's component on the EDT 
+        final Component tabComponent = tab.getComponent();
+        if (tabComponent == null) {
+            LOGGER.warn("Tab " + displayableName
+                + " has created a null component; cannot switch to it");
+            return;
+        }
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                databaseTabbedPane.setSelectedComponent(tabComponent);
+            }
+        });
+    }
+    
+    /**
+     * Obtain the TabIdentifier of the currently selected tab, for a given
+     * database (by querying the JTabbedPane)
+     * @param databaseDescriptor the database descriptor whose JTabbedPane is
+     * to be queried.
+     * @return the TabIdentifier of the currently selected tab, or null if no
+     * TabIdentifier can be discovered.
+     */
+    public static TabIdentifier getCurrentTab(final DatabaseDescriptor databaseDescriptor) {
+        LOGGER.debug("Getting current tab for database " + databaseDescriptor.getDatabaseName());
+        final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
+        if (databaseTabbedPane == null) {
+            LOGGER.warn("No JTabbedPane for this database");
+            return null;
+        }
+        final GUIValueObtainer<TabIdentifier> obtainer = new GUIValueObtainer<TabIdentifier>();
+        try {
+            return obtainer.obtainFromEventThread(new Callable<TabIdentifier>() {
+
+                public TabIdentifier call() throws Exception {
+                    final int selectedIndex = databaseTabbedPane.getSelectedIndex();
+                    LOGGER.debug("Selected index is " + selectedIndex);
+                    final String tabDisplayName = databaseTabbedPane.getTitleAt(selectedIndex);
+                    LOGGER.debug("Selected tab name is " + tabDisplayName);
+                    final TabIdentifier toTabIdentifier = TabIdentifier.toTabIdentifierFromDisplayName(tabDisplayName);
+                    LOGGER.debug("Selected TabIdentifier is " + toTabIdentifier);
+                    return toTabIdentifier;
+                }
+                
+            });
+        } catch (final Exception e) {
+            // it has been logged by the GUIValueObtainer
+            return null;
+        }
+    }
+
     private static JTabbedPane getTabbedPane(final DatabaseDescriptor databaseDescriptor) {
         final JTabbedPane databaseTabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
         if (databaseTabbedPane == null) {
-            final String warning = "No JTabbedPane stored in database descriptor to add tab to";
+            final String warning = "No JTabbedPane stored in database descriptor";
             LOGGER.warn(warning);
             throw new IllegalStateException(warning);
         }

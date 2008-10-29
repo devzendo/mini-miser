@@ -265,6 +265,19 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
     }
     
     /**
+     * 
+     */
+    @Test
+    public void addThenRemoveRemovesIt() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("bassssooon!");
+        Assert.assertFalse(list.containsDatabase(databaseDescriptor));
+        list.addOpenedDatabase(databaseDescriptor);
+        Assert.assertTrue(list.containsDatabase(databaseDescriptor));
+        list.removeClosedDatabase(databaseDescriptor);
+        Assert.assertFalse(list.containsDatabase(databaseDescriptor));
+    }
+    
+    /**
      * If you have multiple databases open, and you have currently selected
      * the one in the middle of the list (the current tick is on the middle
      * one), then closing that database should switch to the next database,

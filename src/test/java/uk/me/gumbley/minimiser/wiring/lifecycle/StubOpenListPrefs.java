@@ -133,4 +133,17 @@ public final class StubOpenListPrefs implements Prefs {
      */
     public void addChangeListener(final Observer<PrefsEvent> observer) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getActiveTab(final String databaseName) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setActiveTab(final String databaseName, final String tabName) {
+    }
 }

@@ -17,6 +17,12 @@
 
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />
 	
+	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="menuWiringList" />
+	</bean>
+
 	<!-- menu wiring / adapters -->
 	<bean id="menuWiringList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">

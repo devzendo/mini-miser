@@ -90,6 +90,7 @@ public final class StubMenu implements Menu {
      */
     public void switchDatabase(final String dbName) {
         currentDatabaseIndex = databases.indexOf(dbName);
+        rebuildViewMenu();
     }
 
     /**

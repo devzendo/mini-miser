@@ -359,4 +359,25 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         Assert.assertFalse(getStubMenu().isTabHidden("SQL"));
         Assert.assertTrue(getStubMenu().isViewMenuBuilt());
     }
+    
+    /**
+     * This is testing the stub menu really - switching causes the menu impls
+     * to rebuild the view menu.
+     */
+    @Test
+    public void databaseSwitchRebuildsViewMenu() {
+        startMediator();
+
+        final DatabaseDescriptor databaseDescriptor1 = new DatabaseDescriptor("one");
+        final DatabaseDescriptor databaseDescriptor2 = new DatabaseDescriptor("two");
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor1);
+        getOpenDatabaseList().addOpenedDatabase(databaseDescriptor2);
+
+        getStubMenu().resetViewMenuBuiltFlag();
+        Assert.assertFalse(getStubMenu().isViewMenuBuilt());
+        
+        getStubMenu().injectWindowMenuRequest(databaseDescriptor1);
+        
+        Assert.assertTrue(getStubMenu().isViewMenuBuilt());
+    }
 }

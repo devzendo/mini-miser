@@ -42,6 +42,7 @@ public final class OpenDatabaseList {
      * @param observer the observer to add.
      */
     public void addDatabaseEventObserver(final Observer<DatabaseEvent> observer) {
+        LOGGER.debug("Adding adapter " + observer.getClass().getSimpleName());
         observerList.addObserver(observer);
     }
 
@@ -50,6 +51,7 @@ public final class OpenDatabaseList {
      * @param observer the observer to remove.
      */
     public void removeDatabaseEventObserver(final Observer<DatabaseEvent> observer) {
+        LOGGER.debug("Removing adapter " + observer.getClass().getSimpleName());
         observerList.removeListener(observer);
     }
 
@@ -60,10 +62,11 @@ public final class OpenDatabaseList {
      */
     public void addOpenedDatabase(final DatabaseDescriptor descriptor) {
         if (descriptor == null) {
+            LOGGER.warn("Cannot add null opened database");
             return;
         }
         if (!databaseList.contains(descriptor)) {
-            LOGGER.info("Adding " + descriptor.getDatabaseName());
+            LOGGER.info("Adding opened database " + descriptor.getDatabaseName());
             databaseList.add(descriptor);
             currentDatabaseIndex = databaseList.size() - 1;
             observerList.eventOccurred(new DatabaseOpenedEvent(descriptor));
@@ -83,23 +86,27 @@ public final class OpenDatabaseList {
      */
     public void removeClosedDatabase(final DatabaseDescriptor descriptor) {
         if (descriptor == null) {
+            LOGGER.warn("Cannot remove null opened database");
             return;
         }
         if (!databaseList.contains(descriptor)) {
             throw new IllegalStateException(
                 String.format("Could not remove closed database %s since it is not in list", descriptor.getDatabaseName()));
         }
-        LOGGER.debug("before removing, curr = " + currentDatabaseIndex);
+        LOGGER.debug("Removing closed database " + descriptor.getDatabaseName() + "; before removing, current index = " + currentDatabaseIndex);
         databaseList.remove(descriptor);
         if (currentDatabaseIndex == databaseList.size()) {
             currentDatabaseIndex--;
         }
-        LOGGER.debug("after removing, curr = " + currentDatabaseIndex);
+        LOGGER.debug("after removing, current index = " + currentDatabaseIndex);
         observerList.eventOccurred(new DatabaseClosedEvent(descriptor));
         if (currentDatabaseIndex == -1) {
+            LOGGER.debug("Database list is now empty");
             observerList.eventOccurred(new DatabaseListEmptyEvent());
         } else {
-            observerList.eventOccurred(new DatabaseSwitchedEvent(databaseList.get(currentDatabaseIndex)));
+            final DatabaseDescriptor descriptorToSwitchTo = databaseList.get(currentDatabaseIndex);
+            LOGGER.debug("Database list is not empty; switching to " + descriptorToSwitchTo.getDatabaseName());
+            observerList.eventOccurred(new DatabaseSwitchedEvent(descriptorToSwitchTo));
         }
     }
 

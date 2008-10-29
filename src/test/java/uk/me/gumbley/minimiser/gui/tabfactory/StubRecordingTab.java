@@ -5,6 +5,7 @@ import java.awt.Label;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
+import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
 /**
@@ -18,6 +19,7 @@ public final class StubRecordingTab implements Tab {
     private static final Logger LOGGER = Logger
             .getLogger(StubRecordingTab.class);
     private final DatabaseDescriptor databaseDescriptor;
+    private final TabIdentifier tabIdentifier;
     private volatile Label label;
     private final boolean constructedOnEventThread;
     private boolean initComponentCalledOnEventThread = false;
@@ -31,14 +33,25 @@ public final class StubRecordingTab implements Tab {
 
     /**
      * Construct with descriptor given from factory via app context
-     * @param descriptor the database descritpor
+     * @param descriptor the database descriptor
      */
     public StubRecordingTab(final DatabaseDescriptor descriptor) {
+        this(descriptor, null);
+    }
+
+    /**
+     * Construct with descriptor given from factory via unit test
+     * @param descriptor the database descriptor
+     * @param tabId the tab identifier
+     */
+    public StubRecordingTab(final DatabaseDescriptor descriptor, final TabIdentifier tabId) {
         LOGGER.debug("Creating StubRecordingTab for " + descriptor.getDatabaseName());
         this.databaseDescriptor = descriptor;
+        this.tabIdentifier = tabId;
         constructedOnEventThread = SwingUtilities.isEventDispatchThread();
         constructCount++;
     }
+    
     /**
      * {@inheritDoc}
      */
@@ -54,7 +67,7 @@ public final class StubRecordingTab implements Tab {
         LOGGER.debug("initComponent being called");
         initComponentCalledOnEventThread = SwingUtilities.isEventDispatchThread();
         initComponentIsCalled = true;
-        label = new Label();
+        label = new Label(tabIdentifier == null ? "null" : tabIdentifier.getDisplayableName());
     }
     
     /** 

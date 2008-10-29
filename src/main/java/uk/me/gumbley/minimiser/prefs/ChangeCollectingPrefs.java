@@ -136,6 +136,21 @@ public final class ChangeCollectingPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
+    public String getActiveTab(final String databaseName) {
+        unsupported("getActiveTab");
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setActiveTab(final String databaseName, final String tabName) {
+        unsupported("setActiveTab");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setRecentFiles(final String[] paths) {
         unsupported("setRecentFiles");
     }

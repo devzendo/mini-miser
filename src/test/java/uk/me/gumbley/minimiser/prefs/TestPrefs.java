@@ -172,6 +172,16 @@ public final class TestPrefs extends LoggingTestCase {
      * 
      */
     @Test
+    public void activeDatabaseTabIsStoredAndRetrieved() {
+        Assert.assertNull(prefs.getActiveTab("one"));
+        prefs.setActiveTab("one", "tabone");
+        Assert.assertEquals("tabone", prefs.getActiveTab("one"));
+    }
+    
+    /**
+     * 
+     */
+    @Test
     public void tabsCanBeHidden() {
         Assert.assertFalse(prefs.isTabHidden("SQL"));
         prefs.setTabHidden("SQL");

@@ -39,7 +39,7 @@ public final class StubTabFactory implements TabFactory {
         final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>();
         for (TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
-                final StubRecordingTab stubRecordingTab = new StubRecordingTab(databaseDescriptor);
+                final StubRecordingTab stubRecordingTab = new StubRecordingTab(databaseDescriptor, identifier);
                 callInitComponentOnSwingEventThread(stubRecordingTab);
                 tabDescriptorList.add(new TabDescriptor(identifier, stubRecordingTab));
             }

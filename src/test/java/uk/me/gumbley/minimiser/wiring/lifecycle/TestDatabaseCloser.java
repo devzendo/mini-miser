@@ -130,6 +130,22 @@ public final class TestDatabaseCloser extends PersistenceUnittestCase {
      * 
      */
     @Test
+    public void openDatabasesShouldBeRemovedFromTheOpenDatabaseListOnShutdown() {
+        LOGGER.info(">>> openDatabasesShouldBeRemovedFromTheOpenDatabaseListOnShutdown");
+        Assert.assertEquals(0, openDatabaseList.getNumberOfDatabases());
+        openDatabaseList.addOpenedDatabase(new DatabaseDescriptor("one", "/tmp/one"));
+        Assert.assertEquals(1, openDatabaseList.getNumberOfDatabases());
+
+        lifecycleManager.shutdown();
+
+        Assert.assertEquals(0, openDatabaseList.getNumberOfDatabases());
+        LOGGER.info("<<< openDatabasesShouldBeRemovedFromTheOpenDatabaseListOnShutdown");
+    }
+    
+    /**
+     * 
+     */
+    @Test
     public void lastCurrentDatabaseShouldBeRecordedOnShutdown() {
         LOGGER.info(">>> lastCurrentDatabaseShouldBeRecordedOnShutdown");
         Assert.assertNull(prefs.getLastActiveFile());

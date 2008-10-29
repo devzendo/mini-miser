@@ -10,30 +10,8 @@ BUGS:
   but haven't reproduced it since.
 
 CURRENT TASKS:
-* refactoring menuimpl and the menus - loading state from the rest of the
-  objects (prefs, opentablist, opendatabaselist), rather than replicating it
-  in menustate. had added a factory to stash menustate, but this can go when
-  the access via the springloader to the rest of the system objects is
-  complete.
-* menu updating methods currently pass in state as the menu used to maintain
-  its own state which duplicated state held elsewhere (opentablist, open
-  databaselist). These methods still receive data from the menumediator
-  listeners, but do nothing with it.  
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
-  
-* the tab pane set:
-  * switch tab listener?  
-  * persist current open tab list on exit
-  * open/close/switch tab can be listened for - notifications include the
-    database name and tab name
-  * the currently open tabs for each database are persisted and restored
-  * the currently selected tab for each database is persisted and restored
-
-* sql tab:
-  * command handlers need to have some tests around them
-
-* temporarily remove currency panel on new database wizard    
 
 * need a message box with an option to never display this message again, with
   the flag to ignore this keyed message being stored in prefs.
@@ -45,13 +23,14 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   need ~/Library/Application Support/MiniMiser on Mac OS X
   need Documents and Settings/username/whatever on Windows.
 
-
 * if 'SQL view available' flag gets disabled in prefs, close any currently-
   open SQL views (with a notification)
 
 * how are tabs that are initially hidden set hidden in prefs? there needs to be
   a set of default prefs that are stored on prefs creation. perhaps a prefs
   initialiser object that gets triggered to populate initial prefs on creation.
+
+* Update available checker.
 
 
 CROSS-PLATFORM UI ISSUES:
@@ -89,12 +68,23 @@ DRY / TDD improvements:
 * change to injecting the StubProblemReporter into all places that
   currently use the ProblemDialog.
 
-* refactor menu/menumediator - far too many responsibilities and coupling
-  
+* refactoring menuimpl and the menus - loading state from the rest of the
+  objects (prefs, opentablist, opendatabaselist), rather than replicating it
+  in menustate. had added a factory to stash menustate, but this can go when
+  the access via the springloader to the rest of the system objects is
+  complete.
+
+* menu updating methods currently pass in state as the menu used to maintain
+  its own state which duplicated state held elsewhere (opentablist, open
+  databaselist). These methods still receive data from the menumediator
+  listeners, but do nothing with it.  
+
+* sql tab:
+  * command handlers need to have some tests around them
+
+* passwordEntryDialog & helper - rework this to use the GUIValueObtainer.
+
 NIGGLES:
-* change the frame title / tab set depending on the selected database - when
-  opening many databases on startup, the display "thrashes". It should not do
-  this until the last active database is switched to.
 
 DOCUMENTATION:
 * fill in the rest of the acks in credits.html
@@ -165,11 +155,15 @@ Accounts:
   Standing Order List
 
 LATER RELEASES:
-* Update available checker.
 * Bug reporting dialog - direct to bug database
+
 * decide which currencies to support
 * add currency object, entries for all supported currencies
 * display flags in pretty list in currency wizard page
 * choose a sensible default-selected currency based on system locale
 * BUG: Currency symbols don't render correctly on Windows
+
+* change the frame title / tab set depending on the selected database - when
+  opening many databases on startup, the display "thrashes". It should not do
+  this until the last active database is switched to.
   

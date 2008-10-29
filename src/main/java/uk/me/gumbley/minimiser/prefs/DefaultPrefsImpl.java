@@ -32,6 +32,8 @@ public final class DefaultPrefsImpl implements Prefs {
 
     private static final String SECTION_OPENTABS_PREFIX = "opentabs_";
 
+    private static final String SECTION_ACTIVETABS = "activetabs";
+
     private static final String SECTION_HIDDENTABS_PREFIX = "hiddentabs";
 
     /**
@@ -151,6 +153,21 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void setOpenTabs(final String databaseName, final String[] tabNames) {
         iniFile.setArray(SECTION_OPENTABS_PREFIX + databaseName, tabNames);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getActiveTab(final String databaseName) {
+        return iniFile.getValue(SECTION_ACTIVETABS, databaseName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setActiveTab(final String databaseName, final String tabName) {
+        iniFile.setValue(SECTION_ACTIVETABS, databaseName, tabName);
     }
 
     /**

@@ -122,7 +122,25 @@ public enum TabIdentifier {
             return null;
         }
     }
-    
+
+    /**
+     * Given a display name, return the TabIdentifier. Like valueOf, but returns null
+     * rather than throwing an IllegalArgumentException on lookup failure.
+     * @param tabDisplayName a tab display name
+     * @return the TabIdentifier, or null if the display name does not correspond to one.
+     */
+    public static TabIdentifier toTabIdentifierFromDisplayName(final String tabDisplayName) {
+        if (tabDisplayName == null) {
+            return null;
+        }
+        for (TabIdentifier tabId : TabIdentifier.values()) {
+            if (tabId.getDisplayableName().equals(tabDisplayName)) {
+                return tabId;
+            }
+        }
+        return null;
+    }
+
     /**
      * Obtain a list of the permanent tab identifiers, in TabIdentifier order.
      * @return the permanent TabIdentifiers.

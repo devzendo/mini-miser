@@ -244,6 +244,7 @@ public class MainFrame {
         LOGGER.info("Got the menu");
         menu.addMenuActionListener(MenuIdentifier.FileExit, exitAL);
         // wire up dependencies
+        LOGGER.info("Wiring menu dependencies and adapters");
         springLoader.getBean("menuMediator", MenuMediator.class);
         LOGGER.info("Menu dependencies wired");
         springLoader.getBean("menuBuilder", MenuBuilder.class).build();

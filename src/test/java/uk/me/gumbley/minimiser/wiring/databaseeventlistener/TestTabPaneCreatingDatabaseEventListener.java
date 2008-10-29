@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.wiring.databaseeventlistener;
 import java.awt.Component;
 import java.awt.Label;
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.swing.JTabbedPane;
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
@@ -10,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
+import uk.me.gumbley.commoncode.gui.GUIValueObtainer;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.gui.tabfactory.StubRecordingTab;
 import uk.me.gumbley.minimiser.gui.tabfactory.StubTabFactory;
@@ -26,11 +28,20 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 /**
  * Tests the adapter that adapts between DatabaseEvents and the
  * creation and population of the database descriptor's
- * TabbedPane attribute. Tests that tabs defined for the various
+ * TabbedPane attribute.
+ * <p>
+ * Tests that tabs defined for the various
  * TabIdentifiers are loaded and attached if they are permanent
- * or stored in prefs as an open tab. Tests that they are disposed of
+ * or stored in prefs as an open tab.
+ * <p>
+ * Tests that they are disposed of
  * and removed from the open tab list on close.
- * 
+ * <p>
+ * Tests that the previously-active tab is made active on open.
+ * <p>
+ * Tests that the open tabs are persisted on database close.
+ * <p>
+ * Tests that the active tab is persisted on database close.
  * 
  * @author matt
  *
@@ -61,13 +72,16 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
     }
         
     /**
+     * @throws Exception on gui value obtainer failure
      * 
      */
     @Test
-    public void openingDatabaseCausesTabsStoredInPrefsAndPermanentTabsToBeAddedToTheOpenTabList() {
+    public void openingDatabaseCausesTabsStoredInPrefsAndPermanentTabsToBeAddedToTheOpenTabList() throws Exception {
         // Add SQL into prefs - OVERVIEW is permanent, so we should see [SQL, OVERVIEW]
         final Prefs prefs = EasyMock.createMock(Prefs.class);
         EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {"SQL"});
+        EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");
+
         EasyMock.replay(prefs);
 
         final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
@@ -85,6 +99,14 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
         // The JTabbedPane should now have been added to the DD
         Assert.assertNotNull(tabbedPane);
+        
+        final Boolean sqlIsActiveTab = new GUIValueObtainer<Boolean>().obtainFromEventThread(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                final Label selectedComponent = (Label) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+                return selectedComponent.getText().equals(TabIdentifier.SQL.getDisplayableName());
+            }
+        });
+        Assert.assertTrue(sqlIsActiveTab);
         
         // The OVERVIEW and SQL tabs should have been added to the openTabList
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
@@ -116,6 +138,8 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         Assert.assertTrue(component1IsLabel);
         Assert.assertTrue(tab0NameOk);
         Assert.assertTrue(tab1NameOk);
+        
+        EasyMock.verify(prefs);
     }
     
     /**
@@ -125,6 +149,11 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
     public void closingOpenDatabaseRemovesFromTheOpenTabList() {
         final Prefs prefs = EasyMock.createMock(Prefs.class);
         EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {"SQL"});
+        EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");
+
+        prefs.setOpenTabs(EasyMock.eq(DATABASE), EasyMock.aryEq(new String[] {"SQL"}));
+        prefs.setActiveTab(EasyMock.eq(DATABASE), EasyMock.eq("SQL"));
+
         EasyMock.replay(prefs);
 
         final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
@@ -156,5 +185,50 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         Assert.assertTrue(overviewTab.isDisposedOnEventThread());
         Assert.assertTrue(sqlTab.isDisposeComponentCalled());
         Assert.assertTrue(sqlTab.isDisposedOnEventThread());
+        
+        EasyMock.verify(prefs);
+    }
+    
+    /**
+     * @throws Exception on gui value obtainer failure
+     * 
+     */
+    @Test
+    public void openTabsAndPreviouslyActiveTabIsPersistedOnDatabaseClose() throws Exception {
+        LOGGER.debug("** openTabsAndPreviouslyActiveTabIsPersistedOnDatabaseClose start");
+        
+        LOGGER.debug("Creating prefs");
+        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {TabIdentifier.SQL.toString(), TabIdentifier.CATEGORIES.toString()});
+        EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");
+        prefs.setOpenTabs(EasyMock.eq(DATABASE), EasyMock.aryEq(new String[] {TabIdentifier.SQL.toString(), TabIdentifier.CATEGORIES.toString()}));
+        prefs.setActiveTab(EasyMock.eq(DATABASE), EasyMock.eq("SQL"));
+        EasyMock.replay(prefs);
+        LOGGER.debug("Prefs created");
+
+        final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
+        
+        adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, tabFactory, openTabList);
+        openDatabaseList.addDatabaseEventObserver(adapter);
+
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
+        LOGGER.debug("Test now adding opened database");
+        openDatabaseList.addOpenedDatabase(databaseDescriptor);
+        
+        final Boolean sqlIsActiveTab = new GUIValueObtainer<Boolean>().obtainFromEventThread(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
+                final Label selectedComponent = (Label) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+                LOGGER.debug("selected component is " + selectedComponent);
+                return selectedComponent.getText().equals(TabIdentifier.SQL.getDisplayableName());
+            }
+        });
+        Assert.assertTrue(sqlIsActiveTab);
+        
+        LOGGER.debug("Test now removing closed database");
+        openDatabaseList.removeClosedDatabase(databaseDescriptor);
+
+        EasyMock.verify(prefs);
+        LOGGER.debug("** openTabsAndPreviouslyActiveTabIsPersistedOnDatabaseClose end");
     }
 }

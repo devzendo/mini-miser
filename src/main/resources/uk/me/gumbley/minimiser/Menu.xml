@@ -20,14 +20,6 @@
 	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="menu" />
-		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="openTabList" />
-		<constructor-arg ref="recentFilesList" />
-		<constructor-arg ref="opener" />
-		<constructor-arg ref="openerAdapterFactory" />
-		<constructor-arg ref="mainFrameTitle" />
-		<constructor-arg ref="prefs" />
-		<constructor-arg ref="tabFactory" />
 		<constructor-arg ref="menuWiringList" />
 	</bean>
 	

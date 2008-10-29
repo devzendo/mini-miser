@@ -7,7 +7,13 @@ import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
 
 /**
  * The factory for creating one, or a list of tabs given
- * a database descriptor.
+ * a database descriptor. Used when:
+ * <ul>
+ * <li> a database is opened, to load all persisted
+ *      tabs from last time
+ * <li> a database is closed, to close all its open tabs
+ * <li> by the view menu, when a tab is opened/closed.
+ * </ul>
  * 
  * @author matt
  *

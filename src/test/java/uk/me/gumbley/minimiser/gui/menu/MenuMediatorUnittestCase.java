@@ -44,7 +44,13 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
      */
     @SuppressWarnings("unchecked")
     @Before
-    public void getMediatorPrerequisites() throws IOException {
+    public final void getMediatorPrerequisites() throws IOException {
+        prefs = TestPrefs.createUnitTestPrefsFile();
+        prefsFile = new File(prefs.getAbsolutePath());
+        prefsFile.deleteOnExit();
+        final PrefsFactory prefsFactory = getSpringLoader().getBean("&prefs", PrefsFactory.class);
+        prefsFactory.setPrefs(prefs);
+        
         stubMenu = getSpringLoader().getBean("menu", StubMenu.class);
         openDatabaseList = getSpringLoader().getBean("openDatabaseList", OpenDatabaseList.class);
         openTabList = getSpringLoader().getBean("openTabList", OpenTabList.class);
@@ -52,13 +58,6 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
         stubOpener = getSpringLoader().getBean("opener", StubOpener.class);
         stubOpenerAdapterFactory = getSpringLoader().getBean("openerAdapterFactory", StubOpenerAdapterFactory.class);
         mainFrameTitle = getSpringLoader().getBean("mainFrameTitle", StubMainFrameTitle.class);
-        
-        prefs = TestPrefs.createUnitTestPrefsFile();
-        prefsFile = new File(prefs.getAbsolutePath());
-        prefsFile.deleteOnExit();
-        final PrefsFactory prefsFactory = getSpringLoader().getBean("&prefs", PrefsFactory.class);
-        prefsFactory.setPrefs(prefs);
-        
         tabFactory = getSpringLoader().getBean("tabFactory", StubTabFactory.class);
         
         beanNames = getSpringLoader().getBean("menuWiringList", List.class);
@@ -68,8 +67,7 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
      * After your test code sets up anything necessary, start up the mediator. 
      */
     protected void startMediator() {
-        new MenuMediatorImpl(getSpringLoader(), stubMenu, openDatabaseList, openTabList, recentFilesList, stubOpener, 
-            stubOpenerAdapterFactory, mainFrameTitle, prefs, tabFactory, beanNames);
+        getSpringLoader().getBean("menuMediator", MenuMediatorImpl.class);
     }
 
     /**
