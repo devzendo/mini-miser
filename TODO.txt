@@ -10,6 +10,10 @@ BUGS:
   but haven't reproduced it since.
 
 CURRENT TASKS:
+* software version changed listeners
+* done the upgrade detector
+* done the listener manager like DatabaseEventListenerManager
+* need a lifecycle like DatabaseEventListenerLifecycle
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 

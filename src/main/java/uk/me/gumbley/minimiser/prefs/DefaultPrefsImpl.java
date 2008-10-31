@@ -36,6 +36,10 @@ public final class DefaultPrefsImpl implements Prefs {
 
     private static final String SECTION_HIDDENTABS_PREFIX = "hiddentabs";
 
+    private static final String SECTION_VERSIONS = "versions";
+    private static final String CURRENT_SOFTWARE_VERSION = "application";
+    
+
     /**
      * Create a Prefs object backed by a file
      * @param prefsFile the file path
@@ -198,5 +202,19 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void addChangeListener(final Observer<PrefsEvent> observer) {
         observerList.addObserver(observer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getCurrentSoftwareVersion() {
+        return iniFile.getValue(SECTION_VERSIONS, CURRENT_SOFTWARE_VERSION);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCurrentSoftwareVersion(final String version) {
+        iniFile.setValue(SECTION_VERSIONS, CURRENT_SOFTWARE_VERSION, version);
     }
 }

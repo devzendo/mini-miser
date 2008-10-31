@@ -215,4 +215,14 @@ public final class TestPrefs extends LoggingTestCase {
 
         EasyMock.verify(obs);
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void softwareVersionIsStoredAdnRetrieved() {
+        Assert.assertNull(prefs.getCurrentSoftwareVersion());
+        prefs.setCurrentSoftwareVersion("1.1.2");
+        Assert.assertEquals("1.1.2", prefs.getCurrentSoftwareVersion());
+    }
 }

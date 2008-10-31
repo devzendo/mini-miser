@@ -1,7 +1,7 @@
 OldNotes.txt
 ============
 
-This is a collection of old design sketches for various aspects of the system
+This is a collection of design sketches for various aspects of the system
 as added to the ongoing TODO.txt, then moved here when complete.
 
 How tabs are created
@@ -67,7 +67,6 @@ How multiple databases are managed with a card layout
 
 Don't Display This Message Again Dialog
 ---------------------------------------
-
 * need a message box with an option to never display this message again, with
   the flag to ignore this keyed message being stored in prefs.
   * some use cases:
@@ -86,9 +85,125 @@ Don't Display This Message Again Dialog
           else (if same as last time)
             and static 'startup message' key not present,
               show the message
-    * message being displayed should be rich, not just plain text
-    * there should be a facility to clear all such flags, so you do see the
-      messages again. from the tools options dialog.
+    * new version available
+      - needs a 'show more detail' / 'what's new in this release option
+      - the check for 'don't show this again' flag should be separate from the
+        actual display (and in this case, the obtaining of the message(s) text).
+        the actual display could be left to the message queue, see below.
+      - in this case, 'don't show this again' flag must be cleared if upgraded 
+        to, or past the version indicated (see above 'current software version'
+        discussion).
+  * message being displayed should be rich, not just plain text
+  * there should be a facility to clear all such flags, so you do see the
+    messages again. from the tools options dialog.
   * there's an abstract base class, stub for tests, and GUI impl for real - of
     a message displayer.
+  
+  * the 'software version has changed' detection code crops up again in the
+    use cases below (message queue, software update available detector) - it
+    should be extracted to the framework, with a series of configurable
+    listeners
+  * the 'broadcast messages' use case has another criteria for clearing the
+    DSTA flag - should extrcat the  'DSTA clear condition evaluator' to an
+    interface/pattern.
     
+Message Queue
+-------------
+* messages popping up all over the place in dialogs are intensely distracting,
+  and should only be used in urgent cases where ettiquete must be put aside
+  temporarily by the importance of the message
+* need an unobtrusive indicator - perhaps in the status bar - for indicating
+  to the user that there are message waiting.
+* the indicator needs to gently remind the user that there are messages, but
+  needs to be invisible when there are no messages - users don't tend to
+  notice slight changes (greyed out to gently pulsing), but they'd notice
+  not present to present and gently pulsing.
+* if the indicator is present, and has been pulsing for a while, it should get
+  a little more insistent, but never pop up nag dialogs. GentleApps do not
+  do this :-) It should never become annoying.
+* need to separate:
+  - determining that a message should be queued (might need to use the 'don't
+    show this message again' flags)
+  - display of the message list, if more than one
+  - display of the message body - there could be simple messages
+* should such messages be persistent? probably not, if they were urgent enough
+  they'd be displayed immediately. non-urgent messages don't require a special
+  persistence mechanism
+
+Software Update Available Notification
+--------------------------------------
+* User needs to be asked whether software update checks are permissible. they
+  should be disabled until the user indicates that they are.
+* Need a dialog asking them whether update checks should be made, with a short
+  statement of what the communication to HQ involves, and a link to the
+  privacy policy. Also mention broadcast messages.
+* Privacy policy also needs to state that it is not mandatory for there to be
+  a connection to the network in order for the software to work.
+* Need a menu link to perform an update availability check. If used, the
+  update checker should publish its progress via the progress reporter, and jump
+  straight to the 'update is available / show changes / show complete changes'
+  dialog (below)
+* Need a pricacy policy message dialog.  
+* Need to schedule an update check shortly after each startup. If the update
+  check is done automatically, it should be unobtrusive.
+* Does a HTTP connection to my server
+* Two possible queries:
+  - get current version number
+  - get change log
+* Change log is in specific format, but pretty loose:
+  x.y.z
+  -----
+  lots of text
+  more text
+  (blank lines)
+  * could have
+  * bullet lists
+  could possibly use some small form of _markup_ !
+* Should be readable as ASCII, but translatable into HTML for rich display
+* Need a dialog that notifies the user that there is a new version (x.y.z)
+  available, using the 'don't show this again' mechanism, above.
+* This dialog needs a 'what's new in this release' button that shows only the
+  sections of release notes that reflect the changes between your current
+  version, and the latest version  .
+* The dialog should have a 'show complete change log' button.
+* The change log should be cached in the ~/.minimiser directory and this
+  gets flushed when the current software version changes (see the discussion of
+  version number changing in the 'don't show this again' section, above. i.e.
+  configurable listeners)
+* This subsystem does NOT do the update - there is no automatic download
+  facility - the user must download it and install it themselves.
+  
+Version comparison
+------------------
+* Need to be able to compare versions to find out if there's an update,
+  given current version and latest version. Need to cope with current being
+  2.3.1 and a patch release of 2.3.1.1, or an update of 2.3.2 or 2.4, or 2.4.0
+  or 2.4.3, or 3.
+* Classifiers should not be ignored in the version comparison, so current 2.3.1
+  and 2.4.0-RC1 should be the same update-availablity as 2.4.0 (yes, there's
+  an update). But current 2.4.0-RC1 to 2.4.0 should be an update.
+    
+Broadcast Messages
+------------------
+# I've decided against implementing this - can do all I need with the software
+  update available notification. (at least, for now).
+* Additional query on server:
+  - get current message text
+* Might be a need for a way to broadcast a message to all users - via a file
+  placed on the server. This would be checked during update checking, and if
+  changed, prompted for display with a 'don't show this again' flag, which is
+  cleared when the message changes.
+* 'clear DSTA flag when the message changes' - extract this to a pattern of
+  'DSTA clear condition evaluator'
+* Don't show any message if there is no message on the server
+x overengineering.......
+* Messages may need to be keyed
+* Message files may need to be related to a particular version of the software
+  or global
+* Cache the message file
+* How do we know when to clear out the server message file? When everyone's
+  read it? (how do we know that?)
+* Is this really needed? Can't it be covered by the software update / change
+  log? If there's a reason to communicate with the users, it'll be because
+  there's new functionality, or, horrors, a bug that can't wait 'til the next
+  release (so we'd branch, and produce a patch release)

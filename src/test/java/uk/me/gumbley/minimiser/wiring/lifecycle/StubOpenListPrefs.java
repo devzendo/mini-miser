@@ -146,4 +146,17 @@ public final class StubOpenListPrefs implements Prefs {
      */
     public void setActiveTab(final String databaseName, final String tabName) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getCurrentSoftwareVersion() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCurrentSoftwareVersion(final String version) {
+    }
 }

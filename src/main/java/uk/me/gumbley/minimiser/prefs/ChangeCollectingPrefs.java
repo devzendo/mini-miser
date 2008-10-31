@@ -216,4 +216,19 @@ public final class ChangeCollectingPrefs implements Prefs {
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getCurrentSoftwareVersion() {
+        unsupported("getCurrentSoftwareVersion");
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setCurrentSoftwareVersion(final String version) {
+        unsupported("setCurrentSoftwareVersion");
+    }
 }
