@@ -39,6 +39,7 @@ public final class DefaultPrefsImpl implements Prefs {
     private static final String SECTION_VERSIONS = "versions";
     private static final String CURRENT_SOFTWARE_VERSION = "application";
     
+    private static final String SECTION_DONT_SHOW_THIS_AGAIN = "dsta";
 
     /**
      * Create a Prefs object backed by a file
@@ -216,5 +217,33 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void setCurrentSoftwareVersion(final String version) {
         iniFile.setValue(SECTION_VERSIONS, CURRENT_SOFTWARE_VERSION, version);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean dontShowThisAgain(final String messageId) {
+        return iniFile.getBooleanValue(SECTION_DONT_SHOW_THIS_AGAIN, messageId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDontShowThisAgain(final String messageId) {
+        iniFile.setBooleanValue(SECTION_DONT_SHOW_THIS_AGAIN, messageId, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearDontShowThisAgain(final String messageId) {
+        iniFile.setBooleanValue(SECTION_DONT_SHOW_THIS_AGAIN, messageId, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearAllDontShowThisAgainFlags() {
+        iniFile.removeSection(SECTION_DONT_SHOW_THIS_AGAIN);
     }
 }

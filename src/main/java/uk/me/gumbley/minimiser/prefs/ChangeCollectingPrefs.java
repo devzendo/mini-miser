@@ -231,4 +231,33 @@ public final class ChangeCollectingPrefs implements Prefs {
     public void setCurrentSoftwareVersion(final String version) {
         unsupported("setCurrentSoftwareVersion");
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearAllDontShowThisAgainFlags() {
+        unsupported("clearAllDontShowThisAgainFlags");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void clearDontShowThisAgain(final String messageId) {
+        unsupported("clearDontShowThisAgain");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean dontShowThisAgain(final String messageId) {
+        unsupported("dontShowThisAgain");
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDontShowThisAgain(final String messageId) {
+        unsupported("setDontShowThisAgain");
+    }
 }

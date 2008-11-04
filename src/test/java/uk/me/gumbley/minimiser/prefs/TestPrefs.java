@@ -220,9 +220,34 @@ public final class TestPrefs extends LoggingTestCase {
      * 
      */
     @Test
-    public void softwareVersionIsStoredAdnRetrieved() {
+    public void softwareVersionIsStoredAndRetrieved() {
         Assert.assertNull(prefs.getCurrentSoftwareVersion());
         prefs.setCurrentSoftwareVersion("1.1.2");
         Assert.assertEquals("1.1.2", prefs.getCurrentSoftwareVersion());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void dontShowThisAgainFlagCanBeSetAndCleared() {
+        final String messageId = "foo";
+        Assert.assertFalse(prefs.dontShowThisAgain(messageId));
+        
+        prefs.setDontShowThisAgain(messageId);
+        
+        Assert.assertTrue(prefs.dontShowThisAgain(messageId));
+        
+        prefs.clearDontShowThisAgain(messageId);
+        
+        Assert.assertFalse(prefs.dontShowThisAgain(messageId));
+        
+        prefs.setDontShowThisAgain(messageId);
+
+        Assert.assertTrue(prefs.dontShowThisAgain(messageId));
+
+        prefs.clearAllDontShowThisAgainFlags();
+
+        Assert.assertFalse(prefs.dontShowThisAgain(messageId));
     }
 }

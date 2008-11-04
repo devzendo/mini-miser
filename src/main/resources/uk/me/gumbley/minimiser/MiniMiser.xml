@@ -39,6 +39,11 @@
 		<constructor-arg ref="mainFrame" />	
 	</bean>
 
+	<bean id="dstaMessageFactory" class="uk.me.gumbley.minimiser.gui.dialog.dstamessage.DefaultDSTAMessageFactoryImpl">
+		<constructor-arg ref="prefs" />	
+		<constructor-arg ref="mainFrame" />	
+	</bean>
+
     <!-- tab factory and tab definitions -->
     <bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabfactory.DefaultTabFactoryImpl">
 		<constructor-arg ref="springLoader" />
@@ -89,6 +94,7 @@
 			<list>
 			    <value>tabEventListenerLifecycle</value>
 			    <value>viewMenuInitialiserLifecycle</value>
+			    <value>upgradeEventListenerLifecycle</value>
 			    <value>databaseEventListenerLifecycle</value>
 				<value>databaseOpenerLifecycle</value>
 				<value>databaseCloserLifecycle</value>
@@ -106,6 +112,10 @@
 	<bean id="viewMenuInitialiserLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.ViewMenuInitialiserLifecycle">
 		<constructor-arg ref="prefs" />	
 		<constructor-arg ref="menu" />	
+	</bean>
+	
+	<bean id="upgradeEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
+		<constructor-arg ref="upgradeEventListenerManager" />
 	</bean>
 	
 	<bean id="tabEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.TabEventListenerLifecycle">
@@ -136,6 +146,7 @@
 	<bean id="delayedExecutorFlushLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DelayedExecutorFlushLifecycle">
 		<constructor-arg ref="delayedExecutor" />	
 	</bean>
+
 	
 	<!-- models, other singletons and utilities -->
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" />
@@ -143,6 +154,7 @@
 	<bean id="databaseDescriptor" class="uk.me.gumbley.minimiser.openlist.DatabaseDescriptorFactory" />
 	
 	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
+
 
     <!-- - - database event listeners - - -->
 	<bean id="databaseEventListenerManager" class="uk.me.gumbley.minimiser.openlist.DatabaseEventListenerManager">
@@ -187,7 +199,29 @@
 		</property>
 	</bean>
 
+
+	<!-- upgrade / fresh install listeners -->
+	<bean id="upgradeEventListenerManager" class="uk.me.gumbley.minimiser.upgradedetector.UpgradeEventListenerManager">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="upgradeDetector" />
+		<constructor-arg ref="upgradeEventListenerList" />	
+	</bean>
+
+	<bean id="upgradeDetector" class="uk.me.gumbley.minimiser.upgradedetector.UpgradeDetector">
+		<constructor-arg ref="prefs" />
+	</bean>
 	
+	<bean id="upgradeEventListenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>prefsInitialisingFreshInstallListener</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="prefsInitialisingFreshInstallListener" class="uk.me.gumbley.minimiser.upgradedetector.PrefsInitialisingFreshInstallListener">
+		<constructor-arg ref="prefs" />
+	</bean>
 
 	<!-- miscellaneous -->	
 	

@@ -104,7 +104,7 @@ Don't Display This Message Again Dialog
     should be extracted to the framework, with a series of configurable
     listeners
   * the 'broadcast messages' use case has another criteria for clearing the
-    DSTA flag - should extrcat the  'DSTA clear condition evaluator' to an
+    DSTA flag - should extract the  'DSTA clear condition evaluator' to an
     interface/pattern.
     
 Message Queue

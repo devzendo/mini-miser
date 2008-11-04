@@ -10,10 +10,7 @@ BUGS:
   but haven't reproduced it since.
 
 CURRENT TASKS:
-* software version changed listeners
-* done the upgrade detector
-* done the listener manager like DatabaseEventListenerManager
-* need a lifecycle like DatabaseEventListenerLifecycle
+* DSTA helper
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 
@@ -21,7 +18,6 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
   the flag to ignore this keyed message being stored in prefs.
 * use this when the SQL view is first opened - this is a developer-only
   feature.
-* use this on first startup, as an introduction. 
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
   need ~/Library/Application Support/MiniMiser on Mac OS X
