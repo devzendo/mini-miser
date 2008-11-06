@@ -139,6 +139,10 @@
 		<constructor-arg ref="cursorManager" />
 	</bean>
 	
+	<bean id="menuALHelpWelcome" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpWelcomeActionListener" />
+	
+	<bean id="menuALHelpWhatsNew" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpWhatsNewActionListener" />
+	
 	<!-- miscellaneous -->
 	
 </beans>

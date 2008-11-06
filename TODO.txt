@@ -10,14 +10,13 @@ BUGS:
   but haven't reproduced it since.
 
 CURRENT TASKS:
-* DSTA helper
-
+* need a final lifecycle tasks executing queue, and the welcome message
+  displaying upgrade listener pushes the display of the welcome message
+  onto it - so if you have an encrypted db in your open list, you're
+  prompted for the password, THEN the welcome message appears (triggerable
+  if you hack the prefs application version to look like an upgrade).
+  
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
-
-* need a message box with an option to never display this message again, with
-  the flag to ignore this keyed message being stored in prefs.
-* use this when the SQL view is first opened - this is a developer-only
-  feature.
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
   need ~/Library/Application Support/MiniMiser on Mac OS X
@@ -29,6 +28,8 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * how are tabs that are initially hidden set hidden in prefs? there needs to be
   a set of default prefs that are stored on prefs creation. perhaps a prefs
   initialiser object that gets triggered to populate initial prefs on creation.
+
+* Message queue
 
 * Update available checker.
 
@@ -166,4 +167,6 @@ LATER RELEASES:
 * change the frame title / tab set depending on the selected database - when
   opening many databases on startup, the display "thrashes". It should not do
   this until the last active database is switched to.
+
+* add 'clear all DSTA flags' option to tools->options
   

@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui.dialog.dstamessage;
 
 import java.awt.Component;
 import java.awt.Frame;
+import javax.swing.SwingUtilities;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -32,6 +33,8 @@ public final class DefaultDSTAMessageFactoryImpl extends AbstractDSTAMessageFact
     protected DSTAMessage reallyShowMessage(
             final DSTAMessageId messageId,
             final String string) {
+        assert SwingUtilities.isEventDispatchThread();
+        
         return new DefaultDSTAMessageImpl(this, frame, messageId, string);
     }
 

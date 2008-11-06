@@ -38,6 +38,8 @@ public final class MenuBuilder {
         loadAndWire(MenuIdentifier.ToolsOptions);
 
         loadAndWire(MenuIdentifier.HelpAbout);
+        loadAndWire(MenuIdentifier.HelpWelcome);
+        loadAndWire(MenuIdentifier.HelpWhatsNew);
     }
 
     private void loadAndWire(final MenuIdentifier menuIdentifier) {

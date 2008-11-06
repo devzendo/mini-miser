@@ -11,4 +11,9 @@ public enum DSTAMessageId {
      *  Used by unit tests
      */
     TEST,
+    
+    /**
+     * Displayed to warn of the dangers of the SQL tab
+     */
+    SQL_TAB_INTRO,
 }

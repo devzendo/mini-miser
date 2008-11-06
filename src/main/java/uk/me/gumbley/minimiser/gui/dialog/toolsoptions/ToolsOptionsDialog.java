@@ -25,7 +25,6 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
      */
     private static final long serialVersionUID = 1685823419193743569L;
     private final Prefs prefs;
-//    private JTabbedPane tabbedPane;
     private final ToolsOptionsTabFactory toolsOptionsTabFactory;
 
     private ChangeCollectingPrefs ccp;

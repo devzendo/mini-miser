@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
 import javax.swing.JMenu;
+import javax.swing.JSeparator;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 
@@ -26,7 +27,9 @@ public final class HelpMenu extends AbstractMenuGroup {
         helpmenu = new JMenu("Help");
         helpmenu.setMnemonic('H');
         
-        //createMenuItem(MenuIdentifier.HelpWelcome, "Welcome", 'W', menu);
+        createMenuItem(MenuIdentifier.HelpWelcome, "Welcome to " + AppName.getAppName(), 'W', helpmenu);
+        createMenuItem(MenuIdentifier.HelpWhatsNew, "What's new in this release?", 'N', helpmenu);
+        helpmenu.add(new JSeparator());
         //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
         createMenuItem(MenuIdentifier.HelpAbout, "About " + AppName.getAppName(), 'A', helpmenu);
     }

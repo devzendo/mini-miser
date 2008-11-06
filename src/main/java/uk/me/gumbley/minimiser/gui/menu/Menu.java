@@ -58,6 +58,10 @@ public interface Menu {
         /**
          * 
          */
+        HelpWhatsNew,
+        /**
+         * 
+         */
         HelpAbout,
         /**
          * 

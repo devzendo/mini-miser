@@ -2,6 +2,8 @@ package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
 import java.awt.Component;
 import uk.me.gumbley.minimiser.gui.CursorManager;
+import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageHelper;
+import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 
@@ -41,6 +43,13 @@ public final class SQLTab implements Tab {
      */
     public void initComponent() {
         mainPanel = new SQLTabPanel(databaseDescriptor, cursorManager);
+        
+        DSTAMessageHelper.possiblyShowMessage(DSTAMessageId.SQL_TAB_INTRO, 
+            "The SQL view is intended to aid developers in diagnosing\n"
+            + "problems with databases. For further information on its use,\n"
+            + "please consult the Technical Guide.\n\n"
+            + "The SQL view is not intended for day-to-day use.\n"
+        );
     }
 
     /**
