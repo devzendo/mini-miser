@@ -49,8 +49,9 @@ public final class WelcomeDialogHelper {
     
     private static void showDialog(final boolean isWelcome) {
         assert SwingUtilities.isEventDispatchThread();
-        final WelcomeDialog welcome = new WelcomeDialog(parentFrame, cursorManager, isWelcome);
-        welcome.pack();
-        welcome.setVisible(true);
+        final WelcomeDialog dialog = new WelcomeDialog(parentFrame, cursorManager, isWelcome);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parentFrame);
+        dialog.setVisible(true);
     }
 }

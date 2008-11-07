@@ -113,22 +113,55 @@ Message Queue
   and should only be used in urgent cases where ettiquete must be put aside
   temporarily by the importance of the message
 * need an unobtrusive indicator - perhaps in the status bar - for indicating
-  to the user that there are message waiting.
+  to the user that there are messages waiting.
 * the indicator needs to gently remind the user that there are messages, but
   needs to be invisible when there are no messages - users don't tend to
   notice slight changes (greyed out to gently pulsing), but they'd notice
-  not present to present and gently pulsing.
+  not present to present-and-gently-pulsing.
 * if the indicator is present, and has been pulsing for a while, it should get
   a little more insistent, but never pop up nag dialogs. GentleApps do not
   do this :-) It should never become annoying.
+* the indicator should start indicating at the end of startup
 * need to separate:
   - determining that a message should be queued (might need to use the 'don't
-    show this message again' flags)
+    show this message again' flags) - e.g. user has been told that vx.y.z is
+    available once, via the message queue, and has elected not to see such
+    messages again (for this new version?)
   - display of the message list, if more than one
-  - display of the message body - there could be simple messages
+  - display of the message body - there could be:
+    - simple text informational messages
+    - complex informational messages (e.g. HTML/images?).
+    - messages could have some control UI - 
+      e.g.
+         1. 'a standing order (council tax) is overdue (was due on 07/11/2008)
+             - add to your 'payments' account?' YES/NO
+         2. 'update is available' SHOW CHANGES / SHOW COMPLETE CHANGES
+    - DSTA messages (factor out the DSTA dialog's panel)
+      (will there be a UI mismatch between the DSTA checkbox and the message
+       queue UI? What happens to the message when the user says
+       'Don't show this again'? How does the message disappear?)
+    ... probably each message would just be displyed abstractly via a
+        Component - if the message provider provides a control UI, then it's
+        up to the provider to handle any logic necessary (e.g. a panel to
+        show the DSTA messgae and checkbox, or holding complex
+        schedule persistence logic, etc.)
+        There could be 'standard' Components for displaying simple text
+        and complex HTML/image message content.
+* how are messages removed from the list once read? (see point about DSTA
+  checkbox above)        
+* message structure:
+  - subject
+  - importance
+  - body
+* typical messages:
+  - an upgrade is available - see Software Update Available Notification below
+  - schedule messages (see standing order example above)
+  - assistance - 'did you know there's an easier way to enter split
+    transactions?...' (debatable UI value - they annoy expert users "I see you
+    are writing a letter!")
 * should such messages be persistent? probably not, if they were urgent enough
   they'd be displayed immediately. non-urgent messages don't require a special
-  persistence mechanism
+  persistence mechanism; they're not important enough.
 
 Software Update Available Notification
 --------------------------------------
@@ -143,7 +176,7 @@ Software Update Available Notification
   update checker should publish its progress via the progress reporter, and jump
   straight to the 'update is available / show changes / show complete changes'
   dialog (below)
-* Need a pricacy policy message dialog.  
+* Need a privacy policy message dialog.  
 * Need to schedule an update check shortly after each startup. If the update
   check is done automatically, it should be unobtrusive.
 * Does a HTTP connection to my server

@@ -10,6 +10,7 @@ import org.apache.log4j.BasicConfigurator;
  */
 public abstract class LoggingTestCase {
     static {
+        BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure();
     }
 }

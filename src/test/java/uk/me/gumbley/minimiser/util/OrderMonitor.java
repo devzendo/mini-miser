@@ -39,6 +39,7 @@ public final class OrderMonitor {
      */
     public List<String> getOrdering() {
         synchronized (lock) {
+            LOGGER.debug("The ordering list contains " + ordering.size() + " entries");
             return new ArrayList<String>(ordering);
         }
     }

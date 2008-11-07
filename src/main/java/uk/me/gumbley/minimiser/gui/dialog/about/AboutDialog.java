@@ -12,8 +12,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -21,9 +19,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
-import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
+import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.version.AppVersion;
@@ -36,7 +34,6 @@ import uk.me.gumbley.minimiser.version.AppVersion;
 public final class AboutDialog extends JDialog implements 
         PropertyChangeListener {
     private static final long serialVersionUID = -5494127720196381487L;
-    private static final Logger LOGGER = Logger.getLogger(AboutDialog.class);
     private static final int TEXTPANE_WIDTH = 550; // to get the GPL to fit!
     private static final int TEXTPANE_HEIGHT = 350;
     private JOptionPane optionPane;
@@ -144,7 +141,7 @@ public final class AboutDialog extends JDialog implements
             public Object construct() {
                 assert (!EventQueue.isDispatchThread());
                 final StringBuilder text = new StringBuilder();
-                readResource(text, resourceName);
+                ResourceLoader.readResource(text, resourceName);
                 return text.toString();
             }
             
@@ -169,28 +166,6 @@ public final class AboutDialog extends JDialog implements
             }
         };
         workers.add(worker);
-    }
-
-    private void readResource(final StringBuilder store, final String resourceName) {
-        final InputStream resourceAsStream = Thread.currentThread().
-            getContextClassLoader().
-            getResourceAsStream(resourceName);
-        final int bufsize = 16384;
-        final byte[] buf = new byte[bufsize];
-        int nread;
-        try {
-            while ((nread = resourceAsStream.read(buf, 0, bufsize)) != -1) {
-                final String block = new String(buf, 0, nread);
-                store.append(block);
-            }
-        } catch (final IOException e) {
-            LOGGER.warn("Could not read resource '" + resourceName + "': " + e.getMessage());
-        } finally {
-            try {
-                resourceAsStream.close();
-            } catch (final IOException ioe) {
-            }
-        }
     }
 
     /**

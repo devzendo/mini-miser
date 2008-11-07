@@ -10,12 +10,9 @@ BUGS:
   but haven't reproduced it since.
 
 CURRENT TASKS:
-* need a final lifecycle tasks executing queue, and the welcome message
-  displaying upgrade listener pushes the display of the welcome message
-  onto it - so if you have an encrypted db in your open list, you're
-  prompted for the password, THEN the welcome message appears (triggerable
-  if you hack the prefs application version to look like an upgrade).
-  
+* Message Queue
+* Factor out general HTML-dialog-from-resource code?
+
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
@@ -25,14 +22,11 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * if 'SQL view available' flag gets disabled in prefs, close any currently-
   open SQL views (with a notification)
 
-* how are tabs that are initially hidden set hidden in prefs? there needs to be
-  a set of default prefs that are stored on prefs creation. perhaps a prefs
-  initialiser object that gets triggered to populate initial prefs on creation.
-
 * Message queue
-
+* Privacy policy dialog
 * Update available checker.
 
+* Help browser
 
 CROSS-PLATFORM UI ISSUES:
 * the background to the tabs is the same colour as the tabs, making the tabs
@@ -99,6 +93,9 @@ DOCUMENTATION:
   * choose licence compatible with all components
 
 * docs to write:
+  * privacy policy
+  * welcome text
+  * changelog text
   * technical doc:
     * database schema
     * database schema model with Jude, versioned as of 0.1

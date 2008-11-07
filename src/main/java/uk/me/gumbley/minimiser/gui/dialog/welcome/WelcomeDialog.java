@@ -9,8 +9,6 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -20,8 +18,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
+import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
@@ -38,7 +36,6 @@ import uk.me.gumbley.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
 public final class WelcomeDialog extends AbstractSnailDialog {
     private static final String WELCOME_HTML = "welcome.html";
     private static final String CHANGELOG_HTML = "changelog.html";
-    private static final Logger LOGGER = Logger.getLogger(WelcomeDialog.class);
     private static final String BLANK_PANEL_NAME = "*special*blank*panel*";
     private static final int TEXTPANE_WIDTH = 550;
     private static final int TEXTPANE_HEIGHT = 350;
@@ -129,29 +126,6 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         addSwingWorker(addOKCancelEnabler());
     }
     
-    private void readResource(final StringBuilder store, final String resourceName) {
-        LOGGER.info("Loading '" + resourceName + "'");
-        final InputStream resourceAsStream = Thread.currentThread().
-            getContextClassLoader().
-            getResourceAsStream(resourceName);
-        final int bufsize = 16384;
-        final byte[] buf = new byte[bufsize];
-        int nread;
-        try {
-            while ((nread = resourceAsStream.read(buf, 0, bufsize)) != -1) {
-                final String block = new String(buf, 0, nread);
-                store.append(block);
-            }
-        } catch (final IOException e) {
-            LOGGER.warn("Could not read resource '" + resourceName + "': " + e.getMessage());
-        } finally {
-            try {
-                resourceAsStream.close();
-            } catch (final IOException ioe) {
-            }
-        }
-    }
-
     private final class ResourceLoadingSwingWorker extends SwingWorker {
         private final String resource;
 
@@ -162,7 +136,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         public Object construct() {
             assert (!EventQueue.isDispatchThread());
             final StringBuilder text = new StringBuilder();
-            readResource(text, resource);
+            ResourceLoader.readResource(text, resource);
             return text.toString();
         }
         

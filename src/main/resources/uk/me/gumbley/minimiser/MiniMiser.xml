@@ -8,31 +8,31 @@
 	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
 
 	<!-- gui layer -->
-	<bean id="mainFrame" class="uk.me.gumbley.minimiser.gui.MainFrameFactory" lazy-init="true" />
+	<bean id="mainFrame" class="uk.me.gumbley.minimiser.gui.MainFrameFactory" />
 
 	<bean id="mainFrameTitle" class="uk.me.gumbley.minimiser.gui.MainFrameTitleFactory" />
 
-	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" lazy-init="true" />
+	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" />
 
-	<bean id="windowGeometryStore" class="uk.me.gumbley.minimiser.gui.WindowGeometryStore" lazy-init="true" >
+	<bean id="windowGeometryStore" class="uk.me.gumbley.minimiser.gui.WindowGeometryStore" >
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="opener" class="uk.me.gumbley.minimiser.opener.DefaultOpenerImpl" lazy-init="true" >
+	<bean id="opener" class="uk.me.gumbley.minimiser.opener.DefaultOpenerImpl" >
 		<constructor-arg ref="accessFactory" />
 	</bean>
 	
-	<bean id="openerAdapterFactory" class="uk.me.gumbley.minimiser.opener.DefaultOpenerAdapterFactoryImpl" lazy-init="true" >
+	<bean id="openerAdapterFactory" class="uk.me.gumbley.minimiser.opener.DefaultOpenerAdapterFactoryImpl" >
 		<constructor-arg ref="mainFrame" />	
 		<constructor-arg ref="cursorManager" />
 		<constructor-arg ref="statusBar" />
 	</bean>
 	
-	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" lazy-init="true" >
+	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" >
         <constructor-arg ref="delayedExecutor" />
     </bean>
 
-	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" lazy-init="true" >
+	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" >
 	</bean>
 
 	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.problem.DefaultProblemReporterImpl">
@@ -102,6 +102,7 @@
 				<value>databaseCloserLifecycle</value>
 				<value>mainFrameGeometrySaverLifecycle</value>
 				<value>delayedExecutorFlushLifecycle</value>
+				<value>startupQueueLifecycle</value> <!-- should always be last -->
 			</list>
 		</property>
 	</bean>
@@ -157,6 +158,9 @@
 		<constructor-arg ref="delayedExecutor" />	
 	</bean>
 
+	<bean id="startupQueueLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.StartupQueueLifecycle">
+		<constructor-arg ref="startupQueue" />	
+	</bean>
 	
 	<!-- models, other singletons and utilities -->
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" />
@@ -182,13 +186,13 @@
 		</property>
 	</bean>
 
-	<bean id="tabPaneCreatingDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneCreatingDatabaseEventListener" lazy-init="true" >
+	<bean id="tabPaneCreatingDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneCreatingDatabaseEventListener" >
 		<constructor-arg ref="tabListPrefs" />
 		<constructor-arg ref="tabFactory" />
 		<constructor-arg ref="openTabList" />
 	</bean>
 	
-	<bean id="tabPaneManagerDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneManagerDatabaseEventListener" lazy-init="true" >
+	<bean id="tabPaneManagerDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneManagerDatabaseEventListener" >
 		<constructor-arg ref="tabPaneManager" />
 	</bean>
 	
@@ -234,23 +238,28 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="welcomeMessageDisplayingListener" class="uk.me.gumbley.minimiser.upgradedetector.WelcomeMessageDisplayingListener" />
+	<bean id="welcomeMessageDisplayingListener" class="uk.me.gumbley.minimiser.upgradedetector.WelcomeMessageDisplayingListener">
+		<constructor-arg ref="startupQueue" />
+	</bean>
 
 	<!-- miscellaneous -->	
 	
-	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl" lazy-init="true">
+	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl">
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" lazy-init="true" />
+	<bean id="prefsLocation" class="uk.me.gumbley.minimiser.prefs.PrefsLocation" />
 
 	<bean id="tabListPrefs" class="uk.me.gumbley.minimiser.gui.tabpanemanager.TabListPrefs">
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />
+	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" />
 
-	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" lazy-init="true" />
+	<!-- threading -->
+	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" />
 
-	<bean id="workerPool" class="uk.me.gumbley.minimiser.util.WorkerPool" lazy-init="true" />
+	<bean id="workerPool" class="uk.me.gumbley.minimiser.util.WorkerPool" />
+
+	<bean id="startupQueue" class="uk.me.gumbley.minimiser.startupqueue.StartupQueue" />
 </beans>
