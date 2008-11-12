@@ -57,4 +57,12 @@ public final class HeadlessStatusBar extends AbstractStatusBar {
     public String getDisplayedMessage() {
         return displayedMessage;
     }
+
+    /**
+     * Is the message queue indicator enabled?
+     * @return true iff there are queued messages
+     */
+    public boolean isMessageQueueIndicatorEnabled() {
+        return getNumberOfQueuedMessages() > 0;
+    }
 }

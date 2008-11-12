@@ -86,4 +86,23 @@ public final class TestStatusBar {
         Assert.assertEquals("", headlessStatusBar.getDisplayedMessage());
     }
 
+    /**
+     * 
+     */
+    @Test
+    public void messageQueueIndicatorDisabledWithNoMessages() {
+        Assert.assertEquals(0, headlessStatusBar.getNumberOfQueuedMessages());
+        Assert.assertFalse(headlessStatusBar.isMessageQueueIndicatorEnabled());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void messageQueueIndicatorEnabledWithMessages() {
+        headlessStatusBar.setNumberOfQueuedMessages(1);
+        Assert.assertEquals(1, headlessStatusBar.getNumberOfQueuedMessages());
+        Assert.assertTrue(headlessStatusBar.isMessageQueueIndicatorEnabled());
+    }
+
 }

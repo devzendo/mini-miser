@@ -14,6 +14,7 @@ public abstract class AbstractStatusBar implements StatusBar {
     private String permanentMessage;
     private String tempMessage;
     private DelayedExecutor delayedExecutor;
+    private int numberOfQueuedMessages;
 
     /**
      * Abstract base class constructor 
@@ -22,6 +23,7 @@ public abstract class AbstractStatusBar implements StatusBar {
     public AbstractStatusBar(final DelayedExecutor exec) {
         delayedExecutor = exec;
         lock = new Object();
+        numberOfQueuedMessages = 0;
         synchronized (lock) {
             tempMessage = "";
             permanentMessage = "";
@@ -88,5 +90,21 @@ public abstract class AbstractStatusBar implements StatusBar {
      */
     private void update() {
         internalSetMessageTextNow(getDisplayMessage());
+    }
+
+    /**
+     * Obtain the number of queued messages
+     * @return the number of queued messages
+     */
+    public final int getNumberOfQueuedMessages() {
+        return numberOfQueuedMessages;
+    }
+
+    /**
+     * Sets the number of queued messages
+     * @param number the number of queued messages
+     */
+    public void setNumberOfQueuedMessages(final int number) {
+        numberOfQueuedMessages = number;
     }
 }

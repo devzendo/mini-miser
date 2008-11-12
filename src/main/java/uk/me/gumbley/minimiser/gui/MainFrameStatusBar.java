@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
+import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 
 /**
@@ -24,31 +26,38 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
 
     private JLabel label;
 
-    private JPanel west;
+    private JPanel statusBarPanel;
+    private JButton messageQueueButton;
 
     /**
      * @param exec the DelayedExecutor
      */
     public MainFrameStatusBar(final DelayedExecutor exec) {
         super(exec);
-        west = new JPanel();
-        west.setLayout(new BorderLayout());
-        west.setBorder(BorderFactory.createEtchedBorder());
-        final JPanel panel = new JPanel();
+        statusBarPanel = new JPanel();
+        statusBarPanel.setLayout(new BorderLayout());
+        statusBarPanel.setBorder(BorderFactory.createEtchedBorder());
+        
+        final JPanel progressBarPanel = new JPanel();
         progressBar = new JProgressBar(SwingConstants.HORIZONTAL);
         progressBar.setPreferredSize(new Dimension(150, 16));
-        panel.setLayout(new FlowLayout());
-        panel.add(progressBar);
+        progressBarPanel.setLayout(new FlowLayout());
+        progressBarPanel.add(progressBar);
         label = new JLabel(" ");
-        panel.add(label);
-        west.add(panel, BorderLayout.WEST);
+        progressBarPanel.add(label);
+        statusBarPanel.add(progressBarPanel, BorderLayout.WEST);
+        
+        messageQueueButton = new JButton("Messages");
+        messageQueueButton.setPreferredSize(new Dimension(150, 16));
+        messageQueueButton.setVisible(false);
+        statusBarPanel.add(messageQueueButton, BorderLayout.EAST);
     }
 
     /**
      * @return the panel for adding to the GUI
      */
     public JPanel getPanel() {
-        return west;
+        return statusBarPanel;
     }
 
     /**
@@ -104,6 +113,24 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 progressBar.setValue(step);
+            }
+        });
+    }
+    
+    /**
+     * Sets the number of queued messages
+     * @param number the number of queued messages
+     */
+    public void setNumberOfQueuedMessages(final int number) {
+        super.setNumberOfQueuedMessages(number);
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                if (number == 0) {
+                    messageQueueButton.setVisible(false);
+                } else {
+                    messageQueueButton.setText("" + number + " " + StringUtils.pluralise("Message", number));
+                    messageQueueButton.setVisible(true);
+                }
             }
         });
     }

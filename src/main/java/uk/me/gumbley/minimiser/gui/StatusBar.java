@@ -57,4 +57,10 @@ public interface StatusBar {
      * @param encrypted true of encrypted, false if plain
      */
     void setEncryptedIndicator(boolean encrypted);
+    
+    /**
+     * Obtain the number of queued messages
+     * @return the number of queued messages
+     */
+    public int getNumberOfQueuedMessages();
 }
