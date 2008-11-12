@@ -21,7 +21,7 @@ CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 
 * if 'SQL view available' flag gets disabled in prefs, close any currently-
   open SQL views (with a notification)
-
+* pressing return in sql tab gives a message - should just be ignored (Mac)
 * Message queue
 * Privacy policy dialog
 * Update available checker.
