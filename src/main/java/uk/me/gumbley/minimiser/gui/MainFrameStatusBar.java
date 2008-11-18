@@ -4,15 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
+import uk.me.gumbley.minimiser.util.Sleeper;
 
 /**
  * A StatusBar on the bottom of the Main Frame
@@ -27,7 +26,7 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
     private JLabel label;
 
     private JPanel statusBarPanel;
-    private JButton messageQueueButton;
+    private MessagesButton messageQueueButton;
 
     /**
      * @param exec the DelayedExecutor
@@ -47,7 +46,7 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
         progressBarPanel.add(label);
         statusBarPanel.add(progressBarPanel, BorderLayout.WEST);
         
-        messageQueueButton = new JButton("Messages");
+        messageQueueButton = new MessagesButton(new Sleeper()); // TODO inject this
         messageQueueButton.setPreferredSize(new Dimension(150, 16));
         messageQueueButton.setVisible(false);
         statusBarPanel.add(messageQueueButton, BorderLayout.EAST);
@@ -123,15 +122,6 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
      */
     public void setNumberOfQueuedMessages(final int number) {
         super.setNumberOfQueuedMessages(number);
-        GUIUtils.runOnEventThread(new Runnable() {
-            public void run() {
-                if (number == 0) {
-                    messageQueueButton.setVisible(false);
-                } else {
-                    messageQueueButton.setText("" + number + " " + StringUtils.pluralise("Message", number));
-                    messageQueueButton.setVisible(true);
-                }
-            }
-        });
+        messageQueueButton.setNumberOfMessages(number);
     }
 }

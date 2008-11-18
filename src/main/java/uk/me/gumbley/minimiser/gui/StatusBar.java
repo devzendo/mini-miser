@@ -62,5 +62,5 @@ public interface StatusBar {
      * Obtain the number of queued messages
      * @return the number of queued messages
      */
-    public int getNumberOfQueuedMessages();
+    int getNumberOfQueuedMessages();
 }
