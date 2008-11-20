@@ -9,7 +9,7 @@ import uk.me.gumbley.minimiser.util.Sleeper;
 /**
  * The Message Button is invisible when there are no messages, and pulses
  * when there are messages added to the Message Queue (and it's notified of
- * this).
+ * this). It's also invisible when the message viewer is showing.
  * @author matt
  *
  */
@@ -20,6 +20,7 @@ public final class MessagesButton extends JButton implements Runnable {
     private final Sleeper sleeper;
     private final Object notification;
     private final Color normalBackground;
+    private boolean isMessageViewerShowing;
 
     /**
      * Construct the MessagesButton
@@ -45,7 +46,7 @@ public final class MessagesButton extends JButton implements Runnable {
     }
 
     private void refreshCurrentState() {
-        setVisible(numberOfMessages > 0);
+        setVisible(numberOfMessages > 0 && !isMessageViewerShowing);
         setTextToNumberOfMessages();
         synchronized (notification) {
             notification.notify();
@@ -70,6 +71,17 @@ public final class MessagesButton extends JButton implements Runnable {
      */
     public void setNumberOfMessages(final int msgs) {
         numberOfMessages = msgs;
+        refreshCurrentState();
+    }
+
+    /**
+     * Set and cleared when the message queue viewer window is shown and closed,
+     * this is used to prevent the message queue indicator from displaying
+     * when the viewer is present. 
+     * @param showing true iff the viewer is showing.
+     */
+    public void setMessageQueueViewerShowing(final boolean showing) {
+        isMessageViewerShowing = showing;
         refreshCurrentState();
     }
 

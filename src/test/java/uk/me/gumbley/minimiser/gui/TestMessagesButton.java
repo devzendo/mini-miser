@@ -15,18 +15,24 @@ import uk.me.gumbley.minimiser.util.Sleeper;
  * @author matt
  *
  */
-public class TestMessagesButton extends LoggingTestCase {
+public final class TestMessagesButton extends LoggingTestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestMessagesButton.class);
     private MessagesButton button;
     private Sleeper sleeper; 
         
+    /**
+     * 
+     */
     @Before
     public void getPrerequisites() {
         sleeper = new Sleeper(10);
         button = new MessagesButton(sleeper);
     }
     
+    /**
+     * 
+     */
     @Test
     public void checkInitialState() {
         Assert.assertFalse(button.isVisible());
@@ -34,6 +40,9 @@ public class TestMessagesButton extends LoggingTestCase {
         Assert.assertEquals("0 Messages", button.getText());
     }
     
+    /**
+     * 
+     */
     @Test
     public void checkVisibleWhenMessageAdded() {
         button.setNumberOfMessages(1);
@@ -47,6 +56,9 @@ public class TestMessagesButton extends LoggingTestCase {
         Assert.assertEquals("2 Messages", button.getText());
     }
 
+    /**
+     * 
+     */
     @Test
     public void checkGoingInvisibleWhenMessagesRemoved() {
         button.setNumberOfMessages(1);
@@ -76,18 +88,27 @@ public class TestMessagesButton extends LoggingTestCase {
             Assert.assertEquals(1, backColours.size()); 
         }
     }
+    /**
+     * 
+     */
     @Test(timeout = 8000)
     public void checkPulsingWhenMessagesPresent() {
         button.setNumberOfMessages(1);
         assertPulsing(true);
     }
     
+    /**
+     * 
+     */
     @Test(timeout = 8000)
     public void checkNotPulsingWhenNoMessagesPresent() {
         button.setNumberOfMessages(0);
         assertPulsing(false);
     }
     
+    /**
+     * 
+     */
     @Test(timeout = 16000)
     public void checkStopsPulsingWhenNoMessagesPresent() {
         button.setNumberOfMessages(1);

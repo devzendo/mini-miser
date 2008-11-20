@@ -6,8 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
-import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
-import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 
 
 /**
@@ -49,6 +47,10 @@ public final class TestMessageQueue extends LoggingTestCase {
         messageQueue.addMessage(null);
     }
     
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
     @Test
     public void addMessageGeneratesEvent() {
         final SimpleMessage message = new SimpleMessage("Subject", "Hello");
@@ -95,6 +97,7 @@ public final class TestMessageQueue extends LoggingTestCase {
     /**
      * 
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void removeMessageGeneratesEvent() {
         final SimpleMessage message = new SimpleMessage("Subject", "Hello");

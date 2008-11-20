@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.gui;
 
+import java.awt.event.ActionListener;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 
 /**
@@ -15,6 +16,7 @@ public abstract class AbstractStatusBar implements StatusBar {
     private String tempMessage;
     private DelayedExecutor delayedExecutor;
     private int numberOfQueuedMessages;
+    private boolean isMessageQueueViewerShowing;
 
     /**
      * Abstract base class constructor 
@@ -107,4 +109,24 @@ public abstract class AbstractStatusBar implements StatusBar {
     public void setNumberOfQueuedMessages(final int number) {
         numberOfQueuedMessages = number;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setMessageQueueViewerShowing(final boolean showing) {
+        isMessageQueueViewerShowing = showing;
+    }
+
+    /**
+     * Is the message queue viewer showing?
+     * @return true iff showing
+     */
+    public final boolean isMessageQueueViewerShowing() {
+        return isMessageQueueViewerShowing;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract void addLaunchMessageQueueActionListener(final ActionListener listener);
 }

@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.gui;
 
+import java.awt.event.ActionListener;
+
 /**
  * A status bar at the bottom of the main frame, for presenting announcements,
  * displaying a progress bar for lengthy operations, and displaying various
@@ -59,8 +61,28 @@ public interface StatusBar {
     void setEncryptedIndicator(boolean encrypted);
     
     /**
+     * Set the number of queued messages.
+     * @param queueSize the number of queued messages
+     */
+    void setNumberOfQueuedMessages(int queueSize);
+    
+    /**
      * Obtain the number of queued messages
      * @return the number of queued messages
      */
     int getNumberOfQueuedMessages();
+
+    /**
+     * Set and cleared when the message queue viewer window is shown and closed,
+     * this is used to prevent the message queue indicator from displaying
+     * when the viewer is present. 
+     * @param showing true iff the viewer is showing.
+     */
+    void setMessageQueueViewerShowing(final boolean showing);
+
+    /**
+     * Add a listener to the message queue indicator button
+     * @param listener the listener
+     */
+    void addLaunchMessageQueueActionListener(final ActionListener listener);
 }

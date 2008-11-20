@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -123,5 +124,22 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
     public void setNumberOfQueuedMessages(final int number) {
         super.setNumberOfQueuedMessages(number);
         messageQueueButton.setNumberOfMessages(number);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setMessageQueueViewerShowing(final boolean showing) {
+        super.setMessageQueueViewerShowing(showing);
+        messageQueueButton.setMessageQueueViewerShowing(showing);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addLaunchMessageQueueActionListener(final ActionListener listener) {
+        messageQueueButton.addActionListener(listener);
+        
     }
 }

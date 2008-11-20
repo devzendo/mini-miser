@@ -9,7 +9,6 @@ import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.gui.dialog.welcome.WelcomeDialog;
@@ -20,8 +19,6 @@ import uk.me.gumbley.minimiser.gui.dialog.welcome.WelcomeDialog;
  *
  */
 public final class DriveWelcome {
-    private static final Logger LOGGER = Logger
-            .getLogger(DriveWelcome.class);
     private DriveWelcome() {
         // nop
     }

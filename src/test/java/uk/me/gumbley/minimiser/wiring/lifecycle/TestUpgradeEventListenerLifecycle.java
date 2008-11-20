@@ -13,7 +13,6 @@ import uk.me.gumbley.minimiser.prefs.TestPrefs;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 import uk.me.gumbley.minimiser.upgradedetector.FreshInstallEvent;
-import uk.me.gumbley.minimiser.upgradedetector.PrefsInitialisingFreshInstallListener;
 import uk.me.gumbley.minimiser.upgradedetector.StubRecordingUpgradeListener;
 import uk.me.gumbley.minimiser.upgradedetector.UpgradeEvent;
 import uk.me.gumbley.minimiser.version.AppVersion;

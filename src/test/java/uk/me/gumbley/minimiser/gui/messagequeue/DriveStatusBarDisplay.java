@@ -1,20 +1,14 @@
 package uk.me.gumbley.minimiser.gui.messagequeue;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -29,8 +23,6 @@ import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueEvent;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueModifiedEvent;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
-import uk.me.gumbley.minimiser.prefs.Prefs;
-import uk.me.gumbley.minimiser.prefs.TestPrefs;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
@@ -80,11 +72,11 @@ public final class DriveStatusBarDisplay {
         final MainFrameStatusBar mainFrameStatusBar = new MainFrameStatusBar(new DelayedExecutor());
         frame.add(mainFrameStatusBar.getPanel(), BorderLayout.SOUTH);
         
-//        mainFrameStatusBar.addLaunchMessageQueueActionListener(new ActionListener() {
-//            public void actionPerformed(final ActionEvent e) {
-//                toggleMessageQueueDisplay();
-//            }
-//        });
+        mainFrameStatusBar.addLaunchMessageQueueActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                toggleMessageQueueDisplay();
+            }
+        });
 
         
         frame.pack();
@@ -103,6 +95,9 @@ public final class DriveStatusBarDisplay {
         });
     }
 
+    /**
+     * 
+     */
     protected void toggleMessageQueueDisplay() {
         
            
@@ -121,8 +116,8 @@ public final class DriveStatusBarDisplay {
         } else {
             importance = Message.Importance.LOW;
         }
-        String subject = "Message # " + messageNumber++;;
-        String content = "Here is a sample message\nIt's a multiline message\n"
+        final String subject = "Message # " + messageNumber++;
+        final String content = "Here is a sample message\nIt's a multiline message\n"
             + "But otherwise, rather boring...";
         messageQueue.addMessage(new SimpleMessage(subject, content, importance));
     }
