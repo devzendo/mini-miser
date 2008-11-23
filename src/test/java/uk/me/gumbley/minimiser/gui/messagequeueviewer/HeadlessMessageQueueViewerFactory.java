@@ -15,7 +15,7 @@ public final class HeadlessMessageQueueViewerFactory extends
      * @param bar the status bar
      */
     public HeadlessMessageQueueViewerFactory(final StatusBar bar) {
-        super(bar);
+        super(bar, null, null);
     }
 
     /**

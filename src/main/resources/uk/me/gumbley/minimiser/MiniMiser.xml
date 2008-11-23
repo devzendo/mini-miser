@@ -27,6 +27,11 @@
 		<constructor-arg ref="cursorManager" />
 		<constructor-arg ref="statusBar" />
 	</bean>
+
+	<bean id="statusBarMessageQueueAdapter" class="uk.me.gumbley.minimiser.gui.StatusBarMessageQueueAdapter">
+		<constructor-arg ref="statusBar" />
+		<constructor-arg ref="messageQueue" />
+	</bean>
 	
 	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" >
         <constructor-arg ref="delayedExecutor" />
@@ -96,6 +101,7 @@
 			    <value>welcomeDialogHelperInitialisingLifecycle</value>
 			    <value>tabEventListenerLifecycle</value>
 			    <value>viewMenuInitialiserLifecycle</value>
+				<value>statusBarAdapterLifecycle</value>
 			    <value>upgradeEventListenerLifecycle</value>
 			    <value>databaseEventListenerLifecycle</value>
 				<value>databaseOpenerLifecycle</value>
@@ -116,7 +122,11 @@
 		<constructor-arg ref="prefs" />	
 		<constructor-arg ref="menu" />	
 	</bean>
-	
+		
+	<bean id="statusBarAdapterLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.StatusBarAdapterLifecycle">
+		<constructor-arg ref="statusBarMessageQueueAdapter" />
+	</bean>
+
 	<bean id="upgradeEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
 		<constructor-arg ref="upgradeEventListenerManager" />
 	</bean>
@@ -169,6 +179,7 @@
 	
 	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
+	<bean id="messageQueue" class="uk.me.gumbley.minimiser.messagequeue.MessageQueue" />
 
     <!-- - - database event listeners - - -->
 	<bean id="databaseEventListenerManager" class="uk.me.gumbley.minimiser.openlist.DatabaseEventListenerManager">
@@ -243,7 +254,6 @@
 	</bean>
 
 	<!-- miscellaneous -->	
-	
 	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl">
 		<constructor-arg ref="prefs" />
 	</bean>

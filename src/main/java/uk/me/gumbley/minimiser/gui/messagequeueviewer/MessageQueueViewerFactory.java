@@ -1,5 +1,8 @@
 package uk.me.gumbley.minimiser.gui.messagequeueviewer;
 
+import java.awt.Frame;
+import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
+
 /**
  * MessageQueueViewerFactory objects create, and receive notification of
  * closure of, their MessageQueueViewer.
@@ -21,4 +24,18 @@ public interface MessageQueueViewerFactory {
      * that it can enable the message queue indicator (if any messages remian))
      */
     void messageViewerClosed();
+
+    /**
+     * Called by the MessageQueueViewer when it is creating its dialog, so that
+     * the dialog can be made a child of the main application frame.
+     * 
+     * @return the application main frame
+     */
+    Frame getMainFrame();
+    
+    /**
+     * Called by the MessageQueueViewer so it can interact with the MessageQueue
+     * @return the MessageQueue
+     */
+    MessageQueue getMessageQueue();
 }

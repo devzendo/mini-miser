@@ -13,6 +13,7 @@ CURRENT TASKS:
 * Message Queue
 * Lifecycle (of some sort? gui wiring?) to wire the StatusBarMessageQueueAdapter
 * Factor out general HTML-dialog-from-resource code?
+* Why do StatusBars need DelayedExecutors?
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 

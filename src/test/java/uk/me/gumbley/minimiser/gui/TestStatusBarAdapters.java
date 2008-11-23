@@ -12,8 +12,11 @@ import uk.me.gumbley.minimiser.util.DelayedExecutor;
 
 
 /**
- * Tests the interaction between Status Bar, Message Queue and Messagq Queue
+ * Tests the interaction between Status Bar, Message Queue and Message Queue
  * Viewer as handled by the StatusBarMessageQueueAdapter.
+ * 
+ * Also see TestStatusBarAdaptersBeforeWiring which tests a use case that
+ * would only be triggered before the wiring happens.
  * 
  * @author matt
  *
@@ -30,7 +33,7 @@ public final class TestStatusBarAdapters {
     public void getPrerequisites() {
         headlessStatusBar = new HeadlessStatusBar(new DelayedExecutor());
         messageQueue = new MessageQueue();
-        new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue);
+        new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue).wireAdapter();
         headlessMessageQueueViewerFactory = new HeadlessMessageQueueViewerFactory(headlessStatusBar);
     }
     

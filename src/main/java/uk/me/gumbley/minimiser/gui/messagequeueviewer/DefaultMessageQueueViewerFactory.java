@@ -1,6 +1,9 @@
 package uk.me.gumbley.minimiser.gui.messagequeueviewer;
 
+import java.awt.Frame;
+import javax.swing.SwingUtilities;
 import uk.me.gumbley.minimiser.gui.StatusBar;
+import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 
 /**
  * The factory for Swing-based MessageQueueViewers
@@ -12,15 +15,19 @@ public final class DefaultMessageQueueViewerFactory extends
     /**
      * Pass the status bar on to the abstrcat base class for factories
      * @param bar the status bar
+     * @param main the main application frame
+     * @param queue the message queue
      */
-    public DefaultMessageQueueViewerFactory(final StatusBar bar) {
-        super(bar);
+    public DefaultMessageQueueViewerFactory(final StatusBar bar, final Frame main, final MessageQueue queue) {
+        super(bar, main, queue);
     }
 
     /**
      * {@inheritDoc}
      */
     public MessageQueueViewer createMessageQueueViewer() {
+        assert SwingUtilities.isEventDispatchThread();
+        
         messageViewerCreated();
         return new DefaultMessageQueueViewer(this);
     }

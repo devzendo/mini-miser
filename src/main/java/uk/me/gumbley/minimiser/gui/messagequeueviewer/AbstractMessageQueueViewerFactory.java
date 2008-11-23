@@ -1,6 +1,8 @@
 package uk.me.gumbley.minimiser.gui.messagequeueviewer;
 
+import java.awt.Frame;
 import uk.me.gumbley.minimiser.gui.StatusBar;
+import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 
 /**
  * Provide framework for MessageQueueViewerFactories.
@@ -10,14 +12,20 @@ import uk.me.gumbley.minimiser.gui.StatusBar;
 public abstract class AbstractMessageQueueViewerFactory implements MessageQueueViewerFactory {
 
     private final StatusBar statusBar;
+    private final Frame mainFrame;
+    private final MessageQueue messageQueue;
 
     /**
      * Encapsulate the status bar so that viewers only need to tell their
      * factory that they have opened or closed.
      * @param bar the status bar
+     * @param main the main application frame
+     * @param queue the message queue
      */
-    public AbstractMessageQueueViewerFactory(final StatusBar bar) {
+    public AbstractMessageQueueViewerFactory(final StatusBar bar, final Frame main, final MessageQueue queue) {
         this.statusBar = bar;
+        this.mainFrame = main;
+        this.messageQueue = queue;
     }
 
     /**
@@ -34,5 +42,20 @@ public abstract class AbstractMessageQueueViewerFactory implements MessageQueueV
     public final void messageViewerClosed() {
         statusBar.setMessageQueueViewerShowing(false);
     }
+
+    /**
+     * Obtain the application's main frame, against which message viewer dialogs
+     * are shown.
+     * @return the main frame
+     */
+    public final Frame getMainFrame() {
+        return mainFrame;
+    }
     
+    /**
+     * {@inheritDoc}
+     */
+    public final MessageQueue getMessageQueue() {
+        return messageQueue;
+    }
 }

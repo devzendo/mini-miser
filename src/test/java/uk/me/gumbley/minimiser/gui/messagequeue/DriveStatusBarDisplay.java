@@ -14,14 +14,13 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrameStatusBar;
+import uk.me.gumbley.minimiser.gui.StatusBarMessageQueueAdapter;
+import uk.me.gumbley.minimiser.gui.messagequeueviewer.DefaultMessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
-import uk.me.gumbley.minimiser.messagequeue.MessageQueueEvent;
-import uk.me.gumbley.minimiser.messagequeue.MessageQueueModifiedEvent;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
@@ -39,6 +38,7 @@ public final class DriveStatusBarDisplay {
     private int messageNumber;
     
     private JFrame frame;
+    private DefaultMessageQueueViewerFactory messageQueueViewerFactory;
 
     private DriveStatusBarDisplay()  {
         frame = new JFrame("title");
@@ -68,13 +68,16 @@ public final class DriveStatusBarDisplay {
         buttonPanel.add(removeMessageButton);
         
         frame.add(buttonPanel, BorderLayout.NORTH);
+
+        messageQueue = new MessageQueue();
         
         final MainFrameStatusBar mainFrameStatusBar = new MainFrameStatusBar(new DelayedExecutor());
         frame.add(mainFrameStatusBar.getPanel(), BorderLayout.SOUTH);
-        
+
+        messageQueueViewerFactory = new DefaultMessageQueueViewerFactory(mainFrameStatusBar, frame, messageQueue);
         mainFrameStatusBar.addLaunchMessageQueueActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                toggleMessageQueueDisplay();
+                messageQueueViewerFactory.createMessageQueueViewer();
             }
         });
 
@@ -82,25 +85,8 @@ public final class DriveStatusBarDisplay {
         frame.pack();
         frame.setVisible(true);
         
-        messageQueue = new MessageQueue();
-        messageQueue.addMessageQueueEventObserver(new Observer<MessageQueueEvent>() {
-            public void eventOccurred(final MessageQueueEvent observableEvent) {
-                if (observableEvent instanceof MessageQueueModifiedEvent) {
-                    final MessageQueueModifiedEvent mod = (MessageQueueModifiedEvent) observableEvent;
-                    mainFrameStatusBar.setNumberOfQueuedMessages(mod.getNewQueueSize());
-                }
-                
-            }
-            
-        });
-    }
-
-    /**
-     * 
-     */
-    protected void toggleMessageQueueDisplay() {
         
-           
+        new StatusBarMessageQueueAdapter(mainFrameStatusBar, messageQueue).wireAdapter();
     }
 
     /**
