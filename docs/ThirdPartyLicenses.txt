@@ -11,6 +11,7 @@ MIT License
 Apache Software License Version 2.0
   log4j 1.2.8
   Spring framework 2.5.3
+  commons-lang 2.4
   
   
 BSD License
