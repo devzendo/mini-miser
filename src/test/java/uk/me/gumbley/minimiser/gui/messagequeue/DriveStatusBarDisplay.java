@@ -18,9 +18,11 @@ import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrameStatusBar;
 import uk.me.gumbley.minimiser.gui.StatusBarMessageQueueAdapter;
+import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.gui.messagequeueviewer.DefaultMessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
+import uk.me.gumbley.minimiser.messagequeue.SimpleDSTAMessage;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
@@ -49,7 +51,7 @@ public final class DriveStatusBarDisplay {
         final JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
         
-        final JButton addMessageButton = new JButton("Add sample message");
+        final JButton addMessageButton = new JButton("Add simple message");
         addMessageButton.addActionListener(new ActionListener () {
             public void actionPerformed(final ActionEvent e) {
                 addMessage();
@@ -58,7 +60,16 @@ public final class DriveStatusBarDisplay {
         
         buttonPanel.add(addMessageButton);
         
-        final JButton removeMessageButton = new JButton("Remove sample message");
+        final JButton addDSTAMessageButton = new JButton("Add DSTA message");
+        addDSTAMessageButton.addActionListener(new ActionListener () {
+            public void actionPerformed(final ActionEvent e) {
+                addDSTAMessage();
+            }
+        });
+        
+        buttonPanel.add(addDSTAMessageButton);
+        
+        final JButton removeMessageButton = new JButton("Remove first message");
         removeMessageButton.addActionListener(new ActionListener () {
             public void actionPerformed(final ActionEvent e) {
                 removeMessage();
@@ -93,6 +104,34 @@ public final class DriveStatusBarDisplay {
      * 
      */
     protected void addMessage() {
+        Message.Importance importance = randomImportance();
+        final String subject = "Message # " + ++messageNumber;
+        final String content = "here is a sample document in HTML<br>"
+            + "it can have <b>bold</b> text and <em>italic</em> text<br>"
+            + "and to show off long documents, it has <br>"
+            + "many lines<br>"
+            + "of rather uninteresting text<br>"
+            + "before ending the document<br>"
+            + "but nevertheless, there are enough lines<br>"
+            + "and new paragraphs...<p>"
+            + "to make it long enough<br>"
+            + "to make the scrollbar active.";
+
+        messageQueue.addMessage(new SimpleMessage(subject, content, importance));
+    }
+
+    /**
+     * 
+     */
+    protected void addDSTAMessage() {
+        Message.Importance importance = randomImportance();
+        final String subject = "Upgrade <b>now!!!</b>";
+        final String content = "Here is a sample message\nIt's a multiline message\n"
+            + "But otherwise, rather boring...";
+        messageQueue.addMessage(new SimpleDSTAMessage(subject, content, importance, DSTAMessageId.TEST));
+    }
+
+    private Message.Importance randomImportance() {
         final double imprandom = Math.random();
         Message.Importance importance;
         if (imprandom < 0.3) {
@@ -102,14 +141,13 @@ public final class DriveStatusBarDisplay {
         } else {
             importance = Message.Importance.LOW;
         }
-        final String subject = "Message # " + messageNumber++;
-        final String content = "Here is a sample message\nIt's a multiline message\n"
-            + "But otherwise, rather boring...";
-        messageQueue.addMessage(new SimpleMessage(subject, content, importance));
+        return importance;
     }
 
     private void removeMessage() {
-        messageQueue.removeMessage(messageQueue.getMessage(0));
+        if (messageQueue.size() > 0) {
+            messageQueue.removeMessage(messageQueue.getMessageByIndex(0));
+        }
     }
 
     /**

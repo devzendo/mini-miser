@@ -10,7 +10,9 @@ BUGS:
   but haven't reproduced it since.
 
 CURRENT TASKS:
-* Message Queue
+* Message Queue - need to add possiblyAddMessage(SimpleDSTAMessage)
+* DefaultMessageQueueViewer - need to set the DSTA flag on removal of a
+  SimpleDSTAMessage.
 * Lifecycle (of some sort? gui wiring?) to wire the StatusBarMessageQueueAdapter
 * Factor out general HTML-dialog-from-resource code?
 * Why do StatusBars need DelayedExecutors?

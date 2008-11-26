@@ -13,7 +13,7 @@ import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 public final class DefaultMessageQueueViewerFactory extends 
         AbstractMessageQueueViewerFactory {
     /**
-     * Pass the status bar on to the abstrcat base class for factories
+     * Pass the status bar on to the abstract base class for factories
      * @param bar the status bar
      * @param main the main application frame
      * @param queue the message queue
@@ -29,6 +29,7 @@ public final class DefaultMessageQueueViewerFactory extends
         assert SwingUtilities.isEventDispatchThread();
         
         messageViewerCreated();
-        return new DefaultMessageQueueViewer(this);
+        // TODO inject MessageRendererFactory
+        return new DefaultMessageQueueViewer(this, new MessageRendererFactory());
     }
 }

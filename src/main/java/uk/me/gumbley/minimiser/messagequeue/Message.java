@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.messagequeue;
 
+
 /**
  * A non-persistent, asynchronously-delivered user message.
  * Messages have subjects, an indication of their importance, and content.
@@ -41,4 +42,10 @@ public interface Message {
      * Component.
      */
     Object getMessageContent();
+    
+    /**
+     * Called when the message queue removes this message, so it can perform
+     * any final activities (e.g. storing DSTA flags, for SimpleDSTAMessages).
+     */
+    void onRemoval();
 }
