@@ -83,6 +83,10 @@ DRY / TDD improvements:
 
 * passwordEntryDialog & helper - rework this to use the GUIValueObtainer.
 
+* extract an interface from INIFile and allow an instance of this to be passes
+  into Prefs. Create a memory-based one for unit tests using a real prefs, but
+  without the disk overhead
+  
 NIGGLES:
 
 DOCUMENTATION:

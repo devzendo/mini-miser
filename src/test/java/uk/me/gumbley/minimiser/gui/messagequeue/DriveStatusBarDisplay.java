@@ -24,6 +24,7 @@ import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.SimpleDSTAMessage;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
+import uk.me.gumbley.minimiser.messagequeue.StubDSTAPrefs;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
@@ -80,7 +81,7 @@ public final class DriveStatusBarDisplay {
         
         frame.add(buttonPanel, BorderLayout.NORTH);
 
-        messageQueue = new MessageQueue();
+        messageQueue = new MessageQueue(new StubDSTAPrefs());
         
         final MainFrameStatusBar mainFrameStatusBar = new MainFrameStatusBar(new DelayedExecutor());
         frame.add(mainFrameStatusBar.getPanel(), BorderLayout.SOUTH);
@@ -104,7 +105,7 @@ public final class DriveStatusBarDisplay {
      * 
      */
     protected void addMessage() {
-        Message.Importance importance = randomImportance();
+        final Message.Importance importance = randomImportance();
         final String subject = "Message # " + ++messageNumber;
         final String content = "here is a sample document in HTML<br>"
             + "it can have <b>bold</b> text and <em>italic</em> text<br>"
@@ -124,7 +125,7 @@ public final class DriveStatusBarDisplay {
      * 
      */
     protected void addDSTAMessage() {
-        Message.Importance importance = randomImportance();
+        final Message.Importance importance = randomImportance();
         final String subject = "Upgrade <b>now!!!</b>";
         final String content = "Here is a sample message\nIt's a multiline message\n"
             + "But otherwise, rather boring...";

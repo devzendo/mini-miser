@@ -27,6 +27,9 @@ public final class SimpleDSTAMessageRenderer extends AbstractSimpleMessageRender
         this.simpleDSTAMessage = message;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Component renderControls() {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());

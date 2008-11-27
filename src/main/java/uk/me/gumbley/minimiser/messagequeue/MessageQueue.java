@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
+import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * The MessageQueue is used to hold non-persistent, asynchronously-delivered
@@ -17,11 +18,14 @@ public final class MessageQueue {
     private final ObserverList<MessageQueueEvent> observerList;
     private final ArrayList<Message> messages;
     private int currentMessageIndex;
+    private final Prefs prefs;
     
     /**
      * Construct the MessageQueue.
+     * @param preferences the prefs for querying/storing DSTA flags
      */
-    public MessageQueue() {
+    public MessageQueue(final Prefs preferences) {
+        this.prefs = preferences;
         observerList = new ObserverList<MessageQueueEvent>();
         messages = new ArrayList<Message>();
         currentMessageIndex = -1;

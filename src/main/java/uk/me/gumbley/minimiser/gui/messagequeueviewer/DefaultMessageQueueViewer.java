@@ -3,7 +3,6 @@ package uk.me.gumbley.minimiser.gui.messagequeueviewer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -17,8 +16,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTextPane;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.messagequeue.Message;
@@ -46,10 +43,13 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
     private JComponent emptyControls;
     private JPanel controlsContainer;
     private JPanel bodyContainer;
+    private Message currentMessage;
+    private MessageRenderer currentMessageRenderer;
 
     /**
      * Create the DefaultMessageQueueViewer given its factory.
      * @param factory this viewer's factory
+     * @param rendererFactory the message renderer factory
      */
     public DefaultMessageQueueViewer(final MessageQueueViewerFactory factory,
             final MessageRendererFactory rendererFactory) {
@@ -66,7 +66,8 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         
         initialiseNoMessagesTextPane();
         initialiseEmptyControlsPane();
-        dialog.add(initialiseMainPanel());
+        initialiseMainPanel();
+        dialog.add(mainPanel);
         
         dialog.addWindowListener(new WindowAdapter() {
             public void windowClosing(final WindowEvent e) {
@@ -89,42 +90,42 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
     }
 
     private void setBodyComponent(final Component component) {
-        LOGGER.info("Setting body component to " + component);
+        LOGGER.debug("Setting body component to " + component);
         bodyContainer.removeAll();
-        bodyContainer.add(component);
-        bodyContainer.validate();
+        bodyContainer.add(component, BorderLayout.CENTER);
+        bodyContainer.revalidate();
+        bodyContainer.repaint();
     }
 
     private void setControlsComponent(final Component controls) {
-        LOGGER.info("Setting controls component to " + controls);
+        LOGGER.debug("Setting controls component to " + controls);
         controlsContainer.removeAll();
-        controlsContainer.add(controls);
-        controlsContainer.validate();
+        controlsContainer.add(controls, BorderLayout.EAST);
+        controlsContainer.revalidate();
+        controlsContainer.repaint();
     }
     
     private void updateWithSelectedMessage() {
         final int currentIndex = messageQueue.getCurrentMessageIndex();
-        LOGGER.info("Displaying message " + currentIndex);
         boolean enablePrevious = false;
         boolean enableRemove = false;
         boolean enableNext = false;
         // TODO turn off updates
         if (currentIndex == -1) {
+            currentMessage = null;
+            currentMessageRenderer = null;
             LOGGER.info("empty - no message display");
             messageSubjectPane.setText(createDialogFontText("<em>No messages</em>"));
             setBodyComponent(noMessagesTextPane);
             setControlsComponent(emptyControls);
         } else {
-            final Message message = messageQueue.getMessageByIndex(currentIndex);
-            LOGGER.info("rendering message " + currentIndex + ": " + message.getSubject());
+            currentMessage = messageQueue.getMessageByIndex(currentIndex);
+            LOGGER.info("rendering message " + currentIndex + ": " + currentMessage.getSubject());
             // Subject... always text, for all messages. so handle it here.
-            messageSubjectPane.setText(createSubjectLabelText(currentIndex + 1, messageQueue.size(), message.getSubject()));
-            // Body can vary in its presentation, so this variance is
-            // encapsulated in the renderer
-            final MessageRenderer renderer = messageRendererFactory.createRenderer(message);
-            setBodyComponent(renderer.render());
-            final Component controls = renderer.renderControls();
-            LOGGER.info("controls from renderer are " + controls);
+            messageSubjectPane.setText(createSubjectLabelText(currentIndex + 1, messageQueue.size(), currentMessage.getSubject()));
+            currentMessageRenderer = messageRendererFactory.createRenderer(currentMessage);
+            setBodyComponent(currentMessageRenderer.render());
+            final Component controls = currentMessageRenderer.renderControls();
             setControlsComponent(controls == null ? emptyControls : controls);
             enableRemove = true;
             enablePrevious = currentIndex != 0;
@@ -134,6 +135,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         previousButton.setEnabled(enablePrevious);
         removeButton.setEnabled(enableRemove);
         nextButton.setEnabled(enableNext);
+        mainPanel.validate();
         // TODO turn on updates
     }
 
@@ -152,17 +154,16 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
     /**
      * @return
      */
-    private Component initialiseMainPanel() {
+    private void initialiseMainPanel() {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(subjectPanel(), BorderLayout.NORTH);
         bodyContainer = new JPanel();
-        bodyContainer.setBackground(Color.CYAN);
+        bodyContainer.setLayout(new BorderLayout());
         mainPanel.add(bodyPanel(), BorderLayout.CENTER);
         controlsContainer = new JPanel();
-        controlsContainer.setBackground(Color.BLUE);
+        controlsContainer.setLayout(new BorderLayout());
         mainPanel.add(controlsPanel(), BorderLayout.SOUTH);
-        return mainPanel;
     }
 
     private Component subjectPanel() {
@@ -189,18 +190,14 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
     }
 
     private JPanel controlsPanel() {
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        
-        // Separator
-        panel.add(new JSeparator(), BorderLayout.NORTH);
+        final JPanel controlsMainPanel = new JPanel();
+        controlsMainPanel.setLayout(new BorderLayout());
         
         // Dynamic controls
-        panel.add(controlsContainer, BorderLayout.CENTER);
+        controlsMainPanel.add(controlsContainer, BorderLayout.CENTER);
         
         // Static controls
         final JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setBackground(Color.RED);
         buttonsPanel.setLayout(new FlowLayout());
         previousButton = new JButton("<< Previous");
         previousButton.addActionListener(new ActionListener() {
@@ -214,7 +211,10 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         removeButton = new JButton("Remove");
         removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                messageQueue.removeMessage(messageQueue.getMessageByIndex(messageQueue.getCurrentMessageIndex()));
+                assert currentMessage != null;
+                assert currentMessageRenderer != null;
+                // used to be messageQueue.getMessageByIndex(messageQueue.getCurrentMessageIndex())
+                messageQueue.removeMessage(currentMessage);
                 updateWithSelectedMessage();
             }
         });
@@ -230,8 +230,8 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         });
         
         buttonsPanel.add(nextButton);
-        panel.add(buttonsPanel, BorderLayout.EAST);
+        controlsMainPanel.add(buttonsPanel, BorderLayout.EAST);
        
-        return panel;
+        return controlsMainPanel;
     }
 }

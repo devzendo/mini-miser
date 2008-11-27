@@ -1,11 +1,14 @@
 package uk.me.gumbley.minimiser.messagequeue;
 
+import java.io.IOException;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.prefs.Prefs;
 
 
 /**
@@ -14,14 +17,18 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
  *
  */
 public final class TestMessageQueue extends LoggingTestCase {
+
+    private Prefs prefs;
     private MessageQueue messageQueue;
 
     /**
+     * @throws IOException 
      * 
      */
     @Before
-    public void getPrerequisites() {
-        messageQueue = new MessageQueue();
+    public void getPrerequisites() throws IOException {
+        prefs = new StubDSTAPrefs();
+        messageQueue = new MessageQueue(prefs);
     }
     
     /**
@@ -240,5 +247,41 @@ public final class TestMessageQueue extends LoggingTestCase {
         messageQueue.removeMessage(message3);
         
         Assert.assertEquals(1, messageQueue.getCurrentMessageIndex());
+    }
+    
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void nonBlockedSimpleDSTAMessageGetsSentOnAdd() {
+        final SimpleDSTAMessage message = new SimpleDSTAMessage("subject", "content", DSTAMessageId.TEST);
+
+        final Observer<MessageQueueEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.eq(new MessageAddedEvent(message)));
+        obs.eventOccurred(EasyMock.eq(new MessageQueueModifiedEvent(1)));
+        EasyMock.replay(obs);
+
+        messageQueue.addMessageQueueEventObserver(obs);
+
+        messageQueue.addMessage(message);
+        
+        EasyMock.verify(obs);
+    }
+    
+    @Test
+    public void blockedSimpleDSTAMessageDoesNotGetSentOnAdd() {
+        prefs.dontShowThisAgain(DSTAMessageId.TEST.toString());
+        
+        final SimpleDSTAMessage message = new SimpleDSTAMessage("subject", "content", DSTAMessageId.TEST);
+
+        final Observer<MessageQueueEvent> obs = EasyMock.createStrictMock(Observer.class);
+        EasyMock.replay(obs);
+
+        messageQueue.addMessageQueueEventObserver(obs);
+
+        messageQueue.addMessage(message);
+        
+        EasyMock.verify(obs);
     }
 }

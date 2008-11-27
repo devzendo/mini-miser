@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
+import uk.me.gumbley.minimiser.messagequeue.StubDSTAPrefs;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 
 
@@ -29,7 +30,7 @@ public final class TestStatusBarAdaptersBeforeWiring {
     @Test
     public void addMessagesBeforeAdapterInstantiationAndMessageQueueIndicatorEnabled() {
         headlessStatusBar = new HeadlessStatusBar(new DelayedExecutor());
-        messageQueue = new MessageQueue();
+        messageQueue = new MessageQueue(new StubDSTAPrefs());
 
         Assert.assertFalse(headlessStatusBar.isMessageQueueIndicatorEnabled());
         messageQueue.addMessage(new SimpleMessage("subject", "content"));

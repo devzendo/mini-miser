@@ -179,7 +179,9 @@
 	
 	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
-	<bean id="messageQueue" class="uk.me.gumbley.minimiser.messagequeue.MessageQueue" />
+	<bean id="messageQueue" class="uk.me.gumbley.minimiser.messagequeue.MessageQueue">
+		<constructor-arg ref="prefs" />
+	</bean>
 
     <!-- - - database event listeners - - -->
 	<bean id="databaseEventListenerManager" class="uk.me.gumbley.minimiser.openlist.DatabaseEventListenerManager">

@@ -33,6 +33,10 @@
 	
 	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" />
 
-	<bean id="messageQueue" class="uk.me.gumbley.minimiser.messagequeue.MessageQueue" />
+	<bean id="messageQueue" class="uk.me.gumbley.minimiser.messagequeue.MessageQueue">
+		<constructor-arg ref="prefs" />
+	</bean>
+
+	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" />
 
 </beans>
