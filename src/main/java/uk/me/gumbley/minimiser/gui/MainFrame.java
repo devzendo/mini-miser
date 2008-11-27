@@ -10,16 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-
 import org.apache.log4j.Logger;
-
 import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.minimiser.common.AppName;
@@ -77,7 +74,7 @@ public class MainFrame {
         mainFrame.add(statusBar.getPanel(), BorderLayout.SOUTH);
         
         // Menu
-        mainFrame.add(createMenu(), BorderLayout.NORTH);
+        mainFrame.setJMenuBar(createMenu());
         
         // Main panel
         final TabPaneManager tabPaneManager = springLoader.getBean("tabPaneManager", TabPaneManager.class);
