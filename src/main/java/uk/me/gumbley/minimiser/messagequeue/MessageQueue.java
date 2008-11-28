@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
+import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -95,7 +96,9 @@ public final class MessageQueue {
 
     /**
      * Add a message to the queue, notify observers of the new message and
-     * queue size
+     * queue size. If the message is a SimpleDSTAMessaage and user has indicated
+     * that they don't want to see the message again, it will NOT be added to
+     * the queue. 
      * @param message the new message
      */
     public void addMessage(final Message message) {
@@ -103,6 +106,14 @@ public final class MessageQueue {
             final String warning = "Cannot add a null message";
             LOGGER.warn(warning);
             throw new IllegalArgumentException(warning);
+        }
+        // TODO: refactor - replace type code with polymorphism/state/strategy
+        if (message instanceof SimpleDSTAMessage) {
+            final SimpleDSTAMessage dstaMessage = (SimpleDSTAMessage) message;
+            if (isDontShowThisAgainFlagSet(dstaMessage.getDstaMessageId())) {
+                LOGGER.debug("Not adding message '" + message.getSubject() + "' since it has been blocked");
+                return;
+            }
         }
         LOGGER.info("Message Added: " + message.getSubject());
         if (currentMessageIndex == -1) {
@@ -137,7 +148,14 @@ public final class MessageQueue {
         } else if (currentMessageIndex == messages.size() - 1) {
             setCurrentMessageIndex(currentMessageIndex - 1);
         }
-        message.onRemoval();
+        // TODO: refactor - replace type code with polymorphism/state/strategy
+        if (message instanceof SimpleDSTAMessage) {
+            final SimpleDSTAMessage dstaMessage = (SimpleDSTAMessage) message;
+            if (dstaMessage.dontShowAgain()) {
+                LOGGER.debug("Message '" + dstaMessage.getSubject() + "' is not being shown again");
+                prefs.setDontShowThisAgainFlag(dstaMessage.getDstaMessageId().toString());
+            }
+        }
         messages.remove(message);
         observerList.eventOccurred(new MessageRemovedEvent(message));
         observerList.eventOccurred(new MessageQueueModifiedEvent(messages.size()));
@@ -150,6 +168,17 @@ public final class MessageQueue {
      */
     public Message getMessageByIndex(final int index) {
         return messages.get(index);
+    }
+
+    /**
+     * Has th euser indicated that they don't want to see this message again?
+     * Will the indicated message be shown if added to the message queue?
+     * @param id the DSTAMessageId of the message to be posted
+     * @return true if the message will NOT be added, false if it WILL be
+     * added.
+     */
+    public boolean isDontShowThisAgainFlagSet(final DSTAMessageId id) {
+        return prefs.isDontShowThisAgainFlagSet(id.toString());
     }
     
 }

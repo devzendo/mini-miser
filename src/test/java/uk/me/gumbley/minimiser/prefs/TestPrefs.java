@@ -232,22 +232,22 @@ public final class TestPrefs extends LoggingTestCase {
     @Test
     public void dontShowThisAgainFlagCanBeSetAndCleared() {
         final String messageId = "foo";
-        Assert.assertFalse(prefs.dontShowThisAgain(messageId));
+        Assert.assertFalse(prefs.isDontShowThisAgainFlagSet(messageId));
         
-        prefs.setDontShowThisAgain(messageId);
+        prefs.setDontShowThisAgainFlag(messageId);
         
-        Assert.assertTrue(prefs.dontShowThisAgain(messageId));
+        Assert.assertTrue(prefs.isDontShowThisAgainFlagSet(messageId));
         
-        prefs.clearDontShowThisAgain(messageId);
+        prefs.clearDontShowThisAgainFlag(messageId);
         
-        Assert.assertFalse(prefs.dontShowThisAgain(messageId));
+        Assert.assertFalse(prefs.isDontShowThisAgainFlagSet(messageId));
         
-        prefs.setDontShowThisAgain(messageId);
+        prefs.setDontShowThisAgainFlag(messageId);
 
-        Assert.assertTrue(prefs.dontShowThisAgain(messageId));
+        Assert.assertTrue(prefs.isDontShowThisAgainFlagSet(messageId));
 
         prefs.clearAllDontShowThisAgainFlags();
 
-        Assert.assertFalse(prefs.dontShowThisAgain(messageId));
+        Assert.assertFalse(prefs.isDontShowThisAgainFlagSet(messageId));
     }
 }

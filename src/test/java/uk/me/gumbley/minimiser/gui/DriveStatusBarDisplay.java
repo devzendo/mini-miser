@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.gui.messagequeue;
+package uk.me.gumbley.minimiser.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -87,18 +87,18 @@ public final class DriveStatusBarDisplay {
         frame.add(mainFrameStatusBar.getPanel(), BorderLayout.SOUTH);
 
         messageQueueViewerFactory = new DefaultMessageQueueViewerFactory(mainFrameStatusBar, frame, messageQueue);
-        mainFrameStatusBar.addLaunchMessageQueueActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent e) {
-                messageQueueViewerFactory.createMessageQueueViewer();
-            }
-        });
+//        mainFrameStatusBar.addLaunchMessageQueueActionListener(new ActionListener() {
+//            public void actionPerformed(final ActionEvent e) {
+//                messageQueueViewerFactory.createMessageQueueViewer();
+//            }
+//        });
 
         
         frame.pack();
         frame.setVisible(true);
         
         
-        new StatusBarMessageQueueAdapter(mainFrameStatusBar, messageQueue).wireAdapter();
+        new StatusBarMessageQueueAdapter(mainFrameStatusBar, messageQueue, messageQueueViewerFactory).wireAdapter();
     }
 
     /**

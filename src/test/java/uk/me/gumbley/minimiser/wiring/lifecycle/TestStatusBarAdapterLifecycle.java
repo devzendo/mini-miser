@@ -62,4 +62,13 @@ public final class TestStatusBarAdapterLifecycle extends SpringLoaderUnittestCas
         messageQueue.addMessage(simpleMessage);
         Assert.assertTrue(headlessStatusBar.isMessageQueueIndicatorEnabled());
     }
+    
+    @Test
+    public void launchViewerButtonBoundOnStartup() {
+        Assert.assertFalse(headlessStatusBar.isLaunchMessageQueueActionListenerSet());
+        
+        lifecycleManager.startup();
+        
+        Assert.assertTrue(headlessStatusBar.isLaunchMessageQueueActionListenerSet());
+    }
 }

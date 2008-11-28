@@ -1,6 +1,9 @@
 package uk.me.gumbley.minimiser.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.gui.messagequeueviewer.MessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueEvent;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueModifiedEvent;
@@ -12,6 +15,7 @@ import uk.me.gumbley.minimiser.messagequeue.MessageQueueModifiedEvent;
  * on to the status bar.
  * <li> the adapter updates the bar by listening to updates, but this wiring
  * also sets the indicator if there are any initial messages
+ * <li> connects the message viewer factory to the viewer launch button
  * </ul>
  * @author matt
  *
@@ -20,15 +24,19 @@ public final class StatusBarMessageQueueAdapter {
 
     private final StatusBar bar;
     private final MessageQueue queue;
+    private final MessageQueueViewerFactory messageQueueViewerFactory;
 
     /**
      * Construct the adapter, and wire up.
      * @param statusBar the status bar
      * @param messageQueue the message queue
+     * @param viewerFactory the message queue viewer factory
      */
-    public StatusBarMessageQueueAdapter(final StatusBar statusBar, final MessageQueue messageQueue) {
+    public StatusBarMessageQueueAdapter(final StatusBar statusBar, final MessageQueue messageQueue,
+            final MessageQueueViewerFactory viewerFactory) {
         this.bar = statusBar;
         this.queue = messageQueue;
+        this.messageQueueViewerFactory = viewerFactory;
     }
 
     /**
@@ -44,6 +52,13 @@ public final class StatusBarMessageQueueAdapter {
                 }
             }
         });
+        
         bar.setNumberOfQueuedMessages(queue.size());
+        
+        bar.addLaunchMessageQueueActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                messageQueueViewerFactory.createMessageQueueViewer();
+            }
+        });
     }
 }

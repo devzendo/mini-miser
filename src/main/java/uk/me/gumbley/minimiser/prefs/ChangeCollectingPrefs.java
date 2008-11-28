@@ -242,14 +242,14 @@ public final class ChangeCollectingPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public void clearDontShowThisAgain(final String messageId) {
+    public void clearDontShowThisAgainFlag(final String messageId) {
         unsupported("clearDontShowThisAgain");
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean dontShowThisAgain(final String messageId) {
+    public boolean isDontShowThisAgainFlagSet(final String messageId) {
         unsupported("dontShowThisAgain");
         return false;
     }
@@ -257,7 +257,7 @@ public final class ChangeCollectingPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public void setDontShowThisAgain(final String messageId) {
+    public void setDontShowThisAgainFlag(final String messageId) {
         unsupported("setDontShowThisAgain");
     }
 }

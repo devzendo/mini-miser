@@ -83,4 +83,13 @@ public final class HeadlessStatusBar extends AbstractStatusBar {
     public void internalTriggerLaunchMessageQueueActionListener() {
         launchMessageViewerActionListener.actionPerformed(new ActionEvent(this, 0, "click"));
     }
+    
+    /**
+     * Allows tests to determine whether the message queue viewer launcher
+     * has been set 
+     * @return true if something set
+     */
+    public boolean isLaunchMessageQueueActionListenerSet() {
+        return launchMessageViewerActionListener != null;
+    }
 }

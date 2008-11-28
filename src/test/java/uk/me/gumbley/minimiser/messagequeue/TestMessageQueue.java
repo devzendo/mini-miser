@@ -22,7 +22,7 @@ public final class TestMessageQueue extends LoggingTestCase {
     private MessageQueue messageQueue;
 
     /**
-     * @throws IOException 
+     * @throws IOException on failure, never.
      * 
      */
     @Before
@@ -123,48 +123,6 @@ public final class TestMessageQueue extends LoggingTestCase {
         Assert.assertEquals(0, messageQueue.size());
     }
     
-    /**
-     * Records that onRemoval has been called.
-     * @author matt
-     *
-     */
-    private class RecordingRemovalMessage extends AbstractMessage {
-        private boolean onRemovalCalled;
-        public RecordingRemovalMessage(final String subject, final Object content) {
-            super(subject, content);
-            onRemovalCalled = false;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void onRemoval() {
-            onRemovalCalled = true;
-        }
-
-        /**
-         * @return true iff onRemoval called.
-         */
-        protected final boolean isOnRemovalCalled() {
-            return onRemovalCalled;
-        }
-    }
-    
-    /**
-     * 
-     */
-    @Test
-    public void removeCallsOnRemoval() {
-        final RecordingRemovalMessage rrm = new RecordingRemovalMessage("Subject", "Detail");
-        Assert.assertFalse(rrm.isOnRemovalCalled());
-        
-        messageQueue.addMessage(rrm);
-        Assert.assertFalse(rrm.isOnRemovalCalled());
-        
-        messageQueue.removeMessage(rrm);
-        Assert.assertTrue(rrm.isOnRemovalCalled());
-        
-    }
     
     /**
      * 
@@ -271,7 +229,7 @@ public final class TestMessageQueue extends LoggingTestCase {
     
     @Test
     public void blockedSimpleDSTAMessageDoesNotGetSentOnAdd() {
-        prefs.dontShowThisAgain(DSTAMessageId.TEST.toString());
+        prefs.setDontShowThisAgainFlag(DSTAMessageId.TEST.toString());
         
         final SimpleDSTAMessage message = new SimpleDSTAMessage("subject", "content", DSTAMessageId.TEST);
 
@@ -283,5 +241,33 @@ public final class TestMessageQueue extends LoggingTestCase {
         messageQueue.addMessage(message);
         
         EasyMock.verify(obs);
+    }
+    
+    @Test
+    public void nonBlockedMessageIndicatesItIsNotBlocked() {
+        Assert.assertFalse(messageQueue.isDontShowThisAgainFlagSet(DSTAMessageId.TEST));
+    }
+
+    @Test
+    public void blockedMessageIndicatesItIsBlocked() {
+        prefs.setDontShowThisAgainFlag(DSTAMessageId.TEST.toString());
+
+        Assert.assertTrue(messageQueue.isDontShowThisAgainFlagSet(DSTAMessageId.TEST));
+    }
+
+    // WOZERE add dsta message, set its dsta flag, remove it, check prefs has flag stored
+    @Test
+    public void dstaFlagSetInPrefsWhenRemoved() {
+        final SimpleDSTAMessage message = new SimpleDSTAMessage("subject", "content", DSTAMessageId.TEST);
+
+        messageQueue.addMessage(message);
+
+        message.setDontShowAgain(true); // they checked the DSTA box
+        
+        Assert.assertFalse(prefs.isDontShowThisAgainFlagSet(DSTAMessageId.TEST.toString()));
+        
+        messageQueue.removeMessage(message); // they removed it from the queue
+
+        Assert.assertTrue(prefs.isDontShowThisAgainFlagSet(DSTAMessageId.TEST.toString()));
     }
 }

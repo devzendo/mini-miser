@@ -169,19 +169,19 @@ public final class StubOpenListPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public void clearDontShowThisAgain(final String messageId) {
+    public void clearDontShowThisAgainFlag(final String messageId) {
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean dontShowThisAgain(final String messageId) {
+    public boolean isDontShowThisAgainFlagSet(final String messageId) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setDontShowThisAgain(final String messageId) {
+    public void setDontShowThisAgainFlag(final String messageId) {
     }
 }

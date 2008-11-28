@@ -31,6 +31,13 @@
 	<bean id="statusBarMessageQueueAdapter" class="uk.me.gumbley.minimiser.gui.StatusBarMessageQueueAdapter">
 		<constructor-arg ref="statusBar" />
 		<constructor-arg ref="messageQueue" />
+		<constructor-arg ref="messageQueueViewerFactory" />
+	</bean>
+	
+	<bean id="messageQueueViewerFactory" class="uk.me.gumbley.minimiser.gui.messagequeueviewer.DefaultMessageQueueViewerFactory">
+		<constructor-arg ref="statusBar" />
+		<constructor-arg ref="mainFrame" />
+		<constructor-arg ref="messageQueue" />
 	</bean>
 	
 	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" >

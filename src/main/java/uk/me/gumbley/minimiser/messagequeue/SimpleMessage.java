@@ -27,11 +27,4 @@ public final class SimpleMessage extends AbstractMessage {
     public SimpleMessage(final String subject, final Object content, final Importance importance) {
         super(subject, content, importance);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void onRemoval() {
-        // do nithong
-    }
 }

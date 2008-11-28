@@ -24,7 +24,7 @@ public abstract class AbstractDSTAMessageFactory implements DSTAMessageFactory {
      * {@inheritDoc}
      */
     public final DSTAMessage possiblyShowMessage(final DSTAMessageId messageId, final String string) {
-        if (!prefs.dontShowThisAgain(messageId.toString())) {
+        if (!prefs.isDontShowThisAgainFlagSet(messageId.toString())) {
             return reallyShowMessage(messageId, string);
         }
         return null;
@@ -34,7 +34,7 @@ public abstract class AbstractDSTAMessageFactory implements DSTAMessageFactory {
      * {@inheritDoc}
      */
     public final DSTAMessage possiblyShowMessage(final DSTAMessageId messageId, final Component content) {
-        if (!prefs.dontShowThisAgain(messageId.toString())) {
+        if (!prefs.isDontShowThisAgainFlagSet(messageId.toString())) {
             return reallyShowMessage(messageId, content);
         }
         return null;
@@ -61,6 +61,6 @@ public abstract class AbstractDSTAMessageFactory implements DSTAMessageFactory {
      * {@inheritDoc}
      */
     public final void setDontShowThisAgain(final DSTAMessageId messageId) {
-        prefs.setDontShowThisAgain(messageId.toString());
+        prefs.setDontShowThisAgainFlag(messageId.toString());
     }
 }

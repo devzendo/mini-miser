@@ -25,10 +25,15 @@
 	<bean id="statusBarMessageQueueAdapter" class="uk.me.gumbley.minimiser.gui.StatusBarMessageQueueAdapter">
 		<constructor-arg ref="statusBar" />
 		<constructor-arg ref="messageQueue" />
+		<constructor-arg ref="messageQueueViewerFactory" />
 	</bean>
 
 	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.HeadlessStatusBar">
 		<constructor-arg ref="delayedExecutor" />
+	</bean>
+
+	<bean id="messageQueueViewerFactory" class="uk.me.gumbley.minimiser.gui.messagequeueviewer.HeadlessMessageQueueViewerFactory">
+		<constructor-arg ref="statusBar" />
 	</bean>
 	
 	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" />

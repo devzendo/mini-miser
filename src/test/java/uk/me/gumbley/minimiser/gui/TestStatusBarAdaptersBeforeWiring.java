@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui;
 
 import org.junit.Assert;
 import org.junit.Test;
+import uk.me.gumbley.minimiser.gui.messagequeueviewer.HeadlessMessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
 import uk.me.gumbley.minimiser.messagequeue.StubDSTAPrefs;
@@ -36,7 +37,7 @@ public final class TestStatusBarAdaptersBeforeWiring {
         messageQueue.addMessage(new SimpleMessage("subject", "content"));
         Assert.assertFalse(headlessStatusBar.isMessageQueueIndicatorEnabled());
 
-        new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue).wireAdapter();
+        new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue, new HeadlessMessageQueueViewerFactory(headlessStatusBar)).wireAdapter();
         
         Assert.assertTrue(headlessStatusBar.isMessageQueueIndicatorEnabled());
     }

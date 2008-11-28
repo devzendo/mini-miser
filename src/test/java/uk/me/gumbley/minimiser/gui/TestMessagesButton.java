@@ -85,7 +85,7 @@ public final class TestMessagesButton extends LoggingTestCase {
         if (pulsing) {
             Assert.assertTrue(backColours.size() > 5); // account for some judder
         } else {
-            Assert.assertEquals(1, backColours.size()); 
+            Assert.assertTrue(backColours.size() < 5); 
         }
     }
     /**

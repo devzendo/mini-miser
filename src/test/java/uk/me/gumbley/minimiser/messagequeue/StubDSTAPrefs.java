@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.messagequeue;
 
 import java.util.HashSet;
+import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsEvent;
@@ -11,6 +12,7 @@ import uk.me.gumbley.minimiser.prefs.PrefsEvent;
  *
  */
 public final class StubDSTAPrefs implements Prefs {
+    private static final Logger LOGGER = Logger.getLogger(StubDSTAPrefs.class);
     private HashSet<String> dstaFlags = new HashSet<String>();
     
     /**
@@ -165,21 +167,25 @@ public final class StubDSTAPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public void clearDontShowThisAgain(final String messageId) {
+    public void clearDontShowThisAgainFlag(final String messageId) {
+        LOGGER.debug("Clearing DSTA flag " + messageId);
         dstaFlags.remove(messageId);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean dontShowThisAgain(final String messageId) {
-        return dstaFlags.contains(messageId);
+    public boolean isDontShowThisAgainFlagSet(final String messageId) {
+        final boolean contained = dstaFlags.contains(messageId);
+        LOGGER.debug("Value of DSTA flag " + messageId + " is " + contained);
+        return contained;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setDontShowThisAgain(final String messageId) {
+    public void setDontShowThisAgainFlag(final String messageId) {
+        LOGGER.debug("Setting DSTA flag " + messageId);
         dstaFlags.add(messageId);
     }
 }

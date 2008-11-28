@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.gui;
 
 import java.awt.Color;
+import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.JButton;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.string.StringUtils;
@@ -18,7 +19,7 @@ public final class MessagesButton extends JButton implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(MessagesButton.class);
     private volatile int numberOfMessages;
     private final Sleeper sleeper;
-    private final Object notification;
+    private final ArrayBlockingQueue<Boolean> notification;
     private final Color normalBackground;
     private boolean isMessageViewerShowing;
 
@@ -30,7 +31,7 @@ public final class MessagesButton extends JButton implements Runnable {
         this.sleeper = sleepr;
         numberOfMessages = 0;
         normalBackground = getBackground();
-        notification = new Object();
+        notification = new ArrayBlockingQueue<Boolean>(10);
         
         startAnimatorThread();
         
@@ -48,8 +49,11 @@ public final class MessagesButton extends JButton implements Runnable {
     private void refreshCurrentState() {
         setVisible(numberOfMessages > 0 && !isMessageViewerShowing);
         setTextToNumberOfMessages();
-        synchronized (notification) {
-            notification.notify();
+        LOGGER.debug("Notifiying colour&message cycle thread");
+        try {
+            notification.put(Boolean.TRUE);
+        } catch (final InterruptedException e) {
+            LOGGER.warn("Interrupted whilst queueing pulse notification", e);
         }
     }
 
@@ -91,27 +95,32 @@ public final class MessagesButton extends JButton implements Runnable {
      * {@inheritDoc}
      */
     public void run() {
+        LOGGER.debug("Started colour & message cycle thread");
         final ColorTransform transform = new ColorTransform(normalBackground, Color.RED);
         final double maxprop = 0.3;
         final long millisUntilChangeText = 3000L;
         final int sleepDelay = 250;
         while (Thread.currentThread().isAlive()) {
+            LOGGER.debug("Colour & message cycle thread waiting for notification");
             synchronized (notification) {
                 try {
-                    notification.wait();
+                    notification.take();
                 } catch (final InterruptedException e) {
                     LOGGER.warn("Interrupted whilst waiting for pulse notification", e);
                 }
             }
+            LOGGER.debug("Colour & message cycle thread out of wait");
             if (numberOfMessages == 0) {
+                LOGGER.debug("No messages");
                 setBackground(normalBackground);
             } else {
+                LOGGER.debug("Cycling...");
                 final double amt = 0.02;
                 double prop = 0.0;
                 int dx = 1;
                 long millisWithThisText = 0L;
                 boolean showMessageCount = true;
-                while (numberOfMessages != 0) {
+                while (Thread.currentThread().isAlive() && numberOfMessages != 0) {
                     setBackground(transform.getProportionalColor(prop));
                     prop = prop + (dx * amt);
                     if (prop <= 0.0) {

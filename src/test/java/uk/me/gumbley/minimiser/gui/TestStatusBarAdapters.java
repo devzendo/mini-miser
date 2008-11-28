@@ -34,8 +34,9 @@ public final class TestStatusBarAdapters {
     public void getPrerequisites() {
         headlessStatusBar = new HeadlessStatusBar(new DelayedExecutor());
         messageQueue = new MessageQueue(new StubDSTAPrefs());
-        new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue).wireAdapter();
         headlessMessageQueueViewerFactory = new HeadlessMessageQueueViewerFactory(headlessStatusBar);
+        new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue, headlessMessageQueueViewerFactory).wireAdapter();
+        
     }
     
     /**

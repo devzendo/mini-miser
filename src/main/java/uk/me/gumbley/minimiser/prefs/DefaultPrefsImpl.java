@@ -222,21 +222,21 @@ public final class DefaultPrefsImpl implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public boolean dontShowThisAgain(final String messageId) {
+    public boolean isDontShowThisAgainFlagSet(final String messageId) {
         return iniFile.getBooleanValue(SECTION_DONT_SHOW_THIS_AGAIN, messageId);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setDontShowThisAgain(final String messageId) {
+    public void setDontShowThisAgainFlag(final String messageId) {
         iniFile.setBooleanValue(SECTION_DONT_SHOW_THIS_AGAIN, messageId, true);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void clearDontShowThisAgain(final String messageId) {
+    public void clearDontShowThisAgainFlag(final String messageId) {
         iniFile.setBooleanValue(SECTION_DONT_SHOW_THIS_AGAIN, messageId, false);
     }
 

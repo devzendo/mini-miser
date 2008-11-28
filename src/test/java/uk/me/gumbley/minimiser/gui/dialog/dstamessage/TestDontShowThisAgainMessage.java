@@ -49,7 +49,7 @@ public final class TestDontShowThisAgainMessage extends SpringLoaderUnittestCase
      */
     @Test
     public void userCanSayGetOuttaMyFace() {
-        Assert.assertFalse(prefs.dontShowThisAgain(messageId.toString()));
+        Assert.assertFalse(prefs.isDontShowThisAgainFlagSet(messageId.toString()));
         
         final DSTAMessage message = messageFactory.possiblyShowMessage(messageId, "an annoying message");
         Assert.assertNotNull(message);
@@ -57,7 +57,7 @@ public final class TestDontShowThisAgainMessage extends SpringLoaderUnittestCase
         final StubDSTAMessage stubMessage = (StubDSTAMessage) message;
         stubMessage.getOutOfMyFace(); // "click"....
         
-        Assert.assertTrue(prefs.dontShowThisAgain(messageId.toString()));
+        Assert.assertTrue(prefs.isDontShowThisAgainFlagSet(messageId.toString()));
         
         Assert.assertNull(messageFactory.possiblyShowMessage(messageId, "an annoying message"));
     }

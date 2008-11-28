@@ -42,10 +42,4 @@ public interface Message {
      * Component.
      */
     Object getMessageContent();
-    
-    /**
-     * Called when the message queue removes this message, so it can perform
-     * any final activities (e.g. storing DSTA flags, for SimpleDSTAMessages).
-     */
-    void onRemoval();
 }
