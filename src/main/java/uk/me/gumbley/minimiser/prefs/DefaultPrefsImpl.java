@@ -41,6 +41,9 @@ public final class DefaultPrefsImpl implements Prefs {
     
     private static final String SECTION_DONT_SHOW_THIS_AGAIN = "dsta";
 
+    private static final String SECTION_UPDATE_CHECKER = "update_checker";
+    private static final String UPDATE_CHECK_ALLOWED = "allowcheck";
+
     /**
      * Create a Prefs object backed by a file
      * @param prefsFile the file path
@@ -245,5 +248,19 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void clearAllDontShowThisAgainFlags() {
         iniFile.removeSection(SECTION_DONT_SHOW_THIS_AGAIN);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUpdateAvailableCheckAllowed() {
+        return iniFile.getBooleanValue(SECTION_UPDATE_CHECKER, UPDATE_CHECK_ALLOWED);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
+        iniFile.setBooleanValue(SECTION_UPDATE_CHECKER, UPDATE_CHECK_ALLOWED, allowed);
     }
 }

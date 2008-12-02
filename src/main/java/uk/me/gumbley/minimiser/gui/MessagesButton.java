@@ -1,7 +1,7 @@
 package uk.me.gumbley.minimiser.gui;
 
 import java.awt.Color;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.JButton;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.string.StringUtils;
@@ -19,7 +19,7 @@ public final class MessagesButton extends JButton implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(MessagesButton.class);
     private volatile int numberOfMessages;
     private final Sleeper sleeper;
-    private final ArrayBlockingQueue<Boolean> notification;
+    private final LinkedBlockingQueue<Boolean> notification;
     private final Color normalBackground;
     private boolean isMessageViewerShowing;
 
@@ -31,7 +31,7 @@ public final class MessagesButton extends JButton implements Runnable {
         this.sleeper = sleepr;
         numberOfMessages = 0;
         normalBackground = getBackground();
-        notification = new ArrayBlockingQueue<Boolean>(10);
+        notification = new LinkedBlockingQueue<Boolean>();
         
         startAnimatorThread();
         

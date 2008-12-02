@@ -7,13 +7,15 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 
 /**
- * Prefs that get/set the "don't show this again" flags from memory.
+ * Prefs that get/set the "don't show this again" flags and
+ * "upgrade check" flag from memory.
  * @author matt
  *
  */
-public final class StubDSTAPrefs implements Prefs {
-    private static final Logger LOGGER = Logger.getLogger(StubDSTAPrefs.class);
+public final class StubMessageQueuePrefs implements Prefs {
+    private static final Logger LOGGER = Logger.getLogger(StubMessageQueuePrefs.class);
     private HashSet<String> dstaFlags = new HashSet<String>();
+    private boolean updateCheckAllowed = false;
     
     /**
      * {@inheritDoc}
@@ -187,5 +189,19 @@ public final class StubDSTAPrefs implements Prefs {
     public void setDontShowThisAgainFlag(final String messageId) {
         LOGGER.debug("Setting DSTA flag " + messageId);
         dstaFlags.add(messageId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUpdateAvailableCheckAllowed() {
+        return updateCheckAllowed;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
+        updateCheckAllowed = allowed;
     }
 }

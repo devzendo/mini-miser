@@ -27,8 +27,8 @@ public final class TestMessageQueue extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() throws IOException {
-        prefs = new StubDSTAPrefs();
-        messageQueue = new MessageQueue(prefs);
+        prefs = new StubMessageQueuePrefs();
+        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(prefs));
     }
     
     /**
@@ -242,20 +242,7 @@ public final class TestMessageQueue extends LoggingTestCase {
         
         EasyMock.verify(obs);
     }
-    
-    @Test
-    public void nonBlockedMessageIndicatesItIsNotBlocked() {
-        Assert.assertFalse(messageQueue.isDontShowThisAgainFlagSet(DSTAMessageId.TEST));
-    }
-
-    @Test
-    public void blockedMessageIndicatesItIsBlocked() {
-        prefs.setDontShowThisAgainFlag(DSTAMessageId.TEST.toString());
-
-        Assert.assertTrue(messageQueue.isDontShowThisAgainFlagSet(DSTAMessageId.TEST));
-    }
-
-    // WOZERE add dsta message, set its dsta flag, remove it, check prefs has flag stored
+   
     @Test
     public void dstaFlagSetInPrefsWhenRemoved() {
         final SimpleDSTAMessage message = new SimpleDSTAMessage("subject", "content", DSTAMessageId.TEST);
@@ -269,5 +256,21 @@ public final class TestMessageQueue extends LoggingTestCase {
         messageQueue.removeMessage(message); // they removed it from the queue
 
         Assert.assertTrue(prefs.isDontShowThisAgainFlagSet(DSTAMessageId.TEST.toString()));
+    }
+    
+    @Test
+    public void updateCheckCanBeDisabled() {
+        prefs.setUpdateAvailableCheckAllowed(true);
+        final UpdateCheckRequestMessage message = new UpdateCheckRequestMessage("allow updates check?", "could the app check for updates?");
+        messageQueue.addMessage(message);
+        Assert.assertTrue(message.isCheckAllowed());
+        
+        message.setCheckAllowed(false); // they remove the check
+        
+        Assert.assertTrue(prefs.isUpdateAvailableCheckAllowed());
+        
+        messageQueue.removeMessage(message); // they removed it from the queue
+        
+        Assert.assertFalse(prefs.isUpdateAvailableCheckAllowed());
     }
 }

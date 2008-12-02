@@ -19,14 +19,14 @@ public final class MessageQueue {
     private final ObserverList<MessageQueueEvent> observerList;
     private final ArrayList<Message> messages;
     private int currentMessageIndex;
-    private final Prefs prefs;
+    private final MessageQueueBorderGuardFactory messageQueueBorderGuardFactory;
     
     /**
      * Construct the MessageQueue.
-     * @param preferences the prefs for querying/storing DSTA flags
+     * @param borderGuardFactory the MessageQueueBorderGuardFactory
      */
-    public MessageQueue(final Prefs preferences) {
-        this.prefs = preferences;
+    public MessageQueue(final MessageQueueBorderGuardFactory borderGuardFactory) {
+        this.messageQueueBorderGuardFactory = borderGuardFactory;
         observerList = new ObserverList<MessageQueueEvent>();
         messages = new ArrayList<Message>();
         currentMessageIndex = -1;
@@ -107,14 +107,15 @@ public final class MessageQueue {
             LOGGER.warn(warning);
             throw new IllegalArgumentException(warning);
         }
-        // TODO: refactor - replace type code with polymorphism/state/strategy
-        if (message instanceof SimpleDSTAMessage) {
-            final SimpleDSTAMessage dstaMessage = (SimpleDSTAMessage) message;
-            if (isDontShowThisAgainFlagSet(dstaMessage.getDstaMessageId())) {
-                LOGGER.debug("Not adding message '" + message.getSubject() + "' since it has been blocked");
-                return;
-            }
+        
+        final MessageQueueBorderGuard borderGuard = getBorderGuardForMessage(message);
+        if (!borderGuard.isAllowed(message)) {
+            LOGGER.debug("Not adding message '" + message.getSubject() + "' since it has been vetoed");
+            return;
         }
+        
+        borderGuard.prepareMessage(message);
+        
         LOGGER.info("Message Added: " + message.getSubject());
         if (currentMessageIndex == -1) {
             currentMessageIndex = 0;
@@ -148,19 +149,20 @@ public final class MessageQueue {
         } else if (currentMessageIndex == messages.size() - 1) {
             setCurrentMessageIndex(currentMessageIndex - 1);
         }
-        // TODO: refactor - replace type code with polymorphism/state/strategy
-        if (message instanceof SimpleDSTAMessage) {
-            final SimpleDSTAMessage dstaMessage = (SimpleDSTAMessage) message;
-            if (dstaMessage.dontShowAgain()) {
-                LOGGER.debug("Message '" + dstaMessage.getSubject() + "' is not being shown again");
-                prefs.setDontShowThisAgainFlag(dstaMessage.getDstaMessageId().toString());
-            }
-        }
+
+        final MessageQueueBorderGuard borderGuard = getBorderGuardForMessage(message);
+        borderGuard.processMessageRemoval(message);
+        
         messages.remove(message);
         observerList.eventOccurred(new MessageRemovedEvent(message));
         observerList.eventOccurred(new MessageQueueModifiedEvent(messages.size()));
     }
 
+    private MessageQueueBorderGuard getBorderGuardForMessage(final Message message) {
+        final MessageQueueBorderGuard borderGuard = messageQueueBorderGuardFactory.createBorderGuard(message);
+        return borderGuard;
+    }
+    
     /**
      * Obtain a message given its index
      * @param index the index into the message list
@@ -169,16 +171,4 @@ public final class MessageQueue {
     public Message getMessageByIndex(final int index) {
         return messages.get(index);
     }
-
-    /**
-     * Has th euser indicated that they don't want to see this message again?
-     * Will the indicated message be shown if added to the message queue?
-     * @param id the DSTAMessageId of the message to be posted
-     * @return true if the message will NOT be added, false if it WILL be
-     * added.
-     */
-    public boolean isDontShowThisAgainFlagSet(final DSTAMessageId id) {
-        return prefs.isDontShowThisAgainFlagSet(id.toString());
-    }
-    
 }

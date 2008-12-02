@@ -38,6 +38,7 @@
 		<constructor-arg ref="statusBar" />
 		<constructor-arg ref="mainFrame" />
 		<constructor-arg ref="messageQueue" />
+		<constructor-arg ref="cursorManager" />
 	</bean>
 	
 	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" >
@@ -104,8 +105,13 @@
     <bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
+			    <!-- initialising lifecycles typically initialise helpers used everywhere else
+			         so they need to happen early -->
+			    <value>startupQueueHelperInitialisingLifecycle</value>
 			    <value>dstaMessageHelperInitialisingLifecycle</value>
+			    <value>messageQueueHelperInitialisingLifecycle</value>
 			    <value>welcomeDialogHelperInitialisingLifecycle</value>
+			    
 			    <value>tabEventListenerLifecycle</value>
 			    <value>viewMenuInitialiserLifecycle</value>
 				<value>statusBarAdapterLifecycle</value>
@@ -125,6 +131,10 @@
 		<constructor-arg ref="lifecycleList" />	
 	</bean>
 	
+	<bean id="startupQueueHelperInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.StartupQueueHelperInitialisingLifecycle">
+		<constructor-arg ref="springLoader" />
+	</bean>
+	
 	<bean id="viewMenuInitialiserLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.ViewMenuInitialiserLifecycle">
 		<constructor-arg ref="prefs" />	
 		<constructor-arg ref="menu" />	
@@ -139,6 +149,10 @@
 	</bean>
 	
 	<bean id="dstaMessageHelperInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DSTAMessageHelperInitialisingLifecycle">
+		<constructor-arg ref="springLoader" />
+	</bean>
+	
+	<bean id="messageQueueHelperInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MessageQueueHelperInitialisingLifecycle">
 		<constructor-arg ref="springLoader" />
 	</bean>
 	
@@ -187,6 +201,10 @@
 	<bean id="openTabList" class="uk.me.gumbley.minimiser.opentablist.OpenTabList" />
 
 	<bean id="messageQueue" class="uk.me.gumbley.minimiser.messagequeue.MessageQueue">
+		<constructor-arg ref="messageQueueBorderGuardFactory" />
+	</bean>
+
+	<bean id="messageQueueBorderGuardFactory" class="uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory">
 		<constructor-arg ref="prefs" />
 	</bean>
 

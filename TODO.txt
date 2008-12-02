@@ -10,12 +10,10 @@ BUGS:
   but haven't reproduced it since.
 
 CURRENT TASKS:
-* Message Queue - need to add possiblyAddMessage(SimpleDSTAMessage)
-* DefaultMessageQueueViewer - need to set the DSTA flag on removal of a
-  SimpleDSTAMessage.
-* Lifecycle (of some sort? gui wiring?) to wire the StatusBarMessageQueueAdapter
-* Factor out general HTML-dialog-from-resource code?
-* Why do StatusBars need DelayedExecutors?
+* had added update check allowed pref, and message. need to create a 
+  message renderer for this message type, adn add the message onto the queue
+  on upgrade check.
+* startup message for update check request.
 
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 
@@ -52,6 +50,10 @@ CROSS-PLATFORM UI ISSUES:
 
 
 DRY / TDD improvements:
+* Factor out general HTML-dialog-from-resource code?
+
+* Why do StatusBars need DelayedExecutors?
+
 * database switching via menu does not seem to have been done TDD - 
   addDatabaseSwitchObserver is only called from wireAdapters - add tests
 
@@ -86,6 +88,9 @@ DRY / TDD improvements:
 * extract an interface from INIFile and allow an instance of this to be passes
   into Prefs. Create a memory-based one for unit tests using a real prefs, but
   without the disk overhead
+  
+* MessageQueue - need to factor out the handling of DSTA messages (getting /
+  setting flags on add/remove)
   
 NIGGLES:
 

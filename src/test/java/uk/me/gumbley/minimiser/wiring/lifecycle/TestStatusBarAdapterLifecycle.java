@@ -7,7 +7,7 @@ import uk.me.gumbley.minimiser.gui.HeadlessStatusBar;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
-import uk.me.gumbley.minimiser.messagequeue.StubDSTAPrefs;
+import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
@@ -38,7 +38,7 @@ public final class TestStatusBarAdapterLifecycle extends SpringLoaderUnittestCas
         Assert.assertNotNull(headlessStatusBar);
         
         final PrefsFactory prefsFactory = getSpringLoader().getBean("&prefs", PrefsFactory.class);
-        prefsFactory.setPrefs(new StubDSTAPrefs());
+        prefsFactory.setPrefs(new StubMessageQueuePrefs());
 
         messageQueue = getSpringLoader().getBean("messageQueue", MessageQueue.class);
         Assert.assertNotNull(messageQueue);

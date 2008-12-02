@@ -15,16 +15,14 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.gui.Beautifier;
-import uk.me.gumbley.minimiser.gui.MainFrameStatusBar;
-import uk.me.gumbley.minimiser.gui.StatusBarMessageQueueAdapter;
 import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.gui.messagequeueviewer.DefaultMessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
+import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import uk.me.gumbley.minimiser.messagequeue.SimpleDSTAMessage;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
-import uk.me.gumbley.minimiser.messagequeue.StubDSTAPrefs;
+import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
@@ -81,18 +79,16 @@ public final class DriveStatusBarDisplay {
         
         frame.add(buttonPanel, BorderLayout.NORTH);
 
-        messageQueue = new MessageQueue(new StubDSTAPrefs());
+        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(new StubMessageQueuePrefs()));
         
         final MainFrameStatusBar mainFrameStatusBar = new MainFrameStatusBar(new DelayedExecutor());
         frame.add(mainFrameStatusBar.getPanel(), BorderLayout.SOUTH);
 
-        messageQueueViewerFactory = new DefaultMessageQueueViewerFactory(mainFrameStatusBar, frame, messageQueue);
-//        mainFrameStatusBar.addLaunchMessageQueueActionListener(new ActionListener() {
-//            public void actionPerformed(final ActionEvent e) {
-//                messageQueueViewerFactory.createMessageQueueViewer();
-//            }
-//        });
-
+        final CursorManager cursorManager = new CursorManager();
+        cursorManager.setMainFrame(frame);
+        
+        messageQueueViewerFactory = new DefaultMessageQueueViewerFactory(mainFrameStatusBar,
+            frame, messageQueue, cursorManager);
         
         frame.pack();
         frame.setVisible(true);

@@ -7,8 +7,9 @@ import uk.me.gumbley.minimiser.gui.messagequeueviewer.HeadlessMessageQueueViewer
 import uk.me.gumbley.minimiser.gui.messagequeueviewer.HeadlessMessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.gui.messagequeueviewer.MessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
+import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
-import uk.me.gumbley.minimiser.messagequeue.StubDSTAPrefs;
+import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 
 
@@ -33,7 +34,7 @@ public final class TestStatusBarAdapters {
     @Before
     public void getPrerequisites() {
         headlessStatusBar = new HeadlessStatusBar(new DelayedExecutor());
-        messageQueue = new MessageQueue(new StubDSTAPrefs());
+        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(new StubMessageQueuePrefs()));
         headlessMessageQueueViewerFactory = new HeadlessMessageQueueViewerFactory(headlessStatusBar);
         new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue, headlessMessageQueueViewerFactory).wireAdapter();
         

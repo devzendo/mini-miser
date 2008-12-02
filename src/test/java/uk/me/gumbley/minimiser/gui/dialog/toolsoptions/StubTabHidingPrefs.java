@@ -183,4 +183,17 @@ public final class StubTabHidingPrefs implements Prefs {
      */
     public void setDontShowThisAgainFlag(final String messageId) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUpdateAvailableCheckAllowed() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
+    }
 }

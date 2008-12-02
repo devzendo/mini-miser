@@ -250,4 +250,20 @@ public final class TestPrefs extends LoggingTestCase {
 
         Assert.assertFalse(prefs.isDontShowThisAgainFlagSet(messageId));
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void updateAvailableCheckAllowedCanBeChanged() {
+        Assert.assertFalse(prefs.isUpdateAvailableCheckAllowed());
+        
+        prefs.setUpdateAvailableCheckAllowed(true);
+        
+        Assert.assertTrue(prefs.isUpdateAvailableCheckAllowed());
+        
+        prefs.setUpdateAvailableCheckAllowed(false);
+        
+        Assert.assertFalse(prefs.isUpdateAvailableCheckAllowed());
+    }
 }

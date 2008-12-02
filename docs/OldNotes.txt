@@ -167,9 +167,13 @@ Software Update Available Notification
 --------------------------------------
 * User needs to be asked whether software update checks are permissible. they
   should be disabled until the user indicates that they are.
-* Need a dialog asking them whether update checks should be made, with a short
-  statement of what the communication to HQ involves, and a link to the
-  privacy policy. Also mention broadcast messages.
+* Need a dialog (a Message) asking them whether update checks should be made,
+  with a short statement of what the communication to HQ involves, and a link
+  to the privacy policy.
+* Permission message to be posted on upgrade/startup unless consent has
+  been given/denied. Consent via message control - a checkbox. But does not
+  checking this constitute a refusal? This really needs a Yes / No message?
+  
 * Privacy policy also needs to state that it is not mandatory for there to be
   a connection to the network in order for the software to work.
 * Need a menu link to perform an update availability check. If used, the

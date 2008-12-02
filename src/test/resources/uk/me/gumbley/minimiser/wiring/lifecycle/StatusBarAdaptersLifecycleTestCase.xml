@@ -39,9 +39,12 @@
 	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" />
 
 	<bean id="messageQueue" class="uk.me.gumbley.minimiser.messagequeue.MessageQueue">
-		<constructor-arg ref="prefs" />
+		<constructor-arg ref="messageQueueBorderGuardFactory" />
 	</bean>
 
+	<bean id="messageQueueBorderGuardFactory" class="uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory">
+		<constructor-arg ref="prefs" />
+	</bean>
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" />
 
 </beans>

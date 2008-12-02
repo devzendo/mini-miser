@@ -260,4 +260,19 @@ public final class ChangeCollectingPrefs implements Prefs {
     public void setDontShowThisAgainFlag(final String messageId) {
         unsupported("setDontShowThisAgain");
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isUpdateAvailableCheckAllowed() {
+        unsupported("isUpdateAvailableCheckAllowed");
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
+        unsupported("setUpdateAvailableCheckAllowed");
+    }
 }
