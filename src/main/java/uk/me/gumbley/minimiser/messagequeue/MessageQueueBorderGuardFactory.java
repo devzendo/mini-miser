@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.messagequeue;
 
 import org.apache.log4j.Logger;
+import uk.me.gumbley.minimiser.prefs.BooleanFlag;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
@@ -32,8 +33,8 @@ public final class MessageQueueBorderGuardFactory {
             return new SimpleMessageHandler();
         } else if (message instanceof SimpleDSTAMessage) {
             return new SimpleDSTAMessageHandler();
-        } else if (message instanceof UpdateCheckRequestMessage) {
-            return new UpdateCheckRequestMessageHandler();
+        } else if (message instanceof BooleanFlagSettingMessage) {
+            return new BooleanFlagSettingMessageHandler();
         } else {
             return new VetoEverythingMessageHandler();
         }
@@ -94,7 +95,7 @@ public final class MessageQueueBorderGuardFactory {
         }
     }
 
-    private class UpdateCheckRequestMessageHandler implements MessageQueueBorderGuard {
+    private class BooleanFlagSettingMessageHandler implements MessageQueueBorderGuard {
         /**
          * {@inheritDoc}
          */
@@ -106,17 +107,21 @@ public final class MessageQueueBorderGuardFactory {
          * {@inheritDoc}
          */
         public void prepareMessage(final Message message) {
-            final UpdateCheckRequestMessage updateCheckRequestMessage = ((UpdateCheckRequestMessage) message);
-            updateCheckRequestMessage.setCheckAllowed(prefs.isUpdateAvailableCheckAllowed());
+            final BooleanFlagSettingMessage booleanFlagSettingMessage = ((BooleanFlagSettingMessage) message);
+            final BooleanFlag booleanFlagName = booleanFlagSettingMessage.getBooleanFlagName();
+            final boolean booleanFlagValueFromPrefs = prefs.isBooleanFlagSet(booleanFlagName);
+            LOGGER.debug("Preparing message for BooleanFlag " + booleanFlagName + " with initial setting " + booleanFlagValueFromPrefs);
+            booleanFlagSettingMessage.setBooleanFlagValue(booleanFlagValueFromPrefs);
         }
 
         /**
          * {@inheritDoc}
          */
         public void processMessageRemoval(final Message message) {
-            final UpdateCheckRequestMessage updateCheckRequestMessage = ((UpdateCheckRequestMessage) message);
-            LOGGER.info("Setting update check allowed flag to " + updateCheckRequestMessage.isCheckAllowed());
-            prefs.setUpdateAvailableCheckAllowed(updateCheckRequestMessage.isCheckAllowed());
+            final BooleanFlagSettingMessage booleanFlagSettingMessage = ((BooleanFlagSettingMessage) message);
+            final BooleanFlag booleanFlagName = booleanFlagSettingMessage.getBooleanFlagName();
+            LOGGER.info("Setting BooleanFlag " + booleanFlagName + " to " + booleanFlagSettingMessage.isBooleanFlagSet());
+            prefs.setBooleanFlag(booleanFlagName, booleanFlagSettingMessage.isBooleanFlagSet());
         }
     }
 

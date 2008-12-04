@@ -255,15 +255,15 @@ public final class TestPrefs extends LoggingTestCase {
      * 
      */
     @Test
-    public void updateAvailableCheckAllowedCanBeChanged() {
-        Assert.assertFalse(prefs.isUpdateAvailableCheckAllowed());
+    public void generalBooleanFlagCanBeChanged() {
+        Assert.assertFalse(prefs.isBooleanFlagSet(TestBooleanFlags.TEST));
         
-        prefs.setUpdateAvailableCheckAllowed(true);
+        prefs.setBooleanFlag(TestBooleanFlags.TEST, true);
         
-        Assert.assertTrue(prefs.isUpdateAvailableCheckAllowed());
+        Assert.assertTrue(prefs.isBooleanFlagSet(TestBooleanFlags.TEST));
         
-        prefs.setUpdateAvailableCheckAllowed(false);
+        prefs.setBooleanFlag(TestBooleanFlags.TEST, false);
         
-        Assert.assertFalse(prefs.isUpdateAvailableCheckAllowed());
+        Assert.assertFalse(prefs.isBooleanFlagSet(TestBooleanFlags.TEST));
     }
 }

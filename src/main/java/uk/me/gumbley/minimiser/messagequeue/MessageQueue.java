@@ -107,13 +107,13 @@ public final class MessageQueue {
             LOGGER.warn(warning);
             throw new IllegalArgumentException(warning);
         }
-        
+        LOGGER.debug("Constructing border guard for message type " + message.getClass().getSimpleName());
         final MessageQueueBorderGuard borderGuard = getBorderGuardForMessage(message);
         if (!borderGuard.isAllowed(message)) {
             LOGGER.debug("Not adding message '" + message.getSubject() + "' since it has been vetoed");
             return;
         }
-        
+        LOGGER.debug("Border guard preparing message");
         borderGuard.prepareMessage(message);
         
         LOGGER.info("Message Added: " + message.getSubject());

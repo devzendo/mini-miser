@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.prefs.BooleanFlag;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 
@@ -188,13 +189,13 @@ public final class StubOpenListPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public boolean isUpdateAvailableCheckAllowed() {
+    public boolean isBooleanFlagSet(BooleanFlag flagName) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
+    public void setBooleanFlag(BooleanFlag flagName, final boolean allowed) {
     }
 }

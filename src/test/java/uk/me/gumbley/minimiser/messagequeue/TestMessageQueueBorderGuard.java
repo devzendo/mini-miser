@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
+import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 
 
 /**
@@ -70,23 +71,31 @@ public final class TestMessageQueueBorderGuard {
         Assert.assertTrue(prefs.isDontShowThisAgainFlagSet(message.getDstaMessageId().toString()));
     }
     
+    /**
+     * 
+     */
     @Test
     public void updateCheckMessageIsPopulatedWithPersistentStateOfFlag() {
-        prefs.setUpdateAvailableCheckAllowed(true);
-        final UpdateCheckRequestMessage message = new UpdateCheckRequestMessage("allow updates check?", "could the app check for updates?");
-        Assert.assertFalse(message.isCheckAllowed());
+        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        final BooleanFlagSettingMessage message = new BooleanFlagSettingMessage(
+            "allow updates check?", "could the app check for updates?", CoreBooleanFlags.UPDATE_CHECK_ALLOWED, "Do this?");
+        Assert.assertFalse(message.isBooleanFlagSet());
         final MessageQueueBorderGuard borderGuard = borderGuardFactory.createBorderGuard(message);
         borderGuard.prepareMessage(message);
-        Assert.assertTrue(message.isCheckAllowed());
+        Assert.assertTrue(message.isBooleanFlagSet());
     }
     
+    /**
+     * 
+     */
     @Test
     public void updateCheckMessageThatChangesFlagChangesPersistentFlagOnRemoval() {
-        final UpdateCheckRequestMessage message = new UpdateCheckRequestMessage("allow updates check?", "could the app check for updates?");
-        message.setCheckAllowed(true);
-        Assert.assertFalse(prefs.isUpdateAvailableCheckAllowed());
+        final BooleanFlagSettingMessage message = new BooleanFlagSettingMessage(
+            "allow updates check?", "could the app check for updates?", CoreBooleanFlags.UPDATE_CHECK_ALLOWED, "Do this?");
+        message.setBooleanFlagValue(true);
+        Assert.assertFalse(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
         final MessageQueueBorderGuard borderGuard = borderGuardFactory.createBorderGuard(message);
         borderGuard.processMessageRemoval(message);
-        Assert.assertTrue(prefs.isUpdateAvailableCheckAllowed());
+        Assert.assertTrue(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
     }
 }

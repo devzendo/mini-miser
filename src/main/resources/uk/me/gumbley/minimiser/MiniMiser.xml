@@ -268,6 +268,7 @@
 			<list>
 				<value>prefsInitialisingFreshInstallListener</value>
 				<value>welcomeMessageDisplayingListener</value>
+				<value>queueUpdateAvailableFlagSettingMessageListener</value>
 			</list>
 		</property>
 	</bean>
@@ -278,6 +279,11 @@
 
 	<bean id="welcomeMessageDisplayingListener" class="uk.me.gumbley.minimiser.upgradedetector.WelcomeMessageDisplayingListener">
 		<constructor-arg ref="startupQueue" />
+	</bean>
+
+	<bean id="queueUpdateAvailableFlagSettingMessageListener" class="uk.me.gumbley.minimiser.upgradedetector.QueueUpdateAvailableFlagSettingMessageListener">
+		<constructor-arg ref="prefs" />
+		<constructor-arg ref="messageQueue" />
 	</bean>
 
 	<!-- miscellaneous -->	

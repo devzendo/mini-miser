@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.JButton;
 import org.apache.log4j.Logger;
+import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.util.Sleeper;
 
@@ -17,11 +18,12 @@ import uk.me.gumbley.minimiser.util.Sleeper;
 @SuppressWarnings("serial")
 public final class MessagesButton extends JButton implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(MessagesButton.class);
-    private volatile int numberOfMessages;
     private final Sleeper sleeper;
     private final LinkedBlockingQueue<Boolean> notification;
     private final Color normalBackground;
-    private boolean isMessageViewerShowing;
+
+    private volatile int numberOfMessages;
+    private volatile boolean isMessageViewerShowing;
 
     /**
      * Construct the MessagesButton
@@ -47,14 +49,18 @@ public final class MessagesButton extends JButton implements Runnable {
     }
 
     private void refreshCurrentState() {
-        setVisible(numberOfMessages > 0 && !isMessageViewerShowing);
-        setTextToNumberOfMessages();
-        LOGGER.debug("Notifiying colour&message cycle thread");
-        try {
-            notification.put(Boolean.TRUE);
-        } catch (final InterruptedException e) {
-            LOGGER.warn("Interrupted whilst queueing pulse notification", e);
-        }
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                setVisible(numberOfMessages > 0 && !isMessageViewerShowing);
+                setTextToNumberOfMessages();
+                LOGGER.debug("Notifiying colour&message cycle thread");
+                try {
+                    notification.put(Boolean.TRUE);
+                } catch (final InterruptedException e) {
+                    LOGGER.warn("Interrupted whilst queueing pulse notification", e);
+                }
+            }
+        });
     }
 
     private void setTextToNumberOfMessages() {
@@ -112,7 +118,11 @@ public final class MessagesButton extends JButton implements Runnable {
             LOGGER.debug("Colour & message cycle thread out of wait");
             if (numberOfMessages == 0) {
                 LOGGER.debug("No messages");
-                setBackground(normalBackground);
+                GUIUtils.runOnEventThread(new Runnable() {
+                    public void run() {
+                        setBackground(normalBackground);
+                    }
+                });
             } else {
                 LOGGER.debug("Cycling...");
                 final double amt = 0.02;
@@ -121,7 +131,12 @@ public final class MessagesButton extends JButton implements Runnable {
                 long millisWithThisText = 0L;
                 boolean showMessageCount = true;
                 while (Thread.currentThread().isAlive() && numberOfMessages != 0) {
-                    setBackground(transform.getProportionalColor(prop));
+                    final double finalProp = prop;
+                    GUIUtils.runOnEventThread(new Runnable() {
+                        public void run() {
+                            setBackground(transform.getProportionalColor(finalProp));
+                        }
+                    });
                     prop = prop + (dx * amt);
                     if (prop <= 0.0) {
                         prop = 0.0;
@@ -137,11 +152,16 @@ public final class MessagesButton extends JButton implements Runnable {
                     if (millisWithThisText > millisUntilChangeText) {
                         millisWithThisText = 0L;
                         showMessageCount = !showMessageCount;
-                        if (showMessageCount) {
-                            setTextToNumberOfMessages();
-                        } else {
-                            setText("Click to read");
-                        }
+                        final boolean finalShowMessageCount = showMessageCount;
+                        GUIUtils.runOnEventThread(new Runnable() {
+                            public void run() {
+                                if (finalShowMessageCount) {
+                                    setTextToNumberOfMessages();
+                                } else {
+                                    setText("Click to read");
+                                }
+                            }
+                        });
                     }
                     
                 }

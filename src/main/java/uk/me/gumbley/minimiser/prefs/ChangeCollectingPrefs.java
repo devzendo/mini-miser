@@ -264,15 +264,15 @@ public final class ChangeCollectingPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public boolean isUpdateAvailableCheckAllowed() {
-        unsupported("isUpdateAvailableCheckAllowed");
+    public boolean isBooleanFlagSet(final BooleanFlag flagName) {
+        unsupported("isBooleanFlagSet");
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
-        unsupported("setUpdateAvailableCheckAllowed");
+    public void setBooleanFlag(final BooleanFlag flagName, final boolean allowed) {
+        unsupported("setBooleanFlag");
     }
 }

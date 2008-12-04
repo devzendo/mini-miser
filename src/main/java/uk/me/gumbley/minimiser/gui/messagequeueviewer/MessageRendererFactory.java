@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.gui.messagequeueviewer;
 
+import uk.me.gumbley.minimiser.messagequeue.BooleanFlagSettingMessage;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.SimpleDSTAMessage;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
@@ -27,6 +28,8 @@ public final class MessageRendererFactory {
             return new SimpleMessageRenderer((SimpleMessage) message);
         } else if (message instanceof SimpleDSTAMessage) {
             return new SimpleDSTAMessageRenderer((SimpleDSTAMessage) message);
+        } else if (message instanceof BooleanFlagSettingMessage) {
+            return new BooleanFlagSettingMessageRenderer((BooleanFlagSettingMessage) message);
         }
         return null;
     }

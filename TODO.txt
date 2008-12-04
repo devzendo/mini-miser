@@ -8,13 +8,17 @@ BUGS:
 * sometimes on startup the hourglass sticks - happened soon after adding
   tools->options dialog - have added stuck hourglass detector to CursorManager
   but haven't reproduced it since.
+* if you have the message viewer open and remove the last message, it
+  correctly shows no messages. if another message comes in, the messages
+  button thread activates cycling the colors, but there's (correctly) no
+  button present (since the viewer is active). However, the viewer does not
+  refresh to show that there are now more messages.
 
 CURRENT TASKS:
-* had added update check allowed pref, and message. need to create a 
-  message renderer for this message type, adn add the message onto the queue
-  on upgrade check.
-* startup message for update check request.
-
+* Create a PrefsEvent listener wired by a Lifecycle that checks the boolean
+  flags section, and update check allowed flag - and if changed to true
+  triggers an update available check.
+  
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
@@ -36,8 +40,13 @@ CROSS-PLATFORM UI ISSUES:
   Ditto the tabs in the about box.
 * Mac:
   * menu should be on the standard apple menu bar
+    * about menu item needs hooking in
+    * exit needs hooking in
+    * tools->options is prefs on the main menu
   * title should be set properly
   * there are white patches on the dialogs
+  * new database file chooser is unusable - needs create new folder option
+  * messages button doesn't pulse.
 
 
 -- final tasks before release --

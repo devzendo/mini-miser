@@ -41,8 +41,7 @@ public final class DefaultPrefsImpl implements Prefs {
     
     private static final String SECTION_DONT_SHOW_THIS_AGAIN = "dsta";
 
-    private static final String SECTION_UPDATE_CHECKER = "update_checker";
-    private static final String UPDATE_CHECK_ALLOWED = "allowcheck";
+    private static final String SECTION_BOOLEAN_FLAGS = "update_checker";
 
     /**
      * Create a Prefs object backed by a file
@@ -253,14 +252,14 @@ public final class DefaultPrefsImpl implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public boolean isUpdateAvailableCheckAllowed() {
-        return iniFile.getBooleanValue(SECTION_UPDATE_CHECKER, UPDATE_CHECK_ALLOWED);
+    public boolean isBooleanFlagSet(final BooleanFlag flagName) {
+        return iniFile.getBooleanValue(SECTION_BOOLEAN_FLAGS, flagName.getFlagName());
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
-        iniFile.setBooleanValue(SECTION_UPDATE_CHECKER, UPDATE_CHECK_ALLOWED, allowed);
+    public void setBooleanFlag(final BooleanFlag flagName, final boolean value) {
+        iniFile.setBooleanValue(SECTION_BOOLEAN_FLAGS, flagName.getFlagName(), value);
     }
 }

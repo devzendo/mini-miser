@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.gui.dialog.toolsoptions;
 import java.util.HashMap;
 import java.util.Map;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.prefs.BooleanFlag;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 
@@ -187,13 +188,13 @@ public final class StubTabHidingPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public boolean isUpdateAvailableCheckAllowed() {
+    public boolean isBooleanFlagSet(final BooleanFlag flagName) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
+    public void setBooleanFlag(final BooleanFlag flagName, final boolean allowed) {
     }
 }

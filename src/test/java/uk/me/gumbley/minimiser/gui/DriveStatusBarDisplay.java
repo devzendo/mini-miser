@@ -17,12 +17,14 @@ import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.gui.messagequeueviewer.DefaultMessageQueueViewerFactory;
+import uk.me.gumbley.minimiser.messagequeue.BooleanFlagSettingMessage;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import uk.me.gumbley.minimiser.messagequeue.SimpleDSTAMessage;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
 import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
+import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 import uk.me.gumbley.minimiser.version.AppVersion;
 
@@ -53,7 +55,20 @@ public final class DriveStatusBarDisplay {
         final JButton addMessageButton = new JButton("Add simple message");
         addMessageButton.addActionListener(new ActionListener () {
             public void actionPerformed(final ActionEvent e) {
-                addMessage();
+                final Message.Importance importance = randomImportance();
+                final String subject = "Message # " + ++messageNumber;
+                final String content = "here is a sample document in HTML<br>"
+                    + "it can have <b>bold</b> text and <em>italic</em> text<br>"
+                    + "and to show off long documents, it has <br>"
+                    + "many lines<br>"
+                    + "of rather uninteresting text<br>"
+                    + "before ending the document<br>"
+                    + "but nevertheless, there are enough lines<br>"
+                    + "and new paragraphs...<p>"
+                    + "to make it long enough<br>"
+                    + "to make the scrollbar active.";
+                
+                messageQueue.addMessage(new SimpleMessage(subject, content, importance));
             }
         });
         
@@ -62,16 +77,39 @@ public final class DriveStatusBarDisplay {
         final JButton addDSTAMessageButton = new JButton("Add DSTA message");
         addDSTAMessageButton.addActionListener(new ActionListener () {
             public void actionPerformed(final ActionEvent e) {
-                addDSTAMessage();
+                final Message.Importance importance = randomImportance();
+                final String subject = "Upgrade <b>now!!!</b>";
+                final String content = "Here is a sample message\nIt's a multiline message\n"
+                    + "But otherwise, rather boring...";
+                messageQueue.addMessage(new SimpleDSTAMessage(subject, content, importance, DSTAMessageId.TEST));
             }
         });
         
         buttonPanel.add(addDSTAMessageButton);
+
+        final JButton addBooleanFlagMessageButton = new JButton("Add BooleanFlag message");
+        addBooleanFlagMessageButton.addActionListener(new ActionListener () {
+            public void actionPerformed(final ActionEvent e) {
+                final Message.Importance importance = randomImportance();
+                final String subject = "Please decide whether you want update checks";
+                final String content = AppName.getAppName() + " can check periodically for software updates.<br>"
+                + "This requires an active Internet connection.<br>"
+                + "Only the latest software details are obtained from our web site.<br>"
+                + "No personal information is sent, other than your computer's IP address.<br>"
+                + "Your IP address is logged by our ISP, but is not used by us to identify you.";
+                final String checkboxText = "Allow periodic software update checks?";
+                messageQueue.addMessage(new BooleanFlagSettingMessage(subject, content, importance, CoreBooleanFlags.UPDATE_CHECK_ALLOWED, checkboxText));
+            }
+        });
         
+        buttonPanel.add(addBooleanFlagMessageButton);
+
         final JButton removeMessageButton = new JButton("Remove first message");
         removeMessageButton.addActionListener(new ActionListener () {
             public void actionPerformed(final ActionEvent e) {
-                removeMessage();
+                if (messageQueue.size() > 0) {
+                    messageQueue.removeMessage(messageQueue.getMessageByIndex(0));
+                }
             }
         });
         
@@ -97,37 +135,6 @@ public final class DriveStatusBarDisplay {
         new StatusBarMessageQueueAdapter(mainFrameStatusBar, messageQueue, messageQueueViewerFactory).wireAdapter();
     }
 
-    /**
-     * 
-     */
-    protected void addMessage() {
-        final Message.Importance importance = randomImportance();
-        final String subject = "Message # " + ++messageNumber;
-        final String content = "here is a sample document in HTML<br>"
-            + "it can have <b>bold</b> text and <em>italic</em> text<br>"
-            + "and to show off long documents, it has <br>"
-            + "many lines<br>"
-            + "of rather uninteresting text<br>"
-            + "before ending the document<br>"
-            + "but nevertheless, there are enough lines<br>"
-            + "and new paragraphs...<p>"
-            + "to make it long enough<br>"
-            + "to make the scrollbar active.";
-
-        messageQueue.addMessage(new SimpleMessage(subject, content, importance));
-    }
-
-    /**
-     * 
-     */
-    protected void addDSTAMessage() {
-        final Message.Importance importance = randomImportance();
-        final String subject = "Upgrade <b>now!!!</b>";
-        final String content = "Here is a sample message\nIt's a multiline message\n"
-            + "But otherwise, rather boring...";
-        messageQueue.addMessage(new SimpleDSTAMessage(subject, content, importance, DSTAMessageId.TEST));
-    }
-
     private Message.Importance randomImportance() {
         final double imprandom = Math.random();
         Message.Importance importance;
@@ -139,12 +146,6 @@ public final class DriveStatusBarDisplay {
             importance = Message.Importance.LOW;
         }
         return importance;
-    }
-
-    private void removeMessage() {
-        if (messageQueue.size() > 0) {
-            messageQueue.removeMessage(messageQueue.getMessageByIndex(0));
-        }
     }
 
     /**

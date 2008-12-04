@@ -171,9 +171,7 @@ Software Update Available Notification
   with a short statement of what the communication to HQ involves, and a link
   to the privacy policy.
 * Permission message to be posted on upgrade/startup unless consent has
-  been given/denied. Consent via message control - a checkbox. But does not
-  checking this constitute a refusal? This really needs a Yes / No message?
-  
+  been given/denied. Consent via message control - a checkbox. 
 * Privacy policy also needs to state that it is not mandatory for there to be
   a connection to the network in order for the software to work.
 * Need a menu link to perform an update availability check. If used, the
@@ -209,7 +207,35 @@ Software Update Available Notification
   configurable listeners)
 * This subsystem does NOT do the update - there is no automatic download
   facility - the user must download it and install it themselves.
-  
+
+* more design notes on software updates:
+  * on upgrade/install post the update check requested message if check
+    allowed flag not set in prefs.
+  * this might set the check allowed boolean flag in prefs
+  * on prefs change - specifically the update check going true - trigger the
+    daily update check with a progress-bar updating adapter.
+  * on explictly selecting check for updates from the help menu, trigger the
+    daily update check with a progress bar updating adapter, ignoring whether
+    any update checks have occurred today (you can always force an update check)
+    - perhaps this could be done by clearing the last-update-check day prefs
+    setting
+  * check for updates must be greyed out unless prefs allow
+  * add a task to the startup queue that repeatedly waits for an hour, then
+    triggers the daily update check with no adapter (there will be no UI during
+    background update checks)
+  * the actual update check:
+    * do nothing (warn) if prefs deny the check - shouldn't get here if prefs
+      do not allow it
+    * do nothing if today == the last-update-check in prefs
+    * try to do the update check:
+      * get the latest version number
+      * if successful:
+        * set last-update-check to today
+        * store the version number
+        * if no change log cached or if version is different
+          * get the change log and cache
+          * post message informing user of details of new update
+          
 Version comparison
 ------------------
 * Need to be able to compare versions to find out if there's an update,

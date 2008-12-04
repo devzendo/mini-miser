@@ -8,6 +8,7 @@ import org.junit.Test;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 
@@ -227,6 +228,10 @@ public final class TestMessageQueue extends LoggingTestCase {
         EasyMock.verify(obs);
     }
     
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
     @Test
     public void blockedSimpleDSTAMessageDoesNotGetSentOnAdd() {
         prefs.setDontShowThisAgainFlag(DSTAMessageId.TEST.toString());
@@ -243,6 +248,9 @@ public final class TestMessageQueue extends LoggingTestCase {
         EasyMock.verify(obs);
     }
    
+    /**
+     * 
+     */
     @Test
     public void dstaFlagSetInPrefsWhenRemoved() {
         final SimpleDSTAMessage message = new SimpleDSTAMessage("subject", "content", DSTAMessageId.TEST);
@@ -258,19 +266,24 @@ public final class TestMessageQueue extends LoggingTestCase {
         Assert.assertTrue(prefs.isDontShowThisAgainFlagSet(DSTAMessageId.TEST.toString()));
     }
     
+    /**
+     * 
+     */
     @Test
     public void updateCheckCanBeDisabled() {
-        prefs.setUpdateAvailableCheckAllowed(true);
-        final UpdateCheckRequestMessage message = new UpdateCheckRequestMessage("allow updates check?", "could the app check for updates?");
-        messageQueue.addMessage(message);
-        Assert.assertTrue(message.isCheckAllowed());
+        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        final BooleanFlagSettingMessage message = new BooleanFlagSettingMessage(
+            "allow updates check?", "could the app check for updates?", CoreBooleanFlags.UPDATE_CHECK_ALLOWED, "Do this?");
+        Assert.assertFalse(message.isBooleanFlagSet());
+        messageQueue.addMessage(message); // it gets prepared from prefs
+        Assert.assertTrue(message.isBooleanFlagSet());
         
-        message.setCheckAllowed(false); // they remove the check
+        message.setBooleanFlagValue(false); // they remove the check
         
-        Assert.assertTrue(prefs.isUpdateAvailableCheckAllowed());
+        Assert.assertTrue(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
         
         messageQueue.removeMessage(message); // they removed it from the queue
         
-        Assert.assertFalse(prefs.isUpdateAvailableCheckAllowed());
+        Assert.assertFalse(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
     }
 }

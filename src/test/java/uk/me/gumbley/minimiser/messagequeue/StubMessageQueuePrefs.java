@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.messagequeue;
 import java.util.HashSet;
 import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.prefs.BooleanFlag;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 
@@ -15,7 +16,7 @@ import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 public final class StubMessageQueuePrefs implements Prefs {
     private static final Logger LOGGER = Logger.getLogger(StubMessageQueuePrefs.class);
     private HashSet<String> dstaFlags = new HashSet<String>();
-    private boolean updateCheckAllowed = false;
+    private HashSet<BooleanFlag> setBooleanFlags = new HashSet<BooleanFlag>();
     
     /**
      * {@inheritDoc}
@@ -194,14 +195,18 @@ public final class StubMessageQueuePrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public boolean isUpdateAvailableCheckAllowed() {
-        return updateCheckAllowed;
+    public boolean isBooleanFlagSet(final BooleanFlag flagName) {
+        return setBooleanFlags.contains(flagName);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setUpdateAvailableCheckAllowed(final boolean allowed) {
-        updateCheckAllowed = allowed;
+    public void setBooleanFlag(final BooleanFlag flagName, final boolean allowed) {
+        if (allowed) {
+            setBooleanFlags.add(flagName);
+        } else {
+            setBooleanFlags.remove(flagName);
+        }
     }
 }
