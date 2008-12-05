@@ -115,6 +115,7 @@
 			    <value>tabEventListenerLifecycle</value>
 			    <value>viewMenuInitialiserLifecycle</value>
 				<value>statusBarAdapterLifecycle</value>
+				<value>updateAllowedPrefsEventObserverLifecycle</value>
 			    <value>upgradeEventListenerLifecycle</value>
 			    <value>databaseEventListenerLifecycle</value>
 				<value>databaseOpenerLifecycle</value>
@@ -142,6 +143,12 @@
 		
 	<bean id="statusBarAdapterLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.StatusBarAdapterLifecycle">
 		<constructor-arg ref="statusBarMessageQueueAdapter" />
+	</bean>
+
+	<bean id="updateAllowedPrefsEventObserverLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpdateAllowedPrefsEventObserverLifecycle">
+		<constructor-arg ref="updateChecker" />
+		<constructor-arg ref="prefs" />
+		<constructor-arg ref="updateProgressAdapterFactory" />
 	</bean>
 
 	<bean id="upgradeEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
@@ -284,6 +291,23 @@
 	<bean id="queueUpdateAvailableFlagSettingMessageListener" class="uk.me.gumbley.minimiser.upgradedetector.QueueUpdateAvailableFlagSettingMessageListener">
 		<constructor-arg ref="prefs" />
 		<constructor-arg ref="messageQueue" />
+	</bean>
+
+    <!-- update checker -->
+	<bean id="updateChecker" class="uk.me.gumbley.minimiser.updatechecker.DefaultUpdateChecker">
+		<constructor-arg ref="prefs" />
+		<constructor-arg ref="messageQueue" />
+		<constructor-arg ref="remoteFileRetriever" />
+		<constructor-arg ref="changeLogTransformer" />
+	</bean>
+
+	<bean id="updateProgressAdapterFactory" class="uk.me.gumbley.minimiser.updatechecker.DefaultUpdateProgressAdapterFactory">
+	</bean>
+
+	<bean id="remoteFileRetriever" class="uk.me.gumbley.minimiser.updatechecker.DefaultRemoteFileRetriever">
+	</bean>
+
+	<bean id="changeLogTransformer" class="uk.me.gumbley.minimiser.updatechecker.DefaultChangeLogTransformer">
 	</bean>
 
 	<!-- miscellaneous -->	

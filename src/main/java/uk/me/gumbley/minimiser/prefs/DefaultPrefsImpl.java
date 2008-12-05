@@ -261,5 +261,6 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public void setBooleanFlag(final BooleanFlag flagName, final boolean value) {
         iniFile.setBooleanValue(SECTION_BOOLEAN_FLAGS, flagName.getFlagName(), value);
+        observerList.eventOccurred(new PrefsEvent(PrefsSection.BOOLEAN_FLAGS));
     }
 }

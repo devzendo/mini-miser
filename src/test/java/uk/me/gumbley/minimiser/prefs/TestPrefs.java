@@ -214,6 +214,14 @@ public final class TestPrefs extends LoggingTestCase {
         prefs.clearTabHidden("SQL");
 
         EasyMock.verify(obs);
+        
+        EasyMock.reset(obs);
+        obs.eventOccurred(EasyMock.eq(new PrefsEvent(PrefsSection.BOOLEAN_FLAGS)));
+        EasyMock.replay(obs);
+        
+        prefs.setBooleanFlag(TestBooleanFlags.TEST, true);
+
+        EasyMock.verify(obs);
     }
     
     /**
