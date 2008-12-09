@@ -223,18 +223,21 @@ Software Update Available Notification
   * add a task to the startup queue that repeatedly waits for an hour, then
     triggers the daily update check with no adapter (there will be no UI during
     background update checks)
+    
   * the actual update check:
     * do nothing (warn) if prefs deny the check - shouldn't get here if prefs
       do not allow it
-    * do nothing if today == the last-update-check in prefs
+    * do nothing if today == the date-of-last-update-check in prefs
     * try to do the update check:
-      * get the latest version number
+      * get the latest (remote) version number
       * if successful:
-        * set last-update-check to today
-        * store the version number
-        * if no change log cached or if version is different
+        * if no remote version stored in prefs or if remote version is different
+            to current runtime version
           * get the change log and cache
-          * post message informing user of details of new update
+          * if change log downloaded ok:
+            * set date-of-last-update-check to today
+            * store the remote version number in prefs
+            * post message informing user of details of new update
           
 Version comparison
 ------------------

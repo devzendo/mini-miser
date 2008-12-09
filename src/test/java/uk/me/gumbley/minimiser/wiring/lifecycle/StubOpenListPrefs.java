@@ -189,13 +189,39 @@ public final class StubOpenListPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public boolean isBooleanFlagSet(BooleanFlag flagName) {
+    public boolean isBooleanFlagSet(final BooleanFlag flagName) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setBooleanFlag(BooleanFlag flagName, final boolean allowed) {
+    public void setBooleanFlag(final BooleanFlag flagName, final boolean allowed) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDateOfLastUpdateAvailableCheck() {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDateOfLastUpdateAvailableCheck(final String ukFormatDateString) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLastRemoteUpdateVersion() {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastRemoteUpdateVersion(final String version) {
     }
 }

@@ -41,7 +41,11 @@ public final class DefaultPrefsImpl implements Prefs {
     
     private static final String SECTION_DONT_SHOW_THIS_AGAIN = "dsta";
 
-    private static final String SECTION_BOOLEAN_FLAGS = "update_checker";
+    private static final String SECTION_BOOLEAN_FLAGS = "boolean_flags";
+
+    private static final String SECTION_UPDATE_CHECKER = "update_checker";
+    private static final String DATE_OF_UPDATE_AVAILABILITY_CHECK = "last_check_date";
+    private static final String REMOTE_VERSION = "remote_version";
 
     /**
      * Create a Prefs object backed by a file
@@ -262,5 +266,33 @@ public final class DefaultPrefsImpl implements Prefs {
     public void setBooleanFlag(final BooleanFlag flagName, final boolean value) {
         iniFile.setBooleanValue(SECTION_BOOLEAN_FLAGS, flagName.getFlagName(), value);
         observerList.eventOccurred(new PrefsEvent(PrefsSection.BOOLEAN_FLAGS));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDateOfLastUpdateAvailableCheck() {
+        return iniFile.getValue(SECTION_UPDATE_CHECKER, DATE_OF_UPDATE_AVAILABILITY_CHECK, "");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDateOfLastUpdateAvailableCheck(final String ukFormatDateString) {
+        iniFile.setValue(SECTION_UPDATE_CHECKER, DATE_OF_UPDATE_AVAILABILITY_CHECK, ukFormatDateString);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLastRemoteUpdateVersion() {
+        return iniFile.getValue(SECTION_UPDATE_CHECKER, REMOTE_VERSION, "");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastRemoteUpdateVersion(final String version) {
+        iniFile.setValue(SECTION_UPDATE_CHECKER, REMOTE_VERSION, version);
     }
 }

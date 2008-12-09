@@ -275,4 +275,34 @@ public final class ChangeCollectingPrefs implements Prefs {
     public void setBooleanFlag(final BooleanFlag flagName, final boolean allowed) {
         unsupported("setBooleanFlag");
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDateOfLastUpdateAvailableCheck() {
+        unsupported("getDateOfLastUpdateAvailableCheck");
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDateOfLastUpdateAvailableCheck(final String ukFormatDateString) {
+        unsupported("setDateOfLastUpdateAvailableCheck");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLastRemoteUpdateVersion() {
+        unsupported("getLastRemoteUpdateVersion");
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastRemoteUpdateVersion(final String version) {
+        unsupported("setLastRemoteUpdateVersion");
+    }
 }

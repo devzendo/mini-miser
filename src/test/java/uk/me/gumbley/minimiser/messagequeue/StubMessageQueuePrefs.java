@@ -209,4 +209,30 @@ public final class StubMessageQueuePrefs implements Prefs {
             setBooleanFlags.remove(flagName);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDateOfLastUpdateAvailableCheck() {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDateOfLastUpdateAvailableCheck(final String ukFormatDateString) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLastRemoteUpdateVersion() {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastRemoteUpdateVersion(final String version) {
+    }
 }

@@ -274,4 +274,28 @@ public final class TestPrefs extends LoggingTestCase {
         
         Assert.assertFalse(prefs.isBooleanFlagSet(TestBooleanFlags.TEST));
     }
+    
+    /**
+     * 
+     */
+    @Test
+    public void lastUpdateCheckDateCanBeChanged() {
+        Assert.assertEquals("", prefs.getDateOfLastUpdateAvailableCheck());
+        
+        prefs.setDateOfLastUpdateAvailableCheck("8 Dec 2008");
+
+        Assert.assertEquals("8 Dec 2008", prefs.getDateOfLastUpdateAvailableCheck());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void lastRemoteUpdateVersionCanBeChanged() {
+        Assert.assertEquals("", prefs.getLastRemoteUpdateVersion());
+        
+        prefs.setLastRemoteUpdateVersion("1.2.3");
+        
+        Assert.assertEquals("1.2.3", prefs.getLastRemoteUpdateVersion());
+    }
 }

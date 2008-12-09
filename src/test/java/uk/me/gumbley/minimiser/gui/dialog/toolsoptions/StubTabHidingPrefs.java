@@ -197,4 +197,30 @@ public final class StubTabHidingPrefs implements Prefs {
      */
     public void setBooleanFlag(final BooleanFlag flagName, final boolean allowed) {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDateOfLastUpdateAvailableCheck() {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDateOfLastUpdateAvailableCheck(final String ukFormatDateString) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLastRemoteUpdateVersion() {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setLastRemoteUpdateVersion(final String version) {
+    }
 }

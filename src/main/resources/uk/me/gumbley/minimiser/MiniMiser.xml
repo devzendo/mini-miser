@@ -299,6 +299,7 @@
 		<constructor-arg ref="messageQueue" />
 		<constructor-arg ref="remoteFileRetriever" />
 		<constructor-arg ref="changeLogTransformer" />
+		<constructor-arg ref="today" />
 	</bean>
 
 	<bean id="updateProgressAdapterFactory" class="uk.me.gumbley.minimiser.updatechecker.DefaultUpdateProgressAdapterFactory">
@@ -322,6 +323,8 @@
 	</bean>
 
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" />
+
+	<bean id="today" class="uk.me.gumbley.minimiser.util.DefaultToday" />
 
 	<!-- threading -->
 	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" />
