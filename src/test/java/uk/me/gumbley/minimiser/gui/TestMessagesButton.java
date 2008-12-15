@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.gui;
 import java.awt.Color;
 import java.util.HashSet;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,11 @@ public final class TestMessagesButton extends LoggingTestCase {
     public void getPrerequisites() {
         sleeper = new Sleeper(10);
         button = new MessagesButton(sleeper);
+    }
+    
+    @After
+    public void terminateWithPrejudice() {
+        button.interruptThread();
     }
     
     /**

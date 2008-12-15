@@ -24,6 +24,8 @@ public final class MessagesButton extends JButton implements Runnable {
 
     private volatile int numberOfMessages;
     private volatile boolean isMessageViewerShowing;
+    private volatile boolean bAlive;
+    private Thread animatorThread;
 
     /**
      * Construct the MessagesButton
@@ -41,7 +43,7 @@ public final class MessagesButton extends JButton implements Runnable {
     }
 
     private Thread startAnimatorThread() {
-        final Thread animatorThread = new Thread(this);
+        animatorThread = new Thread(this);
         animatorThread.setName("Messages Button Animator");
         animatorThread.setDaemon(true);
         animatorThread.start();
@@ -106,7 +108,8 @@ public final class MessagesButton extends JButton implements Runnable {
         final double maxprop = 0.3;
         final long millisUntilChangeText = 3000L;
         final int sleepDelay = 250;
-        while (Thread.currentThread().isAlive()) {
+        bAlive = true;
+        while (bAlive && Thread.currentThread().isAlive()) {
             LOGGER.debug("Colour & message cycle thread waiting for notification");
             synchronized (notification) {
                 try {
@@ -130,7 +133,7 @@ public final class MessagesButton extends JButton implements Runnable {
                 int dx = 1;
                 long millisWithThisText = 0L;
                 boolean showMessageCount = true;
-                while (Thread.currentThread().isAlive() && numberOfMessages != 0) {
+                while (bAlive && Thread.currentThread().isAlive() && numberOfMessages != 0) {
                     final double finalProp = prop;
                     GUIUtils.runOnEventThread(new Runnable() {
                         public void run() {
@@ -167,5 +170,13 @@ public final class MessagesButton extends JButton implements Runnable {
                 }
             }
         }
+    }
+
+    /**
+     * For use in unit tests - kill the animator. Die, Disney!
+     */
+    public void interruptThread() {
+        bAlive = false;
+        animatorThread.interrupt();
     }
 }
