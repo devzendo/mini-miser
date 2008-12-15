@@ -1,0 +1,36 @@
+# here are some comment lines
+# which are ignored
+
+v1.0.0 - witty title goes here
+==============================
+This is the first major release.
+Blah
+Blah
+Blah
+
+
+
+v0.9.8 another witty title
+------
+Fixed some bugs
+
+
+v0.9
+thought I'd release again
+
+v0.9.7 : colon separating witty title not out of order
+------
+* now handles left handed flange benders
+* and bullet points
+
+v0.8 bug fixes
+fixed several bugs
+
+0.7 more bug fixes
+
+0.6 22/02/1969 way back, man
+
+0.5 01/01/1970 dawn of a new epoch -
+
+0.5-alpha 25/12/2009 - separators are removed - 
+0.3 :30/12/2008 no chronological sorting: 

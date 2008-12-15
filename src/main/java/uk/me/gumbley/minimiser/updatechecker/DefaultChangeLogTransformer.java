@@ -14,8 +14,8 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
     /**
      * {@inheritDoc}
      */
-    public String readFileSubsection(final String currentVersion, 
-            final String latestVersion, final File changeLogFile) throws IOException {
+    public String readFileSubsection(final ComparableVersion currentVersion, 
+            final ComparableVersion latestVersion, final File changeLogFile) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

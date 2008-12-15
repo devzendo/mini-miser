@@ -25,5 +25,5 @@ public interface ChangeLogTransformer {
      * @return the transformed subsection
      * @throws IOException on file read or transformation failure
      */
-    String readFileSubsection(String currentVersion, String latestVersion, File changeLogFile) throws IOException;
+    String readFileSubsection(ComparableVersion currentVersion, ComparableVersion latestVersion, File changeLogFile) throws IOException;
 }

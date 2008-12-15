@@ -300,6 +300,7 @@
 		<constructor-arg ref="remoteFileRetriever" />
 		<constructor-arg ref="changeLogTransformer" />
 		<constructor-arg ref="today" />
+		<constructor-arg ref="workerPool" />
 	</bean>
 
 	<bean id="updateProgressAdapterFactory" class="uk.me.gumbley.minimiser.updatechecker.DefaultUpdateProgressAdapterFactory">

@@ -3,7 +3,6 @@ package uk.me.gumbley.minimiser.updatechecker;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import uk.me.gumbley.minimiser.common.AppName;
 
 /**
  * Allows tests to "remotely retrieve files".
@@ -18,22 +17,37 @@ public final class StubRemoteFileRetriever implements RemoteFileRetriever {
     private String version;
     private String changeLogContents;
 
-    void injectCommsFailureOnVersionNumberRetrieval() {
+    /**
+     * 
+     */
+    public void injectCommsFailureOnVersionNumberRetrieval() {
         versionNumberRetrievalCommsFailureException = new IOException("Unable to retrieve remote data");
     }
     
+    /**
+     * 
+     */
     public void injectCommsFailureOnChangeLogRetrieval() {
         changeLogRetrievalCommsFailureException = new IOException("Unable to retrieve remote data");
     }
     
+    /**
+     * @param v the injected version number
+     */
     void injectReturnedVersionNumber(final String v) {
         version = v;
     }
     
+    /**
+     * @param contents the log contents
+     */
     void injectReturnedChangeLogContents(final String contents) {
         changeLogContents = contents;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getFileContents(final String fileName) throws IOException {
         if (versionNumberRetrievalCommsFailureException != null) {
             throw versionNumberRetrievalCommsFailureException;
@@ -41,6 +55,9 @@ public final class StubRemoteFileRetriever implements RemoteFileRetriever {
         return version;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public File saveFileContents(final String fileName) throws IOException {
         if (changeLogRetrievalCommsFailureException != null) {
             throw changeLogRetrievalCommsFailureException;

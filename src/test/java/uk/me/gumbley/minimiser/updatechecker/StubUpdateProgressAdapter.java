@@ -1,7 +1,6 @@
 package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.IOException;
-import uk.me.gumbley.minimiser.updatechecker.UpdateProgressAdapter;
 
 /**
  * @author matt
@@ -9,38 +8,51 @@ import uk.me.gumbley.minimiser.updatechecker.UpdateProgressAdapter;
  */
 public final class StubUpdateProgressAdapter implements UpdateProgressAdapter {
 
+    /**
+     * {@inheritDoc}
+     */
     public void updateCheckDisallowed() {
-        // TODO Auto-generated method stub
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void alreadyCheckedToday() {
-        // TODO Auto-generated method stub
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void checkStarted() {
-        // TODO Auto-generated method stub
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void commsFailure(final IOException exception) {
-        // TODO Auto-generated method stub
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void noUpdateAvailable() {
-        // TODO Auto-generated method stub
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void updateAvailable() {
-        // TODO Auto-generated method stub
-        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void transformFailure(final IOException exception) {
-        // TODO Auto-generated method stub
-        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void finished() {
     }
 }

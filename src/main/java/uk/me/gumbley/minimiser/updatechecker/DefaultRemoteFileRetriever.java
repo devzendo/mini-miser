@@ -18,6 +18,9 @@ public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public File saveFileContents(final String fileName) throws IOException {
         // TODO Auto-generated method stub
         return null;
