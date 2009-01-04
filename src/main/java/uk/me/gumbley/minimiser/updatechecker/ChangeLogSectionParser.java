@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +34,7 @@ public final class ChangeLogSectionParser {
     private Matcher versionDateTitleMatcher;
     
     
-    public class Section {
+    public class Section implements Comparable<Section> {
         private final String versionText;
         private final String informationText;
         private final String dateText;
@@ -67,6 +68,14 @@ public final class ChangeLogSectionParser {
         public final String getTitleText() {
             return titleText;
         }
+
+        /**
+         * Sort in reverse ComparableVersoin order - highest first
+         * {@inheritDoc}
+         */
+        public int compareTo(final Section o) {
+            return comparableVersion.compareTo(o.comparableVersion) * -1;
+        }
     }
     
     private interface SectionHandler {
@@ -76,11 +85,11 @@ public final class ChangeLogSectionParser {
     public ChangeLogSectionParser(final File testLog) {
         this.log = testLog;
         versionDateTitleMatcher = Pattern.compile("^" + ComparableVersion.VERSION_REGEX
-            + SEPARATOR_REGEX + DATE_REGEX + "?" + SEPARATOR_REGEX + TITLE_REGEX + "$").matcher("");
+            + SEPARATOR_REGEX + DATE_REGEX + "?" + SEPARATOR_REGEX + TITLE_REGEX + SEPARATOR_REGEX + "$").matcher("");
     }
 
     public List<Section> getVersionSections(final ComparableVersion fromVersion,
-        final ComparableVersion toVersion) throws IOException {
+        final ComparableVersion toVersion) throws IOException, ParseException {
         buildingInformationSection = false;
         resetSectionState();
         int lineNo = 0;
@@ -95,7 +104,7 @@ public final class ChangeLogSectionParser {
         }; 
         try {
             while (true) {
-                lineNo ++;
+                lineNo++;
                 final String line = bufferedReader.readLine();
                 if (line == null) {
                     break;
@@ -103,12 +112,17 @@ public final class ChangeLogSectionParser {
                 processLine(line, lineNo, rangeChecker);
             }
             endOfFileReached(rangeChecker);
+        } catch (final IllegalArgumentException iae) {
+            // from the ComparableVersion ctor
+            final String warning = "Parse failure on line " + lineNo + ": " + iae.getMessage();
+            LOGGER.warn(warning);
+            throw new ParseException(warning, iae);
         } finally {
             if (bufferedReader != null) {
                 bufferedReader.close();
             }
         }
-        // TODO need to sort output
+        Collections.sort(outputSections);
         return outputSections;
     }
 
@@ -120,7 +134,8 @@ public final class ChangeLogSectionParser {
     }
 
     private void endOfFileReached(final SectionHandler sectionHandler) {
-        // TODO Auto-generated method stub
+        LOGGER.debug("End of file found; checking for emission of previous section");
+        emitPreviousSection(sectionHandler);
         return;
     }
 
@@ -136,7 +151,7 @@ public final class ChangeLogSectionParser {
     }
 
     private boolean processHeaderLine(final String line, final int lineNo, final SectionHandler sectionHandler) throws IOException {
-        if (line.matches("^\\s*$")) {
+        if (line.matches("^\\s*$") || line.matches("^[-=]+$")) {
             return true;
         }
         LOGGER.debug("Testing for header line");
@@ -145,10 +160,14 @@ public final class ChangeLogSectionParser {
             LOGGER.debug("Header found; checking for emission of previous section");
             emitPreviousSection(sectionHandler);
             versionText = versionDateTitleMatcher.group(1) +
-                (versionDateTitleMatcher.group(2) == null ? "" : versionDateTitleMatcher.group(2));
-            dateText = versionDateTitleMatcher.group(3) == null ? "" : versionDateTitleMatcher.group(3);
-            titleText = versionDateTitleMatcher.group(4) == null ? "" : versionDateTitleMatcher.group(4);
+                          (versionDateTitleMatcher.group(2) == null ? "" : versionDateTitleMatcher.group(2)) +
+                          (versionDateTitleMatcher.group(3) == null ? "" : versionDateTitleMatcher.group(3));
+            dateText = versionDateTitleMatcher.group(4) == null ? "" : versionDateTitleMatcher.group(4);
+            titleText = versionDateTitleMatcher.group(5) == null ? "" : versionDateTitleMatcher.group(5);
             buildingInformationSection = true;
+            LOGGER.debug("versionText='" + versionText + "'");
+            LOGGER.debug("dateText='" + dateText + "'");
+            LOGGER.debug("titleText='" + titleText + "'");
             return true;
         }
         return false;
@@ -156,7 +175,9 @@ public final class ChangeLogSectionParser {
 
     private void emitPreviousSection(final SectionHandler sectionHandler) {
         if (!versionText.equals("")) {
-            final Section previous = new Section(versionText, dateText, titleText, mergeInformationLines());
+            final Section previous = new Section(versionText, dateText, titleText,
+                mergeInformationLines());
+            LOGGER.debug("passing section to handler");
             sectionHandler.handleSection(previous);
             resetSectionState();
         }
@@ -185,13 +206,6 @@ public final class ChangeLogSectionParser {
             sb.append("\n");
         }
         return sb.toString();
-    }
-
-    private Section processInformationSection(final String line, final int lineNo) {
-        LOGGER.debug("Processing info line");
-        
-        // TODO Auto-generated method stub
-        return null;
     }
 
     private boolean sectionIsInsideRange(final Section section, final ComparableVersion fromVersion, final ComparableVersion toVersion) {

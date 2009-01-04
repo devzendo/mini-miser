@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.updatechecker.ChangeLogSectionParser.Section;
@@ -23,8 +22,7 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
     /**
      * 
      */
-    @Before
-    public void getPrerequisites() {
+    private void getUsualPrerequisites() {
         final File testLog = new File("src/test/resources/uk/me/gumbley/minimiser/updatechecker/testchanges.txt");
         Assert.assertTrue(testLog.exists());
         sectionParser = new ChangeLogSectionParser(testLog);
@@ -32,10 +30,13 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
     
     /**
      * @throws IOException 
+     * @throws ParseException 
      * 
      */
     @Test
-    public void versionsExist() throws IOException {
+    public void versionsExist() throws IOException, ParseException {
+        getUsualPrerequisites();
+        
         final List<Section> sections = sectionParser.
             getVersionSections(
                 new ComparableVersion("0.0.0"), 
@@ -132,4 +133,15 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
         Assert.assertEquals("witty title goes here", section.getTitleText());
         Assert.assertEquals("This is the first major release.\nBlah\nBlah\nBlah\n", section.getInformationText());
     }
+
+    @Test(expected = ParseException.class)
+    public void testBadVersionsThrow() throws IOException, ParseException {
+        final File testLog = new File("src/test/resources/uk/me/gumbley/minimiser/updatechecker/badversionchanges.txt");
+        Assert.assertTrue(testLog.exists());
+        sectionParser = new ChangeLogSectionParser(testLog);
+        final List<Section> sections = sectionParser.getVersionSections(
+            new ComparableVersion("0.0.0"), 
+            new ComparableVersion("9.9.9")); // all sections
+    }
+
 }

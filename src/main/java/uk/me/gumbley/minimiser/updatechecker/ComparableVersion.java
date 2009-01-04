@@ -18,7 +18,7 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
     /**
      * A regex that matches a version number
      */
-    public static final String VERSION_REGEX = "[vV]?(\\d+(?:\\.\\d+)*)(?:-(\\S+))?";
+    public static final String VERSION_REGEX = "[vV]?(\\d+(?:\\.\\d+)*)(-?)(\\S+)?";
     private static final String ANCHORED_VERSION_REGEX = "^" + VERSION_REGEX + "$";
     private final String version;
     private final String versionNumbers;
@@ -42,7 +42,15 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
             throw new IllegalArgumentException("Version '" + trimmed + "' is not an acceptible version");
         }
         versionNumbers = versionMatcher.group(1);
-        classifier = versionMatcher.group(2) == null ? "" : versionMatcher.group(2);
+        final String hyphen = versionMatcher.group(2) == null ? "" : versionMatcher.group(2);
+        classifier = versionMatcher.group(3) == null ? "" : versionMatcher.group(3);
+        if (classifier.indexOf(".") != -1) {
+            // the classifier regex should be non-whitespace but not dots
+            throw new IllegalArgumentException("Version '" + trimmed + "' does not have an acceptibel classifier '" + classifier + "'");
+        }
+        if (hyphen.length() != 0 && classifier.length() == 0) {
+            throw new IllegalArgumentException("Version '" + trimmed + "' does not have a classifier following a hyphen");
+        }
         version = trimmed;
         final String[] vNumbers = versionNumbers.split("\\.");
         versionNumberList = new ArrayList<Integer>(vNumbers.length);
@@ -182,4 +190,13 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
         return false;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        if (classifier.length() == 0) {
+            return "v" + versionNumbers;
+        }
+        return "v" + versionNumbers + "-" + classifier;
+    }
 }

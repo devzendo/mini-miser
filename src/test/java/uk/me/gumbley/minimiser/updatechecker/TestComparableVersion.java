@@ -165,6 +165,15 @@ public final class TestComparableVersion {
      * 
      */
     @Test
+    public void testClassifierWithNoHyphen() {
+        final ComparableVersion version = new ComparableVersion("2.3alpha");
+        Assert.assertEquals("2.3", version.getVersionNumberString());
+        Assert.assertEquals("alpha", version.getClassifier());
+    }
+    /**
+     * 
+     */
+    @Test
     public void testVersionIntegers() {
         final List<Integer> versionNumberIntegers = new ComparableVersion("1.2.3").getVersionNumberIntegers();
         Assert.assertEquals(3, versionNumberIntegers.size());
@@ -192,5 +201,14 @@ public final class TestComparableVersion {
         Assert.assertTrue(ComparableVersion.inRange(new ComparableVersion("3.0"), new ComparableVersion("2.0"), new ComparableVersion("3.0")));
         Assert.assertTrue(ComparableVersion.inRange(new ComparableVersion("2.1"), new ComparableVersion("2.0"), new ComparableVersion("3.0")));
         Assert.assertTrue(ComparableVersion.inRange(new ComparableVersion("2.9.9"), new ComparableVersion("2.0"), new ComparableVersion("3.0")));
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void testToString() {
+        Assert.assertEquals("v1.0.3-beta", new ComparableVersion("v1.0.3-beta").toString());
+        Assert.assertEquals("v1.0.3", new ComparableVersion("v1.0.3").toString());
     }
 }
