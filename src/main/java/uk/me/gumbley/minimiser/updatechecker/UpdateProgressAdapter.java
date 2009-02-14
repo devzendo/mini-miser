@@ -55,6 +55,13 @@ public interface UpdateProgressAdapter {
      * @param exception details of the exception
      */
     void transformFailure(IOException exception);
+
+    /**
+     * The retrieved change log could not be transformed. Only the finished 
+     * method call will be made after this.
+     * @param exception details of the exception
+     */
+    void transformFailure(ParseException exception);
     
     /**
      * Always called as the final act of the update checker, after all above

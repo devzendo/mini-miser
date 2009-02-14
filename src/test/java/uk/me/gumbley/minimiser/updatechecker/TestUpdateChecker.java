@@ -112,6 +112,13 @@ public final class TestUpdateChecker extends LoggingTestCase {
         /**
          * {@inheritDoc}
          */
+        public void transformFailure(final ParseException exception) {
+            updateProgressAdapter.transformFailure(exception);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
         public void updateAvailable() {
             updateProgressAdapter.updateAvailable();
             
@@ -423,6 +430,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
             public void noUpdateAvailable() {
             }
             public void transformFailure(final IOException exception) {
+            }
+            public void transformFailure(final ParseException exception) {
             }
             public void updateAvailable() {
             }

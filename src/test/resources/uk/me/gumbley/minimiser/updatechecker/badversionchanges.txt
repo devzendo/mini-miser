@@ -2,3 +2,5 @@
 # which are ignored
 
 0.5alpha 25/12/2009 - separators are removed - 
+
+1..2.3 13/02/2009 - a bad version

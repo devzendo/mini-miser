@@ -29,8 +29,8 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
     }
     
     /**
-     * @throws IOException 
-     * @throws ParseException 
+     * @throws IOException no
+     * @throws ParseException no 
      * 
      */
     @Test
@@ -134,12 +134,16 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
         Assert.assertEquals("This is the first major release.\nBlah\nBlah\nBlah\n", section.getInformationText());
     }
 
+    /**
+     * @throws IOException no
+     * @throws ParseException yes
+     */
     @Test(expected = ParseException.class)
     public void testBadVersionsThrow() throws IOException, ParseException {
         final File testLog = new File("src/test/resources/uk/me/gumbley/minimiser/updatechecker/badversionchanges.txt");
         Assert.assertTrue(testLog.exists());
         sectionParser = new ChangeLogSectionParser(testLog);
-        final List<Section> sections = sectionParser.getVersionSections(
+        sectionParser.getVersionSections(
             new ComparableVersion("0.0.0"), 
             new ComparableVersion("9.9.9")); // all sections
     }

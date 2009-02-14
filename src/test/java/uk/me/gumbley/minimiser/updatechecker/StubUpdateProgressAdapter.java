@@ -53,6 +53,13 @@ public final class StubUpdateProgressAdapter implements UpdateProgressAdapter {
     /**
      * {@inheritDoc}
      */
+    public void transformFailure(final ParseException exception) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void finished() {
     }
+
 }

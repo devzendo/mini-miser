@@ -41,10 +41,10 @@ public final class DefaultUpdateChecker implements UpdateChecker {
      * @param msgQueue the message queue on which to post any 'update available'
      * messages
      * @param retriever used to actually retrieve the latest software version
-     * and change log from a remote ite.
+     * and change log from a remote site.
      * @param logXform the change log transformer used to give the user the
      * salient parts from the change log.
-     * @param today used to dind out today's date
+     * @param today used to find out today's date
      * @param pool the worker pool, upon which requests to do the update will
      * be queued
      */
@@ -130,6 +130,10 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             LOGGER.debug("Transforming change log into a message");
             changeLogContents = changeLogTransformer.readFileSubsection(thisVersion, remoteVersion, remoteChangeLogTempFile);
         } catch (final IOException e) {
+            LOGGER.warn("Could not read change log: " + e.getMessage());
+            progressAdapter.transformFailure(e);
+            return;
+        } catch (final ParseException e) {
             LOGGER.warn("Could not transform change log: " + e.getMessage());
             progressAdapter.transformFailure(e);
             return;

@@ -9,9 +9,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.log4j.Logger;
-import uk.me.gumbley.commoncode.string.StringUtils;
 
+import org.apache.log4j.Logger;
+
+/**
+ * Parses a change log into Sections, and allows for a range of
+ * them to be obtainned.
+ * 
+ * @author matt
+ *
+ */
 public final class ChangeLogSectionParser {
     private static final Logger LOGGER = Logger
             .getLogger(ChangeLogSectionParser.class);
@@ -25,7 +32,6 @@ public final class ChangeLogSectionParser {
     private final File log;
     
     // state used when building up a new Section
-    private boolean buildingInformationSection;
     private String versionText;
     private ArrayList<String> informationTextLines;
     private String dateText;
@@ -34,13 +40,28 @@ public final class ChangeLogSectionParser {
     private Matcher versionDateTitleMatcher;
     
     
-    public class Section implements Comparable<Section> {
+    /**
+     * A Section contains all information about a particular
+     * version of the software described in the change log.
+     * 
+     * @author matt
+     *
+     */
+    public final class Section implements Comparable<Section> {
         private final String versionText;
         private final String informationText;
         private final String dateText;
         private final String titleText;
         private ComparableVersion comparableVersion;
 
+        /**
+         * Create a Section
+         * @param version the version number of this section
+         * @param date the date it was released on
+         * @param title the short title for this release
+         * @param information all information pertaining to the
+         * release
+         */
         public Section(final String version, final String date, final String title, final String information) {
             this.versionText = version;
             this.dateText = date;
@@ -49,28 +70,44 @@ public final class ChangeLogSectionParser {
             this.comparableVersion = new ComparableVersion(version);
         }
 
-        public final String getInformationText() {
+        /**
+         * @return the full information pertaining to this
+         * release
+         */
+        public String getInformationText() {
             return informationText;
         }
 
-        public final String getVersionText() {
+        /**
+         * @return the version of this release
+         */
+        public String getVersionText() {
             return versionText;
         }
 
+        /**
+         * @return the version of this release, as a ComparableVersion
+         */
         public ComparableVersion getVersion() {
             return comparableVersion;
         }
 
-        public final String getDateText() {
+        /**
+         * @return the date of this release
+         */
+        public String getDateText() {
             return dateText;
         }
 
-        public final String getTitleText() {
+        /**
+         * @return the short title of this release
+         */
+        public String getTitleText() {
             return titleText;
         }
 
         /**
-         * Sort in reverse ComparableVersoin order - highest first
+         * Sort in reverse ComparableVersion order - highest first
          * {@inheritDoc}
          */
         public int compareTo(final Section o) {
@@ -78,19 +115,40 @@ public final class ChangeLogSectionParser {
         }
     }
     
+    /**
+     * A Handler for Sections as they are processed.
+     * @author matt
+     *
+     */
     private interface SectionHandler {
-        public void handleSection(Section section);
+        /**
+         * Handle the section in some way
+         * @param section
+         */
+        void handleSection(Section section);
     }
     
+    /**
+     * Create a ChangeLogSectionParser
+     * @param testLog the change log file to parse
+     */
     public ChangeLogSectionParser(final File testLog) {
         this.log = testLog;
         versionDateTitleMatcher = Pattern.compile("^" + ComparableVersion.VERSION_REGEX
             + SEPARATOR_REGEX + DATE_REGEX + "?" + SEPARATOR_REGEX + TITLE_REGEX + SEPARATOR_REGEX + "$").matcher("");
     }
 
+    /**
+     * Obtain a list of Sections encompassing two versions, sorted
+     * by version
+     * @param fromVersion the earliest version to return
+     * @param toVersion the latest version to return
+     * @return the List, which may be empty
+     * @throws IOException on read failure
+     * @throws ParseException on version number validation failure
+     */
     public List<Section> getVersionSections(final ComparableVersion fromVersion,
         final ComparableVersion toVersion) throws IOException, ParseException {
-        buildingInformationSection = false;
         resetSectionState();
         int lineNo = 0;
         final ArrayList<Section> outputSections = new ArrayList<Section>();
@@ -159,12 +217,11 @@ public final class ChangeLogSectionParser {
         if (versionDateTitleMatcher.lookingAt()) {
             LOGGER.debug("Header found; checking for emission of previous section");
             emitPreviousSection(sectionHandler);
-            versionText = versionDateTitleMatcher.group(1) +
-                          (versionDateTitleMatcher.group(2) == null ? "" : versionDateTitleMatcher.group(2)) +
-                          (versionDateTitleMatcher.group(3) == null ? "" : versionDateTitleMatcher.group(3));
+            versionText = versionDateTitleMatcher.group(1)
+                        + (versionDateTitleMatcher.group(2) == null ? "" : versionDateTitleMatcher.group(2))
+                        + (versionDateTitleMatcher.group(3) == null ? "" : versionDateTitleMatcher.group(3));
             dateText = versionDateTitleMatcher.group(4) == null ? "" : versionDateTitleMatcher.group(4);
             titleText = versionDateTitleMatcher.group(5) == null ? "" : versionDateTitleMatcher.group(5);
-            buildingInformationSection = true;
             LOGGER.debug("versionText='" + versionText + "'");
             LOGGER.debug("dateText='" + dateText + "'");
             LOGGER.debug("titleText='" + titleText + "'");
