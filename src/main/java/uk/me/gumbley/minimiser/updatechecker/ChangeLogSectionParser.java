@@ -2,8 +2,11 @@ package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,16 +32,14 @@ public final class ChangeLogSectionParser {
 
     private static final String SEPARATOR_REGEX = "\\s*[-:]?\\s*";
 
-    private final File log;
+    private Matcher versionDateTitleMatcher;
+    private InputStream logInputStream;
     
     // state used when building up a new Section
     private String versionText;
     private ArrayList<String> informationTextLines;
     private String dateText;
     private String titleText;
-
-    private Matcher versionDateTitleMatcher;
-    
     
     /**
      * A Section contains all information about a particular
@@ -131,13 +132,22 @@ public final class ChangeLogSectionParser {
     /**
      * Create a ChangeLogSectionParser
      * @param testLog the change log file to parse
+     * @throws IOException on file problems
      */
-    public ChangeLogSectionParser(final File testLog) {
-        this.log = testLog;
+    public ChangeLogSectionParser(final File testLog) throws IOException {
+        this(new FileInputStream(testLog));
+    }
+
+    /**
+     * Create a ChangeLogSectionParser
+     * @param inputStream the change log input stream to parse
+     */
+    public ChangeLogSectionParser(final InputStream inputStream) {
+        this.logInputStream = inputStream;
         versionDateTitleMatcher = Pattern.compile("^" + ComparableVersion.VERSION_REGEX
             + SEPARATOR_REGEX + DATE_REGEX + "?" + SEPARATOR_REGEX + TITLE_REGEX + SEPARATOR_REGEX + "$").matcher("");
     }
-
+    
     /**
      * Obtain a list of Sections encompassing two versions, sorted
      * by version
@@ -149,17 +159,40 @@ public final class ChangeLogSectionParser {
      */
     public List<Section> getVersionSections(final ComparableVersion fromVersion,
         final ComparableVersion toVersion) throws IOException, ParseException {
-        resetSectionState();
-        int lineNo = 0;
         final ArrayList<Section> outputSections = new ArrayList<Section>();
-        final BufferedReader bufferedReader = new BufferedReader(new FileReader(log));
-        final SectionHandler rangeChecker = new SectionHandler() {
+        processChangeLogfile(new SectionHandler() {
             public void handleSection(final Section section) {
                 if (sectionIsInsideRange(section, fromVersion, toVersion)) {
                     outputSections.add(section);
                 }
             }
-        }; 
+        });
+        Collections.sort(outputSections);
+        return outputSections;
+    }
+
+    /**
+     * Obtain a list of all Sections, sorted by version
+     * @return the List, which may be empty
+     * @throws IOException on read failure
+     * @throws ParseException on version number validation failure
+     */
+    public List<Section> getAllVersionSections() throws IOException, ParseException {
+        final ArrayList<Section> outputSections = new ArrayList<Section>();
+        processChangeLogfile(new SectionHandler() {
+            public void handleSection(final Section section) {
+                outputSections.add(section);
+            }
+        });
+        Collections.sort(outputSections);
+        return outputSections;
+    }
+
+    private void processChangeLogfile(final SectionHandler rangeChecker)
+            throws FileNotFoundException, IOException, ParseException {
+        resetSectionState();
+        int lineNo = 0;
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(logInputStream));
         try {
             while (true) {
                 lineNo++;
@@ -180,8 +213,6 @@ public final class ChangeLogSectionParser {
                 bufferedReader.close();
             }
         }
-        Collections.sort(outputSections);
-        return outputSections;
     }
 
     private void resetSectionState() {

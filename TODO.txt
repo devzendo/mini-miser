@@ -16,6 +16,9 @@ BUGS:
 
 CURRENT TASKS:
 * testing the change log transformer
+* add a test that parses all of the resource-based changelog.
+* make the about / what's new dialog show the transformed resource-
+  based change log
 * test the remote file retriever
 * add the check for updates menu item
 * add the real swing update progress adapter
@@ -138,6 +141,7 @@ MAVEN / BUILD:
 * create installer for windows
 * create .deb package for Ubuntu
 * create .app package for Mac OS X
+* create .dmg disk image for Mac OS X
 
 OUTSTANDING QUERIES:
 * Q: Why prompt for close confirmation if we have databases open, on exit?

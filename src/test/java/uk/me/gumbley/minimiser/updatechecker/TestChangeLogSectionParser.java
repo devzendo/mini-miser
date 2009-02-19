@@ -20,9 +20,10 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
     private ChangeLogSectionParser sectionParser;
 
     /**
+     * @throws IOException 
      * 
      */
-    private void getUsualPrerequisites() {
+    private void getUsualPrerequisites() throws IOException {
         final File testLog = new File("src/test/resources/uk/me/gumbley/minimiser/updatechecker/testchanges.txt");
         Assert.assertTrue(testLog.exists());
         sectionParser = new ChangeLogSectionParser(testLog);
@@ -34,13 +35,31 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
      * 
      */
     @Test
-    public void versionsExist() throws IOException, ParseException {
+    public void versionsExistByLargeRange() throws IOException, ParseException {
         getUsualPrerequisites();
         
         final List<Section> sections = sectionParser.
             getVersionSections(
                 new ComparableVersion("0.0.0"), 
                 new ComparableVersion("9.9.9")); // all sections
+        assertAllVersionsOK(sections);
+    }
+
+    /**
+     * @throws IOException no
+     * @throws ParseException no 
+     * 
+     */
+    @Test
+    public void versionsExistByExplicitRequest() throws IOException, ParseException {
+        getUsualPrerequisites();
+        
+        final List<Section> sections = sectionParser.
+            getAllVersionSections();
+        assertAllVersionsOK(sections);
+    }
+
+    private void assertAllVersionsOK(final List<Section> sections) {
         Assert.assertEquals(10, sections.size());
         
         checkSection100(sections.get(0));
@@ -146,6 +165,19 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
         sectionParser.getVersionSections(
             new ComparableVersion("0.0.0"), 
             new ComparableVersion("9.9.9")); // all sections
+    }
+    
+    /**
+     * @throws IOException no
+     * @throws ParseException no
+     */
+    @Test
+    public void testVersionOrderingWithClassifiers() throws IOException, ParseException {
+        getUsualPrerequisites();
+        final List<Section> sections = sectionParser.getVersionSections(
+            new ComparableVersion("v0.5-alpha"),
+            new ComparableVersion("v0.5"));
+        Assert.assertEquals(2, sections.size());
     }
 
 }
