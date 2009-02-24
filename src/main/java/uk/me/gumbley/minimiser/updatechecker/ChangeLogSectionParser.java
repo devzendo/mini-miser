@@ -240,7 +240,7 @@ public final class ChangeLogSectionParser {
     }
 
     private boolean processHeaderLine(final String line, final int lineNo, final SectionHandler sectionHandler) throws IOException {
-        if (line.matches("^\\s*$") || line.matches("^[-=]+$")) {
+        if (line.matches("^\\s*$") || line.matches("^[-=]+$")) { // ignore blank lines and --- === rulers
             return true;
         }
         LOGGER.debug("Testing for header line");

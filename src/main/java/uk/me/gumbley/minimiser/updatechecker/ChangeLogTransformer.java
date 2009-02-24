@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Transforms a change log file by taking the relevant sections - any changes
@@ -30,4 +31,15 @@ public interface ChangeLogTransformer {
             ComparableVersion currentVersion,
             ComparableVersion latestVersion,
             File changeLogFile) throws IOException, ParseException;
+    
+    /**
+     * Scan through the change log file. Transform all of it into
+     * the appropriate display form, e.g. HTML.
+     * @param inputStream the change log file as an InputStream
+     * @return the transformed log
+     * @throws IOException on file read or transformation failure
+     * @throws ParseException on transformation failure
+     */
+    String readAllStream(
+            InputStream changeLogFile) throws IOException, ParseException;
 }

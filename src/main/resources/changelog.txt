@@ -25,5 +25,4 @@ v0.1 - first "foundations" release
   * SQL debug tab for issuing statements.
   * Update available checker.
 
-   1..2.3 - don't ship this
-  
+ 

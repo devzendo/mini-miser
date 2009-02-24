@@ -9,6 +9,8 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -23,11 +25,13 @@ import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
+import uk.me.gumbley.minimiser.updatechecker.DefaultChangeLogTransformer;
+import uk.me.gumbley.minimiser.updatechecker.ParseException;
 
 /**
  * A dialog that shows a card layout as the main component, initially containing
  * the welcome text, with a button that switches this text to the what's new
- * text (the button then allowes reversion to the welcome text).
+ * text (the button then allows reversion to the welcome text).
  * 
  * @author matt
  *
@@ -35,7 +39,7 @@ import uk.me.gumbley.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
 @SuppressWarnings("serial")
 public final class WelcomeDialog extends AbstractSnailDialog {
     private static final String WELCOME_HTML = "welcome.html";
-    private static final String CHANGELOG_HTML = "changelog.html";
+    private static final String CHANGELOG_HTML = "*changelog.html*";
     private static final String BLANK_PANEL_NAME = "*special*blank*panel*";
     private static final int TEXTPANE_WIDTH = 550;
     private static final int TEXTPANE_HEIGHT = 350;
@@ -126,19 +130,15 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         addSwingWorker(addOKCancelEnabler());
     }
     
-    private final class ResourceLoadingSwingWorker extends SwingWorker {
-        private final String resource;
+    private abstract class HTMLDisplayingSwingWorker extends SwingWorker {
+        protected String resource;
 
-        public ResourceLoadingSwingWorker(final String resourceName) {
+        public HTMLDisplayingSwingWorker(final String resourceName) {
             this.resource = resourceName;
         }
+
         @Override
-        public Object construct() {
-            assert (!EventQueue.isDispatchThread());
-            final StringBuilder text = new StringBuilder();
-            ResourceLoader.readResource(text, resource);
-            return text.toString();
-        }
+        public abstract Object construct();
         
         @SuppressWarnings("unchecked")
         public void finished() {
@@ -155,6 +155,45 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             loadedResourceLatchMap.get(resource).countDown();
         }
     }
+    
+    private final class ResourceLoadingSwingWorker extends HTMLDisplayingSwingWorker {
+        public ResourceLoadingSwingWorker(final String resourceName) {
+            super(resourceName);
+        }
+        
+        @Override
+        public Object construct() {
+            assert (!EventQueue.isDispatchThread());
+            final StringBuilder text = new StringBuilder();
+            ResourceLoader.readResource(text, resource);
+            return text.toString();
+        }
+    }
+
+    private final class ChangeLogTransformingSwingWorker extends HTMLDisplayingSwingWorker {
+        public ChangeLogTransformingSwingWorker(final String resourceName) {
+            super(resourceName);
+        }
+        
+        @Override
+        public Object construct() {
+            assert (!EventQueue.isDispatchThread());
+            final StringBuilder text = new StringBuilder();
+            final InputStream resourceAsStream = Thread.currentThread().
+                getContextClassLoader().
+                getResourceAsStream("changelog.txt");
+            final DefaultChangeLogTransformer transformer = new DefaultChangeLogTransformer(); // TODO WOZERE inject this!!
+            try {
+                final String transformedChangeLog = transformer.readAllStream(resourceAsStream);
+                return transformedChangeLog;
+            } catch (final IOException e) {
+                return ("Could not read change log: " + e.getMessage());
+            } catch (final ParseException e) {
+                return ("Could not parse change log: " + e.getMessage());
+            }
+        }
+    }
+
     private SwingWorker addWelcomeResourceLoader() {
         return new ResourceLoadingSwingWorker(WELCOME_HTML);
     }
@@ -177,7 +216,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     }
 
     private SwingWorker addWhatsNewResourceLoader() {
-        return new ResourceLoadingSwingWorker(CHANGELOG_HTML);
+        return new ChangeLogTransformingSwingWorker(CHANGELOG_HTML);
     }
 
     private void switchToWelcome() {

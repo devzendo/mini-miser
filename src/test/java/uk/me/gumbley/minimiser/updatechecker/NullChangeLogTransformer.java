@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A ChangeLogTransformer that gives back its input verbatim, for tests.
@@ -46,5 +47,13 @@ public final class NullChangeLogTransformer implements ChangeLogTransformer {
      */
     public void injectReadFailure() {
         readException  = new IOException("Injected fault");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String readAllStream(final InputStream changeLogFile) throws IOException,
+            ParseException {
+        return null;
     }
 }

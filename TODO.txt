@@ -3,6 +3,8 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUGS:
+* Mac - go to open an existing file in the Temp directory in my
+  home dir - and get an NPE.
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
 * sometimes on startup the hourglass sticks - happened soon after adding

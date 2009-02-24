@@ -3,8 +3,11 @@ package uk.me.gumbley.minimiser.updatechecker;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.updatechecker.ChangeLogSectionParser.Section;
 
@@ -17,6 +20,8 @@ import uk.me.gumbley.minimiser.updatechecker.ChangeLogSectionParser.Section;
  *
  */
 public final class TestChangeLogSectionParser extends LoggingTestCase {
+    private static final Logger LOGGER = Logger
+            .getLogger(TestChangeLogSectionParser.class);
     private ChangeLogSectionParser sectionParser;
 
     /**
@@ -159,12 +164,17 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
      */
     @Test(expected = ParseException.class)
     public void testBadVersionsThrow() throws IOException, ParseException {
-        final File testLog = new File("src/test/resources/uk/me/gumbley/minimiser/updatechecker/badversionchanges.txt");
-        Assert.assertTrue(testLog.exists());
-        sectionParser = new ChangeLogSectionParser(testLog);
-        sectionParser.getVersionSections(
-            new ComparableVersion("0.0.0"), 
-            new ComparableVersion("9.9.9")); // all sections
+        try {
+            final File testLog = new File("src/test/resources/uk/me/gumbley/minimiser/updatechecker/badversionchanges.txt");
+            Assert.assertTrue(testLog.exists());
+            sectionParser = new ChangeLogSectionParser(testLog);
+            sectionParser.getVersionSections(
+                new ComparableVersion("0.0.0"), 
+                new ComparableVersion("9.9.9")); // all sections
+        } catch (final ParseException pe) {
+            LOGGER.debug("Bad version: " + pe.getMessage());
+            throw pe;
+        }
     }
     
     /**

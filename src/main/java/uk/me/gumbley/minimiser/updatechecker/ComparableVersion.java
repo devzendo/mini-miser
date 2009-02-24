@@ -39,14 +39,14 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
         }
         final Matcher versionMatcher = Pattern.compile(ANCHORED_VERSION_REGEX).matcher(trimmed);
         if (!versionMatcher.matches()) {
-            throw new IllegalArgumentException("Version '" + trimmed + "' is not an acceptible version");
+            throw new IllegalArgumentException("Version '" + trimmed + "' is not a valid version");
         }
         versionNumbers = versionMatcher.group(1);
         final String hyphen = versionMatcher.group(2) == null ? "" : versionMatcher.group(2);
         classifier = versionMatcher.group(3) == null ? "" : versionMatcher.group(3);
         if (classifier.indexOf(".") != -1) {
             // the classifier regex should be non-whitespace but not dots
-            throw new IllegalArgumentException("Version '" + trimmed + "' does not have an acceptibel classifier '" + classifier + "'");
+            throw new IllegalArgumentException("Version '" + trimmed + "' does not have a valid classifier '" + classifier + "'");
         }
         if (hyphen.length() != 0 && classifier.length() == 0) {
             throw new IllegalArgumentException("Version '" + trimmed + "' does not have a classifier following a hyphen");

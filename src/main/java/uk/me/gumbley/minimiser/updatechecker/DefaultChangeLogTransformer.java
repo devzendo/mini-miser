@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +23,7 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
     private static final Logger LOGGER = Logger.getLogger(DefaultChangeLogTransformer.class);
     
     private final Matcher bulletMatcher = Pattern.compile("^\\s*\\*\\s*(.*)$").matcher("");
+    private final Matcher bulletItemContinuationMatcher = Pattern.compile("^\\s+([^\\*].*)$").matcher("");
     
 
     /**
@@ -34,6 +36,11 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
         final List<Section> versionSections = parser.getVersionSections(currentVersion, latestVersion);
         LOGGER.debug("Transforming " + versionSections.size() + " sections ["
             + currentVersion.toString() + ", " + latestVersion.toString() + "] to HTML");
+        return transformSectionsToHTML(versionSections);
+    }
+
+
+    private String transformSectionsToHTML(final List<Section> versionSections) {
         final StringBuilder sb = new StringBuilder();
         sb.append("<html><body>");
         for (int i = 0; i < versionSections.size(); i++) {
@@ -47,6 +54,18 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
         return sb.toString();
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public String readAllStream(final InputStream changeLogFile) throws IOException,
+            ParseException {
+        final ChangeLogSectionParser parser = new ChangeLogSectionParser(changeLogFile);
+        final List<Section> versionSections = parser.getAllVersionSections();
+        LOGGER.debug("Transforming all " + versionSections.size() + " sections to HTML");
+        return transformSectionsToHTML(versionSections);
+    }
+    
     private StringBuilder addSection(final Section section) {
         final StringBuilder sb = new StringBuilder();
         
@@ -72,6 +91,17 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
         return sb;
     }
 
+    /**
+     * Split the information text up into lines followed by line
+     * breaks, transforming bullet points and their continuations
+     * into unnumbered lists and their items.
+     * <p>
+     * Yes, this routine is too complex.
+     * 
+     * @param informationText the info text, interspersed with
+     * carriage returns/line feeds
+     * @return a HTML representation of it.
+     */
     private String transformedInformationText(final String informationText) {
         final StringBuilder sb = new StringBuilder();
         boolean inList = false;
@@ -80,46 +110,73 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
             String line = informationLines[i];
             LOGGER.debug("Input line '" + line + "'");
             
+            boolean listContinuation = false;
             bulletMatcher.reset(line);
             if (bulletMatcher.lookingAt()) {
                 line = bulletMatcher.group(1);
-                if (!inList) {
+                if (inList) {
+                    // terminate previous li
+                    LOGGER.debug("in list - bullet - adding /li to terminate previous item");
+                    sb.append("</li>");
+                    // note check when adding <br> - no line break necessary
+                } else {
                     inList = true;
                     sb.append("<ul>");
                 }
             } else {
                 if (inList) {
-                    inList = false;
-                    LOGGER.debug("no bullet match - end of ul");
-                    sb.append("</ul>");
+                    // handle bullet item continuations -
+                    // these start with wsp
+                    bulletItemContinuationMatcher.reset(line);
+                    if (bulletItemContinuationMatcher.lookingAt()) {
+                        LOGGER.debug("bullet item continuation");
+                        listContinuation = true;
+                        sb.append(" ");
+                        sb.append(bulletItemContinuationMatcher.group(1));
+                    } else {
+                        // terminate previous li
+                        LOGGER.debug("in list - nonbullet - adding /li to terminate previous item");
+                        sb.append("</li>");
+                        // note check when adding <br> - no line break necessary
+                        inList = false;
+                        LOGGER.debug("no bullet match - end of ul");
+                        sb.append("</ul>");
+                    }
                 }
             }
-            if (inList) {
-                LOGGER.debug("in list");
-
-                sb.append("<li>");
-            }
-            sb.append(line);
-            if (inList) {
-                sb.append("</li>");
-                // note check when adding <br> - no line break necessary
+            if (!listContinuation) {
+                if (inList) {
+                    LOGGER.debug("in list - adding li");
+    
+                    sb.append("<li>");
+                }
+                LOGGER.debug("adding '" + line + "'");
+                sb.append(line);
+                // the /li is added in two places above and one
+                // below to handle
+                // the case where we have processed a bullet, and
+                // it's followed by a list continuation
             }
             if (i == informationLines.length - 1) {
                 LOGGER.debug("last line");
                 // was last line the last line of a bullet?
                 if (inList) {
-                    inList = false;
+                    // terminate previous li
+                    LOGGER.debug("in list - last line - adding /li to terminate previous item");
+                    sb.append("</li>");
                     LOGGER.debug("end of ul");
-
                     sb.append("</ul>");
                 }
             } else {
                 if (!inList) {
+                    LOGGER.debug("adding line break");
                     sb.append("</br>");
                 }
             }
         }
-        return sb.toString();
+        final String string = sb.toString();
+        LOGGER.debug("Returned string is [" + string + "]");
+        return string;
     }
 
     private String surround(final String tag, final String text) {

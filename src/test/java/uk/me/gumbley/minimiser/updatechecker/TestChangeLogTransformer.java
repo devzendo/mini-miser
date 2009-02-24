@@ -42,14 +42,14 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
      */
     public class TagMatcher {
         private StringBuilder builder;
-        private final String endTag;
+        private final String endingTag;
         /**
          * Construct a TagMatcher
          * @param startTag the start tag
          * @param endTag the end tag
          */
         public TagMatcher(final String startTag, final String endTag) {
-            this.endTag = endTag;
+            this.endingTag = endTag;
             builder = new StringBuilder();
             builder.append(startTag);
         }
@@ -58,11 +58,13 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
          * the regex produced by this TagMatcher
          * @param input the input text
          */
-        public void assertMatch(final String input) {
-            String regex = getRegex();
+        public final void assertMatch(final String input) {
+            final String regex = getRegex();
             final Matcher matcher = Pattern.compile(regex).matcher(input);
             if (!matcher.matches()) {
-                Assert.fail("Input\n'" + input + "'\ndoes not match regex\n" + regex);
+                Assert.fail("Input\n" + input 
+                    + "\ndoes not match regex\n"
+                    + regex);
             }
         }
         /**
@@ -70,30 +72,44 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
          * for use in matching.
          * @return the regex.
          */
-        protected String getRegex() {
-            builder.append(endTag);
+        protected final String getRegex() {
+            builder.append(endingTag);
             return builder.toString();
         }
+        
         /**
          * {@inheritDoc}
          */
-        public String toString() {
+        public final String toString() {
             return builder.toString();
         }
+        
         /**
          * Insert another TagMatcher that parses an inner tag
          * @param tagMatcher an inner TagMatcher
-         * @return
+         * @return this
          */
         public TagMatcher then(final TagMatcher tagMatcher) {
             builder.append(tagMatcher.getRegex());
             return this;
         }
-        public TagMatcher append(final String str) {
+        
+        /**
+         * @param str a string to append
+         * @return this
+         */
+        public final TagMatcher append(final String str) {
             builder.append(str);
             return this;
         }
-        public TagMatcher surround(final String tagString, final String str) {
+        
+        /**
+         * Surround a string with a start and end tag
+         * @param tagString the string for the start and end tags
+         * @param str the inner string
+         * @return the surrounded string
+         */
+        public final TagMatcher surround(final String tagString, final String str) {
             builder.append("<");
             builder.append(tagString);
             builder.append(">");
@@ -170,12 +186,15 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
      * @throws ParseException never
      */
     @Test
-    public void getOneSection() throws IOException, ParseException {
+    public void getOneSectionWithComplexList() throws IOException, ParseException {
         final String subsection = changeLogTransformer.readFileSubsection(
             new ComparableVersion("v0.9.7"),
             new ComparableVersion("v0.9.7"), testLog);
         final ListMatcher list = new ListMatcher().
-            element("now handles left handed flange benders").
+            element("now handles left handed flange benders that "
+                + "are so long that they stretch onto a separate "
+                + "line but are part of the same bullet and so "
+                + "don't get line breaks interspersed.").
             element("and bullet points");
         final HTMLMatcher matcher = new HTMLMatcher()
             .bold("v0.9.7")
@@ -186,6 +205,73 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
             
         matcher.assertMatch(subsection);
     }
+    
+    /**
+     * @throws IOException never
+     * @throws ParseException never
+     */
+    @Test
+    public void getOneSectionWithSimpleList() throws IOException, ParseException {
+        final String subsection = changeLogTransformer.readFileSubsection(
+            new ComparableVersion("v0.9.8"),
+            new ComparableVersion("v0.9.8"), testLog);
+        final ListMatcher list = new ListMatcher().
+            element("with a").
+            element("simple list");
+        final HTMLMatcher matcher = new HTMLMatcher()
+            .bold("v0.9.8")
+            .anything()
+            .emph("another witty title")
+            .linebreak()
+            .text("Fixed some bugs")
+            .linebreak()
+            .then(list)
+            .text("and some text");
+            
+        matcher.assertMatch(subsection);
+    }
+
+    /**
+     * @throws IOException never
+     * @throws ParseException never
+     */
+    @Test
+    public void getOneSectionWithSimpleListOfOne() throws IOException, ParseException {
+        final String subsection = changeLogTransformer.readFileSubsection(
+            new ComparableVersion("v0.9"),
+            new ComparableVersion("v0.9"), testLog);
+        final ListMatcher list = new ListMatcher().
+            element("a list of one is valid");
+        final HTMLMatcher matcher = new HTMLMatcher()
+            .bold("v0.9")
+            .linebreak()
+            .text("thought I'd release again")
+            .linebreak()
+            .then(list);
+            
+        matcher.assertMatch(subsection);
+    }
+
+   /**
+    * @throws IOException never
+    * @throws ParseException never
+    */
+   @Test
+   public void getOneSectionWithOnlySimpleListOfOne() throws IOException, ParseException {
+       final String subsection = changeLogTransformer.readFileSubsection(
+           new ComparableVersion("v0.7"),
+           new ComparableVersion("v0.7"), testLog);
+       final ListMatcher list = new ListMatcher().
+           element("singleton list");
+       final HTMLMatcher matcher = new HTMLMatcher()
+           .bold("v0.7")
+           .anything()
+           .emph("more bug fixes")
+           .linebreak()
+           .then(list);
+           
+       matcher.assertMatch(subsection);
+   }
     
     /**
      * @throws IOException never
@@ -226,7 +312,8 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
         final HTMLMatcher matcher = new HTMLMatcher()
             .bold("v0.9")
             .linebreak()
-            .text("thought I'd release again");
+            .text("thought I'd release again")
+            .anything();
             
         matcher.assertMatch(subsection);
     }

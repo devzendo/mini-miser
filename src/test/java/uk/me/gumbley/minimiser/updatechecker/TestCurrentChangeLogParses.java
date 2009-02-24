@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,6 +19,8 @@ import uk.me.gumbley.minimiser.updatechecker.ChangeLogSectionParser.Section;
  *
  */
 public final class TestCurrentChangeLogParses extends LoggingTestCase {
+    private static final Logger LOGGER = Logger
+            .getLogger(TestCurrentChangeLogParses.class);
     private ChangeLogSectionParser sectionParser;
 
     /**
@@ -35,5 +38,6 @@ public final class TestCurrentChangeLogParses extends LoggingTestCase {
         
         final List<Section> allVersionSections = sectionParser.getAllVersionSections();
         Assert.assertTrue(allVersionSections.size() > 0);
+        LOGGER.debug("Parsed " + allVersionSections.size() + " sections");
     }
 }
