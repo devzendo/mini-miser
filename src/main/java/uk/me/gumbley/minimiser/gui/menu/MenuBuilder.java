@@ -1,12 +1,15 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
 import java.awt.event.ActionListener;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
- * Attaches all the ActionListeners to the relevant MenuItems, via MenuWiring.
+ * Attaches all the ActionListeners to the relevant MenuItems, via
+ * MenuWiring.
  * 
  * @author matt
  *
@@ -40,6 +43,7 @@ public final class MenuBuilder {
         loadAndWire(MenuIdentifier.HelpAbout);
         loadAndWire(MenuIdentifier.HelpWelcome);
         loadAndWire(MenuIdentifier.HelpWhatsNew);
+        loadAndWire(MenuIdentifier.HelpCheckForUpdates);
     }
 
     private void loadAndWire(final MenuIdentifier menuIdentifier) {

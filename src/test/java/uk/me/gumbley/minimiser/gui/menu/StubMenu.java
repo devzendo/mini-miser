@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JMenuBar;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
@@ -24,16 +26,17 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
  */
 public final class StubMenu implements Menu {
     private boolean closeMenuEnabled;
-    private List<String> databases;
+    private final List<String> databases;
     private int currentDatabaseIndex;
     private boolean recentListBuilt;
     private DatabaseDescriptor[] recentDatabases;
-    private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
-    private ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
-    private ObserverList<DatabaseNameChoice> windowMenuSwitchObservers;
+    private final ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
+    private final ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
+    private final ObserverList<DatabaseNameChoice> windowMenuSwitchObservers;
     private boolean viewMenuBuilt;
-    private Map<String, Boolean> hiddenTabs;
-
+    private final Map<String, Boolean> hiddenTabs;
+    private boolean helpCheckForUpdatesEnabled;
+    
     /**
      * 
      */
@@ -43,6 +46,7 @@ public final class StubMenu implements Menu {
         currentDatabaseIndex = -1;
         recentListBuilt = false;
         viewMenuBuilt = false;
+        helpCheckForUpdatesEnabled = false;
         openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
         viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
         windowMenuSwitchObservers = new ObserverList<DatabaseNameChoice>();
@@ -230,5 +234,22 @@ public final class StubMenu implements Menu {
      */
     public void injectWindowMenuRequest(final DatabaseDescriptor database) {
         windowMenuSwitchObservers.eventOccurred(new DatabaseNameChoice(database.getDatabaseName()));
+    }
+    
+    /**
+     * For unit tests, sett he state of the Help|Check for Updates
+     * menu item
+     * @param newEnabled true iff enabled
+     */
+    public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
+        helpCheckForUpdatesEnabled = newEnabled;
+    }
+    
+    /**
+     * @return the enabledness of the Help|Check for Updates menu
+     * item
+     */
+    public boolean isHelpCheckForUpdatesEnabled() {
+        return helpCheckForUpdatesEnabled;
     }
 }

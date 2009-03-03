@@ -143,6 +143,12 @@
 	
 	<bean id="menuALHelpWhatsNew" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpWhatsNewActionListener" />
 	
+	<bean id="menuALHelpCheckForUpdates" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpCheckForUpdatesActionListener">
+		<constructor-arg ref="updateChecker" />
+		<constructor-arg ref="prefs" />
+		<constructor-arg ref="updateProgressAdapterFactory" />
+	</bean>
+	
 	<!-- miscellaneous -->
 	
 </beans>

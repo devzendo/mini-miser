@@ -3,8 +3,6 @@ MiniMiser - a simple personal finance manager program
 Current outstanding small tasks:
 
 BUGS:
-* Mac - go to open an existing file in the Temp directory in my
-  home dir - and get an NPE.
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
 * sometimes on startup the hourglass sticks - happened soon after adding
@@ -24,8 +22,10 @@ CURRENT TASKS:
 * test the remote file retriever
 * add the check for updates menu item
 * add the real swing update progress adapter
+* sql table view would benefit from the stript list renderer
   
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
+* Mac - new file - file chooser doesn't allow creation of folders!
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
   need ~/Library/Application Support/MiniMiser on Mac OS X
@@ -50,9 +50,11 @@ CROSS-PLATFORM UI ISSUES:
     * exit needs hooking in
     * tools->options is prefs on the main menu
   * title should be set properly
-  * there are white patches on the dialogs
+  * there are white patches on the dialogs - e.g. the warning
+    you get when going into SQL view
   * new database file chooser is unusable - needs create new folder option
   * messages button doesn't pulse.
+  * sql view looks too full of layout management lines
 
 
 -- final tasks before release --

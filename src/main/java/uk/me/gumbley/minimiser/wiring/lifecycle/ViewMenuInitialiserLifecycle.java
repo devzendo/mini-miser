@@ -6,15 +6,15 @@ import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
- * A Lifecycle that reads the current hidden tab settings from prefs, and
- * initialises the view menu correctly on sartup.
+ * A Lifecycle that reads the current hidden tab settings from
+ * prefs, and initialises the view menu correctly on sartup.
  * 
  * @author matt
  *
  */
 public final class ViewMenuInitialiserLifecycle implements Lifecycle {
-    private Prefs prefs;
-    private Menu menu;
+    private final Prefs prefs;
+    private final Menu menu;
 
     /**
      * Construct using a menu and prefs

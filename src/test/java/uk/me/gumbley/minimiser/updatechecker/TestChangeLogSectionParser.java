@@ -120,7 +120,7 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
         Assert.assertEquals(new ComparableVersion("0.7"), section.getVersion());
         Assert.assertEquals("", section.getDateText());
         Assert.assertEquals("more bug fixes", section.getTitleText());
-        Assert.assertEquals("", section.getInformationText());
+        Assert.assertEquals("* singleton list\n", section.getInformationText());
     }
 
     private void checkSection08(final Section section) {
@@ -134,21 +134,24 @@ public final class TestChangeLogSectionParser extends LoggingTestCase {
         Assert.assertEquals(new ComparableVersion("0.9"), section.getVersion());
         Assert.assertEquals("", section.getDateText());
         Assert.assertEquals("", section.getTitleText());
-        Assert.assertEquals("thought I'd release again\n", section.getInformationText());
+        Assert.assertEquals("thought I'd release again\n* a list of one is valid\n", section.getInformationText());
     }
 
     private void checkSection097(final Section section) {
         Assert.assertEquals(new ComparableVersion("0.9.7"), section.getVersion());
         Assert.assertEquals("", section.getDateText());
         Assert.assertEquals("colon separating witty title not out of order", section.getTitleText());
-        Assert.assertEquals("* now handles left handed flange benders\n* and bullet points\n", section.getInformationText());
+        Assert.assertEquals("* now handles left handed flange benders"
+            + " that are so long that they\n  stretch onto a separate" 
+            + " line but are part of the same bullet and\n  so don't" 
+            + " get line breaks interspersed.\n* and bullet points\n", section.getInformationText());
     }
 
     private void checkSection098(final Section section) {
         Assert.assertEquals(new ComparableVersion("0.9.8"), section.getVersion());
         Assert.assertEquals("", section.getDateText());
         Assert.assertEquals("another witty title", section.getTitleText());
-        Assert.assertEquals("Fixed some bugs\n", section.getInformationText());
+        Assert.assertEquals("Fixed some bugs\n* with a\n* simple list\nand some text\n", section.getInformationText());
     }
 
     private void checkSection100(final Section section) {

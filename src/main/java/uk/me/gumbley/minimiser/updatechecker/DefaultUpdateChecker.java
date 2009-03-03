@@ -65,10 +65,14 @@ public final class DefaultUpdateChecker implements UpdateChecker {
     public void triggerUpdateCheck(final UpdateProgressAdapter progressAdapter) {
         workerPool.submit(new Runnable() {
             public void run() {
-                try {
-                    executeUpdateCheck(progressAdapter);
-                } finally {
-                    progressAdapter.finished();
+                // This synchronization ensures that only one
+                // update check is performed simultaneously.
+                synchronized (DefaultUpdateChecker.this) {
+                    try {
+                        executeUpdateCheck(progressAdapter);
+                    } finally {
+                        progressAdapter.finished();
+                    }
                 }
             }
         });
@@ -144,6 +148,10 @@ public final class DefaultUpdateChecker implements UpdateChecker {
         progressAdapter.updateAvailable();
         final SimpleMessage message = new SimpleMessage("Update to version " + remoteVersionNumber + " available",
             changeLogContents, Message.Importance.MEDIUM);
+        // TODO add in the downloads page URL to the message with
+        // a hypertext link
+        // TODO PLUGIN - allow the download page and version
+        // check URLs to be specified in plugin descriptors
         messageQueue.addMessage(message);
         lastSuccessfulUpdateWasToday();
         prefs.setLastRemoteUpdateVersion(remoteVersionNumber);

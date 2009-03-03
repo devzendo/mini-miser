@@ -116,6 +116,7 @@
 			    <value>viewMenuInitialiserLifecycle</value>
 				<value>statusBarAdapterLifecycle</value>
 				<value>updateAllowedPrefsEventObserverLifecycle</value>
+				<value>periodicUpdateCheckerLifecycle</value>
 			    <value>upgradeEventListenerLifecycle</value>
 			    <value>databaseEventListenerLifecycle</value>
 				<value>databaseOpenerLifecycle</value>
@@ -149,6 +150,12 @@
 		<constructor-arg ref="updateChecker" />
 		<constructor-arg ref="prefs" />
 		<constructor-arg ref="updateProgressAdapterFactory" />
+	</bean>
+
+	<bean id="periodicUpdateCheckerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpdateAllowedPrefsEventObserverLifecycle">
+		<constructor-arg ref="updateChecker" />
+		<constructor-arg ref="sleeper" />
+		<constructor-arg ref="nullUpdateProgressAdapter" />
 	</bean>
 
 	<bean id="upgradeEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
@@ -326,6 +333,8 @@
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" />
 
 	<bean id="today" class="uk.me.gumbley.minimiser.util.DefaultToday" />
+
+	<bean id="sleeper" class="uk.me.gumbley.minimiser.util.Sleeper" />
 
 	<!-- threading -->
 	<bean id="delayedExecutor" class="uk.me.gumbley.minimiser.util.DelayedExecutor" />

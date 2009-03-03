@@ -95,6 +95,10 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
             public void propertyChange(final PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
                     final File selectedFile = fileChooser.getSelectedFile();
+                    if (selectedFile == null) {
+                        LOGGER.debug("selected file is null"); // happens on the mac with a Temp folder
+                        return;
+                    }
                     LOGGER.debug("propertyChange gave me: " + selectedFile);
                     chosenDirectory = selectedFile;
                     hiddenPathName.setText(selectedFile.getAbsolutePath());

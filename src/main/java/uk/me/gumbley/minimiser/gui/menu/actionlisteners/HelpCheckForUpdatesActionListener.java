@@ -1,35 +1,35 @@
-package uk.me.gumbley.minimiser.wiring.lifecycle;
+package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import org.apache.log4j.Logger;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
+
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
-import uk.me.gumbley.minimiser.prefs.PrefsEvent;
 import uk.me.gumbley.minimiser.updatechecker.UpdateChecker;
 import uk.me.gumbley.minimiser.updatechecker.UpdateProgressAdapterFactory;
 
 /**
- * Adapts between the 'update allowed' prefs change events and the
- * triggering of update availability checks.
+ * Triggers a check to see if any updates are available, with
+ * feedback to the user.
+ * 
  * @author matt
  *
  */
-public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle, Observer<PrefsEvent> {
+public final class HelpCheckForUpdatesActionListener implements ActionListener {
     private static final Logger LOGGER = Logger
-            .getLogger(UpdateAllowedPrefsEventObserverLifecycle.class);
-
+            .getLogger(HelpCheckForUpdatesActionListener.class);
     private final Prefs prefs;
     private final UpdateChecker updateChecker;
     private final UpdateProgressAdapterFactory updateProgressAdapterFactory;
 
     /**
-     * Construct the adapter given other system objects for interaction.
      * @param leUpdateChecker the update checker
      * @param lePrefs the prefs
      * @param leAdapterFactory the update progress adapter factory
      */
-    public UpdateAllowedPrefsEventObserverLifecycle(
+    public HelpCheckForUpdatesActionListener(
             final UpdateChecker leUpdateChecker,
             final Prefs lePrefs,
             final UpdateProgressAdapterFactory leAdapterFactory) {
@@ -37,34 +37,17 @@ public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle
         this.prefs = lePrefs;
         this.updateProgressAdapterFactory = leAdapterFactory;
     }
-    
+
     /**
-     * {@inheritDoc}
+     * @param e an event
      */
-    public void eventOccurred(final PrefsEvent observableEvent) {
-        LOGGER.debug("Prefs event: " + observableEvent.getPrefsSection());
-        if (observableEvent.getPrefsSection() != Prefs.PrefsSection.BOOLEAN_FLAGS) {
-            return;
-        }
+    public void actionPerformed(final ActionEvent e) {
         if (!prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED)) {
-            LOGGER.info("Prefs have changed, but update checks are disallowed");
+            // This shouldn't happen, since the menu should be disabled
+            LOGGER.error("Manual update availability check requested, but update checks are disallowed");
             return;
         }
         LOGGER.info("Triggering update check");
         updateChecker.triggerUpdateCheck(updateProgressAdapterFactory.createVisibleUpdateProgressAdapter());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void shutdown() {
-        // do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void startup() {
-        prefs.addChangeListener(this);
     }
 }

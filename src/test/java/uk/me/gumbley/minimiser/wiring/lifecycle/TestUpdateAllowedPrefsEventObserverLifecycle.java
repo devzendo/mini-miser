@@ -10,6 +10,7 @@ import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
 import uk.me.gumbley.minimiser.updatechecker.StubUpdateChecker;
+import uk.me.gumbley.minimiser.updatechecker.StubUpdateProgressAdapter;
 import uk.me.gumbley.minimiser.updatechecker.StubUpdateProgressAdapterFactory;
 import uk.me.gumbley.minimiser.updatechecker.UpdateProgressAdapterFactory;
 
@@ -38,7 +39,8 @@ public final class TestUpdateAllowedPrefsEventObserverLifecycle {
         prefsFile = new File(prefs.getAbsolutePath());
         prefsFile.deleteOnExit();
         updateChecker = new StubUpdateChecker();
-        updateProgressAdapterFactory = new StubUpdateProgressAdapterFactory();
+        updateProgressAdapterFactory = new StubUpdateProgressAdapterFactory(
+            new StubUpdateProgressAdapter());
         observer = new UpdateAllowedPrefsEventObserverLifecycle(updateChecker, prefs, updateProgressAdapterFactory);
     }
     

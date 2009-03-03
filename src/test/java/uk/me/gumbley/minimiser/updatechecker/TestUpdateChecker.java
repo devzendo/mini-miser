@@ -1,7 +1,6 @@
 package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
@@ -27,7 +26,7 @@ import uk.me.gumbley.minimiser.util.WorkerPool;
  *
  */
 public final class TestUpdateChecker extends LoggingTestCase {
-    private static final Logger LOGGER = Logger
+    static final Logger LOGGER = Logger
             .getLogger(TestUpdateChecker.class);
     private static final String VERSION_1_0_0 = "1.0.0";
     private static final String VERSION_0_9_0 = "0.9.0";
@@ -57,101 +56,6 @@ public final class TestUpdateChecker extends LoggingTestCase {
         updateChecker = new DefaultUpdateChecker(prefs, messageQueue, remoteFileRetriever, changeLogTransformer, today, workerPool);
     }
 
-    /**
-     * Since the update checker is asynchronous, and executes via a worker
-     * pool, I can't just tag on a 'wait' task after running the update, hence
-     * this decorator.
-     * 
-     * @author matt
-     *
-     */
-    private final class WaitForFinishUpdateProgressAdapterDecorator implements UpdateProgressAdapter {
-        private final UpdateProgressAdapter updateProgressAdapter;
-        private CountDownLatch countDownLatch;
-
-        public WaitForFinishUpdateProgressAdapterDecorator(final UpdateProgressAdapter decorated) {
-            this.updateProgressAdapter = decorated;
-            countDownLatch = new CountDownLatch(1);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void alreadyCheckedToday() {
-            updateProgressAdapter.alreadyCheckedToday();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void checkStarted() {
-            updateProgressAdapter.checkStarted();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void commsFailure(final IOException exception) {
-            updateProgressAdapter.commsFailure(exception);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void noUpdateAvailable() {
-            updateProgressAdapter.noUpdateAvailable();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void transformFailure(final IOException exception) {
-            updateProgressAdapter.transformFailure(exception);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void transformFailure(final ParseException exception) {
-            updateProgressAdapter.transformFailure(exception);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void updateAvailable() {
-            updateProgressAdapter.updateAvailable();
-            
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void updateCheckDisallowed() {
-            updateProgressAdapter.updateCheckDisallowed();
-        }
-        
-        /**
-         * {@inheritDoc}
-         */
-        public void finished() {
-            updateProgressAdapter.finished();
-            countDownLatch.countDown();
-        }
-        
-        /**
-         * Wait until the worker thread has called the finished() method on the
-         * adapter.
-         */
-        public void waitForFinished() {
-            try {
-                countDownLatch.await();
-            } catch (final InterruptedException e) {
-                LOGGER.warn("Interrupted whilst waiting: " + e.getMessage());
-            }
-        }
-    }
-    
     private void startUpdateAndWait(final UpdateProgressAdapter adapter) {
         final WaitForFinishUpdateProgressAdapterDecorator decoratedAdapter =
             new WaitForFinishUpdateProgressAdapterDecorator(adapter);

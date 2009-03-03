@@ -115,6 +115,10 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
      * @param chosenDir the file or directory chosen by the JFileChooser.
      */
     private void setChosenDirectory(final File chosenDir) {
+        if (chosenDir == null) {
+            LOGGER.debug("chose null directory"); // happens on Mac
+            return;
+        }
         chosenDirectory = chosenDir;
         LOGGER.info("Chosen directory:" + chosenDirectory);
         final String problem = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(chosenDirectory);
