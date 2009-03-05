@@ -4,11 +4,21 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Obtains files over a HTTP connection, handling redirects automatically.
+ * Obtains files over a HTTP connection, handling redirects
+ * automatically.
  * @author matt
  *
  */
 public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
+
+    private final String mBaseUrl;
+
+    /**
+     * @param baseUrl the base URL of the update site
+     */
+    public DefaultRemoteFileRetriever(final String baseUrl) {
+        this.mBaseUrl = baseUrl;
+    }
 
     /**
      * {@inheritDoc}

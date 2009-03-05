@@ -35,7 +35,7 @@ public interface ChangeLogTransformer {
     /**
      * Scan through the change log file. Transform all of it into
      * the appropriate display form, e.g. HTML.
-     * @param inputStream the change log file as an InputStream
+     * @param changeLogFile the change log file as an InputStream
      * @return the transformed log
      * @throws IOException on file read or transformation failure
      * @throws ParseException on transformation failure

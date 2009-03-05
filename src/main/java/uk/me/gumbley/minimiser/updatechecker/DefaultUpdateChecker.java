@@ -2,7 +2,10 @@ package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.log4j.Logger;
+
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialog;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
@@ -69,9 +72,14 @@ public final class DefaultUpdateChecker implements UpdateChecker {
                 // update check is performed simultaneously.
                 synchronized (DefaultUpdateChecker.this) {
                     try {
-                        executeUpdateCheck(progressAdapter);
-                    } finally {
-                        progressAdapter.finished();
+                        try {
+                            executeUpdateCheck(progressAdapter);
+                        } finally {
+                            progressAdapter.finished();
+                        }
+                    } catch (final Exception e) {
+                        // TODO pass in main frame
+                        ProblemDialog.reportProblem(null, "while performing an update check", e);
                     }
                 }
             }
@@ -97,7 +105,10 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             progressAdapter.commsFailure(e);
             return;
         }
-        if (remoteVersionNumber.equals(prefs.getLastRemoteUpdateVersion())) {
+        LOGGER.info("Remote version number is " + remoteVersionNumber);
+        final String lastRemoteUpdateVersion = prefs.getLastRemoteUpdateVersion();
+        LOGGER.info("Last remote update version number is " + lastRemoteUpdateVersion);
+        if (remoteVersionNumber.equals(lastRemoteUpdateVersion)) {
             LOGGER.info("Remote and local versions match; no update available");
             progressAdapter.noUpdateAvailable();
             lastSuccessfulUpdateWasToday();

@@ -160,4 +160,16 @@ public interface Menu {
      * Rebuild the view menu based on the current hidden flags.
      */
     void rebuildViewMenu();
+    
+    /**
+     * Set the state of the Help|Check for Updates menu item
+     * @param newEnabled true iff enabled
+     */
+    void setHelpCheckForUpdatesEnabled(final boolean newEnabled);
+    
+    /**
+     * @return the enabledness of the Help|Check for Updates menu
+     * item
+     */
+    boolean isHelpCheckForUpdatesEnabled();
 }

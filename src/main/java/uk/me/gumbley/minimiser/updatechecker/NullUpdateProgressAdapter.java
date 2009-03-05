@@ -2,40 +2,63 @@ package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.IOException;
 
-public class NullUpdateProgressAdapter implements UpdateProgressAdapter {
+/**
+ * An UpdateProgressAdapter with no feedback at all.
+ * @author matt
+ *
+ */
+public final class NullUpdateProgressAdapter implements UpdateProgressAdapter {
+    /**
+     * {@inheritDoc}
+     */
     public void alreadyCheckedToday() {
-        // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void checkStarted() {
-        // TODO Auto-generated method stub
     }
 
-    public void commsFailure(IOException exception) {
-        // TODO Auto-generated method stub
+    /**
+     * {@inheritDoc}
+     */
+    public void commsFailure(final IOException exception) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void finished() {
-        // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void noUpdateAvailable() {
-        // TODO Auto-generated method stub
     }
 
-    public void transformFailure(IOException exception) {
-        // TODO Auto-generated method stub
+    /**
+     * {@inheritDoc}
+     */
+    public void transformFailure(final IOException exception) {
     }
 
-    public void transformFailure(ParseException exception) {
-        // TODO Auto-generated method stub
+    /**
+     * {@inheritDoc}
+     */
+    public void transformFailure(final ParseException exception) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void updateAvailable() {
-        // TODO Auto-generated method stub
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void updateCheckDisallowed() {
-        // TODO Auto-generated method stub
     }
 }

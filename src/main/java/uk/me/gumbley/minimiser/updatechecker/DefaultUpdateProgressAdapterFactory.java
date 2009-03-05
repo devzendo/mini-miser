@@ -9,19 +9,28 @@ package uk.me.gumbley.minimiser.updatechecker;
  */
 public final class DefaultUpdateProgressAdapterFactory implements
         UpdateProgressAdapterFactory {
+    private final UpdateProgressAdapter mVisibleUpdateProgressAdapter;
+
+    /**
+     * Construct the factory using the singleton GUI based update
+     * progress adapter.
+     * @param visibleUpdateProgressAdapter the default GUI UPA.
+     */
+    public DefaultUpdateProgressAdapterFactory(final UpdateProgressAdapter visibleUpdateProgressAdapter) {
+        this.mVisibleUpdateProgressAdapter = visibleUpdateProgressAdapter;
+    }
+
     /**
      * {@inheritDoc}
      */
     public UpdateProgressAdapter createVisibleUpdateProgressAdapter() {
-        // TODO Auto-generated method stub
-        return null;
+        return mVisibleUpdateProgressAdapter;
     }
 
     /**
      * {@inheritDoc}
      */
     public UpdateProgressAdapter createBackgroundUpdateProgressAdapter() {
-        // TODO Auto-generated method stub
-        return null;
+        return new NullUpdateProgressAdapter();
     }
 }

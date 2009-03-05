@@ -47,7 +47,7 @@ public final class HelpCheckForUpdatesActionListener implements ActionListener {
             LOGGER.error("Manual update availability check requested, but update checks are disallowed");
             return;
         }
-        LOGGER.info("Triggering update check");
+        LOGGER.info("Requesting update check");
         updateChecker.triggerUpdateCheck(updateProgressAdapterFactory.createVisibleUpdateProgressAdapter());
     }
 }

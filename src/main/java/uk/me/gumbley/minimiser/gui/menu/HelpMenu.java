@@ -44,4 +44,20 @@ public final class HelpMenu extends AbstractMenuGroup {
     public JMenu getJMenu() {
         return helpmenu;
     }
+
+    /**
+     * @return the enabledness of the Help|Check for Updates menu
+     * item
+     */
+    public boolean isHelpCheckForUpdatesEnabled() {
+        return getMenuWiring().isMenuItemEnabled(MenuIdentifier.HelpCheckForUpdates);
+    }
+    
+    /**
+     * Set the state of the Help|Check for Updates menu item
+     * @param newEnabled true iff enabled
+     */
+    public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
+        getMenuWiring().setMenuItemEnabled(MenuIdentifier.HelpCheckForUpdates, newEnabled);
+    }
 }

@@ -1,11 +1,13 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
 import java.awt.event.ActionListener;
+
 import javax.swing.JMenuBar;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
@@ -17,7 +19,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  */
 public final class MenuImpl implements Menu {
     private static final Logger LOGGER = Logger.getLogger(MenuImpl.class);
-    private Object lock = new Object();
+    private final Object lock = new Object();
     private SpringLoader springLoader;
     private MenuWiring menuWiring;
     
@@ -27,7 +29,7 @@ public final class MenuImpl implements Menu {
     private ViewMenu viewMenuGroup;
     private AbstractMenuGroup toolsMenuGroup;
     private WindowMenu windowMenuGroup;
-    private AbstractMenuGroup helpMenuGroup;
+    private HelpMenu helpMenuGroup;
 
     
     /**
@@ -239,5 +241,19 @@ public final class MenuImpl implements Menu {
                 }
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isHelpCheckForUpdatesEnabled() {
+        return helpMenuGroup.isHelpCheckForUpdatesEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
+        helpMenuGroup.setHelpCheckForUpdatesEnabled(newEnabled);
     }
 }

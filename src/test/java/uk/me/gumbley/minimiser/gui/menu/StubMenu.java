@@ -230,14 +230,14 @@ public final class StubMenu implements Menu {
     /**
      * For unit tests, inject a choice of database to switch to, from the
      * window menu.
-     * @param database th edatabase descriptor to switch to.
+     * @param database the database descriptor to switch to.
      */
     public void injectWindowMenuRequest(final DatabaseDescriptor database) {
         windowMenuSwitchObservers.eventOccurred(new DatabaseNameChoice(database.getDatabaseName()));
     }
     
     /**
-     * For unit tests, sett he state of the Help|Check for Updates
+     * For unit tests, set the state of the Help|Check for Updates
      * menu item
      * @param newEnabled true iff enabled
      */

@@ -2,10 +2,14 @@ package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
+import uk.me.gumbley.minimiser.gui.menu.Menu;
+import uk.me.gumbley.minimiser.gui.menu.StubMenu;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -16,8 +20,8 @@ import uk.me.gumbley.minimiser.updatechecker.UpdateProgressAdapterFactory;
 
 
 /**
- * Tests that setting the 'update check allowed' prefs flag triggers an update
- * check.
+ * Tests that setting the 'update check allowed' prefs flag
+ * triggers an update check.
  * 
  * @author matt
  *
@@ -28,6 +32,7 @@ public final class TestUpdateAllowedPrefsEventObserverLifecycle {
     private StubUpdateChecker updateChecker;
     private UpdateAllowedPrefsEventObserverLifecycle observer;
     private UpdateProgressAdapterFactory updateProgressAdapterFactory;
+    private Menu mMenu;
 
     /**
      * @throws IOException on failure
@@ -39,9 +44,10 @@ public final class TestUpdateAllowedPrefsEventObserverLifecycle {
         prefsFile = new File(prefs.getAbsolutePath());
         prefsFile.deleteOnExit();
         updateChecker = new StubUpdateChecker();
+        mMenu = new StubMenu();
         updateProgressAdapterFactory = new StubUpdateProgressAdapterFactory(
             new StubUpdateProgressAdapter());
-        observer = new UpdateAllowedPrefsEventObserverLifecycle(updateChecker, prefs, updateProgressAdapterFactory);
+        observer = new UpdateAllowedPrefsEventObserverLifecycle(updateChecker, prefs, updateProgressAdapterFactory, mMenu);
     }
     
     /**
@@ -51,11 +57,13 @@ public final class TestUpdateAllowedPrefsEventObserverLifecycle {
     public void startedUpWithGoodConditionsTriggersUpdate() {
         observer.startup();
         
+        Assert.assertFalse(mMenu.isHelpCheckForUpdatesEnabled());
         prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true); // I heard that...
         // asynchronously trigger....
         ThreadUtils.waitNoInterruption(250);
         
         Assert.assertTrue(updateChecker.updateTriggered());
+        Assert.assertTrue(mMenu.isHelpCheckForUpdatesEnabled());
     }
     
     /**
@@ -75,7 +83,7 @@ public final class TestUpdateAllowedPrefsEventObserverLifecycle {
     /**
      * 
      */
-    @Test(timeout = 3000)
+    @Test// (timeout = 3000)
     public void notStartedUpWithGoodConditionsDoesntTriggerUpdate() {
         // do not startup!
      
@@ -107,11 +115,13 @@ public final class TestUpdateAllowedPrefsEventObserverLifecycle {
     public void notStartedUpWithBadConditionsDoesntTriggerUpdate() {
         // do not startup!
      
+        Assert.assertFalse(mMenu.isHelpCheckForUpdatesEnabled());
         prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, false); // I heard that...
         // asynchronously trigger....
         ThreadUtils.waitNoInterruption(250);
         
         Assert.assertFalse(updateChecker.updateTriggered());
+        Assert.assertFalse(mMenu.isHelpCheckForUpdatesEnabled());
     }
 
     /**
@@ -139,5 +149,4 @@ public final class TestUpdateAllowedPrefsEventObserverLifecycle {
         
         Assert.assertFalse(updateChecker.updateTriggered());
     }
-
 }
