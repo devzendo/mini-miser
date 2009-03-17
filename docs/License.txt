@@ -2,7 +2,8 @@
     MiniMiser - personal financial management, tracking and reconciliation
     software.
     
-    Copyright (C) 2008 Matthew James Gumbley
+    Copyright (C) 2008, 2009
+    Matthew James Gumbley
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

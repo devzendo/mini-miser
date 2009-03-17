@@ -1,0 +1,111 @@
+package uk.me.gumbley.minimiser.pluginmanager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import uk.me.gumbley.minimiser.springloader.SpringLoader;
+
+import com.mycila.plugin.api.PluginBinding;
+
+/**
+ * The Default Plugin manager obtains plugin customisation data
+ * by scanning the classpath for plugin descriptions.
+ * 
+ * @author matt
+ *
+ */
+public final class DefaultPluginManager implements PluginManager {
+    private static final Logger LOGGER = Logger
+            .getLogger(DefaultPluginManager.class);
+    private final List<Plugin> mPlugins;
+    private ApplicationPlugin mApplicationPlugin;
+    private final SpringLoader mSpringLoader;
+    
+    public DefaultPluginManager(final SpringLoader springLoader) {
+        this.mSpringLoader = springLoader;
+        mPlugins = new ArrayList<Plugin>();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getUpdateSiteBaseURL() {
+        // TODO Auto-generated method stub
+        return "http://localhost:9876";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ApplicationPlugin getApplicationPlugin() {
+        return mApplicationPlugin;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Plugin> getPlugins() {
+        return mPlugins;
+    }
+
+    /**
+     * Load the plugins, given a resource path to the plugin
+     * properties file.
+     * @param propertiesResourcePath the path to the properties
+     * file, e.g. META-INF/minimiser/plugin.properties
+     * @throws PluginException on any load failures.
+     */
+    public void loadPlugins(final String propertiesResourcePath) throws PluginException {
+        LOGGER.info("Loading plugins from the " + propertiesResourcePath + " resources");
+        // mycila doesn't care if the properties can't be found,
+        // and will load zero plugins - as it should, presumably.
+        // However, this indicates a configuration error in our
+        // case.
+        try {
+            final com.mycila.plugin.spi.PluginManager<Plugin> manager =
+                new com.mycila.plugin.spi.PluginManager<Plugin>(Plugin.class,
+                        propertiesResourcePath);
+            LOGGER.info("Loading plugins");
+            final List<PluginBinding<Plugin>> resolvedPlugins = manager.getResolver().getResolvedPlugins();
+            LOGGER.info("List of bindings: " + resolvedPlugins);
+            if (resolvedPlugins.size() == 0) {
+                final String warning = "No plugins have been found";
+                LOGGER.warn(warning);
+                throw new PluginException(warning);
+            }
+            for (PluginBinding<Plugin> binding : resolvedPlugins) {
+                final Plugin plugin = binding.getPlugin();
+                LOGGER.info("Loaded plugin " + plugin.getName() + " version " + plugin.getVersion());
+                LOGGER.debug("of class " + plugin.getClass().getName());
+                if (plugin instanceof ApplicationPlugin) {
+                    if (mApplicationPlugin != null) {
+                        final String dupMessage = "Trying to load a second ApplicationPlugin ("
+                            + plugin.getName() + " v" + plugin.getVersion() + ", class " + plugin.getClass().getName() + ") "
+                            + "when there is already one loaded ("
+                            + mApplicationPlugin.getName()
+                            + " v" + mApplicationPlugin.getVersion() + ", class "
+                            + mApplicationPlugin.getClass().getName() + ")";
+                        LOGGER.warn(dupMessage);
+                        throw new PluginException(dupMessage); 
+                    }
+                    LOGGER.info(plugin.getName() + " is the Application Plugin");
+                    mApplicationPlugin = (ApplicationPlugin) plugin;
+                }
+                mPlugins.add(plugin);
+            }
+        } catch (final com.mycila.plugin.api.PluginException e) {
+            final String warning = "Failure loading plugins: " + e.getMessage();
+            LOGGER.warn(warning);
+            LOGGER.debug(warning, e);
+            throw new PluginException(warning); 
+        }
+        
+        if (mApplicationPlugin == null) {
+            final String warning = "No application plugin has been provided";
+            LOGGER.warn(warning);
+            throw new PluginException(warning);
+        }
+    }
+}

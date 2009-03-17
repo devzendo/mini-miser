@@ -1,5 +1,14 @@
 package uk.me.gumbley.minimiser.updatechecker;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URL;
+
+import javax.net.ServerSocketFactory;
+
+import org.apache.log4j.Logger;
+
 /**
  * A simple web server, for integration style tests.
  * 
@@ -7,13 +16,33 @@ package uk.me.gumbley.minimiser.updatechecker;
  *
  */
 public final class WebServer {
-
+    private static final Logger LOGGER = Logger.getLogger(WebServer.class);
+    private volatile boolean mAlive;
+    
+    
     /**
-     * @param baseUrl the base URL - the port that the server is
+     * @param baseURL the base URL - the port that the server is
      * bound to is retrieved from here.
+     * @throws IOException 
      */
-    public WebServer(final String baseUrl) {
-        // TODO Auto-generated constructor stub
+    public WebServer(final String baseURL) throws IOException {
+        mAlive = true;
+        final URL url = new URL(baseURL);
+        final ServerSocketFactory socketFactory = ServerSocketFactory.getDefault();
+        final ServerSocket serverSocket = socketFactory.createServerSocket(url.getPort());
+        Thread listenThread = new Thread(new Runnable() {
+
+            public void run() {
+                LOGGER.info("Web server listening on port " + url.getPort());
+                while (mAlive) {
+                    try {
+                        final Socket acceptSocket = serverSocket.accept();
+                        //acceptSocket.
+                    } catch (final IOException e) {
+                        LOGGER.warn("Caught exception on accept: " + e.getMessage());
+                    }
+                }
+            }});
     }
 
     /**

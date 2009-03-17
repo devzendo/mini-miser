@@ -5,9 +5,11 @@ import java.io.IOException;
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
+import org.easymock.EasyMock;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 
 /**
@@ -30,13 +32,19 @@ public class TestRemoteFileRetriever extends LoggingTestCase {
      */
     @Test(timeout = 8000)
     public void getChangelogOK() throws IOException {
+        final PluginManager pluginManager = EasyMock.createMock(PluginManager.class);
+        EasyMock.expect(pluginManager.getUpdateSiteBaseURL()).andReturn(BASE_URL);
+        EasyMock.replay(pluginManager);
+        
         webServer = new WebServer(BASE_URL);
         webServer.serveFileContents(CHANGELOG_TXT, CHANGELOG_CONTENTS);
+
         try {
-            remoteFileRetriever = new DefaultRemoteFileRetriever(BASE_URL);
+            remoteFileRetriever = new DefaultRemoteFileRetriever(pluginManager);
             Assert.assertEquals(CHANGELOG_CONTENTS, remoteFileRetriever.getFileContents(CHANGELOG_TXT));
         } finally {
             webServer.stop();
+            EasyMock.verify(pluginManager);
         }
     }
 }

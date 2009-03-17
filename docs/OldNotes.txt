@@ -273,3 +273,36 @@ x overengineering.......
   log? If there's a reason to communicate with the users, it'll be because
   there's new functionality, or, horrors, a bug that can't wait 'til the next
   release (so we'd branch, and produce a patch release)
+  
+Plugin Management
+-----------------
+There should be two types of plugin: normal and application.
+
+Each deployment of MiniMiser should have one application, and
+can have many normal plugins. This would support the common
+usage whereby MiniMiser is the framework that powers user apps
+rather than the usage of Eclipse which can have many different
+personalities.
+
+Each plugin should offer its version, and the update mechanism
+will be extended to query the update sites of each plugin. Also,
+MiniMiser will behave as its own plugin, to make use of the
+update mechanism.
+
+Plugins need access to the SpringLoader, since they may need to
+instantiate their own beans, and access system-exposed beans.
+They will also need to provide their own application contexts.
+
+The SpringLoader's application context can be extended with
+each plugin's app context files.
+
+So, the plugin manager load the plugins, and ask them for the
+names of their application context files (which are added to the
+existing system list).
+
+The SpringLoader will then be passed into each plugin for its
+pleasure.
+
+The system will then start, and various plugin lifecycle methods
+will be called as the startup proceeds. 
+

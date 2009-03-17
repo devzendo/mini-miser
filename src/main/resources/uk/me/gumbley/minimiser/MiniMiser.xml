@@ -326,12 +326,15 @@
 	</bean>
 
 	<bean id="remoteFileRetriever" class="uk.me.gumbley.minimiser.updatechecker.DefaultRemoteFileRetriever">
+		<constructor-arg ref="pluginManager" />
 	</bean>
 
 	<bean id="changeLogTransformer" class="uk.me.gumbley.minimiser.updatechecker.DefaultChangeLogTransformer">
 	</bean>
 
-	<!-- miscellaneous -->	
+	<!-- miscellaneous -->
+	<bean id="pluginManager" class="uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager" />
+	
 	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl">
 		<constructor-arg ref="prefs" />
 	</bean>

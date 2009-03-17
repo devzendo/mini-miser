@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser.updatechecker;
 import java.io.File;
 import java.io.IOException;
 
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
+
 /**
  * Obtains files over a HTTP connection, handling redirects
  * automatically.
@@ -16,8 +18,8 @@ public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
     /**
      * @param baseUrl the base URL of the update site
      */
-    public DefaultRemoteFileRetriever(final String baseUrl) {
-        this.mBaseUrl = baseUrl;
+    public DefaultRemoteFileRetriever(final PluginManager pluginManager) {
+        this.mBaseUrl = pluginManager.getUpdateSiteBaseURL();
     }
 
     /**
