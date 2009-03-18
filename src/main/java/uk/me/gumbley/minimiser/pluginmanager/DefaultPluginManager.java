@@ -19,15 +19,27 @@ import com.mycila.plugin.api.PluginBinding;
 public final class DefaultPluginManager implements PluginManager {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultPluginManager.class);
-    private final List<Plugin> mPlugins;
+    private final List<Plugin> mPlugins = new ArrayList<Plugin>();
     private ApplicationPlugin mApplicationPlugin;
     private final SpringLoader mSpringLoader;
     
+    /**
+     * Construct a PluginManager that will pass the SpringLoader
+     * to loaded plugins
+     * @param springLoader the SpringLoader
+     */
     public DefaultPluginManager(final SpringLoader springLoader) {
         this.mSpringLoader = springLoader;
-        mPlugins = new ArrayList<Plugin>();
     }
     
+    /**
+     * Construct a PluginManager that will not pass any
+     * SpringLoader to loaded plugins
+     */
+    public DefaultPluginManager() {
+        this.mSpringLoader = null;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -77,23 +89,18 @@ public final class DefaultPluginManager implements PluginManager {
             }
             for (PluginBinding<Plugin> binding : resolvedPlugins) {
                 final Plugin plugin = binding.getPlugin();
-                LOGGER.info("Loaded plugin " + plugin.getName() + " version " + plugin.getVersion());
-                LOGGER.debug("of class " + plugin.getClass().getName());
-                if (plugin instanceof ApplicationPlugin) {
-                    if (mApplicationPlugin != null) {
-                        final String dupMessage = "Trying to load a second ApplicationPlugin ("
-                            + plugin.getName() + " v" + plugin.getVersion() + ", class " + plugin.getClass().getName() + ") "
-                            + "when there is already one loaded ("
-                            + mApplicationPlugin.getName()
-                            + " v" + mApplicationPlugin.getVersion() + ", class "
-                            + mApplicationPlugin.getClass().getName() + ")";
-                        LOGGER.warn(dupMessage);
-                        throw new PluginException(dupMessage); 
-                    }
-                    LOGGER.info(plugin.getName() + " is the Application Plugin");
-                    mApplicationPlugin = (ApplicationPlugin) plugin;
+                addLoadedPlugin(plugin);
+                if (mSpringLoader != null) {
+                    addPluginApplicationContextsToSpringLoader(plugin);
                 }
-                mPlugins.add(plugin);
+            }
+            // Now all app contexts have been loaded, let the
+            // plugins have the SpringLoader
+            for (PluginBinding<Plugin> binding : resolvedPlugins) {
+                final Plugin plugin = binding.getPlugin();
+                if (mSpringLoader != null) {
+                    giveSpringLoaderToPlugin(plugin);
+                }
             }
         } catch (final com.mycila.plugin.api.PluginException e) {
             final String warning = "Failure loading plugins: " + e.getMessage();
@@ -107,5 +114,65 @@ public final class DefaultPluginManager implements PluginManager {
             LOGGER.warn(warning);
             throw new PluginException(warning);
         }
+    }
+
+    /**
+     * Give the SpringLoader to a plugin.
+     * <p>
+     * Precondition: only called if weactually have a SpringLoader
+     * @param plugin
+     */
+    private void giveSpringLoaderToPlugin(final Plugin plugin) {
+        LOGGER.info("Giving SpringLoader to plugin " + plugin.getName());
+        plugin.setSpringLoader(mSpringLoader);
+    }
+
+    /**
+     * If the plugin defines any additional application context
+     * files, add them to the SpringLoader.
+     * <p>
+     * Precondition: only called if we actually have a SpringLoader
+     * @param plugin the plugin whose application contexts are
+     * to be added.
+     */
+    private void addPluginApplicationContextsToSpringLoader(final Plugin plugin) throws PluginException {
+        LOGGER.info("Requesting application contexts from plugin " + plugin.getName());
+        final List<String> applicationContextResourcePaths = plugin.getApplicationContextResourcePaths();
+        if (applicationContextResourcePaths == null || applicationContextResourcePaths.size() == 0) {
+            LOGGER.info("No application contexts provided");
+            return;
+        }
+        LOGGER.info("Plugin-defined application contexts:");
+        for (String appContextResourcePath : applicationContextResourcePaths) {
+            LOGGER.info("  " + appContextResourcePath);
+        }
+        try {
+            mSpringLoader.addApplicationContext(applicationContextResourcePaths.toArray(new String[0]));
+        } catch (final Exception e) {
+            final String loadMessage = "Cannot add plugin application contexts: " + e.getMessage();
+            LOGGER.warn(loadMessage);
+            LOGGER.debug(loadMessage, e);
+            throw new PluginException(loadMessage);
+        }
+    }
+
+    private void addLoadedPlugin(final Plugin plugin) throws PluginException {
+        LOGGER.info("Loaded plugin " + plugin.getName() + " version " + plugin.getVersion());
+        LOGGER.debug("of class " + plugin.getClass().getName());
+        if (plugin instanceof ApplicationPlugin) {
+            if (mApplicationPlugin != null) {
+                final String dupMessage = "Trying to load a second ApplicationPlugin ("
+                    + plugin.getName() + " v" + plugin.getVersion() + ", class " + plugin.getClass().getName() + ") "
+                    + "when there is already one loaded ("
+                    + mApplicationPlugin.getName()
+                    + " v" + mApplicationPlugin.getVersion() + ", class "
+                    + mApplicationPlugin.getClass().getName() + ")";
+                LOGGER.warn(dupMessage);
+                throw new PluginException(dupMessage); 
+            }
+            LOGGER.info(plugin.getName() + " is the Application Plugin");
+            mApplicationPlugin = (ApplicationPlugin) plugin;
+        }
+        mPlugins.add(plugin);
     }
 }
