@@ -112,6 +112,7 @@
 			    <value>messageQueueHelperInitialisingLifecycle</value>
 			    <value>welcomeDialogHelperInitialisingLifecycle</value>
 			    
+			    <value>pluginManagerLifecycle</value>
 			    <value>tabEventListenerLifecycle</value>
 			    <value>viewMenuInitialiserLifecycle</value>
 			    <value>helpCheckForUpdatesMenuInitialiserLifecycle</value>
@@ -212,6 +213,12 @@
 
 	<bean id="startupQueueLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.StartupQueueLifecycle">
 		<constructor-arg ref="startupQueue" />	
+	</bean>
+
+	<bean id="pluginManagerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.PluginManagerLifecycle">
+		<constructor-arg ref="pluginManager" />
+		<constructor-arg value="META-INF/minimiser/plugins.properties" />
+		<constructor-arg ref="problemReporter" />	
 	</bean>
 	
 	<!-- models, other singletons and utilities -->
@@ -333,7 +340,9 @@
 	</bean>
 
 	<!-- miscellaneous -->
-	<bean id="pluginManager" class="uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager" />
+	<bean id="pluginManager" class="uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager">
+		<constructor-arg ref="springLoader" />
+	</bean>
 	
 	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl">
 		<constructor-arg ref="prefs" />

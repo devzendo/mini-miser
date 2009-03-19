@@ -51,5 +51,4 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
         
         Assert.assertSame(getSpringLoader(), appPlugin.getSpringLoader());
     }
-
 }

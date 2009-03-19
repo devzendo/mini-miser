@@ -12,9 +12,11 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * the framework also makes several lifecycle method calls into
  * the plugin:
  * <ul>
+ * <li> getName and getVersion are called</li>
  * <li> getApplicationContexts() allows the plugin to register
  *      any custom XML application context files provided as
  *      resources</li>
+ * <li> ...all plugins' application contexts are then loaded...</li>
  * <li> setSpringLoader() is called after all plugins' application
  *      contexts have been bound to the SpringLoader.</li>
  * </ul>
@@ -43,17 +45,16 @@ public interface Plugin extends com.mycila.plugin.api.Plugin {
      * needs to add to the SpringLoader, or null, or empty list.
      */
     List<String> getApplicationContextResourcePaths();
-    
-    /**
-     * Obtain the SpringLoader for plugin use
-     * @return the SpringLoader
-     */
-    SpringLoader getSpringLoader();
-
     /**
      * Give the SpringLoader to the plugin, after the
      * application contexts for all plugins have been loaded
      * @param springLoader the SpringLoader
      */
     void setSpringLoader(final SpringLoader springLoader);
+    
+    /**
+     * Obtain the SpringLoader for plugin use
+     * @return the SpringLoader
+     */
+    SpringLoader getSpringLoader();
 }
