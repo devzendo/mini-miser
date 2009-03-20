@@ -41,7 +41,7 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
      *
      */
     public class TagMatcher {
-        private StringBuilder builder;
+        private final StringBuilder builder;
         private final String endingTag;
         /**
          * Construct a TagMatcher
@@ -80,6 +80,7 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
         /**
          * {@inheritDoc}
          */
+        @Override
         public final String toString() {
             return builder.toString();
         }
@@ -121,47 +122,102 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
         }
     }
     
+    /**
+     * Matches lists
+     * @author matt
+     *
+     */
     public class ListMatcher extends TagMatcher {
+        /**
+         * 
+         */
         public ListMatcher() {
             super("<ul>", "</ul>");
         }
+        /**
+         * @param text the text surrounded by the li tag
+         * @return this
+         */
         public ListMatcher element(final String text) {
             surround("li", text);
             return this;
         }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public ListMatcher then(final TagMatcher inner) {
             super.then(inner);
             return this;
         }
     }
+    /**
+     * Matches HTML enclosures
+     * @author matt
+     *
+     */
     public class HTMLMatcher extends TagMatcher {
+        /**
+         * 
+         */
         public HTMLMatcher() {
             super("<html><body>", "</body></html>");
         }
+        /**
+         * Match bold text
+         * @param str the text
+         * @return this
+         */
         public HTMLMatcher bold(final String str) {
             surround("b", str);
             return this;
         }
+        /**
+         * Match emphasised text
+         * @param str the text
+         * @return this
+         */
         public HTMLMatcher emph(final String str) {
             surround("em", str);
             return this;
         }
+        /**
+         * Match anything
+         * @return this
+         */
         public HTMLMatcher anything() {
             append(".*?");
             return this;
         }
+        /**
+         * Match a line break
+         * @return this
+         */
         public HTMLMatcher linebreak() {
             append("</br>");
             return this;
         }
+        /**
+         * Match a paragraph break
+         * @return this
+         */
         public HTMLMatcher parabreak() {
             append("</p>");
             return this;
         }
+        /**
+         * Match some text
+         * @param str text
+         * @return this
+         */
         public HTMLMatcher text(final String str) {
             append(str);
             return this;
         }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public HTMLMatcher then(final TagMatcher inner) {
             super.then(inner);
             return this;

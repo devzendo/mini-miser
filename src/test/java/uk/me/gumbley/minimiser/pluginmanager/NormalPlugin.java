@@ -2,6 +2,11 @@ package uk.me.gumbley.minimiser.pluginmanager;
 
 import java.util.List;
 
+/**
+ * A normal plugin for tests.
+ * @author matt
+ *
+ */
 public final class NormalPlugin extends AbstractPlugin implements Plugin {
     /**
      * {@inheritDoc}

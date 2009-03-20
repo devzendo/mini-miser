@@ -13,9 +13,9 @@ import org.junit.Test;
  * @author matt
  *
  */
-public class TestMavenEclipseClasspathCorrect {
+public final class TestMavenEclipseClasspathCorrect {
     /**
-     * @throws IOException
+     * @throws IOException never
      */
     @Test
     public void shouldOnlySeeResourcesOnceInEnumeration() throws IOException {   

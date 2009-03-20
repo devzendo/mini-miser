@@ -14,12 +14,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.common.AppName;
@@ -49,7 +51,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     private CardLayout cardLayout;
     private final boolean welcome;
     private ActionListener switchActionListener;
-    private Map<String, CountDownLatch> loadedResourceLatchMap;
+    private final Map<String, CountDownLatch> loadedResourceLatchMap;
 
     /**
      * Construct the Welcome Dialog
@@ -131,16 +133,20 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     }
     
     private abstract class HTMLDisplayingSwingWorker extends SwingWorker {
-        protected String resource;
+        private final String resource;
 
         public HTMLDisplayingSwingWorker(final String resourceName) {
             this.resource = resourceName;
         }
 
+        protected String getResource() {
+            return resource;
+        }
+        
         @Override
         public abstract Object construct();
         
-        @SuppressWarnings("unchecked")
+        @Override
         public void finished() {
             final JTextPane textPane = new JTextPane();
             textPane.setContentType("text/html");
@@ -165,7 +171,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         public Object construct() {
             assert (!EventQueue.isDispatchThread());
             final StringBuilder text = new StringBuilder();
-            ResourceLoader.readResource(text, resource);
+            ResourceLoader.readResource(text, getResource());
             return text.toString();
         }
     }
@@ -178,7 +184,6 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         @Override
         public Object construct() {
             assert (!EventQueue.isDispatchThread());
-            final StringBuilder text = new StringBuilder();
             final InputStream resourceAsStream = Thread.currentThread().
                 getContextClassLoader().
                 getResourceAsStream("changelog.txt");
@@ -261,7 +266,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
                 return null;
             }
             
-            @SuppressWarnings("unchecked")
+            @Override
             public void finished() {
                 if (welcome) {
                     switchToWelcome();
@@ -278,7 +283,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
                 return null;
             }
             
-            @SuppressWarnings("unchecked")
+            @Override
             public void finished() {
                 enableButtons();
             }
