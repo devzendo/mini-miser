@@ -26,4 +26,10 @@ public final class AnotherAppPlugin extends AbstractPlugin implements Applicatio
     public List<String> getApplicationContextResourcePaths() {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void shutdown() {
+    }
 }

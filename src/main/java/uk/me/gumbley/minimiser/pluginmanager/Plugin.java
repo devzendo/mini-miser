@@ -57,4 +57,10 @@ public interface Plugin extends com.mycila.plugin.api.Plugin {
      * @return the SpringLoader
      */
     SpringLoader getSpringLoader();
+    
+    /**
+     * Shut down the plugin, freeing any resources. Called by the
+     * framework upon system shutdown.
+     */
+    void shutdown();
 }

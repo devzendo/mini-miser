@@ -8,6 +8,8 @@ import java.util.List;
  *
  */
 public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin {
+    private boolean mShutdownCalled;
+
     /**
      * {@inheritDoc}
      */
@@ -31,5 +33,19 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
         };
         
         return Arrays.asList(contexts);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void shutdown() {
+         mShutdownCalled = true;
+    }
+
+    /**
+     * @return true iff shutdown has been called
+     */
+    public boolean hasShutdownBeenCalled() {
+        return mShutdownCalled;
     }
 }

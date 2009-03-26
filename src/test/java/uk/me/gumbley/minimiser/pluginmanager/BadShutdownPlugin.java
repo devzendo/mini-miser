@@ -2,25 +2,28 @@ package uk.me.gumbley.minimiser.pluginmanager;
 
 import java.util.List;
 
+
 /**
- * A normal plugin for tests.
  * @author matt
  *
  */
-public final class NormalPlugin extends AbstractPlugin implements Plugin {
+public final class BadShutdownPlugin extends AbstractPlugin implements Plugin {
+    private boolean mShutdownCalled;
+
     /**
      * {@inheritDoc}
      */
     public String getName() {
-        return "Normal";
+        return "BadShutdown";
     }
 
     /**
      * {@inheritDoc}
      */
     public String getVersion() {
-        return "1.0.1";
+        return "1.0.0";
     }
+
     /**
      * {@inheritDoc}
      */
@@ -32,5 +35,14 @@ public final class NormalPlugin extends AbstractPlugin implements Plugin {
      * {@inheritDoc}
      */
     public void shutdown() {
+         mShutdownCalled = true;
+         throw new IllegalStateException("Ka-booom!");
+    }
+
+    /**
+     * @return true iff shutdown has been called
+     */
+    public boolean hasShutdownBeenCalled() {
+        return mShutdownCalled;
     }
 }

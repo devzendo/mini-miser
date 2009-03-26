@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
 import uk.me.gumbley.minimiser.pluginmanager.AppPlugin;
+import uk.me.gumbley.minimiser.pluginmanager.BadShutdownPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
@@ -78,5 +79,76 @@ public final class TestPluginManagerLifecycle extends SpringLoaderUnittestCase {
         lifecycle.startup();
 
         EasyMock.verify(problemReporter);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void lifecycleShutdownCausesPluginShutdown() {
+        final ProblemReporter problemReporter = EasyMock.createMock(ProblemReporter.class);
+        EasyMock.replay(problemReporter);
+        
+        lifecycle = new PluginManagerLifecycle(pluginManager,
+            "uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties",
+            problemReporter);
+        lifecycle.startup();
+        
+        final AppPlugin appPlugin = (AppPlugin) pluginManager.getApplicationPlugin();
+        Assert.assertFalse(appPlugin.hasShutdownBeenCalled());
+        
+        lifecycle.shutdown();
+        
+        Assert.assertTrue(appPlugin.hasShutdownBeenCalled());
+        
+        EasyMock.verify(problemReporter);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void pluginShutdownFailureCausesProblemReporting() {
+        final ProblemReporter problemReporter = EasyMock.createStrictMock(ProblemReporter.class);
+        problemReporter.reportProblem(EasyMock.isA(String.class), EasyMock.isA(Exception.class));
+        EasyMock.replay(problemReporter);
+        
+        lifecycle = new PluginManagerLifecycle(pluginManager,
+            "uk/me/gumbley/minimiser/pluginmanager/badshutdownplugin.properties",
+            problemReporter);
+        lifecycle.startup();
+        lifecycle.shutdown();
+
+        EasyMock.verify(problemReporter);
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void allPluginsAreShutdownDesipiteFailureOfOne() {
+        final ProblemReporter problemReporter = EasyMock.createStrictMock(ProblemReporter.class);
+        
+        lifecycle = new PluginManagerLifecycle(pluginManager,
+            "uk/me/gumbley/minimiser/pluginmanager/badshutdownplugin.properties",
+            problemReporter);
+        lifecycle.startup();
+        final List<Plugin> plugins = pluginManager.getPlugins();
+        assertAllPluginsShutdown(plugins, false);
+        lifecycle.shutdown();
+        assertAllPluginsShutdown(plugins, true);
+    }
+
+    private void assertAllPluginsShutdown(final List<Plugin> plugins, final boolean hasShutdown) {
+        for (Plugin plugin : plugins) {
+            if (plugin instanceof BadShutdownPlugin) {
+                final BadShutdownPlugin bsp = (BadShutdownPlugin) plugin;
+                Assert.assertEquals(hasShutdown, bsp.hasShutdownBeenCalled());
+            }
+            if (plugin instanceof AppPlugin) {
+                final AppPlugin ap = (AppPlugin) plugin;
+                Assert.assertEquals(hasShutdown, ap.hasShutdownBeenCalled());
+            }
+        }
     }
 }

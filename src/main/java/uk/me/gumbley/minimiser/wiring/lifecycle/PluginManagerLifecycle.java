@@ -1,8 +1,10 @@
 package uk.me.gumbley.minimiser.wiring.lifecycle;
 
+import org.apache.log4j.Logger;
+
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
-import uk.me.gumbley.minimiser.pluginmanager.PluginException;
+import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 /**
@@ -15,6 +17,8 @@ import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
  *
  */
 public final class PluginManagerLifecycle implements Lifecycle {
+    private static final Logger LOGGER = Logger
+            .getLogger(PluginManagerLifecycle.class);
     private final PluginManager mPluginManager;
     private final String mPluginResourcePath;
     private final ProblemReporter mProblemReporter;
@@ -39,16 +43,35 @@ public final class PluginManagerLifecycle implements Lifecycle {
      * {@inheritDoc}
      */
     public void shutdown() {
+        LOGGER.info("Shutting down plugins");
+        for (Plugin plugin : mPluginManager.getPlugins()) {
+            try {
+                plugin.shutdown();
+                // This throws PluginException, but plugins
+                // might be developed by non-TDDers, and might
+                // throw any old rubbish, so let's not take
+                // any chances... and catch all.
+            } catch (final Exception e) {
+                mProblemReporter.reportProblem("shutting down plugins", e);
+            }
+        }
+        LOGGER.info("Plugins shut down");
     }
 
     /**
      * {@inheritDoc}
      */
     public void startup() {
+        LOGGER.info("Starting plugins");
         try {
             mPluginManager.loadPlugins(mPluginResourcePath);
-        } catch (final PluginException e) {
+            // This throws PluginException, but plugins
+            // might be developed by non-TDDers, and might
+            // throw any old rubbish, so let's not take
+            // any chances... and catch all.
+        } catch (final Exception e) {
             mProblemReporter.reportProblem("loading plugins", e);
         }
+        LOGGER.info("Plugins started");
     }
 }
