@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.h2.command.Parser;
 import org.h2.command.Prepared;
@@ -17,6 +19,7 @@ import org.h2.command.dml.Update;
 import org.h2.engine.Session;
 import org.h2.engine.SessionInterface;
 import org.h2.jdbc.JdbcConnection;
+
 import uk.me.gumbley.minimiser.persistence.sql.BadSQLException;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccessException;
@@ -29,7 +32,7 @@ import uk.me.gumbley.minimiser.persistence.sql.SQLAccessException;
  */
 public final class H2SQLAccess implements SQLAccess {
     private static final Logger LOGGER = Logger.getLogger(H2SQLAccess.class);
-    private final Map<Class, ResultType> preparedToResultTypeMap;
+    private final Map<Class<?>, ResultType> preparedToResultTypeMap;
     private Parser parser;
     private Connection connection;
     
@@ -55,8 +58,8 @@ public final class H2SQLAccess implements SQLAccess {
     }
 
 
-    private Map<Class, ResultType> initialisePreparedToResultTypeMap() {
-        final Map<Class, ResultType> map = new HashMap<Class, ResultType>();
+    private Map<Class<?>, ResultType> initialisePreparedToResultTypeMap() {
+        final Map<Class<?>, ResultType> map = new HashMap<Class<?>, ResultType>();
         map.put(Select.class, ResultType.ResultSet);
         map.put(Delete.class, ResultType.Count);
         map.put(Insert.class, ResultType.Count);
