@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -13,13 +14,12 @@ import javax.swing.table.AbstractTableModel;
  * @author matt
  */
 public final class ResultTable {
-    private ResultTableModel dataModel;
-    private JScrollPane scrollPane;
+    private final ResultTableModel dataModel;
+    private final JScrollPane scrollPane;
     
     /**
      * Construct the ResultTable
      */
-    @SuppressWarnings("serial")
     public ResultTable() {
         dataModel = new ResultTableModel(); 
         scrollPane = new JScrollPane(new JTable(dataModel));
@@ -27,13 +27,13 @@ public final class ResultTable {
     
     @SuppressWarnings("serial")
     private final class ResultTableModel extends AbstractTableModel {
-        private List<String> columnNames;
-        private List<List> data;
+        private final List<String> columnNames;
+        private final List<List<String>> data;
         
         
         public ResultTableModel() {
             columnNames = new ArrayList<String>();
-            data = new ArrayList<List>();
+            data = new ArrayList<List<String>>();
         }
         
         public int getColumnCount() {
@@ -44,7 +44,6 @@ public final class ResultTable {
             return data.size();
         }
 
-        @SuppressWarnings("unchecked")
         public Object getValueAt(final int row, final int col) {
             if (row >= data.size()) {
                 return "";
@@ -57,10 +56,12 @@ public final class ResultTable {
             return value;
         }
         
+        @Override
         public boolean isCellEditable(final int row, final int col) {
             return false;
         }
         
+        @Override
         public String getColumnName(final int col) {
             return columnNames.get(col);
         }
