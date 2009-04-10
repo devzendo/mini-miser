@@ -7,10 +7,10 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
 /**
  * The interface that all plugins must implement to tell the
  * framework about themselves.
- * <p>
+ * <p/>
  * After instantiating each plugin via its no-arg constructor,
  * the framework also makes several lifecycle method calls into
- * the plugin:
+ * the plugin, in order:
  * <ul>
  * <li> getName and getVersion are called</li>
  * <li> getApplicationContexts() allows the plugin to register
@@ -20,7 +20,21 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * <li> setSpringLoader() is called after all plugins' application
  *      contexts have been bound to the SpringLoader.</li>
  * </ul>
- *  
+ * <p/>
+ * The following calls can be called at any time during normal
+ * operation:
+ * <ul>
+ * <li> getUpdateSiteURL() is called whenever update availability
+ *      checks are being performed, if this facility has been
+ *      enabled
+ * </ul>
+ * <p/>
+ * Upon system shutdown, the following calls will be made, in
+ * order:
+ * <ul>
+ * <li> shutdown() when the framework is closing down.
+ * </ul>
+ * 
  * 
  * @author matt
  *
@@ -45,6 +59,7 @@ public interface Plugin extends com.mycila.plugin.api.Plugin {
      * needs to add to the SpringLoader, or null, or empty list.
      */
     List<String> getApplicationContextResourcePaths();
+    
     /**
      * Give the SpringLoader to the plugin, after the
      * application contexts for all plugins have been loaded
@@ -57,6 +72,17 @@ public interface Plugin extends com.mycila.plugin.api.Plugin {
      * @return the SpringLoader
      */
     SpringLoader getSpringLoader();
+    
+    
+    /**
+     * Where is the update site for this app?
+     * The files 'version.txt' and 'changes'txt' should be
+     * available at this URL.
+     * @return the Base URL of the update site for this app. 
+     */
+    String getUpdateSiteBaseURL();
+        
+    
     
     /**
      * Shut down the plugin, freeing any resources. Called by the

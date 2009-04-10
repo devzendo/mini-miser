@@ -48,4 +48,12 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
     public boolean hasShutdownBeenCalled() {
         return mShutdownCalled;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getUpdateSiteBaseURL() {
+        return null;
+    }
+
 }

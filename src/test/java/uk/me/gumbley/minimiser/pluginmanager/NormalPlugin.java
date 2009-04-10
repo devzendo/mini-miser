@@ -33,4 +33,11 @@ public final class NormalPlugin extends AbstractPlugin implements Plugin {
      */
     public void shutdown() {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getUpdateSiteBaseURL() {
+        return null;
+    }
 }

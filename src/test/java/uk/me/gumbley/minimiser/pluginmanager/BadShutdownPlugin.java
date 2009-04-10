@@ -45,4 +45,11 @@ public final class BadShutdownPlugin extends AbstractPlugin implements Plugin {
     public boolean hasShutdownBeenCalled() {
         return mShutdownCalled;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getUpdateSiteBaseURL() {
+        return null;
+    }
 }

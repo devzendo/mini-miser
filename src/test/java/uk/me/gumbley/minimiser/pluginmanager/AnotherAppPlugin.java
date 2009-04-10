@@ -32,4 +32,11 @@ public final class AnotherAppPlugin extends AbstractPlugin implements Applicatio
      */
     public void shutdown() {
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getUpdateSiteBaseURL() {
+        return null;
+    }
 }
