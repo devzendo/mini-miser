@@ -7,11 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.common.AppName;
@@ -37,11 +40,11 @@ public final class DriveStatusBarDisplay {
 
     private static final Logger LOGGER = Logger
             .getLogger(DriveStatusBarDisplay.class);
-    private MessageQueue messageQueue;
+    private final MessageQueue messageQueue;
     private int messageNumber;
     
-    private JFrame frame;
-    private DefaultMessageQueueViewerFactory messageQueueViewerFactory;
+    private final JFrame frame;
+    private final DefaultMessageQueueViewerFactory messageQueueViewerFactory;
 
     private DriveStatusBarDisplay()  {
         frame = new JFrame("title");
@@ -98,7 +101,12 @@ public final class DriveStatusBarDisplay {
                 + "No personal information is sent, other than your computer's IP address.<br>"
                 + "Your IP address is logged by our ISP, but is not used by us to identify you.";
                 final String checkboxText = "Allow periodic software update checks?";
-                messageQueue.addMessage(new BooleanFlagSettingMessage(subject, content, importance, CoreBooleanFlags.UPDATE_CHECK_ALLOWED, checkboxText));
+                messageQueue.addMessage(
+                    new BooleanFlagSettingMessage(subject,
+                                                  content,
+                                                  importance,
+                                                  CoreBooleanFlags.UPDATE_CHECK_ALLOWED,
+                                                  checkboxText));
             }
         });
         
