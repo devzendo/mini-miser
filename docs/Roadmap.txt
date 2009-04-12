@@ -57,6 +57,7 @@ Version 0.1 - Build the Foundations
     * Prefs dialog / advanced tab / SQL debug tab
     * SQL debug tab for issuing statements.
     * Update available checker.
+    * Basic Plugin facilities.
     * Bug reporting dialog.
 
 Version 0.2 - Drive the data structure definition
