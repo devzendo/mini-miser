@@ -4,7 +4,10 @@ package uk.me.gumbley.minimiser.prefs;
  * @author matt
  *
  */
-public final class TestBooleanFlags {
+public final class BooleanFlagsForTests {
+    private BooleanFlagsForTests() {
+        // do nothing - no instances
+    }
     /**
      * A BooleanFlag to be used for tests
      */

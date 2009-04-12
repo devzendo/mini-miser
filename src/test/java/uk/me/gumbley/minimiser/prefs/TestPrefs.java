@@ -219,7 +219,7 @@ public final class TestPrefs extends LoggingTestCase {
         obs.eventOccurred(EasyMock.eq(new PrefsEvent(PrefsSection.BOOLEAN_FLAGS)));
         EasyMock.replay(obs);
         
-        prefs.setBooleanFlag(TestBooleanFlags.TEST, true);
+        prefs.setBooleanFlag(BooleanFlagsForTests.TEST, true);
 
         EasyMock.verify(obs);
     }
@@ -264,15 +264,15 @@ public final class TestPrefs extends LoggingTestCase {
      */
     @Test
     public void generalBooleanFlagCanBeChanged() {
-        Assert.assertFalse(prefs.isBooleanFlagSet(TestBooleanFlags.TEST));
+        Assert.assertFalse(prefs.isBooleanFlagSet(BooleanFlagsForTests.TEST));
         
-        prefs.setBooleanFlag(TestBooleanFlags.TEST, true);
+        prefs.setBooleanFlag(BooleanFlagsForTests.TEST, true);
         
-        Assert.assertTrue(prefs.isBooleanFlagSet(TestBooleanFlags.TEST));
+        Assert.assertTrue(prefs.isBooleanFlagSet(BooleanFlagsForTests.TEST));
         
-        prefs.setBooleanFlag(TestBooleanFlags.TEST, false);
+        prefs.setBooleanFlag(BooleanFlagsForTests.TEST, false);
         
-        Assert.assertFalse(prefs.isBooleanFlagSet(TestBooleanFlags.TEST));
+        Assert.assertFalse(prefs.isBooleanFlagSet(BooleanFlagsForTests.TEST));
     }
     
     /**
