@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
- * A helper class that initialises the plugins that have already been loaded by
- * some external mechanism - either using mycila, or via annotations in the
- * plugin unit test case.
+ * A helper class that initialises the plugins that have already
+ * been loaded by some external mechanism - either using mycila,
+ * or via annotations in the plugin unit test case.
  * 
  * @author matt
  * 
@@ -22,16 +22,19 @@ public final class PluginInitialiser {
     private final List<Plugin> mPlugins = new ArrayList<Plugin>();
     private ApplicationPlugin mApplicationPlugin;
     private final SpringLoader mSpringLoader;
+    private final AppDetails mAppDetails;
 
     /**
-     * Construct a PluginInitialiser that will pass the SpringLoader to loaded
-     * plugins
+     * Construct a PluginInitialiser that will pass the
+     * SpringLoader to loaded plugins
      * 
-     * @param springLoader
-     *        the SpringLoader
+     * @param springLoader the SpringLoader
+     * @param appDetails the application details bean
      */
-    public PluginInitialiser(final SpringLoader springLoader) {
-        this.mSpringLoader = springLoader;
+    public PluginInitialiser(final SpringLoader springLoader,
+            final AppDetails appDetails) {
+        mSpringLoader = springLoader;
+        mAppDetails = appDetails;
     }
     
 
@@ -56,8 +59,8 @@ public final class PluginInitialiser {
         }
         // Now all app contexts have been loaded, let the
         // plugins have the SpringLoader
-        for (Plugin plugin : loadedPlugins) {
-            if (mSpringLoader != null) {
+        if (mSpringLoader != null) {
+            for (Plugin plugin : loadedPlugins) {
                 giveSpringLoaderToPlugin(plugin);
             }
         }
@@ -67,7 +70,15 @@ public final class PluginInitialiser {
             LOGGER.warn(warning);
             throw new PluginException(warning);
         }
-        
+
+        // Store the application plugin's details in the
+        // AppDetails bean, from where the rest of the system
+        // (mostly code that was written before the plugin system)
+        // can obtain it.
+        // TODO replace all use of AppDetails with direct calls
+        // to the plugin system.
+        mAppDetails.setApplicationName(mApplicationPlugin.getName());
+        mAppDetails.setApplicationVersion(mApplicationPlugin.getVersion());
     }
 
     /**
@@ -91,7 +102,7 @@ public final class PluginInitialiser {
     /**
      * Give the SpringLoader to a plugin.
      * <p>
-     * Precondition: only called if weactually have a SpringLoader
+     * Precondition: only called if we actually have a SpringLoader
      * @param plugin
      */
     private void giveSpringLoaderToPlugin(final Plugin plugin) {

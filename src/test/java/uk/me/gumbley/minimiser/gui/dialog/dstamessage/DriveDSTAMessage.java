@@ -7,17 +7,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
-import uk.me.gumbley.minimiser.version.AppVersion;
 
 
 /**
@@ -29,9 +31,9 @@ public final class DriveDSTAMessage {
     private static final Logger LOGGER = Logger
             .getLogger(DriveDSTAMessage.class);
     
-    private Prefs prefs;
-    private File prefsFile;
-    private DSTAMessageFactory messageFactory;
+    private final Prefs prefs;
+    private final File prefsFile;
+    private final DSTAMessageFactory messageFactory;
     
     private DriveDSTAMessage() throws IOException {
         final JFrame frame = new JFrame("title");
@@ -87,8 +89,8 @@ public final class DriveDSTAMessage {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
-                LOGGER.info(String.format("%s %s SQL Tab experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
-                Beautifier.makeBeautiful();
+                LOGGER.info("SQL Tab experimentation starting...");
+                Beautifier.makeBeautiful(new AppDetails());
                 try {
                     new DriveDSTAMessage();
                 } catch (final IOException e) {

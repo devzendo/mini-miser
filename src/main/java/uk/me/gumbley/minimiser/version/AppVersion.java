@@ -15,9 +15,10 @@ public final class AppVersion {
 
     /**
      * @return the version of the app
+     * @deprecated use AppDetails - getApplicationVersion instead
      */
+    @Deprecated
     public static String getVersion() {
-        // TODO get from pom
         return "1.0.0-SNAPSHOT";
     }
 }

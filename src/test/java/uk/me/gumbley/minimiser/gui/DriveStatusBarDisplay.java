@@ -27,9 +27,9 @@ import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import uk.me.gumbley.minimiser.messagequeue.SimpleDSTAMessage;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
 import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
-import uk.me.gumbley.minimiser.version.AppVersion;
 
 
 /**
@@ -168,8 +168,8 @@ public final class DriveStatusBarDisplay {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
-                LOGGER.info(String.format("%s %s message queue display experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
-                Beautifier.makeBeautiful();
+                LOGGER.info("Message queue display experimentation starting...");
+                Beautifier.makeBeautiful(new AppDetails());
                 new DriveStatusBarDisplay();
             }
         });

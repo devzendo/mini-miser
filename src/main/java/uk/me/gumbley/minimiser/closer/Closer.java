@@ -2,7 +2,8 @@ package uk.me.gumbley.minimiser.closer;
 
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
-import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialog;
+
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
@@ -40,8 +41,7 @@ public final class Closer {
             return true;
         } catch (final DataAccessException dae) {
             LOGGER.warn("Could not close database '" + databaseName + "': " + dae.getMessage(), dae);
-            // TODO pass main frame in here
-            ProblemDialog.reportProblem(null, "while closing the '" + databaseName + "' database", dae);
+            ProblemDialogHelper.reportProblem("while closing the '" + databaseName + "' database", dae);
             return false;
         }
     }

@@ -2,8 +2,10 @@ package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.about.AboutDialog;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * Triggers display of the about dialog.
@@ -12,15 +14,19 @@ import uk.me.gumbley.minimiser.gui.dialog.about.AboutDialog;
  *
  */
 public final class HelpAboutActionListener extends SnailActionListener {
-    private final Frame mainFrame;
+    private final Frame mMainFrame;
+    private final AppDetails mAppDetails;
 
     /**
+     * @param appDetails the application details
      * @param frame the main frame
      * @param cursor the cursor manager 
      */
-    public HelpAboutActionListener(final Frame frame, final CursorManager cursor) {
+    public HelpAboutActionListener(final AppDetails appDetails,
+            final Frame frame, final CursorManager cursor) {
         super(cursor);
-        this.mainFrame = frame;
+        mAppDetails = appDetails;
+        mMainFrame = frame;
     }
 
     /**
@@ -28,6 +34,6 @@ public final class HelpAboutActionListener extends SnailActionListener {
      */
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
-        AboutDialog.showAbout(mainFrame, getCursorManager());
+        AboutDialog.showAbout(mAppDetails, mMainFrame, getCursorManager());
     }
 }

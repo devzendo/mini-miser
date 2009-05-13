@@ -42,7 +42,7 @@ public final class WebServer {
                         LOGGER.warn("Caught exception on accept: " + e.getMessage());
                     }
                 }
-            }});
+            } });
     }
 
     /**

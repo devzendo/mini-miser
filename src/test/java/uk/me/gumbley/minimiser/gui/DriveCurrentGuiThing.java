@@ -6,15 +6,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
-import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
-import uk.me.gumbley.minimiser.version.AppVersion;
 
 
 /**
@@ -34,8 +36,8 @@ public final class DriveCurrentGuiThing {
         BasicConfigurator.configure();
         ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
-        LOGGER.info(String.format("%s %s GUI experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
-        Beautifier.makeBeautiful();
+        LOGGER.info("GUI experimentation starting...");
+        Beautifier.makeBeautiful(new AppDetails());
         
         final JFrame frame = new JFrame("title");
         frame.setLayout(new BorderLayout());

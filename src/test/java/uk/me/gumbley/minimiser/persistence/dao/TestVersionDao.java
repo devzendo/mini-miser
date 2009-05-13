@@ -2,13 +2,15 @@ package uk.me.gumbley.minimiser.persistence.dao;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.version.AppVersion;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 
 /**
@@ -20,12 +22,21 @@ import uk.me.gumbley.minimiser.version.AppVersion;
 public final class TestVersionDao extends PersistenceUnittestCase {
     private static final Logger LOGGER = Logger.getLogger(TestVersionDao.class);
     
+    private PluginManager mPluginManager;
+    
+    /**
+     * 
+     */
+    @Before
+    public void getPrerequisites() {
+        mPluginManager = getSpringLoader().getBean("pluginManager", PluginManager.class);
+    }
+    
     /**
      * Is the VERSIONS table populated correctly?
      */
     @Test
     public void checkVersionPopulation() { 
-        LOGGER.info(">>> checkVersionPopulation");
         final String dbName = "checkversionpopulation";
         doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, "", new RunOnMiniMiserDatabase() {
             
@@ -40,10 +51,12 @@ public final class TestVersionDao extends PersistenceUnittestCase {
                 LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
                 Assert.assertNotNull(dbVersion);
                 Assert.assertEquals(VersionableEntity.APPLICATION_VERSION, appVersion.getEntity());
-                Assert.assertEquals(AppVersion.getVersion(), appVersion.getVersion());
+                Assert.assertEquals(mPluginManager.getApplicationPlugin().getVersion(), appVersion.getVersion());
+                // TODO check the versions of all plugins, not
+                // just the application plugin.
+                Assert.fail("Plugin versions are not being stored in the versions table yet");
             }
             
         });
-        LOGGER.info("<<< checkVersionPopulation");
     }
 }

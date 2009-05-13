@@ -5,7 +5,11 @@
 	<bean id="testConfig" class="uk.me.gumbley.minimiser.config.UnittestingConfig">
 	</bean>
 	
-	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
+	<bean id="pluginManager" class="uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager" />
+	
+	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" >
+		<constructor-arg ref="pluginManager" />
+	</bean>
 	
 	<!-- <bean id="versionDao" class="uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao" />
 	should inject the JdbcTemplate if we had a factory bean? -->

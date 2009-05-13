@@ -135,6 +135,7 @@
 
 
 	<bean id="menuALHelpAbout" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpAboutActionListener">
+		<constructor-arg ref="appDetails" />	
 		<constructor-arg ref="mainFrame" />	
 		<constructor-arg ref="cursorManager" />
 	</bean>

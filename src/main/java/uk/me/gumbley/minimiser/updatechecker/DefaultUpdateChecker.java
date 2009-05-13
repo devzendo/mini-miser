@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialog;
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
@@ -78,8 +78,7 @@ public final class DefaultUpdateChecker implements UpdateChecker {
                             progressAdapter.finished();
                         }
                     } catch (final Exception e) {
-                        // TODO pass in main frame
-                        ProblemDialog.reportProblem(null, "while performing an update check", e);
+                        ProblemDialogHelper.reportProblem("while performing an update check", e);
                     }
                 }
             }

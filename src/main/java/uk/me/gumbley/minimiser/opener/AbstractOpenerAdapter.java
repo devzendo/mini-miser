@@ -1,14 +1,17 @@
 package uk.me.gumbley.minimiser.opener;
 
 import java.awt.Frame;
+
 import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.passwordentry.PasswordEntryDialogHelper;
-import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialog;
+import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
 
 /**
  * Provides the common app-wide facilities of an OpenerAdapter:
@@ -26,7 +29,7 @@ import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialog;
 public abstract class AbstractOpenerAdapter implements OpenerAdapter {
     private static final Logger LOGGER = Logger
             .getLogger(AbstractOpenerAdapter.class);
-    private Frame parentFrame;
+    private final Frame parentFrame;
     private final String dbName;
     private final CursorManager cursorManager;
 
@@ -77,7 +80,7 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
      */
     public final void seriousProblemOccurred(final DataAccessException exception) {
         LOGGER.warn("Data access exception: " + exception.getMessage(), exception);
-        ProblemDialog.reportProblem(parentFrame, "trying to open database '" + dbName + "'.", exception);
+        ProblemDialogHelper.reportProblem("trying to open database '" + dbName + "'.", exception);
     }
     
     /**

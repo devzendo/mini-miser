@@ -1,8 +1,9 @@
 package uk.me.gumbley.minimiser.gui;
 
 import javax.swing.JFrame;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.minimiser.common.AppName;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * Main Frame Title controller.
@@ -11,19 +12,24 @@ import uk.me.gumbley.minimiser.common.AppName;
  *
  */
 public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
-    private String databaseName;
-    private final JFrame mainFrame;
-    private Object lock;
+    private String mDatabaseName;
+    private final JFrame mMainFrame;
+    private final Object mLock;
+    private final AppDetails mAppDetails;
     
     /**
      * Create the Main Frame Title controller, updating the main frame.
      * @param mainframe the main application frame
+     * @param appDetails the application details bean, used to get
+     * the name and version of the main application
      */
-    public DefaultMainFrameTitleImpl(final JFrame mainframe) {
-        mainFrame = mainframe;
-        lock = new Object();
-        synchronized (lock) {
-            databaseName = null;
+    public DefaultMainFrameTitleImpl(final JFrame mainframe, 
+            final AppDetails appDetails) {
+        mMainFrame = mainframe;
+        mAppDetails = appDetails;
+        mLock = new Object();
+        synchronized (mLock) {
+            mDatabaseName = null;
         }
         update();
     }
@@ -32,8 +38,8 @@ public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
      * {@inheritDoc}
      */
     public void clearCurrentDatabaseName() {
-        synchronized (lock) {
-            databaseName = null;
+        synchronized (mLock) {
+            mDatabaseName = null;
         }
         update();
     }
@@ -42,8 +48,8 @@ public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
      * {@inheritDoc}
      */
     public String getCurrentDatabaseName() {
-        synchronized (lock) {
-            return databaseName;
+        synchronized (mLock) {
+            return mDatabaseName;
         }
     }
 
@@ -51,8 +57,8 @@ public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
      * {@inheritDoc}
      */
     public void setCurrentDatabaseName(final String databasename) {
-        synchronized (lock) {
-            databaseName = databasename;
+        synchronized (mLock) {
+            mDatabaseName = databasename;
         }
         update();
     }
@@ -60,14 +66,15 @@ public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
     private void update() {
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             public void run() {
-                final StringBuilder title = new StringBuilder(AppName.getAppName());
-                synchronized (lock) {
-                    if (databaseName != null) {
+                final StringBuilder title = new StringBuilder(
+                    mAppDetails.getApplicationName());
+                synchronized (mLock) {
+                    if (mDatabaseName != null) {
                         title.append(" - ");
-                        title.append(databaseName);
+                        title.append(mDatabaseName);
                     }
                 }
-                mainFrame.setTitle(title.toString());
+                mMainFrame.setTitle(title.toString());
             }
         });
     }

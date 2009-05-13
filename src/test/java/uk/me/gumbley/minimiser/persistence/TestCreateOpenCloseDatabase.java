@@ -2,10 +2,13 @@ package uk.me.gumbley.minimiser.persistence;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.closer.Closer;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
@@ -13,7 +16,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.version.AppVersion;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 
 /**
@@ -27,6 +30,16 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
 
     private static final Logger LOGGER = Logger
             .getLogger(TestCreateOpenCloseDatabase.class);
+
+    private PluginManager mPluginManager;
+    
+    /**
+     * 
+     */
+    @Before
+    public void getPrerequisites() {
+        mPluginManager = getSpringLoader().getBean("pluginManager", PluginManager.class);
+    }
     
     // OPEN TESTS --------------------------------------------------------------
     
@@ -278,7 +291,10 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
             Assert.assertNotNull(dbVersion);
             Assert.assertEquals(VersionableEntity.APPLICATION_VERSION, appVersion.getEntity());
-            Assert.assertEquals(AppVersion.getVersion(), appVersion.getVersion());
+            Assert.assertEquals(mPluginManager.getApplicationPlugin().getVersion(), appVersion.getVersion());
+            // The versions of the plugins will be checked for in
+            // TestVersionDao so don't be exhaustive here.
+            
             // Here, ensure the complete design of the static data populated
             // in the database is checked for consistency here.
             LOGGER.info("... done");

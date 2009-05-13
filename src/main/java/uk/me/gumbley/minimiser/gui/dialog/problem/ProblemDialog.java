@@ -7,13 +7,13 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.minimiser.common.AppName;
-import uk.me.gumbley.minimiser.version.AppVersion;
+
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * A modal dialog that displays the detail of a problem.
@@ -23,8 +23,9 @@ import uk.me.gumbley.minimiser.version.AppVersion;
 public final class ProblemDialog extends JDialog implements 
         PropertyChangeListener {
     private static final long serialVersionUID = -5625177120250936170L;
-    private JOptionPane optionPane;
-    private String btnString1 = "Continue";
+    private final JOptionPane optionPane;
+    private final String btnString1 = "Continue";
+    private final AppDetails mAppDetails;
 
     /**
      * Creates the reusable dialog.
@@ -34,9 +35,15 @@ public final class ProblemDialog extends JDialog implements
      * @param exception any Exception that occurred, or null if the
      * problem isn't due to an exception.
      * @param caller the calling Thread
+     * @param appDetails the application details
      */
-    public ProblemDialog(final Frame parentFrame, final String whileDoing, final Exception exception, final Thread caller) {
+    public ProblemDialog(final Frame parentFrame,
+            final String whileDoing,
+            final Exception exception,
+            final Thread caller,
+            final AppDetails appDetails) {
         super(parentFrame, true);
+        mAppDetails = appDetails;
         setTitle("A problem has occurred");
         
         // Create an array of the text and components to be displayed.
@@ -52,9 +59,9 @@ public final class ProblemDialog extends JDialog implements
         final String problem = formExceptionMessageDescription(exception);
         msg.append(problem.toString());
 
-        detail.append(AppName.getAppName());
+        detail.append(mAppDetails.getApplicationName());
         detail.append(" v");
-        detail.append(AppVersion.getVersion());
+        detail.append(mAppDetails.getApplicationVersion());
         detail.append("\n\n");
         detail.append("Calling thread:\n  ");
         detail.append(caller);
@@ -94,6 +101,7 @@ public final class ProblemDialog extends JDialog implements
 
         // Ensure the text field always gets the first focus.
         addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentShown(final ComponentEvent ce) {
                 detailArea.requestFocusInWindow();
             }
@@ -145,8 +153,8 @@ public final class ProblemDialog extends JDialog implements
 
     private String getEmailAddress() {
         final StringBuilder mailaddr = new StringBuilder();
-        mailaddr.append(AppName.getAppName());
-        mailaddr.append("-developers@gumbley.me.uk");
+        mailaddr.append(mAppDetails.getApplicationName());
+        mailaddr.append("-developers@gumbley.me.uk"); // TODO this should be a resource?
         return mailaddr.toString().toLowerCase();
     }
 
@@ -177,35 +185,5 @@ public final class ProblemDialog extends JDialog implements
     /** This method clears the dialog and hides it. */
     public void clearAndHide() {
         setVisible(false);
-    }
-
-    /**
-     * Create a Problem Dialog.
-     * @param parentFrame the parent frame
-     * @param whileDoing what the app was going when the problem occurred,
-     * in the contect "A problem occurred <whileDoing>"
-     */
-    public static void reportProblem(final Frame parentFrame, final String whileDoing) {
-        reportProblem(parentFrame, whileDoing, null);
-    }
-    
-    /**
-     * Create a Problem Dialog.
-     * @param parentFrame the parent frame
-     * @param whileDoing what the app was going when the problem occurred,
-     * in the contect "A problem occurred <whileDoing>"
-     * @param exception any Exception that occurred, or null if the
-     * problem isn't due to an exception.
-     */
-    public static void reportProblem(final Frame parentFrame, final String whileDoing, final Exception exception) {
-        final Thread callingThread = Thread.currentThread();
-        GUIUtils.runOnEventThread(new Runnable() {
-            public void run() {
-                final ProblemDialog dialog = new ProblemDialog(parentFrame, whileDoing, exception, callingThread);
-                dialog.pack();
-                dialog.setLocationRelativeTo(parentFrame);
-                dialog.setVisible(true);
-            }
-        });
     }
 }

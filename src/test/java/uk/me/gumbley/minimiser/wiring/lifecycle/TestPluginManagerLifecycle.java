@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.pluginmanager.AppPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.BadShutdownPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
@@ -33,7 +34,7 @@ public final class TestPluginManagerLifecycle extends SpringLoaderUnittestCase {
      */
     @Before
     public void getPrerequisites() {
-        pluginManager = new DefaultPluginManager(getSpringLoader());
+        pluginManager = new DefaultPluginManager(getSpringLoader(), new AppDetails());
     }
     
     /**

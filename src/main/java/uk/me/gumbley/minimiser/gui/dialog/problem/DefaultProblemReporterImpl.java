@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.gui.dialog.problem;
 
-import java.awt.Frame;
 import org.apache.log4j.Logger;
 
 /**
@@ -13,15 +12,10 @@ import org.apache.log4j.Logger;
 public final class DefaultProblemReporterImpl implements ProblemReporter {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultProblemReporterImpl.class);
-    private final Frame parentFrame;
-
     /**
-     * Create the problem reporter, given the main frame of the
-     * application
-     * @param frame the main frame
+     * Create the problem reporter
      */
-    public DefaultProblemReporterImpl(final Frame frame) {
-        parentFrame = frame;
+    public DefaultProblemReporterImpl() {
     }
 
     /**
@@ -29,7 +23,7 @@ public final class DefaultProblemReporterImpl implements ProblemReporter {
      */
     public void reportProblem(final String whileDoing) {
         LOGGER.error("Error occurred " + whileDoing);
-        ProblemDialog.reportProblem(parentFrame, whileDoing);
+        ProblemDialogHelper.reportProblem(whileDoing);
     }
 
     /**
@@ -39,6 +33,6 @@ public final class DefaultProblemReporterImpl implements ProblemReporter {
             final String whileDoing,
             final Exception exception) {
         LOGGER.error("Error occurred " + whileDoing, exception);
-        ProblemDialog.reportProblem(parentFrame, whileDoing, exception);
+        ProblemDialogHelper.reportProblem(whileDoing, exception);
     }
 }

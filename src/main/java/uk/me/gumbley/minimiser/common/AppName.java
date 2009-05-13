@@ -14,8 +14,11 @@ public final class AppName {
     }
     
     /**
-     * @return the app name
+     * @return the app name - now get this from the AppDetails
+     * singleton
+     * @deprecated
      */
+    @Deprecated
     public static String getAppName() {
         // TODO i18n
         return "MiniMiser";

@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.pluginmanager;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
@@ -18,13 +19,22 @@ import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
  */
 @ApplicationContext("uk/me/gumbley/minimiser/pluginmanager/MainAppContext.xml")
 public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends SpringLoaderUnittestCase {
-    
+
+    private AppDetails mAppDetails;
+
+    /**
+     * 
+     */
+    @Before
+    public void getPrerequisites() {
+        mAppDetails = new AppDetails();
+    }
     /**
      * @throws PluginException nope
      */
     @Test
     public void pluginsExtendSpringLoaderAppContexts() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(getSpringLoader());
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(getSpringLoader(), mAppDetails);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
         final List<Plugin> plugins = defaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
@@ -42,7 +52,7 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
      */
     @Test
     public void pluginsAreGivenSpringLoader() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(getSpringLoader());
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(getSpringLoader(), mAppDetails);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
         final List<Plugin> plugins = defaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());

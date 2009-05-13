@@ -140,4 +140,23 @@
     </dependency>
   </dependencies>
   
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+        	<include>uk/me/gumbley/minimiser/pluginmanager/framework.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+        	<exclude>uk/me/gumbley/minimiser/pluginmanager/framework.properties</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+  
 </project>

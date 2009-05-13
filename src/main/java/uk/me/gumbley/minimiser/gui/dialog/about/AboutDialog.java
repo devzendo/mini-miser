@@ -13,18 +13,19 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.version.AppVersion;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * A modal About... dialog.
@@ -36,28 +37,33 @@ public final class AboutDialog extends JDialog implements
     private static final long serialVersionUID = -5494127720196381487L;
     private static final int TEXTPANE_WIDTH = 550; // to get the GPL to fit!
     private static final int TEXTPANE_HEIGHT = 350;
-    private JOptionPane optionPane;
-    private String btnString1 = "Continue";
-    private ArrayList<SwingWorker> workers;
-    private AWTEventListener awtEventListener;
-    private final CursorManager cursorManager; 
+    private final JOptionPane optionPane;
+    private final String btnString1 = "Continue";
+    private final ArrayList<SwingWorker> mWorkers;
+    private final AWTEventListener awtEventListener;
+    private final CursorManager mCursorManager;
+    private final AppDetails mAppDetails; 
 
     /**
      * Creates the reusable dialog.
      * @param parentFrame the parent frame
      * @param cursor the cursor manager
+     * @param appDetails the application details
      */
-    public AboutDialog(final Frame parentFrame, final CursorManager cursor) {
+    public AboutDialog(final Frame parentFrame,
+            final CursorManager cursor,
+            final AppDetails appDetails) {
         super(parentFrame, true);
-        cursorManager = cursor;
-        setTitle("About " + AppName.getAppName());
-        workers = new ArrayList<SwingWorker>();
+        mCursorManager = cursor;
+        mAppDetails = appDetails;
+        setTitle("About " + mAppDetails.getApplicationName());
+        mWorkers = new ArrayList<SwingWorker>();
         
         // Create an array of the text and components to be displayed.
         final StringBuilder msg = new StringBuilder();
-        msg.append(AppName.getAppName());
+        msg.append(mAppDetails.getApplicationName());
         msg.append(" v");
-        msg.append(AppVersion.getVersion());
+        msg.append(mAppDetails.getApplicationVersion());
         msg.append("\n(C) 2008 Matt Gumbley");
 
         final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -83,6 +89,7 @@ public final class AboutDialog extends JDialog implements
 
         // Ensure the text field always gets the first focus.
         addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentShown(final ComponentEvent ce) {
                 tabbedPane.requestFocusInWindow();
             }
@@ -95,7 +102,7 @@ public final class AboutDialog extends JDialog implements
         awtEventListener = new AWTEventListener() {
                             public void eventDispatched(final AWTEvent event) {
                                 if (event.getID() == WindowEvent.WINDOW_OPENED) {
-                                    for (SwingWorker worker : workers) {
+                                    for (SwingWorker worker : mWorkers) {
                                         worker.start();
                                     }
                                 }
@@ -145,12 +152,13 @@ public final class AboutDialog extends JDialog implements
                 return text.toString();
             }
             
+            @Override
             public void finished() {
                 textPane.setText(get().toString());
                 textPane.moveCaretPosition(0);
             }
         };
-        workers.add(worker);
+        mWorkers.add(worker);
     }
     
     private void cursorNormal() {
@@ -161,11 +169,12 @@ public final class AboutDialog extends JDialog implements
                 return null;
             }
             
+            @Override
             public void finished() {
-                cursorManager.normal("AboutDialog");
+                mCursorManager.normal("AboutDialog");
             }
         };
-        workers.add(worker);
+        mWorkers.add(worker);
     }
 
     /**
@@ -198,18 +207,20 @@ public final class AboutDialog extends JDialog implements
             Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
         }
         setVisible(false);
-        cursorManager.normal("AboutDialog");
+        mCursorManager.normal("AboutDialog");
     }
 
     /**
      * Create an About Dialog.
+     * @param appDetails the application details
      * @param parentFrame the parent frame
      * @param cursor the cursor manager
      */
-    public static void showAbout(final Frame parentFrame, final CursorManager cursor) {
+    public static void showAbout(final AppDetails appDetails,
+            final Frame parentFrame, final CursorManager cursor) {
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             public void run() {
-                final AboutDialog dialog = new AboutDialog(parentFrame, cursor);
+                final AboutDialog dialog = new AboutDialog(parentFrame, cursor, appDetails);
                 dialog.pack();
                 dialog.setLocationRelativeTo(parentFrame);
                 dialog.setVisible(true);

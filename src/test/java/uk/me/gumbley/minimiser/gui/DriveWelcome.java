@@ -6,12 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
+
 import org.apache.log4j.BasicConfigurator;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.gui.dialog.welcome.WelcomeDialog;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 
 /**
@@ -33,7 +37,7 @@ public final class DriveWelcome {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
-                Beautifier.makeBeautiful();
+                Beautifier.makeBeautiful(new AppDetails());
                 
                 final JFrame frame = new JFrame("title");
                 frame.setLayout(new BorderLayout());

@@ -2,25 +2,27 @@ package uk.me.gumbley.minimiser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JOptionPane;
-import org.apache.log4j.BasicConfigurator;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.commoncode.string.StringUtils;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetailsPropertiesLoader;
 import uk.me.gumbley.minimiser.prefs.DefaultPrefsImpl;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderFactory;
-import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
  * The start of the application, parsescommand line for logging, and constructs
@@ -39,7 +41,8 @@ public final class MiniMiser {
         // nothing
     }
 
-    private static void initialisePrefs(final SpringLoader springLoader) {
+    private static void initialisePrefs(final SpringLoader springLoader,
+            final AppDetails appDetails) {
         final PrefsLocation prefsLocation = springLoader.getBean("prefsLocation", PrefsLocation.class);
         LOGGER.debug("Prefs directory is " + prefsLocation.getPrefsDir().getAbsolutePath());
         LOGGER.debug("Prefs file is " + prefsLocation.getPrefsFile().getAbsolutePath());
@@ -49,7 +52,7 @@ public final class MiniMiser {
                 LOGGER.warn("Failed to create prefs directory");
                 GUIUtils.runOnEventThread(new Runnable() {
                     public void run() {
-                        showPrefsDirCreationFailureMessage(prefsLocation);
+                        showPrefsDirCreationFailureMessage(prefsLocation, appDetails);
                     }
                 });
             } else {
@@ -60,14 +63,15 @@ public final class MiniMiser {
         prefsFactory.setPrefs(prefsLocation.getPrefsFile().getAbsolutePath());
     }
 
-    private static void showPrefsDirCreationFailureMessage(final PrefsLocation prefsLocation) {
+    private static void showPrefsDirCreationFailureMessage(final PrefsLocation prefsLocation,
+            final AppDetails appDetails) {
         JOptionPane.showMessageDialog(null, 
             // NOTE user-centric message
             // I18N
             String.format("%s could not create the '%s' folder, and cannot continue.\n"
                 + "This folder would be used to remember your options and settings.\n\n"
                 + "Failure to create this folder may be be due to security permissions, or a full disk.",
-                AppName.getAppName(),
+                appDetails.getApplicationName(),
                 prefsLocation.getPrefsDir().getAbsolutePath()),
             "Could not create settings folder",
             JOptionPane.ERROR_MESSAGE);
@@ -79,12 +83,13 @@ public final class MiniMiser {
      * @param args the command line args
      */
     public static void main(final String[] args) {
-        BasicConfigurator.configure();
         ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
-        LOGGER.info(String.format("%s %s starting...", AppName.getAppName(), AppVersion.getVersion()));
+        LOGGER.info("Framework starting...");
         final ArrayList<String> finalArgList = argList;
         final SpringLoader springLoader = initSpringLoader();
+        final AppDetails appDetails = initialiseAppDetails(springLoader);
+        
         //
         // Sun changed their recommendations and now recommends the UI be built
         // on the EDT, so I think flagging creation on non-EDT is OK.
@@ -96,12 +101,12 @@ public final class MiniMiser {
         // So let's create it on the EDT anyway
         //
         ThreadCheckingRepaintManager.initialise();
-        initialisePrefs(springLoader);
+        initialisePrefs(springLoader, appDetails);
 
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 try {
-                    Beautifier.makeBeautiful();
+                    Beautifier.makeBeautiful(appDetails);
 
                     // Process command line
                     for (int i = 0; i < finalArgList.size(); i++) {
@@ -122,6 +127,14 @@ public final class MiniMiser {
         });
     }
     
+    private static AppDetails initialiseAppDetails(final SpringLoader springLoader) {
+        final AppDetailsPropertiesLoader appDetailsPropertiesLoader = new AppDetailsPropertiesLoader();
+        final AppDetails appDetails = springLoader.getBean("appDetails", AppDetails.class);
+        appDetails.setApplicationName(appDetailsPropertiesLoader.getName());
+        appDetails.setApplicationVersion(appDetailsPropertiesLoader.getVersion());
+        return appDetails;
+    }
+
     private static void triggerGUIStartupTasks(final SpringLoader springLoader) {
         MiniMiserWizardPage.setLHGraphic();
         final Prefs prefs = springLoader.getBean("prefs", DefaultPrefsImpl.class);

@@ -1,11 +1,13 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
 import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 import org.h2.constant.ErrorCode;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
@@ -16,7 +18,7 @@ import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.version.AppVersion;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 /**
  * An AccessFactory that uses Spring's JdbcTemplate.
@@ -45,19 +47,23 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             // do nothing
         }
     };
+    private final PluginManager mPluginManager;
     
     /**
-     * Construct one
+     * Construct a JDBC Template Access factory, given the
+     * PluginManager so that the versions of any plugins can be
+     * stored in any created / migrated databases.
      */
-    public JdbcTemplateAccessFactoryImpl() {
+    public JdbcTemplateAccessFactoryImpl(final PluginManager pluginManager) {
+        mPluginManager = pluginManager;
     }
 
     private class DatabaseSetup {
-        private String dbPassword;
-        private String dbPath;
+        private final String dbPassword;
+        private final String dbPath;
         private String dbURL;
-        private SingleConnectionDataSource dataSource;
-        private SimpleJdbcTemplate jdbcTemplate;
+        private final SingleConnectionDataSource dataSource;
+        private final SimpleJdbcTemplate jdbcTemplate;
         public DatabaseSetup(final String databasePath,
                 final String password,
                 final boolean allowCreate,
@@ -207,7 +213,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         final VersionDao versionDao = new JdbcTemplateVersionDao(dbDetails.getJdbcTemplate());
         final Version schemaVersion = new Version(VersionableEntity.SCHEMA_VERSION, CurrentSchemaVersion.CURRENT_SCHEMA_VERSION);
         versionDao.persistVersion(schemaVersion);
-        final Version appVersion = new Version(VersionableEntity.APPLICATION_VERSION, AppVersion.getVersion());
+        final Version appVersion = new Version(VersionableEntity.APPLICATION_VERSION, mPluginManager.getApplicationPlugin().getVersion());
         versionDao.persistVersion(appVersion);
         // TODO more tables here...
     }

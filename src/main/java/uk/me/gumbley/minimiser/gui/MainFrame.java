@@ -4,32 +4,28 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.exception.AppException;
-import uk.me.gumbley.commoncode.gui.SwingWorker;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.menu.Menu;
 import uk.me.gumbley.minimiser.gui.menu.MenuBuilder;
 import uk.me.gumbley.minimiser.gui.menu.MenuMediator;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabPaneManager;
-import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
-import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
-import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
  * The MiniMiser main Frame - this is the main application start code.
@@ -45,10 +41,9 @@ public class MainFrame {
     private final SpringLoader springLoader;
     private final CursorManager cursorManager;
     private final WindowGeometryStore windowGeometryStore;
-    private final OpenDatabaseList openDatabaseList;
     private final RecentFilesList recentList;
     private final MainFrameStatusBar statusBar;
-    private LifecycleManager lifecycleManager;
+    private final AppDetails mAppDetails;
 
     /**
      * @param loader the IoC container abstraction
@@ -60,9 +55,8 @@ public class MainFrame {
             throws AppException {
         super();
         this.springLoader = loader;
-
+        mAppDetails = springLoader.getBean("appDetails", AppDetails.class);
         windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
-        openDatabaseList = springLoader.getBean("openDatabaseList", OpenDatabaseList.class);
         recentList = springLoader.getBean("recentFilesList", RecentFilesList.class);
 
         // Create new Window and exit handler
@@ -91,33 +85,14 @@ public class MainFrame {
     }
 
     private void attachVisibilityListenerForLifecycleManagerStartup() {
-        final AWTEventListener awtEventListener = new AWTEventListener() {
-            public void eventDispatched(final AWTEvent event) {
-                if (event.getID() == WindowEvent.WINDOW_OPENED && event.getSource().equals(mainFrame)) {
-                    LOGGER.info("Main frame visible; starting lifecycle manager");
-                    cursorManager.hourglass(this.getClass().getSimpleName());
-                    final SwingWorker worker = new SwingWorker() {
-                        @Override
-                        public Object construct() {
-                            Thread.currentThread().setName("Lifecycle Startup");
-                            lifecycleManager = springLoader.getBean("lifecycleManager", LifecycleManager.class);
-                            lifecycleManager.startup();
-                            return null;
-                        }
-                        public void finished() {
-                            cursorManager.normal(this.getClass().getSimpleName());
-                        }
-                    };
-                    worker.start();
-                }
-            }
-        };
-        Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.WINDOW_EVENT_MASK);
+        Toolkit.getDefaultToolkit().addAWTEventListener(
+            new LifecycleStartupAWTEventListener(springLoader),
+            AWTEvent.WINDOW_EVENT_MASK);
     }
 
     private void createMainFrame() {
-        mainFrame = new JFrame(AppName.getAppName() + " v"
-                + AppVersion.getVersion());
+        mainFrame = new JFrame(mAppDetails.getApplicationName() + " v"
+                + mAppDetails.getApplicationVersion());
 
         mainFrame.setIconImage(createImageIcon("icons/application.gif").getImage());
 
@@ -128,7 +103,7 @@ public class MainFrame {
         mainFrame.setName(MAIN_FRAME_NAME);
         mainFrame.setLayout(new BorderLayout());
         
-        exitAL = new WindowCloseActionListener();
+        exitAL = new MainFrameCloseActionListener(springLoader);
 
         mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         mainFrame.addWindowListener(new WindowListener() {
@@ -168,69 +143,18 @@ public class MainFrame {
             return null;
         }
     }
+    
     private void createAndSetMainFrameTitleInFactory() {
         final MainFrameTitleFactory mainFrameTitleFactory = springLoader.getBean("&mainFrameTitle", MainFrameTitleFactory.class);
-        mainFrameTitleFactory.setMainFrameTitle(new DefaultMainFrameTitleImpl(mainFrame));
+        mainFrameTitleFactory.setMainFrameTitle(
+            new DefaultMainFrameTitleImpl(mainFrame, mAppDetails));
     }
 
     private void setMainFrameInFactory() {
         final MainFrameFactory mainFrameFactory = springLoader.getBean("&mainFrame", MainFrameFactory.class);
         mainFrameFactory.setMainFrame(mainFrame);
     }
-    
-    private final class WindowCloseActionListener implements ActionListener {
-        /**
-         * Note that e can be null when called from the adapted WindowListener.
-         * {@inheritDoc}
-         * EDT
-         */
-        public void actionPerformed(final ActionEvent e) {
-            // only ask if there are databases open
-            final boolean anyDatabasesOpen = openDatabaseList.getNumberOfDatabases() > 0;
-            if (anyDatabasesOpen) {
-                if (askExitSaysYes()) {
-                    doShutdown();
-                }
-            } else {
-                doShutdown();
-            }
-        }
-
-        // EDT
-        private boolean askExitSaysYes() {
-            final int opt = JOptionPane.showConfirmDialog(mainFrame,
-                "Are you sure you want to exit?", "Confirm exit",
-                JOptionPane.YES_NO_OPTION);
-            return (opt == 0);
-        }
         
-        // EDT
-        private void doShutdown() {
-            cursorManager.hourglass(this.getClass().getSimpleName());
-            enableDisableControls(false);
-            
-            final SwingWorker worker = new SwingWorker() {
-                public Object construct() {
-                    Thread.currentThread().setName("Lifecycle Shutdown");
-                    LOGGER.info("Shutting down...");
-                    if (lifecycleManager != null) {
-                        lifecycleManager.shutdown();
-                    }
-                    return null;
-                }
-                
-                public void finished() {
-                    if (mainFrame != null) {
-                        mainFrame.dispose();
-                    }
-                    cursorManager.normal(this.getClass().getSimpleName());
-                    System.exit(0);
-                }
-            };
-            worker.start();
-        }
-    }
-    
     private JMenuBar createMenu() {
         LOGGER.info("Getting the menu");
         final Menu menu = springLoader.getBean("menu", Menu.class);
@@ -247,9 +171,5 @@ public class MainFrame {
         springLoader.getBean("menuBuilder", MenuBuilder.class).build();
         LOGGER.info("Menu ActionListeners built and wired");
         return menu.getMenuBar();
-    }
-
-    private void enableDisableControls(final boolean enable) {
-        // TODO
     }
 }

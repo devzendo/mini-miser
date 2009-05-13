@@ -4,19 +4,23 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import javax.swing.JFrame;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
-import uk.me.gumbley.minimiser.version.AppVersion;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 
 /**
@@ -40,8 +44,8 @@ public final class DriveSQLTab {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
-                LOGGER.info(String.format("%s %s SQL Tab experimentation starting...", AppName.getAppName(), AppVersion.getVersion()));
-                Beautifier.makeBeautiful();
+                LOGGER.info("SQL Tab experimentation starting...");
+                Beautifier.makeBeautiful(new AppDetails());
                 
                 final JFrame frame = new JFrame("title");
                 frame.setLayout(new BorderLayout());
@@ -52,7 +56,8 @@ public final class DriveSQLTab {
                 cursorManager.setMainFrame(frame);
                 
                 LOGGER.info("Opening database");
-                final AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl();
+                final PluginManager dummyPluginManager = new DummyAppPluginManager();
+                final AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl(dummyPluginManager);
                 final String dbPath = "/home/matt/Desktop/crap/clear-test-1/clear-test-1";
                 final MiniMiserDatabase miniMiserDatabase = accessFactory.openDatabase(dbPath, "");
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("clear-test-1", dbPath);
