@@ -15,8 +15,15 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
+ 
 * Help / About Minimiser - menu text needs changing to contain the
-  application name. 
+  application name.
+* plugins should publish their metadata to a plugin registry, that
+  is accessed from the jdbctemplatefactory amongst others e.g.
+  dummyapppluginmanager
+* app plugin should have an email address or web page to which
+  reports can be sent - for the problem reporter's dialog, rather
+  than the @gumbley.me.uk one. 
 * testing the change log transformer
 * add a test that parses all of the resource-based changelog.
 * make the about / what's new dialog show the transformed resource-
