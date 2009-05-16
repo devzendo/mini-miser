@@ -29,6 +29,12 @@ public final class StubUpdateProgressAdapter implements UpdateProgressAdapter {
     /**
      * {@inheritDoc}
      */
+    public void noApplicationVersionDeclared() {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void commsFailure(final IOException exception) {
     }
 
@@ -61,5 +67,4 @@ public final class StubUpdateProgressAdapter implements UpdateProgressAdapter {
      */
     public void finished() {
     }
-
 }

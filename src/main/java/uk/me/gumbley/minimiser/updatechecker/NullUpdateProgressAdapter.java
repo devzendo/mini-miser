@@ -23,6 +23,12 @@ public final class NullUpdateProgressAdapter implements UpdateProgressAdapter {
     /**
      * {@inheritDoc}
      */
+    public void noApplicationVersionDeclared() {
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public void commsFailure(final IOException exception) {
     }
 

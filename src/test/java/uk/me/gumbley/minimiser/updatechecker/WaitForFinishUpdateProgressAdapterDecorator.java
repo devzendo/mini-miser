@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser.updatechecker;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.log4j.Logger;
+
 /**
  * Since the update checker is asynchronous, and executes via a
  * worker pool, I can't just tag on a 'wait' task after running
@@ -12,15 +14,17 @@ import java.util.concurrent.CountDownLatch;
  *
  */
 public final class WaitForFinishUpdateProgressAdapterDecorator implements UpdateProgressAdapter {
-    private final UpdateProgressAdapter updateProgressAdapter;
-    private CountDownLatch countDownLatch;
+    private static final Logger LOGGER = Logger
+            .getLogger(WaitForFinishUpdateProgressAdapterDecorator.class);
+    private final UpdateProgressAdapter mUpdateProgressAdapter;
+    private final CountDownLatch countDownLatch;
 
     /**
      * Construct the decorator
      * @param decorated the inner update progress adapter
      */
     public WaitForFinishUpdateProgressAdapterDecorator(final UpdateProgressAdapter decorated) {
-        this.updateProgressAdapter = decorated;
+        this.mUpdateProgressAdapter = decorated;
         countDownLatch = new CountDownLatch(1);
     }
 
@@ -28,49 +32,56 @@ public final class WaitForFinishUpdateProgressAdapterDecorator implements Update
      * {@inheritDoc}
      */
     public void alreadyCheckedToday() {
-        updateProgressAdapter.alreadyCheckedToday();
+        mUpdateProgressAdapter.alreadyCheckedToday();
     }
 
     /**
      * {@inheritDoc}
      */
     public void checkStarted() {
-        updateProgressAdapter.checkStarted();
+        mUpdateProgressAdapter.checkStarted();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void noApplicationVersionDeclared() {
+        mUpdateProgressAdapter.noApplicationVersionDeclared();
     }
 
     /**
      * {@inheritDoc}
      */
     public void commsFailure(final IOException exception) {
-        updateProgressAdapter.commsFailure(exception);
+        mUpdateProgressAdapter.commsFailure(exception);
     }
 
     /**
      * {@inheritDoc}
      */
     public void noUpdateAvailable() {
-        updateProgressAdapter.noUpdateAvailable();
+        mUpdateProgressAdapter.noUpdateAvailable();
     }
 
     /**
      * {@inheritDoc}
      */
     public void transformFailure(final IOException exception) {
-        updateProgressAdapter.transformFailure(exception);
+        mUpdateProgressAdapter.transformFailure(exception);
     }
 
     /**
      * {@inheritDoc}
      */
     public void transformFailure(final ParseException exception) {
-        updateProgressAdapter.transformFailure(exception);
+        mUpdateProgressAdapter.transformFailure(exception);
     }
 
     /**
      * {@inheritDoc}
      */
     public void updateAvailable() {
-        updateProgressAdapter.updateAvailable();
+        mUpdateProgressAdapter.updateAvailable();
         
     }
 
@@ -78,14 +89,14 @@ public final class WaitForFinishUpdateProgressAdapterDecorator implements Update
      * {@inheritDoc}
      */
     public void updateCheckDisallowed() {
-        updateProgressAdapter.updateCheckDisallowed();
+        mUpdateProgressAdapter.updateCheckDisallowed();
     }
     
     /**
      * {@inheritDoc}
      */
     public void finished() {
-        updateProgressAdapter.finished();
+        mUpdateProgressAdapter.finished();
         countDownLatch.countDown();
     }
     
@@ -97,7 +108,7 @@ public final class WaitForFinishUpdateProgressAdapterDecorator implements Update
         try {
             countDownLatch.await();
         } catch (final InterruptedException e) {
-            TestUpdateChecker.LOGGER.warn("Interrupted whilst waiting: " + e.getMessage());
+            LOGGER.warn("Interrupted whilst waiting: " + e.getMessage());
         }
     }
 }

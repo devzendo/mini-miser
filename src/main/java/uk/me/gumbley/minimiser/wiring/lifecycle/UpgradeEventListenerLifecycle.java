@@ -1,8 +1,8 @@
 package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.upgradedetector.UpgradeEventListenerManager;
-import uk.me.gumbley.minimiser.version.AppVersion;
 
 /**
  * A Lifecycle that wires and unwires the UpgradeEventListenerManager on
@@ -13,16 +13,21 @@ import uk.me.gumbley.minimiser.version.AppVersion;
  */
 public final class UpgradeEventListenerLifecycle implements Lifecycle {
     
-    private final UpgradeEventListenerManager upgradeEventListenerManager;
+    private final UpgradeEventListenerManager mUpgradeEventListenerManager;
+    private final AppDetails mAppDetails;
 
     /**
      * Create the UpgradeEventListenerLifecycle, given the
      * UpgradeEventListenerManager to process the upgrade detection.
      * 
      * @param manager the UpgradeEventListenerManager
+     * @param appDetails the application details
      */
-    public UpgradeEventListenerLifecycle(final UpgradeEventListenerManager manager) {
-        this.upgradeEventListenerManager = manager;
+    public UpgradeEventListenerLifecycle(
+            final UpgradeEventListenerManager manager,
+            final AppDetails appDetails) {
+        mUpgradeEventListenerManager = manager;
+        mAppDetails = appDetails;
     }
     
     /**
@@ -35,6 +40,6 @@ public final class UpgradeEventListenerLifecycle implements Lifecycle {
      * {@inheritDoc}
      */
     public void startup() {
-        upgradeEventListenerManager.checkForUpgrade(AppVersion.getVersion());
+        mUpgradeEventListenerManager.checkForUpgrade(mAppDetails.getApplicationVersion());
     }
 }

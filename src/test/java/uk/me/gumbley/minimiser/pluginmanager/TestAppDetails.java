@@ -30,6 +30,7 @@ public final class TestAppDetails {
     public void unknownOnStartup() {
         Assert.assertEquals(UNKNOWN, mAppDetails.getApplicationName());
         Assert.assertEquals(UNKNOWN, mAppDetails.getApplicationVersion());
+        Assert.assertFalse(mAppDetails.isApplicationVersionSet());
     }
     
     /**
@@ -55,6 +56,7 @@ public final class TestAppDetails {
     @Test(expected = IllegalArgumentException.class)
     public void cantSetNullVersion() {
         mAppDetails.setApplicationVersion(null);
+        Assert.assertFalse(mAppDetails.isApplicationVersionSet());
     }
 
     /**
@@ -63,6 +65,7 @@ public final class TestAppDetails {
     @Test(expected = IllegalArgumentException.class)
     public void cantSetEmptyVersion() {
         mAppDetails.setApplicationVersion("");
+        Assert.assertFalse(mAppDetails.isApplicationVersionSet());
     }
     
     /**
@@ -77,5 +80,7 @@ public final class TestAppDetails {
         final String applicationVersion = "0.1.0";
         mAppDetails.setApplicationVersion(applicationVersion);
         Assert.assertEquals(applicationVersion, mAppDetails.getApplicationVersion());
+
+        Assert.assertTrue(mAppDetails.isApplicationVersionSet());
     }
 }

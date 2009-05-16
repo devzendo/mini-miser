@@ -114,7 +114,7 @@
 			    <value>welcomeDialogHelperInitialisingLifecycle</value>
 			    <value>problemDialogHelperInitialisingLifecycle</value>
 			    
-			    <value>pluginManagerLifecycle</value>
+			    <value>pluginManagerLifecycle</value> <!--  this must be first after the helper initialisers -->
 			    <value>tabEventListenerLifecycle</value>
 			    <value>viewMenuInitialiserLifecycle</value>
 			    <value>helpCheckForUpdatesMenuInitialiserLifecycle</value>
@@ -170,6 +170,7 @@
 
 	<bean id="upgradeEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
 		<constructor-arg ref="upgradeEventListenerManager" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 	
 	<bean id="dstaMessageHelperInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DSTAMessageHelperInitialisingLifecycle">
@@ -328,6 +329,7 @@
 		<constructor-arg ref="changeLogTransformer" />
 		<constructor-arg ref="today" />
 		<constructor-arg ref="workerPool" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 
 	<bean id="updateProgressAdapterFactory" class="uk.me.gumbley.minimiser.updatechecker.DefaultUpdateProgressAdapterFactory">

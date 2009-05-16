@@ -48,4 +48,12 @@ public final class AppDetails {
     public synchronized String getApplicationVersion() {
         return mApplicationVersion;
     }
+    
+    /**
+     * @return true iff the application version is set to
+     * something
+     */
+    public synchronized boolean isApplicationVersionSet() {
+        return !mApplicationVersion.equals(UNKNOWN);
+    }
 }

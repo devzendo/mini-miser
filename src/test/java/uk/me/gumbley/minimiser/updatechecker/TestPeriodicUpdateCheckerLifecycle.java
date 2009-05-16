@@ -12,6 +12,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -39,14 +40,16 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
     private static final String NOT_TODAYS_DATE = "22/02/1999";
     private static final String TODAYS_DATE = "08/12/2008";
 
-    private Prefs prefs;
-    private MessageQueue messageQueue;
-    private UpdateChecker updateChecker;
-    private StubRemoteFileRetriever remoteFileRetriever;
-    private NullChangeLogTransformer changeLogTransformer;
-    private Today today;
-    private WorkerPool workerPool;
-    private Sleeper sleeper;
+    private Prefs mPrefs;
+    private MessageQueue mMessageQueue;
+    private UpdateChecker mUpdateChecker;
+    private StubRemoteFileRetriever mRemoteFileRetriever;
+    private NullChangeLogTransformer mChangeLogTransformer;
+    private Today mToday;
+    private WorkerPool mWorkerPool;
+    private Sleeper mSleeper;
+
+    private AppDetails mAppDetails;
 
     /**
      * @throws IOException on failure
@@ -54,16 +57,20 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() throws IOException {
-        prefs = TestPrefs.createUnitTestPrefsFile();
-        messageQueue = new MessageQueue(
-            new MessageQueueBorderGuardFactory(prefs));
-        remoteFileRetriever = new StubRemoteFileRetriever();
-        changeLogTransformer = new NullChangeLogTransformer();
-        today = new StubToday(TODAYS_DATE);
-        workerPool = new WorkerPool();
-        updateChecker = new DefaultUpdateChecker(prefs, messageQueue,
-                remoteFileRetriever, changeLogTransformer, today, workerPool);
-        sleeper = new Sleeper(3600);
+        mPrefs = TestPrefs.createUnitTestPrefsFile();
+        mMessageQueue = new MessageQueue(
+            new MessageQueueBorderGuardFactory(mPrefs));
+        mRemoteFileRetriever = new StubRemoteFileRetriever();
+        mChangeLogTransformer = new NullChangeLogTransformer();
+        mToday = new StubToday(TODAYS_DATE);
+        mWorkerPool = new WorkerPool();
+        mAppDetails = new AppDetails();
+        mAppDetails.setApplicationName("Foo");
+        mAppDetails.setApplicationVersion(VERSION_1_0_0);
+        mUpdateChecker = new DefaultUpdateChecker(mPrefs, mMessageQueue,
+                mRemoteFileRetriever, mChangeLogTransformer, mToday,
+                mWorkerPool, mAppDetails);
+        mSleeper = new Sleeper(3600);
     }
     
     /**
@@ -71,8 +78,7 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
      */
     @Test(timeout = 8000)
     public void updateCheckDisallowedDoesNotStartUpdate() {
-        LOGGER.info("*** updateCheckDisallowedDoesNotStartUpdate");
-        Assert.assertFalse(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
+        Assert.assertFalse(mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.updateCheckDisallowed();
@@ -84,11 +90,11 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
         final UpdateProgressAdapterFactory adapterFactory = new StubUpdateProgressAdapterFactory(decoratedAdapter);
 
         final PeriodicUpdateCheckerLifecycle periodicUpdateChecker =
-            new PeriodicUpdateCheckerLifecycle(updateChecker, sleeper, adapterFactory);
+            new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, adapterFactory);
         periodicUpdateChecker.startup();
         
         LOGGER.debug("sleeping");
-        sleeper.sleep(1000 * 60 * 61); // 61 minutes
+        mSleeper.sleep(1000 * 60 * 61); // 61 minutes
         LOGGER.debug("woken up");
         decoratedAdapter.waitForFinished();
 
@@ -100,15 +106,14 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
      */
     @Test(timeout = 8000)
     public void updateCheckAllowedStartsUpdate() {
-        LOGGER.info("*** updateCheckAllowedStartsUpdate");
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
 
-        prefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
-        Assert.assertEquals(VERSION_0_9_0, prefs.getLastRemoteUpdateVersion());
+        mPrefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
     
-        remoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
-        remoteFileRetriever.injectReturnedChangeLogContents("change log");
+        mRemoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
+        mRemoteFileRetriever.injectReturnedChangeLogContents("change log");
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -121,20 +126,20 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
         
         final UpdateProgressAdapterFactory adapterFactory = new StubUpdateProgressAdapterFactory(decoratedAdapter);
 
-        final PeriodicUpdateCheckerLifecycle periodicUpdateChecker = new PeriodicUpdateCheckerLifecycle(updateChecker, sleeper, adapterFactory);
+        final PeriodicUpdateCheckerLifecycle periodicUpdateChecker = new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, adapterFactory);
         periodicUpdateChecker.startup();
         
         LOGGER.debug("sleeping");
-        sleeper.sleep(1000 * 60 * 61); // 61 minutes
+        mSleeper.sleep(1000 * 60 * 61); // 61 minutes
         LOGGER.debug("woken up");
         decoratedAdapter.waitForFinished();
 
         EasyMock.verify(adapter);
 
-        Assert.assertEquals(TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
-        Assert.assertEquals(VERSION_1_0_0, prefs.getLastRemoteUpdateVersion());
-        Assert.assertEquals(1, messageQueue.size());
-        final Message message = messageQueue.getMessageByIndex(0);
+        Assert.assertEquals(TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(VERSION_1_0_0, mPrefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals(1, mMessageQueue.size());
+        final Message message = mMessageQueue.getMessageByIndex(0);
         Assert.assertEquals("change log", message.getMessageContent().toString());
     }
 }

@@ -36,6 +36,13 @@ public interface UpdateProgressAdapter {
     void commsFailure(IOException exception);
 
     /**
+     * The application plugin has not reported its version number,
+     * so no check is being performed. This is an error. Only the
+     * finished method call will be made after receiving this.
+     */
+    void noApplicationVersionDeclared();
+    
+    /**
      * The remote version is the same as that installed locally. Only the
      * finished method call after this.
      */

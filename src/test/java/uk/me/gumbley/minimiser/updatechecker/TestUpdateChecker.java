@@ -2,15 +2,17 @@ package uk.me.gumbley.minimiser.updatechecker;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.log4j.Logger;
+
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -26,19 +28,17 @@ import uk.me.gumbley.minimiser.util.WorkerPool;
  *
  */
 public final class TestUpdateChecker extends LoggingTestCase {
-    static final Logger LOGGER = Logger
-            .getLogger(TestUpdateChecker.class);
     private static final String VERSION_1_0_0 = "1.0.0";
     private static final String VERSION_0_9_0 = "0.9.0";
     private static final String NOT_TODAYS_DATE = "22/02/1999";
     private static final String TODAYS_DATE = "08/12/2008";
-    private Prefs prefs;
-    private MessageQueue messageQueue;
-    private UpdateChecker updateChecker;
-    private StubRemoteFileRetriever remoteFileRetriever;
-    private NullChangeLogTransformer changeLogTransformer;
-    private Today today;
-    private WorkerPool workerPool;
+    private Prefs mPrefs;
+    private MessageQueue mMessageQueue;
+    private UpdateChecker mUpdateChecker;
+    private StubRemoteFileRetriever mRemoteFileRetriever;
+    private NullChangeLogTransformer mChangeLogTransformer;
+    private Today mToday;
+    private WorkerPool mWorkerPool;
     
     /**
      * @throws IOException on failure
@@ -46,29 +46,47 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() throws IOException {
-        prefs = TestPrefs.createUnitTestPrefsFile();
-        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(prefs));
-        remoteFileRetriever = new StubRemoteFileRetriever();
-        changeLogTransformer = new NullChangeLogTransformer();
-        today = new StubToday(TODAYS_DATE);
-        workerPool = new WorkerPool();
-        
-        updateChecker = new DefaultUpdateChecker(prefs, messageQueue, remoteFileRetriever, changeLogTransformer, today, workerPool);
+        mPrefs = TestPrefs.createUnitTestPrefsFile();
+        mMessageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(mPrefs));
+        mRemoteFileRetriever = new StubRemoteFileRetriever();
+        mChangeLogTransformer = new NullChangeLogTransformer();
+        mToday = new StubToday(TODAYS_DATE);
+        mWorkerPool = new WorkerPool();
+    }
+
+
+    private void createUpdateCheckerWithAppDetails(final AppDetails appDetails) {
+        mUpdateChecker = new DefaultUpdateChecker(mPrefs,
+            mMessageQueue, mRemoteFileRetriever,
+            mChangeLogTransformer, mToday, mWorkerPool,
+            appDetails);
+    }
+
+    private void createUpdateChecker() {
+        final AppDetails appDetails = new AppDetails();
+        appDetails.setApplicationVersion("1.0.0-SNAPSHOT");
+        createUpdateCheckerWithAppDetails(appDetails);
+    }
+    
+    private void createUpdateCheckerWithNoApplicationVersion() {
+        final AppDetails appDetails = new AppDetails();
+        createUpdateCheckerWithAppDetails(appDetails);
     }
 
     private void startUpdateAndWait(final UpdateProgressAdapter adapter) {
         final WaitForFinishUpdateProgressAdapterDecorator decoratedAdapter =
             new WaitForFinishUpdateProgressAdapterDecorator(adapter);
-        updateChecker.triggerUpdateCheck(decoratedAdapter);
+        mUpdateChecker.triggerUpdateCheck(decoratedAdapter);
         decoratedAdapter.waitForFinished();
     }
         
     /**
      * 
      */
-    @Test
+    @Test(timeout = 3000)
     public void updateCheckDisallowedDoesNotStartUpdate() {
-        Assert.assertFalse(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
+        createUpdateChecker();
+        Assert.assertFalse(mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.updateCheckDisallowed();
@@ -85,10 +103,11 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void onlyDoCheckOncePerDay() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        Assert.assertTrue(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
-        prefs.setDateOfLastUpdateAvailableCheck(TODAYS_DATE);
-        Assert.assertEquals(TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        Assert.assertTrue(mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
+        mPrefs.setDateOfLastUpdateAvailableCheck(TODAYS_DATE);
+        Assert.assertEquals(TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
 
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.alreadyCheckedToday();
@@ -98,7 +117,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
         startUpdateAndWait(adapter);
         
         EasyMock.verify(adapter);
-        Assert.assertEquals(0, messageQueue.size());
+        Assert.assertEquals(0, mMessageQueue.size());
     }
     
     /**
@@ -106,11 +125,12 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void doCheckIfNoPreviousCheckDateStored() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        Assert.assertTrue(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
-        Assert.assertEquals("", prefs.getDateOfLastUpdateAvailableCheck());
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        Assert.assertTrue(mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
+        Assert.assertEquals("", mPrefs.getDateOfLastUpdateAvailableCheck());
 
-        remoteFileRetriever.injectCommsFailureOnVersionNumberRetrieval(); // to make test fail after we have verified correct behaviour for this test
+        mRemoteFileRetriever.injectCommsFailureOnVersionNumberRetrieval(); // to make test fail after we have verified correct behaviour for this test
 
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -128,12 +148,13 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void doCheckIfPreviousCheckDateOtherThanTodayStored() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        Assert.assertTrue(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
-        Assert.assertEquals(NOT_TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        Assert.assertTrue(mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        Assert.assertEquals(NOT_TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
 
-        remoteFileRetriever.injectCommsFailureOnVersionNumberRetrieval(); // to make test fail after we have verified correct behaviour for this test
+        mRemoteFileRetriever.injectCommsFailureOnVersionNumberRetrieval(); // to make test fail after we have verified correct behaviour for this test
 
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -150,11 +171,35 @@ public final class TestUpdateChecker extends LoggingTestCase {
      * 
      */
     @Test(timeout = 3000)
-    public void commsFailureOnVersionNumberRetrievalReportsErrorAndNoLastCheckDateSet() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+    public void applicationPluginReportsNoVersion() {
+        createUpdateCheckerWithNoApplicationVersion();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        mPrefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
+    
+        final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
+        adapter.noApplicationVersionDeclared();
+        adapter.finished();
+        EasyMock.replay(adapter);
 
-        remoteFileRetriever.injectCommsFailureOnVersionNumberRetrieval();
+        startUpdateAndWait(adapter);
+        
+        EasyMock.verify(adapter);
+        
+        Assert.assertEquals(NOT_TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals(0, mMessageQueue.size());
+    }
+    /**
+     * 
+     */
+    @Test(timeout = 3000)
+    public void commsFailureOnVersionNumberRetrievalReportsErrorAndNoLastCheckDateSet() {
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+
+        mRemoteFileRetriever.injectCommsFailureOnVersionNumberRetrieval();
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -166,8 +211,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
         
-        Assert.assertEquals(NOT_TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
-        Assert.assertEquals(0, messageQueue.size());
+        Assert.assertEquals(NOT_TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(0, mMessageQueue.size());
     }
 
     /**
@@ -175,12 +220,13 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void versionNumberSameLastCheckDateSetButNoMessage() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
-        prefs.setLastRemoteUpdateVersion(VERSION_1_0_0);
-        Assert.assertEquals(VERSION_1_0_0, prefs.getLastRemoteUpdateVersion());
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        mPrefs.setLastRemoteUpdateVersion(VERSION_1_0_0);
+        Assert.assertEquals(VERSION_1_0_0, mPrefs.getLastRemoteUpdateVersion());
         
-        remoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
+        mRemoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -192,9 +238,9 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
         
-        Assert.assertEquals(TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
-        Assert.assertEquals(VERSION_1_0_0, prefs.getLastRemoteUpdateVersion());
-        Assert.assertEquals(0, messageQueue.size());
+        Assert.assertEquals(TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(VERSION_1_0_0, mPrefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals(0, mMessageQueue.size());
     }
     
     /**
@@ -202,13 +248,14 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void commsFailureOnChangeLogRetrievalReportsErrorAndNoLastCheckDateSet() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
 
-        Assert.assertEquals("", prefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals("", mPrefs.getLastRemoteUpdateVersion());
         
-        remoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
-        remoteFileRetriever.injectCommsFailureOnChangeLogRetrieval();
+        mRemoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
+        mRemoteFileRetriever.injectCommsFailureOnChangeLogRetrieval();
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -220,8 +267,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
         
-        Assert.assertEquals(NOT_TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
-        Assert.assertEquals(0, messageQueue.size());
+        Assert.assertEquals(NOT_TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(0, mMessageQueue.size());
     }
     
     /**
@@ -229,14 +276,15 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void successfulUpdateCheckSendsMessageAndLastCheckDateAndVersionSet() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
 
-        prefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
-        Assert.assertEquals(VERSION_0_9_0, prefs.getLastRemoteUpdateVersion());
+        mPrefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
     
-        remoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
-        remoteFileRetriever.injectReturnedChangeLogContents("change log");
+        mRemoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
+        mRemoteFileRetriever.injectReturnedChangeLogContents("change log");
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -248,10 +296,10 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
         
-        Assert.assertEquals(TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
-        Assert.assertEquals(VERSION_1_0_0, prefs.getLastRemoteUpdateVersion());
-        Assert.assertEquals(1, messageQueue.size());
-        final Message message = messageQueue.getMessageByIndex(0);
+        Assert.assertEquals(TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(VERSION_1_0_0, mPrefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals(1, mMessageQueue.size());
+        final Message message = mMessageQueue.getMessageByIndex(0);
         Assert.assertEquals("change log", message.getMessageContent().toString());
     }
 
@@ -260,15 +308,16 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void successfulUpdateCheckButTransformFailureDoesntSendMessageOrUpdateLastCheckDateAndVersion() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
 
-        prefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
-        Assert.assertEquals(VERSION_0_9_0, prefs.getLastRemoteUpdateVersion());
+        mPrefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
     
-        remoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
-        remoteFileRetriever.injectReturnedChangeLogContents("change log");
-        changeLogTransformer.injectReadFailure();
+        mRemoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
+        mRemoteFileRetriever.injectReturnedChangeLogContents("change log");
+        mChangeLogTransformer.injectReadFailure();
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -280,9 +329,9 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
 
-        Assert.assertEquals(NOT_TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
-        Assert.assertEquals(VERSION_0_9_0, prefs.getLastRemoteUpdateVersion());
-        Assert.assertEquals(0, messageQueue.size());
+        Assert.assertEquals(NOT_TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals(0, mMessageQueue.size());
     }
 
     /**
@@ -290,15 +339,16 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test(timeout = 3000)
     public void successfulUpdateCheckButTransformFailureDueToBadRemoteVersionDoesntSendMessageOrUpdateLastCheckDateAndVersion() {
-        prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
-        prefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        createUpdateChecker();
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
 
-        prefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
-        Assert.assertEquals(VERSION_0_9_0, prefs.getLastRemoteUpdateVersion());
+        mPrefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
     
-        remoteFileRetriever.injectReturnedVersionNumber("this is not a valid version number");
-        remoteFileRetriever.injectReturnedChangeLogContents("change log");
-        changeLogTransformer.injectReadFailure();
+        mRemoteFileRetriever.injectReturnedVersionNumber("this is not a valid version number");
+        mRemoteFileRetriever.injectReturnedChangeLogContents("change log");
+        mChangeLogTransformer.injectReadFailure();
         
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
@@ -310,9 +360,9 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
 
-        Assert.assertEquals(NOT_TODAYS_DATE, prefs.getDateOfLastUpdateAvailableCheck());
-        Assert.assertEquals(VERSION_0_9_0, prefs.getLastRemoteUpdateVersion());
-        Assert.assertEquals(0, messageQueue.size());
+        Assert.assertEquals(NOT_TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals(0, mMessageQueue.size());
     }
 
     /**
@@ -320,7 +370,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
      */
     @Test
     public void updateCheckHandledOnSeparateThread() {
-        Assert.assertFalse(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
+        createUpdateChecker();
+        Assert.assertFalse(mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
         final AtomicBoolean onSeparateThread = new AtomicBoolean(false);
         final Thread mainThread = Thread.currentThread();
         
@@ -330,6 +381,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
             public void checkStarted() {
             }
             public void commsFailure(final IOException exception) {
+            }
+            public void noApplicationVersionDeclared() {
             }
             public void noUpdateAvailable() {
             }

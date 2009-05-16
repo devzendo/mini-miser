@@ -39,6 +39,13 @@ public final class DefaultUpdateProgressAdapter implements UpdateProgressAdapter
     /**
      * {@inheritDoc}
      */
+    public void noApplicationVersionDeclared() {
+        mStatusBar.displayTemporaryMessage("Application does not have a version number", 10);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void commsFailure(final IOException exception) {
         mStatusBar.displayTemporaryMessage("Update check failed: " + exception.getMessage(), 10);
     }

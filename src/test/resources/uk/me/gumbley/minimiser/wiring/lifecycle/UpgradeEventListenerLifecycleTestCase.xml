@@ -20,7 +20,10 @@
 
 	<bean id="upgradeEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
 		<constructor-arg ref="listenerManager" />
+		<constructor-arg ref="appDetails" />
 	</bean>
+
+	<bean id="appDetails" class="uk.me.gumbley.minimiser.pluginmanager.AppDetails" />
 
 	<!-- listener manager -->	
 	<bean id="listenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
