@@ -79,6 +79,12 @@
     </dependency>
 
     <dependency>
+      <groupId>ch.randelshofer</groupId>
+      <artifactId>quaqua</artifactId>
+      <version>5.2.1</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.netbeans</groupId>
       <artifactId>wizard</artifactId>
       <version>0.998.1</version>
