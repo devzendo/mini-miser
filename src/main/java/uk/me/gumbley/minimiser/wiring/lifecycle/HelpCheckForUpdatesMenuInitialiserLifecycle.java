@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.wiring.lifecycle;
 
+import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.minimiser.gui.menu.Menu;
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
@@ -40,6 +41,10 @@ public final class HelpCheckForUpdatesMenuInitialiserLifecycle implements Lifecy
      */
     public void startup() {
         final boolean enabled = mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED);
-        mMenu.setHelpCheckForUpdatesEnabled(enabled);
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                mMenu.setHelpCheckForUpdatesEnabled(enabled);
+            }
+        });
     }
 }

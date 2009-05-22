@@ -24,9 +24,9 @@ import javax.swing.SwingUtilities;
 
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.updatechecker.DefaultChangeLogTransformer;
 import uk.me.gumbley.minimiser.updatechecker.ParseException;
 
@@ -46,23 +46,29 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     private static final int TEXTPANE_WIDTH = 550;
     private static final int TEXTPANE_HEIGHT = 350;
     private JButton switchButton;
+    private final boolean mWelcome;
+    private final AppDetails mAppDetails;
+    private final Map<String, CountDownLatch> loadedResourceLatchMap;
     private JButton cancelButton;
     private JPanel cardPanel;
     private CardLayout cardLayout;
-    private final boolean welcome;
     private ActionListener switchActionListener;
-    private final Map<String, CountDownLatch> loadedResourceLatchMap;
 
     /**
      * Construct the Welcome Dialog
      * @param parentFrame the main app frame
      * @param cursor the cursor manager
+     * @param appDetails the application details
      * @param showWelcome true iff showing the welcome screen initally, false
      * for the what's new screen.
      */
-    public WelcomeDialog(final Frame parentFrame, final CursorManager cursor, final boolean showWelcome) {
+    public WelcomeDialog(final Frame parentFrame,
+            final CursorManager cursor,
+            final AppDetails appDetails,
+            final boolean showWelcome) {
         super(parentFrame, cursor, "Loading...");
-        this.welcome = showWelcome;
+        mAppDetails = appDetails;
+        mWelcome = showWelcome;
         loadedResourceLatchMap = new HashMap<String, CountDownLatch>();
         loadedResourceLatchMap.put(WELCOME_HTML, new CountDownLatch(1));
         loadedResourceLatchMap.put(CHANGELOG_HTML, new CountDownLatch(1));
@@ -121,7 +127,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
      */
     @Override
     protected void initialise() {
-        if (welcome) {
+        if (mWelcome) {
             addSwingWorker(addWelcomeResourceLoader());
             addSwingWorker(addWhatsNewResourceLoader());
         } else {
@@ -210,7 +216,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             e1.printStackTrace();
         }
         setTitle("What's new in this release?");
-        switchButton.setText("Welcome to " + AppName.getAppName());
+        switchButton.setText("Welcome to " + mAppDetails.getApplicationName());
         switchButton.setVisible(true);
         setSwitchActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
@@ -230,7 +236,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         } catch (final InterruptedException e1) {
             e1.printStackTrace();
         }
-        setTitle("Welcome to " + AppName.getAppName());
+        setTitle("Welcome to " + mAppDetails.getApplicationName());
         switchButton.setText("What's new in this release?");
         switchButton.setVisible(true);
         setSwitchActionListener(new ActionListener() {
@@ -254,7 +260,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             @Override
             public Object construct() {
                 try {
-                    if (welcome) {
+                    if (mWelcome) {
                         loadedResourceLatchMap.get(WELCOME_HTML).await();
                     } else {
                         loadedResourceLatchMap.get(CHANGELOG_HTML).await();
@@ -268,7 +274,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             
             @Override
             public void finished() {
-                if (welcome) {
+                if (mWelcome) {
                     switchToWelcome();
                 } else {
                     switchToWhatsNew();
@@ -276,6 +282,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             }
         };
     }
+    
     private SwingWorker addOKCancelEnabler() {
         return new SwingWorker() {
             @Override
@@ -290,7 +297,6 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         };
     }
     
-    
     /**
      * Enable the ok/cancel buttons, when all the tabs have been loaded.
      */
@@ -300,7 +306,6 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         switchButton.setEnabled(true);
         cancelButton.setEnabled(true);
     }
-
 
     /**
      * OK was pressed; commit the collected changes and close the dialog.
@@ -317,5 +322,4 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         assert SwingUtilities.isEventDispatchThread();
         clearAndHide();
     }
-
 }

@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.gui.messagequeueviewer.DefaultMessageQueueViewerFactory;
 import uk.me.gumbley.minimiser.messagequeue.BooleanFlagSettingMessage;
@@ -95,7 +94,7 @@ public final class DriveStatusBarDisplay {
             public void actionPerformed(final ActionEvent e) {
                 final Message.Importance importance = randomImportance();
                 final String subject = "Please decide whether you want update checks";
-                final String content = AppName.getAppName() + " can check periodically for software updates.<br>"
+                final String content = "The framework can check periodically for software updates.<br>"
                 + "This requires an active Internet connection.<br>"
                 + "Only the latest software details are obtained from our web site.<br>"
                 + "No personal information is sent, other than your computer's IP address.<br>"

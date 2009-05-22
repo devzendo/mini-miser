@@ -103,6 +103,7 @@
 
 	<bean id="helpMenu" class="uk.me.gumbley.minimiser.gui.menu.HelpMenu">
 		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 	
     <!-- menu action listeners -->

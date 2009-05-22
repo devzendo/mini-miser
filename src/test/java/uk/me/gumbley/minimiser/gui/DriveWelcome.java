@@ -50,7 +50,10 @@ public final class DriveWelcome {
                 final JButton launch = new JButton("Launch Welcome");
                 launch.addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
-                        final WelcomeDialog welcome = new WelcomeDialog(frame, cursorManager, true);
+                        final AppDetails appDetails = new AppDetails();
+                        appDetails.setApplicationName("DriveWelcome");
+                        appDetails.setApplicationVersion("0.0.0");
+                        final WelcomeDialog welcome = new WelcomeDialog(frame, cursorManager, appDetails, true);
                         welcome.pack();
                         welcome.setVisible(true);
                     }

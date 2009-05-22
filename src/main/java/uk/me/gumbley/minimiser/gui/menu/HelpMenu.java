@@ -3,8 +3,8 @@ package uk.me.gumbley.minimiser.gui.menu;
 import javax.swing.JMenu;
 import javax.swing.JSeparator;
 
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * The Help menu. Small, has no interesting functionality that
@@ -15,26 +15,29 @@ import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
  *
  */
 public final class HelpMenu extends AbstractMenuGroup {
-    private final JMenu helpmenu;
+    private final JMenu mHelpmenu;
+    private final AppDetails mAppDetails;
 
     /**
      * Construct the help menu
      * 
      * @param wiring the menu wiring
+     * @param appDetails the application details
      */
-    public HelpMenu(final MenuWiring wiring) {
+    public HelpMenu(final MenuWiring wiring, final AppDetails appDetails) {
         super(wiring);
+        mAppDetails = appDetails;
 
-        helpmenu = new JMenu("Help");
-        helpmenu.setMnemonic('H');
+        mHelpmenu = new JMenu("Help");
+        mHelpmenu.setMnemonic('H');
         
-        createMenuItem(MenuIdentifier.HelpWelcome, "Welcome to " + AppName.getAppName(), 'W', helpmenu);
-        createMenuItem(MenuIdentifier.HelpWhatsNew, "What's new in this release?", 'N', helpmenu);
-        helpmenu.add(new JSeparator());
+        createMenuItem(MenuIdentifier.HelpWelcome, "Welcome to " + mAppDetails.getApplicationName(), 'W', mHelpmenu);
+        createMenuItem(MenuIdentifier.HelpWhatsNew, "What's new in this release?", 'N', mHelpmenu);
+        mHelpmenu.add(new JSeparator());
         //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
-        createMenuItem(MenuIdentifier.HelpAbout, "About " + AppName.getAppName(), 'A', helpmenu);
-        helpmenu.add(new JSeparator());
-        createMenuItem(MenuIdentifier.HelpCheckForUpdates, "Check for updates", 'U', helpmenu);
+        createMenuItem(MenuIdentifier.HelpAbout, "About " + mAppDetails.getApplicationName(), 'A', mHelpmenu);
+        mHelpmenu.add(new JSeparator());
+        createMenuItem(MenuIdentifier.HelpCheckForUpdates, "Check for updates", 'U', mHelpmenu);
     }
 
     /**
@@ -42,7 +45,7 @@ public final class HelpMenu extends AbstractMenuGroup {
      */
     @Override
     public JMenu getJMenu() {
-        return helpmenu;
+        return mHelpmenu;
     }
 
     /**

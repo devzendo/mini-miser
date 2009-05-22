@@ -1,8 +1,11 @@
 package uk.me.gumbley.minimiser.gui.dialog.welcome;
 
 import java.awt.Frame;
+
 import javax.swing.SwingUtilities;
+
 import uk.me.gumbley.minimiser.gui.CursorManager;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -12,8 +15,9 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  *
  */
 public final class WelcomeDialogHelper {
-    private static Frame parentFrame;
-    private static CursorManager cursorManager;
+    private static Frame mParentFrame;
+    private static CursorManager mCursorManager;
+    private static AppDetails mAppDetails;
 
     /**
      * 
@@ -29,8 +33,9 @@ public final class WelcomeDialogHelper {
      * @param springLoader the spring loader
      */
     public static void initialise(final SpringLoader springLoader) {
-        parentFrame = springLoader.getBean("mainFrame", Frame.class);
-        cursorManager = springLoader.getBean("cursorManager", CursorManager.class);
+        mParentFrame = springLoader.getBean("mainFrame", Frame.class);
+        mCursorManager = springLoader.getBean("cursorManager", CursorManager.class);
+        mAppDetails = springLoader.getBean("appDetails", AppDetails.class);
     }
     
     /**
@@ -49,9 +54,10 @@ public final class WelcomeDialogHelper {
     
     private static void showDialog(final boolean isWelcome) {
         assert SwingUtilities.isEventDispatchThread();
-        final WelcomeDialog dialog = new WelcomeDialog(parentFrame, cursorManager, isWelcome);
+        final WelcomeDialog dialog = new WelcomeDialog(mParentFrame,
+            mCursorManager, mAppDetails, isWelcome);
         dialog.pack();
-        dialog.setLocationRelativeTo(parentFrame);
+        dialog.setLocationRelativeTo(mParentFrame);
         dialog.setVisible(true);
     }
 }

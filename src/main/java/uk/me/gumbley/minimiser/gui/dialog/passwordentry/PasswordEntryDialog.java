@@ -15,12 +15,13 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
-import uk.me.gumbley.minimiser.common.AppName;
+
 import uk.me.gumbley.minimiser.util.PasswordValidator;
 
 /**
@@ -35,15 +36,15 @@ public final class PasswordEntryDialog extends JDialog implements ActionListener
 
     private char[] password = new char[0];
 
-    private JPasswordField passwordField;
-    private JTextArea critArea;
+    private final JPasswordField passwordField;
+    private final JTextArea critArea;
 
-    private JOptionPane optionPane;
-    private JButton openButton;
+    private final JOptionPane optionPane;
+    private final JButton openButton;
 
-    private String btnString1 = "Open";
+    private final String btnString1 = "Open";
 
-    private String btnString2 = "Cancel";
+    private final String btnString2 = "Cancel";
 
     /**
      * Returns the entered password otherwise, returns the password as the user
@@ -69,7 +70,7 @@ public final class PasswordEntryDialog extends JDialog implements ActionListener
         critArea.setForeground(Color.BLUE); // like Wizard
         // Create an array of the text and components to be displayed.
         final String msg = "The '" + dbName + "' database is encrypted.\n"
-            + "The correct password must be entered before " + AppName.getAppName() + " can open it.";
+            + "The correct password must be entered before it can be opened.";
         final JTextArea msgArea = new JTextArea(msg); 
         msgArea.setEditable(false);
         final Object[] array = {msgArea, passwordField, critArea};
@@ -85,6 +86,7 @@ public final class PasswordEntryDialog extends JDialog implements ActionListener
         // Handle window closing correctly.
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(final WindowEvent we) {
                 /*
                  * Instead of directly closing the window, we're going to change
@@ -95,6 +97,7 @@ public final class PasswordEntryDialog extends JDialog implements ActionListener
         });
         // Ensure the text field always gets the first focus.
         addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentShown(final ComponentEvent ce) {
                 passwordField.requestFocusInWindow();
             }
