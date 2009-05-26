@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -68,7 +66,7 @@ public class MainFrame {
         mainFrame.add(statusBar.getPanel(), BorderLayout.SOUTH);
         
         // Menu
-        mainFrame.setJMenuBar(createMenu());
+        //mainFrame.setJMenuBar(createMenu());
         
         // Main panel
         final TabPaneManager tabPaneManager = springLoader.getBean("tabPaneManager", TabPaneManager.class);
@@ -95,6 +93,7 @@ public class MainFrame {
                 + mAppDetails.getApplicationVersion());
 
         mainFrame.setIconImage(createImageIcon("icons/application.gif").getImage());
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setMainFrameInFactory();
         
@@ -102,33 +101,6 @@ public class MainFrame {
 
         mainFrame.setName(MAIN_FRAME_NAME);
         mainFrame.setLayout(new BorderLayout());
-        
-        exitAL = new MainFrameCloseActionListener(springLoader);
-
-        mainFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        mainFrame.addWindowListener(new WindowListener() {
-            public void windowOpened(final WindowEvent e) {
-            }
-
-            public void windowClosing(final WindowEvent e) {
-                exitAL.actionPerformed(null);
-            }
-
-            public void windowClosed(final WindowEvent e) {
-            }
-
-            public void windowIconified(final WindowEvent e) {
-            }
-
-            public void windowDeiconified(final WindowEvent e) {
-            }
-
-            public void windowActivated(final WindowEvent e) {
-            }
-
-            public void windowDeactivated(final WindowEvent e) {
-            }
-        });
     }
 
     /**

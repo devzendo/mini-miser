@@ -12,6 +12,10 @@
 	<!-- gui layer -->
 	<bean id="mainFrame" class="uk.me.gumbley.minimiser.gui.MainFrameFactory" />
 
+	<bean id="mainFrameCloseActionListener" class="uk.me.gumbley.minimiser.gui.MainFrameCloseActionListener">
+		<constructor-arg ref="springLoader" />
+	</bean>
+
 	<bean id="mainFrameTitle" class="uk.me.gumbley.minimiser.gui.MainFrameTitleFactory" />
 
 	<bean id="cursorManager" class="uk.me.gumbley.minimiser.gui.CursorManager" />
@@ -108,6 +112,7 @@
 			<list>
 			    <!-- initialising lifecycles typically initialise helpers used everywhere else
 			         so they need to happen early -->
+			    <value>wizardPageInitialisingLifecycle</value>
 			    <value>startupQueueHelperInitialisingLifecycle</value>
 			    <value>dstaMessageHelperInitialisingLifecycle</value>
 			    <value>messageQueueHelperInitialisingLifecycle</value>
@@ -115,6 +120,9 @@
 			    <value>problemDialogHelperInitialisingLifecycle</value>
 			    
 			    <value>pluginManagerLifecycle</value> <!--  this must be first after the helper initialisers -->
+			    <value>menuInitialisingLifecycle</value> <!--  must come after plugins so help menu has correct text from appdetails -->
+			    <value>mainFrameCloseActionListenerInitialisingLifecycle</value>
+
 			    <value>tabEventListenerLifecycle</value>
 			    <value>viewMenuInitialiserLifecycle</value>
 			    <value>helpCheckForUpdatesMenuInitialiserLifecycle</value>
@@ -135,6 +143,18 @@
 	<bean id="lifecycleManager" class="uk.me.gumbley.minimiser.lifecycle.DefaultLifecycleManagerImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="lifecycleList" />	
+	</bean>
+	
+	<bean id="mainFrameCloseActionListenerInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MainFrameCloseActionListenerInitialisingLifecycle">
+		<constructor-arg ref="springLoader" />
+	</bean>
+	
+	<bean id="menuInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MenuInitialisingLifecycle">
+		<constructor-arg ref="springLoader" />
+	</bean>
+	
+	<bean id="wizardPageInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.WizardPageInitialisingLifecycle">
+		<constructor-arg ref="prefs" />
 	</bean>
 	
 	<bean id="startupQueueHelperInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.StartupQueueHelperInitialisingLifecycle">

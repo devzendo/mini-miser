@@ -14,11 +14,8 @@ import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
-import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
 import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.pluginmanager.AppDetailsPropertiesLoader;
-import uk.me.gumbley.minimiser.prefs.DefaultPrefsImpl;
-import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
@@ -114,10 +111,6 @@ public final class MiniMiser {
                     }
 
                     new MainFrame(springLoader, finalArgList);
-
-                    // TODO perhaps make this wait for the main window to
-                    // appear first, i.e. as an AWTEventListener
-                    triggerGUIStartupTasks(springLoader);
                 } catch (final AppException e) {
                     LOGGER.fatal(e.getMessage());
                     System.exit(1);
@@ -133,12 +126,6 @@ public final class MiniMiser {
         appDetails.setApplicationName(appDetailsPropertiesLoader.getName());
         appDetails.setApplicationVersion(appDetailsPropertiesLoader.getVersion());
         return appDetails;
-    }
-
-    private static void triggerGUIStartupTasks(final SpringLoader springLoader) {
-        MiniMiserWizardPage.setLHGraphic();
-        final Prefs prefs = springLoader.getBean("prefs", DefaultPrefsImpl.class);
-        MiniMiserWizardPage.getPanelDimension(prefs);
     }
 
     private static SpringLoader initSpringLoader() {
