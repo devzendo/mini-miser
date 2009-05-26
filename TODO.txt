@@ -35,6 +35,8 @@ CURRENT TASKS:
   
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * Mac - new file - file chooser doesn't allow creation of folders!
+* Mac - Apple Q doesn't use the mainFrameCloseActionListener and
+  doesn't prompt for closing open DBs
 
 * prefs should be stored in platform-specific location, not just ~/.minimiser -
   need ~/Library/Application Support/MiniMiser on Mac OS X
