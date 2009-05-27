@@ -24,8 +24,6 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
 public final class LifecycleStartupAWTEventListener implements AWTEventListener {
     private static final Logger LOGGER = Logger
             .getLogger(LifecycleStartupAWTEventListener.class);
-    private final CursorManager mCursorManager;
-    private final LifecycleManager mLifecycleManager;
     private final SpringLoader mSpringLoader;
     private final JFrame mMainFrame;
     
@@ -36,8 +34,6 @@ public final class LifecycleStartupAWTEventListener implements AWTEventListener 
      */
     public LifecycleStartupAWTEventListener(final SpringLoader springLoader) {
         mSpringLoader = springLoader;
-        mCursorManager = mSpringLoader.getBean("cursorManager", CursorManager.class);
-        mLifecycleManager = mSpringLoader.getBean("lifecycleManager", LifecycleManager.class);
         mMainFrame = mSpringLoader.getBean("mainFrame", JFrame.class);
     }
     
@@ -46,19 +42,22 @@ public final class LifecycleStartupAWTEventListener implements AWTEventListener 
      */
     public void eventDispatched(final AWTEvent event) {
         if (event.getID() == WindowEvent.WINDOW_OPENED && event.getSource().equals(mMainFrame)) {
-            LOGGER.info("Main frame visible; starting lifecycle manager");
+            LOGGER.info("Main frame visible; getting lifecycle dependencies");
+            final CursorManager mCursorManager = mSpringLoader.getBean("cursorManager", CursorManager.class);
             mCursorManager.hourglass(this.getClass().getSimpleName());
             final SwingWorker worker = new SwingWorker() {
                 @Override
                 public Object construct() {
                     Thread.currentThread().setName("Lifecycle Startup");
-                    
+                    LOGGER.info("Main frame visible; starting lifecycle manager");
+                    final LifecycleManager mLifecycleManager = mSpringLoader.getBean("lifecycleManager", LifecycleManager.class);
                     mLifecycleManager.startup();
                     return null;
                 }
                 @Override
                 public void finished() {
                     mCursorManager.normal(this.getClass().getSimpleName());
+                    LOGGER.info("Main frame visible; lifecycle manager finished");
                 }
             };
             worker.start();
