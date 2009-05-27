@@ -4,25 +4,18 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.exception.AppException;
-import uk.me.gumbley.minimiser.gui.menu.Menu;
-import uk.me.gumbley.minimiser.gui.menu.MenuBuilder;
-import uk.me.gumbley.minimiser.gui.menu.MenuMediator;
-import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabPaneManager;
 import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
-import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -35,11 +28,9 @@ public class MainFrame {
     private static final String MAIN_FRAME_NAME = "main";
 
     private JFrame mainFrame;
-    private ActionListener exitAL;
     private final SpringLoader springLoader;
     private final CursorManager cursorManager;
     private final WindowGeometryStore windowGeometryStore;
-    private final RecentFilesList recentList;
     private final MainFrameStatusBar statusBar;
     private final AppDetails mAppDetails;
 
@@ -55,7 +46,6 @@ public class MainFrame {
         this.springLoader = loader;
         mAppDetails = springLoader.getBean("appDetails", AppDetails.class);
         windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
-        recentList = springLoader.getBean("recentFilesList", RecentFilesList.class);
 
         // Create new Window and exit handler
         createMainFrame();
@@ -125,23 +115,5 @@ public class MainFrame {
     private void setMainFrameInFactory() {
         final MainFrameFactory mainFrameFactory = springLoader.getBean("&mainFrame", MainFrameFactory.class);
         mainFrameFactory.setMainFrame(mainFrame);
-    }
-        
-    private JMenuBar createMenu() {
-        LOGGER.info("Getting the menu");
-        final Menu menu = springLoader.getBean("menu", Menu.class);
-        menu.refreshRecentList(recentList.getRecentDatabases());
-        // TODO SMELL why not have it populated correctly at first?
-        // we could pass in the recent strings to a ctor?
-        // NOTE the view menu is initially populated via a lifecycle
-        LOGGER.info("Got the menu");
-        menu.addMenuActionListener(MenuIdentifier.FileExit, exitAL);
-        // wire up dependencies
-        LOGGER.info("Wiring menu dependencies and adapters");
-        springLoader.getBean("menuMediator", MenuMediator.class);
-        LOGGER.info("Menu dependencies wired");
-        springLoader.getBean("menuBuilder", MenuBuilder.class).build();
-        LOGGER.info("Menu ActionListeners built and wired");
-        return menu.getMenuBar();
     }
 }
