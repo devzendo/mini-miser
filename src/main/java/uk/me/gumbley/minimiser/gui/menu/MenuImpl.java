@@ -38,7 +38,10 @@ public final class MenuImpl implements Menu {
      * @param wiring the MenuWiring singleton
      */
     public MenuImpl(final SpringLoader loader, final MenuWiring wiring) {
-        GUIUtils.runOnEventThread(new Runnable() {
+        // This used to be done via
+        // GUIUtils.runOnEventThread
+        // but that causes the event thread to deadlock.
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
 
             public void run() {
                 synchronized (lock) {
