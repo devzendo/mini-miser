@@ -28,7 +28,9 @@ CURRENT TASKS:
   application name.
 * plugins should publish their metadata to a plugin registry, that
   is accessed from the jdbctemplatefactory amongst others e.g.
-  dummyapppluginmanager
+  dummyapppluginmanager. the plugin event thats fired when the
+  app plugin is loaded should change from sending two strings to
+  sending one of these plugindescriptor objects
 * app plugin should have an email address or web page to which
   reports can be sent - for the problem reporter's dialog, rather
   than the @gumbley.me.uk one. 
