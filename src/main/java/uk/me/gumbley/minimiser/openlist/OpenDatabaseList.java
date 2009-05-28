@@ -2,7 +2,9 @@ package uk.me.gumbley.minimiser.openlist;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
@@ -42,7 +44,7 @@ public final class OpenDatabaseList {
      * @param observer the observer to add.
      */
     public void addDatabaseEventObserver(final Observer<DatabaseEvent> observer) {
-        LOGGER.debug("Adding adapter " + observer.getClass().getSimpleName());
+        LOGGER.debug("Adding observer " + observer.getClass().getSimpleName());
         observerList.addObserver(observer);
     }
 
@@ -51,7 +53,7 @@ public final class OpenDatabaseList {
      * @param observer the observer to remove.
      */
     public void removeDatabaseEventObserver(final Observer<DatabaseEvent> observer) {
-        LOGGER.debug("Removing adapter " + observer.getClass().getSimpleName());
+        LOGGER.debug("Removing observer " + observer.getClass().getSimpleName());
         observerList.removeListener(observer);
     }
 
