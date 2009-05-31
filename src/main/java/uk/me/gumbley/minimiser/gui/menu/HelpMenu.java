@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser.gui.menu;
 import javax.swing.JMenu;
 import javax.swing.JSeparator;
 
+import org.apache.log4j.Logger;
+
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
 import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
@@ -14,9 +16,10 @@ import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
  * @author matt
  *
  */
-public final class HelpMenu extends AbstractMenuGroup {
+public final class HelpMenu extends AbstractRebuildableMenuGroup {
+    private static final Logger LOGGER = Logger.getLogger(HelpMenu.class);
     private final JMenu mHelpmenu;
-    private final AppDetails mAppDetails;
+    private String mApplicationName;
 
     /**
      * Construct the help menu
@@ -26,18 +29,11 @@ public final class HelpMenu extends AbstractMenuGroup {
      */
     public HelpMenu(final MenuWiring wiring, final AppDetails appDetails) {
         super(wiring);
-        mAppDetails = appDetails;
+        mApplicationName = appDetails.getApplicationName();
 
         mHelpmenu = new JMenu("Help");
         mHelpmenu.setMnemonic('H');
-        
-        createMenuItem(MenuIdentifier.HelpWelcome, "Welcome to " + mAppDetails.getApplicationName(), 'W', mHelpmenu);
-        createMenuItem(MenuIdentifier.HelpWhatsNew, "What's new in this release?", 'N', mHelpmenu);
-        mHelpmenu.add(new JSeparator());
-        //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
-        createMenuItem(MenuIdentifier.HelpAbout, "About " + mAppDetails.getApplicationName(), 'A', mHelpmenu);
-        mHelpmenu.add(new JSeparator());
-        createMenuItem(MenuIdentifier.HelpCheckForUpdates, "Check for updates", 'U', mHelpmenu);
+        LOGGER.debug("Creating help menu");
     }
 
     /**
@@ -62,5 +58,32 @@ public final class HelpMenu extends AbstractMenuGroup {
      */
     public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
         getMenuWiring().setMenuItemEnabled(MenuIdentifier.HelpCheckForUpdates, newEnabled);
+    }
+
+    /**
+     * Set the application name, to be displayed when the menu is
+     * rebuilt.
+     * @param applicationName the application name
+     */
+    public synchronized void setApplicationName(final String applicationName) {
+        LOGGER.debug("The help menu has been notified that the application name is " + applicationName);
+        mApplicationName = applicationName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void rebuildMenuGroup() {
+        LOGGER.debug("Rebuilding the help menu with application name " + mApplicationName);
+        mHelpmenu.removeAll();
+        
+        replaceMenuItem(MenuIdentifier.HelpWelcome, "Welcome to " + mApplicationName, 'W', mHelpmenu);
+        createMenuItem(MenuIdentifier.HelpWhatsNew, "What's new in this release?", 'N', mHelpmenu);
+        mHelpmenu.add(new JSeparator());
+        //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
+        replaceMenuItem(MenuIdentifier.HelpAbout, "About " + mApplicationName, 'A', mHelpmenu);
+        mHelpmenu.add(new JSeparator());
+        createMenuItem(MenuIdentifier.HelpCheckForUpdates, "Check for updates", 'U', mHelpmenu);
     }
 }

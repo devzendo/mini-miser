@@ -172,4 +172,11 @@ public interface Menu {
      * item
      */
     boolean isHelpCheckForUpdatesEnabled();
+    
+    /**
+     * Rebuild the help menu with the application name taken from
+     * the AppDetails
+     * @param applicationName the application name
+     */
+    void rebuildHelpMenu(String applicationName);
 }

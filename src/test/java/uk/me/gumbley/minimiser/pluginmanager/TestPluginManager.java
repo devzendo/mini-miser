@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 
 
@@ -29,6 +31,7 @@ public final class TestPluginManager extends LoggingTestCase {
         mAppDetails = new AppDetails();
         mDefaultPluginManager = new DefaultPluginManager(mAppDetails);
     }
+    
     /**
      * @throws PluginException never
      */
@@ -52,6 +55,22 @@ public final class TestPluginManager extends LoggingTestCase {
         Assert.assertEquals("Application", appPlugin.getName());
         Assert.assertNotNull(mDefaultPluginManager.getApplicationPlugin());
         Assert.assertSame(mDefaultPluginManager.getApplicationPlugin(), appPlugin);
+    }
+    
+    /**
+     * @throws PluginException not in this test
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void loadingApplicationPluginFiresListeners() throws PluginException {
+        final Observer<PluginEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.eq(new ApplicationPluginLoadedEvent("Application", "1.0.0")));
+        EasyMock.replay(obs);
+
+        mDefaultPluginManager.addPluginEventObserver(obs);
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        
+        EasyMock.verify(obs);
     }
     
     /**

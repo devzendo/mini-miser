@@ -69,7 +69,8 @@ public final class MenuImpl implements Menu {
                     menuBar.add(windowMenuGroup.getJMenu());
                     
                     // The help menu
-                    helpMenuGroup = springLoader.getBean("helpMenu", HelpMenu.class); 
+                    helpMenuGroup = springLoader.getBean("helpMenu", HelpMenu.class);
+                    helpMenuGroup.rebuildMenuGroup();
                     menuBar.add(helpMenuGroup.getJMenu());
                 }
             }
@@ -258,5 +259,19 @@ public final class MenuImpl implements Menu {
      */
     public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
         helpMenuGroup.setHelpCheckForUpdatesEnabled(newEnabled);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void rebuildHelpMenu(final String applicationName) {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    helpMenuGroup.setApplicationName(applicationName);
+                    helpMenuGroup.rebuildMenuGroup();
+                }
+            }
+        });
     }
 }

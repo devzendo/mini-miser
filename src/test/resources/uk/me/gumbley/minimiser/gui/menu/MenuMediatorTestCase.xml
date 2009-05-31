@@ -14,8 +14,11 @@
 	<bean id="tabFactory" class="uk.me.gumbley.minimiser.gui.tabfactory.StubTabFactory">
 		<constructor-arg ref="openTabList" />
 	</bean>
+	<bean id="pluginManager" class="uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager" />
 
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />
+	
+	<bean id="appDetails" class="uk.me.gumbley.minimiser.pluginmanager.AppDetails" />
 	
 	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl">
 		<constructor-arg ref="springLoader" />
@@ -34,6 +37,7 @@
 			    <value>menuDatabaseOpenEventObserver</value>
 			    <value>menuPrefsEventObserver</value>
 			    <value>menuViewChoiceObserver</value>
+			    <value>menuPluginLoadedObserver</value>
 			</list>
 		</property>
 	</bean>
@@ -78,4 +82,9 @@
 		<constructor-arg ref="tabFactory" />
 	</bean>
 	
+	<bean id="menuPluginLoadedObserver" class="uk.me.gumbley.minimiser.wiring.menu.MenuPluginLoadedObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="pluginManager" />
+		<constructor-arg ref="appDetails" />
+	</bean>
 </beans>

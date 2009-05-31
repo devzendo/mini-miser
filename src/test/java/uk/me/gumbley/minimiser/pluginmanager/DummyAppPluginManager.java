@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser.pluginmanager;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -12,19 +14,27 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  *
  */
 public final class DummyAppPluginManager implements PluginManager {
+    private static final String APP_PLUGIN_NAME = "Dummy App";
+    private static final String APP_PLUGIN_VERSION = "1.0.0";
+    private static final String PLUGIN_NAME = "Dummy Plugin";
+    private static final String PLUGIN_VERSION = "3.2.1";
+    private final ObserverList<PluginEvent> mObserverList;
+    private final ApplicationPlugin mApplicationPlugin;
+    private final Plugin mDummyPlugin;
 
     /**
-     * {@inheritDoc}
+     * The simplest plugin manager that could possibly work
      */
-    public ApplicationPlugin getApplicationPlugin() {
-        return new ApplicationPlugin() {
+    public DummyAppPluginManager() {
+        mObserverList = new ObserverList<PluginEvent>();
+        mApplicationPlugin = new ApplicationPlugin() {
 
             public List<String> getApplicationContextResourcePaths() {
                 return null;
             }
 
             public String getName() {
-                return "Dummy App";
+                return APP_PLUGIN_NAME;
             }
 
             public SpringLoader getSpringLoader() {
@@ -36,7 +46,7 @@ public final class DummyAppPluginManager implements PluginManager {
             }
 
             public String getVersion() {
-                return "1.0.0";
+                return APP_PLUGIN_VERSION;
             }
 
             public void setSpringLoader(
@@ -54,21 +64,14 @@ public final class DummyAppPluginManager implements PluginManager {
                 return null;
             }
         };
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<Plugin> getPlugins() {
-        final ArrayList<Plugin> pluginList = new ArrayList<Plugin>();
-        final Plugin dummyPlugin = new Plugin() {
+        mDummyPlugin = new Plugin() {
 
             public List<String> getApplicationContextResourcePaths() {
                 return null;
             }
 
             public String getName() {
-                return "Dummy Plugin";
+                return PLUGIN_NAME;
             }
 
             public SpringLoader getSpringLoader() {
@@ -80,7 +83,7 @@ public final class DummyAppPluginManager implements PluginManager {
             }
 
             public String getVersion() {
-                return "3.2.1";
+                return PLUGIN_VERSION;
             }
 
             public void setSpringLoader(final SpringLoader springLoader) {
@@ -97,7 +100,22 @@ public final class DummyAppPluginManager implements PluginManager {
                 return null;
             }
         };
-        pluginList.add(dummyPlugin);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ApplicationPlugin getApplicationPlugin() {
+        return mApplicationPlugin;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Plugin> getPlugins() {
+        final ArrayList<Plugin> pluginList = new ArrayList<Plugin>();
+        pluginList.add(mDummyPlugin);
+        pluginList.add(mApplicationPlugin);
         return pluginList;
     }
 
@@ -113,5 +131,20 @@ public final class DummyAppPluginManager implements PluginManager {
      */
     public void loadPlugins(final String propertiesResourcePath)
             throws PluginException {
+        mObserverList.eventOccurred(new ApplicationPluginLoadedEvent(getApplicationPlugin().getName(), getApplicationPlugin().getVersion()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void addPluginEventObserver(final Observer<PluginEvent> observer) {
+        mObserverList.addObserver(observer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removePluginEventObserver(final Observer<PluginEvent> observer) {
+        mObserverList.removeListener(observer);
     }
 }

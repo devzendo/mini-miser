@@ -2,6 +2,8 @@ package uk.me.gumbley.minimiser.pluginmanager;
 
 import java.util.List;
 
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+
 
 /**
  * The Plugin Manager presents customisation data provided by the
@@ -27,7 +29,7 @@ public interface PluginManager {
      * file, e.g. META-INF/minimiser/plugin.properties
      * @throws PluginException on any load failures.
      */
-    void loadPlugins(final String propertiesResourcePath) throws PluginException;
+    void loadPlugins(String propertiesResourcePath) throws PluginException;
     
     /**
      * @return the set of loaded Plugins, including the single
@@ -39,4 +41,16 @@ public interface PluginManager {
      * @return the single ApplicationPlugin
      */
     ApplicationPlugin getApplicationPlugin();
+    
+    /**
+     * Add an observer of PluginEvents
+     * @param observer the observer
+     */
+    void addPluginEventObserver(Observer<PluginEvent> observer);
+
+    /**
+     * Remove an observer of PluginEvents.
+     * @param observer the observer to remove.
+     */
+    void removePluginEventObserver(Observer<PluginEvent> observer);
 }

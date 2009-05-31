@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 import com.mycila.plugin.api.PluginBinding;
@@ -20,6 +22,8 @@ public final class DefaultPluginManager implements PluginManager {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultPluginManager.class);
     private final PluginInitialiser mPluginInitialiser;
+    private final ObserverList<PluginEvent> mObserverList;
+
     
     /**
      * Construct a PluginManager that will pass the SpringLoader
@@ -29,6 +33,7 @@ public final class DefaultPluginManager implements PluginManager {
      */
     public DefaultPluginManager(final SpringLoader springLoader,
             final AppDetails appDetails) {
+        mObserverList = new ObserverList<PluginEvent>();
         mPluginInitialiser = new PluginInitialiser(springLoader, appDetails);
     }
     
@@ -38,6 +43,7 @@ public final class DefaultPluginManager implements PluginManager {
      * @param appDetails the bean for storing application details
      */
     public DefaultPluginManager(final AppDetails appDetails) {
+        mObserverList = new ObserverList<PluginEvent>();
         mPluginInitialiser = new PluginInitialiser(null, appDetails);
     }
 
@@ -71,7 +77,7 @@ public final class DefaultPluginManager implements PluginManager {
      * @throws PluginException on any load failures.
      */
     public void loadPlugins(final String propertiesResourcePath) throws PluginException {
-       
+        LOGGER.info("Loading plugins from " + propertiesResourcePath);
         final List<Plugin> loadedPlugins = loadPluginsFromClasspath(propertiesResourcePath);
         mPluginInitialiser.initialisePlugins(loadedPlugins);
 
@@ -80,13 +86,16 @@ public final class DefaultPluginManager implements PluginManager {
         // that use the PluginInitialiser in their base class are
         // relaxed about this - you may want to test your non-
         // app plugin.
-        if (mPluginInitialiser.getApplicationPlugin() == null) {
+        final ApplicationPlugin applicationPlugin = mPluginInitialiser.getApplicationPlugin();
+        if (applicationPlugin == null) {
             final String warning = "No application plugin has been provided";
             LOGGER.warn(warning);
             throw new PluginException(warning);
         }
+        
+        LOGGER.info("Notifying observers of application " + applicationPlugin.getName() + " details");
+        mObserverList.eventOccurred(new ApplicationPluginLoadedEvent(applicationPlugin.getName(), applicationPlugin.getVersion()));
     }
-    
     
     private List<Plugin> loadPluginsFromClasspath(final String propertiesResourcePath) throws PluginException {
         LOGGER.info("Loading plugins from the " + propertiesResourcePath + " resources");
@@ -112,6 +121,24 @@ public final class DefaultPluginManager implements PluginManager {
             LOGGER.debug(warning, e);
             throw new PluginException(warning); 
         }
+    }
+
+    /**
+     * Add an observer of plugin events.
+     * @param observer the observer to add.
+     */
+    public void addPluginEventObserver(final Observer<PluginEvent> observer) {
+        LOGGER.debug("Adding observer " + observer.getClass().getSimpleName());
+        mObserverList.addObserver(observer);
+    }
+
+    /**
+     * Remove an observer of plugin events.
+     * @param observer the observer to remove.
+     */
+    public void removePluginEventObserver(final Observer<PluginEvent> observer) {
+        LOGGER.debug("Removing observer " + observer.getClass().getSimpleName());
+        mObserverList.removeListener(observer);
     }
 
 }

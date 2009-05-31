@@ -34,6 +34,7 @@
 			    <value>menuDatabaseOpenEventObserver</value>
 			    <value>menuPrefsEventObserver</value>
 			    <value>menuViewChoiceObserver</value>
+			    <value>menuPluginLoadedObserver</value>
 			</list>
 		</property>
 	</bean>
@@ -76,6 +77,12 @@
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="tabFactory" />
+	</bean>
+		
+	<bean id="menuPluginLoadedObserver" class="uk.me.gumbley.minimiser.wiring.menu.MenuPluginLoadedObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="pluginManager" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 	
 	<!-- menus -->

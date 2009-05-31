@@ -36,6 +36,7 @@ public final class StubMenu implements Menu {
     private boolean viewMenuBuilt;
     private final Map<String, Boolean> hiddenTabs;
     private boolean helpCheckForUpdatesEnabled;
+    private String mHelpMenuApplicationName;
     
     /**
      * 
@@ -51,6 +52,7 @@ public final class StubMenu implements Menu {
         viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
         windowMenuSwitchObservers = new ObserverList<DatabaseNameChoice>();
         hiddenTabs = new HashMap<String, Boolean>();
+        mHelpMenuApplicationName = "";
     }
     
     /**
@@ -251,5 +253,20 @@ public final class StubMenu implements Menu {
      */
     public boolean isHelpCheckForUpdatesEnabled() {
         return helpCheckForUpdatesEnabled;
+    }
+
+    /**
+     * @return the name of the help menu application name, "" if
+     * it hasn't been set.
+     */
+    public String getHelpMenuApplicationName() {
+        return mHelpMenuApplicationName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void rebuildHelpMenu(final String applicationName) {
+        mHelpMenuApplicationName = applicationName;
     }
 }

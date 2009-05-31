@@ -3,13 +3,17 @@ package uk.me.gumbley.minimiser.gui.menu;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 import org.junit.Before;
+
 import uk.me.gumbley.minimiser.gui.MainFrameTitle;
 import uk.me.gumbley.minimiser.gui.StubMainFrameTitle;
 import uk.me.gumbley.minimiser.gui.tabfactory.StubTabFactory;
 import uk.me.gumbley.minimiser.gui.tabfactory.TabFactory;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.opentablist.OpenTabList;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -36,6 +40,8 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
     private Prefs prefs;
     private File prefsFile;
     private TabFactory tabFactory;
+    private PluginManager pluginManager;
+    private AppDetails appDetails;
     private static List<String> beanNames;
 
     /**
@@ -59,6 +65,8 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
         stubOpenerAdapterFactory = getSpringLoader().getBean("openerAdapterFactory", StubOpenerAdapterFactory.class);
         mainFrameTitle = getSpringLoader().getBean("mainFrameTitle", StubMainFrameTitle.class);
         tabFactory = getSpringLoader().getBean("tabFactory", StubTabFactory.class);
+        pluginManager = getSpringLoader().getBean("pluginManager", PluginManager.class);
+        appDetails = getSpringLoader().getBean("appDetails", AppDetails.class);
         
         beanNames = getSpringLoader().getBean("menuWiringList", List.class);
     }
@@ -147,4 +155,17 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
         return tabFactory;
     }
 
+    /**
+     * @return the pluginManager
+     */
+    protected final PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    /**
+     * @return the appDetails
+     */
+    protected final AppDetails getAppDetails() {
+        return appDetails;
+    }
 }

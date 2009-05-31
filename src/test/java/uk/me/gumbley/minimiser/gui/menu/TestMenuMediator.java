@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.swing.JTabbedPane;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
@@ -15,6 +18,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseSwitchedEvent;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.opentablist.TabDescriptor;
+import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 
 /**
  * Tests the linkage between the menu items enabling/disabling and
@@ -379,5 +383,24 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         getStubMenu().injectWindowMenuRequest(databaseDescriptor1);
         
         Assert.assertTrue(getStubMenu().isViewMenuBuilt());
+    }
+    
+    @Test
+    public void helpMenuIsRebuiltWhenAppPluginLoaded() throws PluginException {
+        final String dummyAppName = "Dummy App";
+        Assert.assertEquals(dummyAppName, getPluginManager().getApplicationPlugin().getName());
+        Assert.assertEquals("", getStubMenu().getHelpMenuApplicationName());
+        getAppDetails().setApplicationName(dummyAppName);
+        
+        startMediator();
+        
+        // The Kludge in the MenuPluginLoadedObserver means that
+        // the app name (if set) will be stashed in the menu
+        // as early as possible. Otherwise, this would be ""
+        Assert.assertEquals(dummyAppName, getStubMenu().getHelpMenuApplicationName());
+        
+        getPluginManager().loadPlugins("not important");
+        
+        Assert.assertEquals(dummyAppName, getStubMenu().getHelpMenuApplicationName());
     }
 }
