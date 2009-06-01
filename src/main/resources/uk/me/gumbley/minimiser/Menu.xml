@@ -118,11 +118,13 @@
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="accessFactory" />
 		<constructor-arg ref="cursorManager" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 	<bean id="menuALFileOpen" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileOpenActionListener">
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="cursorManager" />
 		<constructor-arg ref="opener" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 	<bean id="menuALFileClose" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseActionListener">
 		<constructor-arg ref="openDatabaseList" />

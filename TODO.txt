@@ -23,9 +23,6 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
- 
-* Help / About Minimiser - menu text needs changing to contain the
-  application name.
 * plugins should publish their metadata to a plugin registry, that
   is accessed from the jdbctemplatefactory amongst others e.g.
   dummyapppluginmanager. the plugin event thats fired when the

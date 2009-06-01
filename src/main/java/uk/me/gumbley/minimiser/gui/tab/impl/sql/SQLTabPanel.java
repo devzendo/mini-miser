@@ -3,18 +3,20 @@ package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.common.AppName;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEvent;
 import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEventError;
 import uk.me.gumbley.minimiser.gui.console.input.TextAreaInputConsole;
 import uk.me.gumbley.minimiser.gui.console.output.TextAreaOutputConsole;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.tabledisplay.TableDisplay;
 
 /**
@@ -29,16 +31,18 @@ import uk.me.gumbley.minimiser.tabledisplay.TableDisplay;
 public final class SQLTabPanel extends JPanel {
     private final DatabaseDescriptor databaseDescriptor;
     private final CursorManager cursorManager;
-    private TextAreaOutputConsole outputConsole;
-    private CommandProcessor commandProcessor; 
-    private TextAreaInputConsole inputConsole;
+    private final TextAreaOutputConsole outputConsole;
+    private final CommandProcessor commandProcessor; 
+    private final TextAreaInputConsole inputConsole;
 
     /**
      * Construct the SQL Tab main panel
      * @param descriptor the database descriptor
      * @param cursor the cursor manager
+     * @param appDetails the application name and version
      */
-    public SQLTabPanel(final DatabaseDescriptor descriptor, final CursorManager cursor) {
+    public SQLTabPanel(final DatabaseDescriptor descriptor,
+            final CursorManager cursor, final AppDetails appDetails) {
         super();
         databaseDescriptor = descriptor;
         cursorManager = cursor;
@@ -71,7 +75,9 @@ public final class SQLTabPanel extends JPanel {
         commandHandlers.add(new SQLCommandHandler(outputConsole, databaseDescriptor, consoleTableDisplay, tableTableDisplay));
         commandProcessor = new CommandProcessor(outputConsole, commandHandlers);
         
-        outputConsole.info("This is a diagnostic facility for " + AppName.getAppName() + " internals and for working on H2 databases via SQL.");
+        outputConsole.info("This is a diagnostic facility for "
+            + appDetails.getApplicationName()
+            + " internals and for working on H2 databases via SQL.");
         for (final CommandHandler handler : commandHandlers) {
             for (final String text : handler.getIntroText()) {
                 outputConsole.info(text);
@@ -96,6 +102,7 @@ public final class SQLTabPanel extends JPanel {
                     return null;
                 }
                 
+                @Override
                 public void finished() {
                     cursorManager.normal(SQLTabPanel.this.getClass().getSimpleName());
                 }
@@ -140,6 +147,7 @@ public final class SQLTabPanel extends JPanel {
                     return null;
                 }
                 
+                @Override
                 public void finished() {
                     cursorManager.normal(SQLTabPanel.this.getClass().getSimpleName());
                 }

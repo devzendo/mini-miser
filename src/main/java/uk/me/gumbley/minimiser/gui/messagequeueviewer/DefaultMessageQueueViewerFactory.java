@@ -1,10 +1,13 @@
 package uk.me.gumbley.minimiser.gui.messagequeueviewer;
 
 import java.awt.Frame;
+
 import javax.swing.SwingUtilities;
+
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.StatusBar;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * The factory for Swing-based MessageQueueViewers
@@ -13,7 +16,8 @@ import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
  */
 public final class DefaultMessageQueueViewerFactory extends 
         AbstractMessageQueueViewerFactory {
-    private final CursorManager cursorManager;
+    private final CursorManager mCursorManager;
+    private final AppDetails mAppDetails;
 
     /**
      * Pass the status bar on to the abstract base class for factories
@@ -21,11 +25,16 @@ public final class DefaultMessageQueueViewerFactory extends
      * @param main the main application frame
      * @param queue the message queue
      * @param cursor the cursor manager
+     * @param appDetails the application name and version
      */
-    public DefaultMessageQueueViewerFactory(final StatusBar bar, final Frame main,
-            final MessageQueue queue, final CursorManager cursor) {
+    public DefaultMessageQueueViewerFactory(final StatusBar bar,
+            final Frame main,
+            final MessageQueue queue,
+            final CursorManager cursor,
+            final AppDetails appDetails) {
         super(bar, main, queue);
-        this.cursorManager = cursor;
+        mCursorManager = cursor;
+        mAppDetails = appDetails;
     }
 
     /**
@@ -35,10 +44,13 @@ public final class DefaultMessageQueueViewerFactory extends
         assert SwingUtilities.isEventDispatchThread();
         
         messageViewerCreated();
-        cursorManager.hourglass(this.getClass().getSimpleName());
+        mCursorManager.hourglass(this.getClass().getSimpleName());
         // TODO inject MessageRendererFactory
-        final DefaultMessageQueueViewer messageQueueViewer = new DefaultMessageQueueViewer(this, new MessageRendererFactory());
-        cursorManager.normal(this.getClass().getSimpleName());
+        final DefaultMessageQueueViewer messageQueueViewer =
+            new DefaultMessageQueueViewer(this, 
+                new MessageRendererFactory(),
+                mAppDetails);
+        mCursorManager.normal(this.getClass().getSimpleName());
         return messageQueueViewer;
     }
 }

@@ -14,6 +14,7 @@ import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardC
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardIntroPage;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * Triggers the start of the wizard from the File/Open menu.
@@ -22,23 +23,27 @@ import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
  *
  */
 public final class FileOpenActionListener extends SnailActionListener {
-    private final OpenDatabaseList databaseList;
-    private final CursorManager cursor;
-    private final Opener dbOpener;
+    private final OpenDatabaseList mOpenDatabaseList;
+    private final CursorManager mCursorManager;
+    private final Opener mOpener;
+    private final AppDetails mAppDetails;
 
     /**
      * Construct the listener
      * @param openDatabaseList the open database list singleton
      * @param cursorManager the cursor manager
      * @param opener the database opener
+     * @param appDetails the application name and version
      */
     public FileOpenActionListener(final OpenDatabaseList openDatabaseList,
             final CursorManager cursorManager,
-            final Opener opener) {
+            final Opener opener,
+            final AppDetails appDetails) {
         super(cursorManager);
-        this.databaseList = openDatabaseList;
-        this.cursor = cursorManager;
-        this.dbOpener = opener;
+        mOpenDatabaseList = openDatabaseList;
+        mCursorManager = cursorManager;
+        mOpener = opener;
+        mAppDetails = appDetails;
     }
 
     /**
@@ -47,8 +52,8 @@ public final class FileOpenActionListener extends SnailActionListener {
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
         final WizardPage[] wizardPages = new WizardPage[] {
-                new FileOpenWizardIntroPage(),
-                new FileOpenWizardChooseFolderPage(databaseList),
+                new FileOpenWizardIntroPage(mAppDetails),
+                new FileOpenWizardChooseFolderPage(mOpenDatabaseList),
         };
         final WizardResultProducer producer = new WizardResultProducer() {
             @SuppressWarnings("unchecked")
@@ -58,7 +63,7 @@ public final class FileOpenActionListener extends SnailActionListener {
 
             @SuppressWarnings("unchecked")
             public Object finish(final Map settings) throws WizardException {
-                return new FileOpenResult(cursor, dbOpener);
+                return new FileOpenResult(mCursorManager, mOpener);
             }
         };
         final Wizard wizard = WizardPage.createWizard(wizardPages, producer);

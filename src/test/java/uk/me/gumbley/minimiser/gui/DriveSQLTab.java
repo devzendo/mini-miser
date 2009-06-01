@@ -64,7 +64,11 @@ public final class DriveSQLTab {
                 databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDatabase);
                 LOGGER.info("Database open");
                 
-                final SQLTab sqlTab = new SQLTab(databaseDescriptor, cursorManager);
+                final AppDetails appDetails = new AppDetails();
+                appDetails.setApplicationName("Test App");
+                appDetails.setApplicationVersion("0.1.0");
+                
+                final SQLTab sqlTab = new SQLTab(databaseDescriptor, cursorManager, appDetails);
                 sqlTab.initComponent();
                 frame.add(sqlTab.getComponent());
                 

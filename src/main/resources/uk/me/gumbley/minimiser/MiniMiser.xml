@@ -45,6 +45,7 @@
 		<constructor-arg ref="mainFrame" />
 		<constructor-arg ref="messageQueue" />
 		<constructor-arg ref="cursorManager" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 	
 	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" >
@@ -77,6 +78,7 @@
 	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTab" >
 		<constructor-arg ref="databaseDescriptor" />
 		<constructor-arg ref="cursorManager" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 
 	<bean id="tabCATEGORIES" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >
@@ -339,6 +341,7 @@
 	<bean id="queueUpdateAvailableFlagSettingMessageListener" class="uk.me.gumbley.minimiser.upgradedetector.QueueUpdateAvailableFlagSettingMessageListener">
 		<constructor-arg ref="prefs" />
 		<constructor-arg ref="messageQueue" />
+		<constructor-arg ref="appDetails" />
 	</bean>
 
     <!-- update checker -->

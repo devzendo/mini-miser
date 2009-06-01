@@ -132,8 +132,11 @@ public final class DriveStatusBarDisplay {
         final CursorManager cursorManager = new CursorManager();
         cursorManager.setMainFrame(frame);
         
+        final AppDetails appDetails = new AppDetails();
+        appDetails.setApplicationName("Test App");
+        appDetails.setApplicationVersion("0.1.0");
         messageQueueViewerFactory = new DefaultMessageQueueViewerFactory(mainFrameStatusBar,
-            frame, messageQueue, cursorManager);
+            frame, messageQueue, cursorManager, appDetails);
         
         frame.pack();
         frame.setVisible(true);

@@ -3,12 +3,14 @@ package uk.me.gumbley.minimiser.upgradedetector;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueEvent;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueModifiedEvent;
 import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -34,7 +36,10 @@ public final class TestQueueUpdateAvailableFlagSettingMessageListener {
         messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(prefs));
         recorder = new MessageQueueModifiedRecorder();
         messageQueue.addMessageQueueEventObserver(recorder);
-        listener = new QueueUpdateAvailableFlagSettingMessageListener(prefs, messageQueue);
+        final AppDetails appDetails = new AppDetails();
+        appDetails.setApplicationName("Test App");
+        appDetails.setApplicationVersion("0.1.0");
+        listener = new QueueUpdateAvailableFlagSettingMessageListener(prefs, messageQueue, appDetails);
     }
     
     private class MessageQueueModifiedRecorder implements Observer<MessageQueueEvent> {

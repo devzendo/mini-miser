@@ -10,16 +10,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import org.apache.log4j.Logger;
-import uk.me.gumbley.minimiser.common.AppName;
+
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
+import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 
 /**
  * A Swing-based MessageQueueViewer.
@@ -31,8 +34,8 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
 
     private static final Logger LOGGER = Logger
             .getLogger(DefaultMessageQueueViewer.class);
-    private JDialog dialog;
-    private MessageQueue messageQueue;
+    private final JDialog dialog;
+    private final MessageQueue messageQueue;
     private HTMLPanel messageSubjectPane;
     private HTMLPanel noMessagesTextPane;
     private JButton previousButton;
@@ -50,9 +53,11 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
      * Create the DefaultMessageQueueViewer given its factory.
      * @param factory this viewer's factory
      * @param rendererFactory the message renderer factory
+     * @param AppDetails the application name and version
      */
     public DefaultMessageQueueViewer(final MessageQueueViewerFactory factory,
-            final MessageRendererFactory rendererFactory) {
+            final MessageRendererFactory rendererFactory,
+            final AppDetails appDetails) {
         super(factory);
         this.messageRendererFactory = rendererFactory;
         final Frame mainFrame = getMessageQueueViewerFactory().getMainFrame();
@@ -62,7 +67,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         dialog.setPreferredSize(new Dimension(mainFrame.getWidth() - 40, 200));
         // TODO I'd like it moved so it's bottom edge is just above the
         // status bar, and centred within the main app frame
-        dialog.setTitle("Messages from " + AppName.getAppName());
+        dialog.setTitle("Messages from " + appDetails.getApplicationName());
         
         initialiseNoMessagesTextPane();
         initialiseEmptyControlsPane();
@@ -70,6 +75,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         dialog.add(mainPanel);
         
         dialog.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(final WindowEvent e) {
                 getMessageQueueViewerFactory().messageViewerClosed();
             }
