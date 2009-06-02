@@ -3,8 +3,11 @@ package uk.me.gumbley.minimiser.gui.dialog.toolsoptions;
 import java.awt.Container;
 import java.awt.Frame;
 import java.util.List;
+
 import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.minimiser.gui.CursorManager;
@@ -102,6 +105,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
                 return toolsOptionsTabFactory.loadTabs(ccp);
             }
             
+            @Override
             @SuppressWarnings("unchecked")
             public void finished() {
                final List<ToolsOptionsTab> loadedTabs = (List<ToolsOptionsTab>) get();
@@ -119,7 +123,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
                 return null;
             }
             
-            @SuppressWarnings("unchecked")
+            @Override
             public void finished() {
                 toolsOptionsDialogPanel.enableButtons();
             }
