@@ -1,11 +1,12 @@
 package uk.me.gumbley.minimiser.gui.dialog.toolsoptions;
 
 import java.util.List;
+
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * The factory for creating one, or a list of Tools->Options dialog tabs given
- * a change-collecting Prefs.
+ * a (change-collecting) Prefs.
  * 
  * @author matt
  *
