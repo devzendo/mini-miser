@@ -1,7 +1,5 @@
 package uk.me.gumbley.minimiser.prefs;
 
-import java.util.HashMap;
-import java.util.Map;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
@@ -14,35 +12,32 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
  * Prefs.
  * <p>
  * Note that only those areas of the Prefs that are currently modifiable by the
- * Tools->Options dialog are currently collected. All other calls will result
- * in an UnsupportedOperationException.
+ * Tools->Options dialog are currently collected. All other calls will result in
+ * an UnsupportedOperationException.
  * <p>
  * This class does not allow maintenance of ChangeListeners either.
- *  
+ * 
  * @author matt
- *
+ * 
  */
 public final class ChangeCollectingPrefs implements Prefs {
-    private final Prefs prefs; // the decorated Prefs
-    private final Map<String, Boolean> hiddenTabs;
-    private final Map<String, Boolean> readHiddenTabs;
-    
+    private final TabHidingStateChangeCollector mTabHidingStateChangeCollector;
 
     /**
      * Construct a ChangeCollectingPrefs that's backed by a real Prefs
-     * @param realPrefs the real Prefs that'll be updated when commit() is
-     * called.
+     * 
+     * @param realPrefs
+     *        the real Prefs that'll be updated when commit() is called.
      */
     public ChangeCollectingPrefs(final Prefs realPrefs) {
-        prefs = realPrefs;
-        hiddenTabs = new HashMap<String, Boolean>();
-        readHiddenTabs = new HashMap<String, Boolean>();
+        mTabHidingStateChangeCollector = new TabHidingStateChangeCollector(realPrefs);
     }
 
     private void unsupported(final String methodName) {
-        throw new UnsupportedOperationException(methodName + " is not supported");
+        throw new UnsupportedOperationException(methodName
+                + " is not supported");
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -56,6 +51,7 @@ public final class ChangeCollectingPrefs implements Prefs {
     public void clearLastActiveFile() {
         unsupported("clearLastActiveFile");
     }
+
     /**
      * {@inheritDoc}
      */
@@ -111,7 +107,7 @@ public final class ChangeCollectingPrefs implements Prefs {
         unsupported("getWizardPanelSize");
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -173,48 +169,28 @@ public final class ChangeCollectingPrefs implements Prefs {
      * {@inheritDoc}
      */
     public void setTabHidden(final String tabName) {
-        if (readHiddenTabs.containsKey(tabName)) {
-            hiddenTabs.put(tabName, Boolean.TRUE);
-        } else {
-            throw new IllegalStateException("Hidden state of tab " + tabName + " has not been read");
-        }
-    }    
-    
+        mTabHidingStateChangeCollector.setTabHidden(tabName);
+    }
+
     /**
      * {@inheritDoc}
      */
     public void clearTabHidden(final String tabName) {
-        if (readHiddenTabs.containsKey(tabName)) {
-            hiddenTabs.put(tabName, Boolean.FALSE);
-        } else {
-            throw new IllegalStateException("Hidden state of tab " + tabName + " has not been read");
-        }
+        mTabHidingStateChangeCollector.clearTabHidden(tabName);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public boolean isTabHidden(final String tabName) {
-        final Boolean hidden = prefs.isTabHidden(tabName);
-        readHiddenTabs.put(tabName, hidden);
-        return hidden;
+        return mTabHidingStateChangeCollector.isTabHidden(tabName);
     }
 
     /**
      * Commit any changes to the underlying Prefs
      */
     public void commit() {
-        for (final String tabName : readHiddenTabs.keySet()) {
-            final Boolean originalHidden = readHiddenTabs.get(tabName);
-            final Boolean hidden = hiddenTabs.get(tabName);
-            if (hidden != originalHidden) {
-                if (hidden) {
-                    prefs.setTabHidden(tabName);
-                } else {
-                    prefs.clearTabHidden(tabName);
-                }
-            }
-        }
+        mTabHidingStateChangeCollector.commit();
     }
 
     /**
@@ -287,7 +263,8 @@ public final class ChangeCollectingPrefs implements Prefs {
     /**
      * {@inheritDoc}
      */
-    public void setDateOfLastUpdateAvailableCheck(final String ukFormatDateString) {
+    public void setDateOfLastUpdateAvailableCheck(
+            final String ukFormatDateString) {
         unsupported("setDateOfLastUpdateAvailableCheck");
     }
 

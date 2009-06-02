@@ -3,14 +3,6 @@ MiniMiser - a simple embedded database client framework
 Current outstanding small tasks:
 
 BUGS:
-* if sql view is enabled, and you go into tools options, and do
-  nothing, just close that dialog, you get:
-  Exception in thread "ToolsOptions OK Worker" java.lang.NullPointerException
-	at uk.me.gumbley.minimiser.prefs.ChangeCollectingPrefs.commit(ChangeCollectingPrefs.java:211)
-	at uk.me.gumbley.minimiser.gui.dialog.toolsoptions.ToolsOptionsDialog$1.construct(ToolsOptionsDialog.java:72)
-	at uk.me.gumbley.commoncode.gui.SwingWorker$2.run(SwingWorker.java:118)
-	at java.lang.Thread.run(Thread.java:613)
-  
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
 * sometimes on startup the hourglass sticks - happened soon after adding

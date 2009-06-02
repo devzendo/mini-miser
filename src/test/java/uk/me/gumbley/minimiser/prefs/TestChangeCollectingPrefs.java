@@ -176,6 +176,24 @@ public final class TestChangeCollectingPrefs {
     /**
      * 
      */
+    @Test
+    public void makingNoChangeToAlreadyHiddenTabAfterPriorReadCausesNoChange() {
+        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
+        EasyMock.replay(mockPrefs);
+        
+        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+
+        // The data has to be read through ccp first to create its initial setting
+        ccp.isTabHidden("SQL");
+        
+        // Now don't make any changes
+        ccp.commit();
+        EasyMock.verify(mockPrefs);
+    }
+    /**
+     * 
+     */
     @Test(expected = UnsupportedOperationException.class)
     public void changingPrefsOptionThatsNotUsedByToolsOptionsThrows() {
         final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
