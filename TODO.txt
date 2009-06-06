@@ -3,6 +3,9 @@ MiniMiser - a simple embedded database client framework
 Current outstanding small tasks:
 
 BUGS:
+* triggering an update check causes an NPE (that's correctly
+  reported using the problem reporter). Closing the problem
+  reprter, the status bar still says checking for updates. 
 * if you have a db open in the previous list, and open a second instance,
   you get a nasty 'open in another process' dialog.
 * sometimes on startup the hourglass sticks - happened soon after adding
@@ -15,6 +18,9 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
+* add a maintitleinitialisinglifecycle that gets added after the 
+pluginmanagerinitilisinglifecycle, to attach itself to the
+pluginmanager, and init the main title.
 * plugins should publish their metadata to a plugin registry, that
   is accessed from the jdbctemplatefactory amongst others e.g.
   dummyapppluginmanager. the plugin event thats fired when the
@@ -23,6 +29,10 @@ CURRENT TASKS:
 * app plugin should have an email address or web page to which
   reports can be sent - for the problem reporter's dialog, rather
   than the @gumbley.me.uk one. 
+* app plugin should have a copyright text for the about dialog
+* plugins need a schema version - add to PluginInitialiser's
+  construction of PluginDescriptors
+  also - email address
 * testing the change log transformer
 * add a test that parses all of the resource-based changelog.
 * make the about / what's new dialog show the transformed resource-
@@ -33,6 +43,9 @@ CURRENT TASKS:
 * sql table view would benefit from the stript list renderer
   
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
+* The message viewer looks pants on the Mac.
+* Remove the message queue viewer red-phase-change - or don't do
+  it on the Mac since it has no effect there.
 * Mac - new file - file chooser doesn't allow creation of folders!
 * Mac - Apple Q doesn't use the mainFrameCloseActionListener and
   doesn't prompt for closing open DBs

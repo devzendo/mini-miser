@@ -49,5 +49,7 @@ public final class TestAppDetailsPropertiesLoader extends LoggingTestCase {
         // resources via m2eclipse - it slows the build down, and
         // in the version of the plugin I'm using, Just Doesn't
         // Work.
+        
+        // It /does/ work, with the latest version of the plugin.
     }
 }

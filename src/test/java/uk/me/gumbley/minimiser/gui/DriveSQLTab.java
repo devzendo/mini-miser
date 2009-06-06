@@ -18,9 +18,10 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 
 /**
@@ -45,7 +46,7 @@ public final class DriveSQLTab {
 
             public void run() {
                 LOGGER.info("SQL Tab experimentation starting...");
-                Beautifier.makeBeautiful(new AppDetails());
+                Beautifier.makeBeautiful();
                 
                 final JFrame frame = new JFrame("title");
                 frame.setLayout(new BorderLayout());
@@ -64,11 +65,8 @@ public final class DriveSQLTab {
                 databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDatabase);
                 LOGGER.info("Database open");
                 
-                final AppDetails appDetails = new AppDetails();
-                appDetails.setApplicationName("Test App");
-                appDetails.setApplicationVersion("0.1.0");
-                
-                final SQLTab sqlTab = new SQLTab(databaseDescriptor, cursorManager, appDetails);
+                final PluginRegistry pluginRegistry = new DummyAppPluginRegistry();
+                final SQLTab sqlTab = new SQLTab(databaseDescriptor, cursorManager, pluginRegistry);
                 sqlTab.initComponent();
                 frame.add(sqlTab.getComponent());
                 

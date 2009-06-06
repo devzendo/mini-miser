@@ -26,10 +26,10 @@ import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import uk.me.gumbley.minimiser.messagequeue.SimpleDSTAMessage;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
 import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
-
 
 /**
  * @author matt
@@ -132,11 +132,9 @@ public final class DriveStatusBarDisplay {
         final CursorManager cursorManager = new CursorManager();
         cursorManager.setMainFrame(frame);
         
-        final AppDetails appDetails = new AppDetails();
-        appDetails.setApplicationName("Test App");
-        appDetails.setApplicationVersion("0.1.0");
+        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry();
         messageQueueViewerFactory = new DefaultMessageQueueViewerFactory(mainFrameStatusBar,
-            frame, messageQueue, cursorManager, appDetails);
+            frame, messageQueue, cursorManager, pluginRegistry);
         
         frame.pack();
         frame.setVisible(true);
@@ -171,7 +169,7 @@ public final class DriveStatusBarDisplay {
 
             public void run() {
                 LOGGER.info("Message queue display experimentation starting...");
-                Beautifier.makeBeautiful(new AppDetails());
+                Beautifier.makeBeautiful();
                 new DriveStatusBarDisplay();
             }
         });

@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * A Swing-based MessageQueueViewer.
@@ -53,11 +53,11 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
      * Create the DefaultMessageQueueViewer given its factory.
      * @param factory this viewer's factory
      * @param rendererFactory the message renderer factory
-     * @param AppDetails the application name and version
+     * @param PluginRegistry the plugin registry
      */
     public DefaultMessageQueueViewer(final MessageQueueViewerFactory factory,
             final MessageRendererFactory rendererFactory,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         super(factory);
         this.messageRendererFactory = rendererFactory;
         final Frame mainFrame = getMessageQueueViewerFactory().getMainFrame();
@@ -67,7 +67,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         dialog.setPreferredSize(new Dimension(mainFrame.getWidth() - 40, 200));
         // TODO I'd like it moved so it's bottom edge is just above the
         // status bar, and centred within the main app frame
-        dialog.setTitle("Messages from " + appDetails.getApplicationName());
+        dialog.setTitle("Messages from " + pluginRegistry.getApplicationName());
         
         initialiseNoMessagesTextPane();
         initialiseEmptyControlsPane();

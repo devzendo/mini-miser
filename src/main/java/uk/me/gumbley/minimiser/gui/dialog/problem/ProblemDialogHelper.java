@@ -3,7 +3,7 @@ package uk.me.gumbley.minimiser.gui.dialog.problem;
 import java.awt.Frame;
 
 import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -14,7 +14,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  */
 public final class ProblemDialogHelper {
     private static Frame parentFrame;
-    private static AppDetails appDetails;
+    private static PluginRegistry pluginRegistry;
 
     /**
      * 
@@ -43,7 +43,7 @@ public final class ProblemDialogHelper {
         final Thread callingThread = Thread.currentThread();
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
-                final ProblemDialog dialog = new ProblemDialog(parentFrame, whileDoing, exception, callingThread, appDetails);
+                final ProblemDialog dialog = new ProblemDialog(parentFrame, whileDoing, exception, callingThread, pluginRegistry);
                 dialog.pack();
                 dialog.setLocationRelativeTo(parentFrame);
                 dialog.setVisible(true);
@@ -59,6 +59,6 @@ public final class ProblemDialogHelper {
      */
     public static void initialise(final SpringLoader springLoader) {
         parentFrame = springLoader.getBean("mainFrame", Frame.class);
-        appDetails = springLoader.getBean("appDetails", AppDetails.class);
+        pluginRegistry = springLoader.getBean("pluginRegistry", PluginRegistry.class);
     }
 }

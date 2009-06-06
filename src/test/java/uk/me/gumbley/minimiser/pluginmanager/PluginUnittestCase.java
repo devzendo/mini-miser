@@ -24,7 +24,7 @@ public abstract class PluginUnittestCase extends SpringLoaderUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(PluginUnittestCase.class);
     private PluginInitialiser mPluginInitialiser;
-    private AppDetails mAppDetails;
+    private PluginRegistry mPluginRegistry;
     
     /**
      * Initialise the plugins declared in the @PluginUnderTest
@@ -32,8 +32,8 @@ public abstract class PluginUnittestCase extends SpringLoaderUnittestCase {
      */
     @Before
     public final void initialisePlugins() {
-        mAppDetails = new AppDetails();
-        mPluginInitialiser = new PluginInitialiser(getSpringLoader(), mAppDetails);
+        mPluginRegistry = new DefaultPluginRegistry();
+        mPluginInitialiser = new PluginInitialiser(getSpringLoader(), mPluginRegistry);
         final List<String> pluginList = findPluginsFromAnnotations();
         
         if (pluginList.size() == 0) {

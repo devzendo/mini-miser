@@ -14,20 +14,26 @@ import org.junit.Test;
  *
  */
 public final class TestPluginRegistry {
-    private DefaultPluginRegistryImpl mPluginRegistry;
+    private DefaultPluginRegistry mPluginRegistry;
     private PluginDescriptor mAppPluginDescriptor;
     private PluginDescriptor mNormalPluginDescriptor;
+    private PluginDescriptor mBadAppPluginDescriptor;
+    private PluginDescriptor mNullDetailsAppPluginDescriptor;
     
     /**
      * 
      */
     @Before
     public void getPrerequisites() {
-        mPluginRegistry = new DefaultPluginRegistryImpl();
-        mAppPluginDescriptor = PluginDescriptor.createApplicationPluginDescriptor(
+        mPluginRegistry = new DefaultPluginRegistry();
+        mAppPluginDescriptor = new PluginDescriptor(true, 
             "App Name", "1.0.0", "3.4", "http://localhost", "developers@appplugin.com");
-        mNormalPluginDescriptor = PluginDescriptor.createPluginDescriptor(
+        mNormalPluginDescriptor = new PluginDescriptor(false,
             "Plugin Name", "0.1.0", "4.5", "http://theirhost", "developers@plugin.co.uk");
+        mBadAppPluginDescriptor = new PluginDescriptor(true,
+            "", "", "3.4", "http://localhost", "developers@appplugin.com"); // no name or version
+        mNullDetailsAppPluginDescriptor = new PluginDescriptor(true,
+            null, null, "3.4", "http://localhost", "developers@appplugin.com"); // no name or version
     }
 
     /**
@@ -36,6 +42,8 @@ public final class TestPluginRegistry {
     @Test
     public void validatePluginDescriptors() {
         Assert.assertTrue(mAppPluginDescriptor.isApplication());
+        Assert.assertTrue(mBadAppPluginDescriptor.isApplication());
+        Assert.assertTrue(mNullDetailsAppPluginDescriptor.isApplication());
         Assert.assertFalse(mNormalPluginDescriptor.isApplication());
     }
 
@@ -46,6 +54,28 @@ public final class TestPluginRegistry {
     public void emptiness() {
         Assert.assertNull(mPluginRegistry.getApplicationPluginDescriptor());
         Assert.assertEquals(Collections.EMPTY_LIST, mPluginRegistry.getPluginDescriptors());
+        Assert.assertEquals("<Unknown Application>", mPluginRegistry.getApplicationName());
+        Assert.assertEquals("<Unknown Version>", mPluginRegistry.getApplicationVersion());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void addNoNameOrVersionAppPluginYieldsUnknown() {
+        mPluginRegistry.addPluginDescriptor(mBadAppPluginDescriptor);
+        Assert.assertEquals("<Unknown Application>", mPluginRegistry.getApplicationName());
+        Assert.assertEquals("<Unknown Version>", mPluginRegistry.getApplicationVersion());
+    }
+
+    /**
+     * 
+     */
+    @Test
+    public void addNullNameOrVersionAppPluginYieldsUnknown() {
+        mPluginRegistry.addPluginDescriptor(mNullDetailsAppPluginDescriptor);
+        Assert.assertEquals("<Unknown Application>", mPluginRegistry.getApplicationName());
+        Assert.assertEquals("<Unknown Version>", mPluginRegistry.getApplicationVersion());
     }
 
     /**
@@ -60,6 +90,15 @@ public final class TestPluginRegistry {
         Assert.assertSame(mAppPluginDescriptor, pluginDescriptors.get(0));
     }
     
+    /**
+     * 
+     */
+    @Test(expected = IllegalStateException.class)
+    public void multipleApplicationsAreBadForYou() {
+        mPluginRegistry.addPluginDescriptor(mAppPluginDescriptor);
+        mPluginRegistry.addPluginDescriptor(mBadAppPluginDescriptor);
+    }
+
     /**
      * 
      */

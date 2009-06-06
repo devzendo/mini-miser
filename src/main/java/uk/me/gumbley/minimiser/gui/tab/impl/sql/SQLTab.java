@@ -7,7 +7,7 @@ import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageHelper;
 import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import uk.me.gumbley.minimiser.gui.tab.Tab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * A developer-friendly (and moderately user-friendly, if you know SQL) SQL
@@ -21,21 +21,21 @@ import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 public final class SQLTab implements Tab {
     private final DatabaseDescriptor mDatabaseDescriptor;
     private final CursorManager mCursorManager;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
     private volatile SQLTabPanel mainPanel;
 
     /**
      * Construct the SQL tab
      * @param descriptor the database descriptor
      * @param cursor the cursor manager
-     * @param appDetails the application name and version
+     * @param pluginRegistry the plugin registry
      */
     public SQLTab(final DatabaseDescriptor descriptor,
             final CursorManager cursor,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         mDatabaseDescriptor = descriptor;
         mCursorManager = cursor;
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
     }
 
     /**
@@ -49,7 +49,7 @@ public final class SQLTab implements Tab {
      * {@inheritDoc}
      */
     public void initComponent() {
-        mainPanel = new SQLTabPanel(mDatabaseDescriptor, mCursorManager, mAppDetails);
+        mainPanel = new SQLTabPanel(mDatabaseDescriptor, mCursorManager, mPluginRegistry);
         
         DSTAMessageHelper.possiblyShowMessage(DSTAMessageId.SQL_TAB_INTRO, 
             "The SQL view is intended to aid developers in diagnosing\n"

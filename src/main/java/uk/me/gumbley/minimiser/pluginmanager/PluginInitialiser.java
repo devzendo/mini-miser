@@ -22,19 +22,19 @@ public final class PluginInitialiser {
     private final List<Plugin> mPlugins = new ArrayList<Plugin>();
     private ApplicationPlugin mApplicationPlugin;
     private final SpringLoader mSpringLoader;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * Construct a PluginInitialiser that will pass the
      * SpringLoader to loaded plugins
      * 
      * @param springLoader the SpringLoader
-     * @param appDetails the application details bean
+     * @param pluginRegistry the plugin registry 
      */
     public PluginInitialiser(final SpringLoader springLoader,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         mSpringLoader = springLoader;
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
     }
     
 
@@ -71,14 +71,23 @@ public final class PluginInitialiser {
             throw new PluginException(warning);
         }
 
-        // Store the application plugin's details in the
-        // AppDetails bean, from where the rest of the system
-        // (mostly code that was written before the plugin system)
+        // Store the plugins' details in the
+        // PluginRegistry, from where the rest of the system
         // can obtain it.
-        // TODO replace all use of AppDetails with direct calls
-        // to the plugin system.
-        mAppDetails.setApplicationName(mApplicationPlugin.getName());
-        mAppDetails.setApplicationVersion(mApplicationPlugin.getVersion());
+        for (Plugin plugin : mPlugins) {
+            final PluginDescriptor pluginDescriptor = getDescriptorFromPlugin(plugin);
+            mPluginRegistry.addPluginDescriptor(pluginDescriptor);
+        }
+    }
+
+    private PluginDescriptor getDescriptorFromPlugin(final Plugin plugin) {
+        return new PluginDescriptor(
+            plugin instanceof ApplicationPlugin, 
+            plugin.getName(),
+            plugin.getVersion(),
+            "1", /*plugin.getSchemaVersion(),*/ // TODO plugins need a schema version
+            plugin.getUpdateSiteBaseURL(),
+            "bob@aol.com"); //plugin.getDevelopersEmailAddress(), // TODO
     }
 
     /**

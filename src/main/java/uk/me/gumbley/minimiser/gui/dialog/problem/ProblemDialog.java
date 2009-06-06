@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * A modal dialog that displays the detail of a problem.
@@ -25,7 +25,7 @@ public final class ProblemDialog extends JDialog implements
     private static final long serialVersionUID = -5625177120250936170L;
     private final JOptionPane optionPane;
     private final String btnString1 = "Continue";
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * Creates the reusable dialog.
@@ -35,15 +35,15 @@ public final class ProblemDialog extends JDialog implements
      * @param exception any Exception that occurred, or null if the
      * problem isn't due to an exception.
      * @param caller the calling Thread
-     * @param appDetails the application details
+     * @param pluginRegistry the plugin registry
      */
     public ProblemDialog(final Frame parentFrame,
             final String whileDoing,
             final Exception exception,
             final Thread caller,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         super(parentFrame, true);
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
         setTitle("A problem has occurred");
         
         // Create an array of the text and components to be displayed.
@@ -59,9 +59,9 @@ public final class ProblemDialog extends JDialog implements
         final String problem = formExceptionMessageDescription(exception);
         msg.append(problem.toString());
 
-        detail.append(mAppDetails.getApplicationName());
+        detail.append(mPluginRegistry.getApplicationName());
         detail.append(" v");
-        detail.append(mAppDetails.getApplicationVersion());
+        detail.append(mPluginRegistry.getApplicationVersion());
         detail.append("\n\n");
         detail.append("Calling thread:\n  ");
         detail.append(caller);
@@ -153,7 +153,7 @@ public final class ProblemDialog extends JDialog implements
 
     private String getEmailAddress() {
         final StringBuilder mailaddr = new StringBuilder();
-        mailaddr.append(mAppDetails.getApplicationName());
+        mailaddr.append(mPluginRegistry.getApplicationName());
         mailaddr.append("-developers@gumbley.me.uk"); // TODO this should be a resource?
         return mailaddr.toString().toLowerCase();
     }

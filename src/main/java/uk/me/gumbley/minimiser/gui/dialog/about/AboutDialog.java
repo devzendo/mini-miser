@@ -25,7 +25,7 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * A modal About... dialog.
@@ -42,28 +42,29 @@ public final class AboutDialog extends JDialog implements
     private final ArrayList<SwingWorker> mWorkers;
     private final AWTEventListener awtEventListener;
     private final CursorManager mCursorManager;
-    private final AppDetails mAppDetails; 
+    private final PluginRegistry mPluginRegistry; 
 
     /**
      * Creates the reusable dialog.
      * @param parentFrame the parent frame
      * @param cursor the cursor manager
-     * @param appDetails the application details
+     * @param pluginRegistry the plugin registry
      */
     public AboutDialog(final Frame parentFrame,
             final CursorManager cursor,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         super(parentFrame, true);
         mCursorManager = cursor;
-        mAppDetails = appDetails;
-        setTitle("About " + mAppDetails.getApplicationName());
+        mPluginRegistry = pluginRegistry;
+        setTitle("About " + mPluginRegistry.getApplicationName());
         mWorkers = new ArrayList<SwingWorker>();
         
         // Create an array of the text and components to be displayed.
         final StringBuilder msg = new StringBuilder();
-        msg.append(mAppDetails.getApplicationName());
+        msg.append(mPluginRegistry.getApplicationName());
         msg.append(" v");
-        msg.append(mAppDetails.getApplicationVersion());
+        msg.append(mPluginRegistry.getApplicationVersion());
+        // TODO get copyright text from app plugin
         msg.append("\n(C) 2008 Matt Gumbley");
 
         final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -212,15 +213,15 @@ public final class AboutDialog extends JDialog implements
 
     /**
      * Create an About Dialog.
-     * @param appDetails the application details
+     * @param pluginRegistry the plugin registry
      * @param parentFrame the parent frame
      * @param cursor the cursor manager
      */
-    public static void showAbout(final AppDetails appDetails,
+    public static void showAbout(final PluginRegistry pluginRegistry,
             final Frame parentFrame, final CursorManager cursor) {
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             public void run() {
-                final AboutDialog dialog = new AboutDialog(parentFrame, cursor, appDetails);
+                final AboutDialog dialog = new AboutDialog(parentFrame, cursor, pluginRegistry);
                 dialog.pack();
                 dialog.setLocationRelativeTo(parentFrame);
                 dialog.setVisible(true);

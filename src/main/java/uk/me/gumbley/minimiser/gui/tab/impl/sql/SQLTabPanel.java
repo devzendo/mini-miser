@@ -16,7 +16,7 @@ import uk.me.gumbley.minimiser.gui.console.input.InputConsoleEventError;
 import uk.me.gumbley.minimiser.gui.console.input.TextAreaInputConsole;
 import uk.me.gumbley.minimiser.gui.console.output.TextAreaOutputConsole;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.tabledisplay.TableDisplay;
 
 /**
@@ -39,10 +39,10 @@ public final class SQLTabPanel extends JPanel {
      * Construct the SQL Tab main panel
      * @param descriptor the database descriptor
      * @param cursor the cursor manager
-     * @param appDetails the application name and version
+     * @param pluginRegistry the plugin registry
      */
     public SQLTabPanel(final DatabaseDescriptor descriptor,
-            final CursorManager cursor, final AppDetails appDetails) {
+            final CursorManager cursor, final PluginRegistry pluginRegistry) {
         super();
         databaseDescriptor = descriptor;
         cursorManager = cursor;
@@ -76,7 +76,7 @@ public final class SQLTabPanel extends JPanel {
         commandProcessor = new CommandProcessor(outputConsole, commandHandlers);
         
         outputConsole.info("This is a diagnostic facility for "
-            + appDetails.getApplicationName()
+            + pluginRegistry.getApplicationName()
             + " internals and for working on H2 databases via SQL.");
         for (final CommandHandler handler : commandHandlers) {
             for (final String text : handler.getIntroText()) {

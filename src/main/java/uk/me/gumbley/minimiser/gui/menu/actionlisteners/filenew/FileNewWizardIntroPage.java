@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import uk.me.gumbley.minimiser.gui.wizard.MiniMiserWizardPage;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * Tell the user about databases.
@@ -15,14 +15,14 @@ import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
  */
 public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
     private static final long serialVersionUID = 3743607043316984644L;
-    private static AppDetails gAppDetails; // Wizard needs it static :(
+    private static PluginRegistry gPluginRegistry; // Wizard needs it static :(
     
     /**
      * Create an intro page. 
-     * @param appDetails the application name and version
+     * @param pluginRegistry the plugin registry
      */
-    public FileNewWizardIntroPage(final AppDetails appDetails) {
-        FileNewWizardIntroPage.gAppDetails = appDetails;
+    public FileNewWizardIntroPage(final PluginRegistry pluginRegistry) {
+        FileNewWizardIntroPage.gPluginRegistry = pluginRegistry;
         initComponents();
     }
     
@@ -37,7 +37,7 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
     
     private String getText() {
         return
-              "You are about to create a new empty " + gAppDetails.getApplicationName() + " database.\n\n"
+              "You are about to create a new empty " + gPluginRegistry.getApplicationName() + " database.\n\n"
               
             + "Databases comprise several files that are kept together in their own folder.\n"
             + "Together, these files hold all of your account information.\n\n"
@@ -49,7 +49,7 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
             + "Once created, an empty database can be used immediately, or data from other\n"
             + "personal finance software can be imported into it.\n\n"
             
-            + "Databases can be optionally encrypted for security. " + gAppDetails.getApplicationName() + " uses AES-256\n"
+            + "Databases can be optionally encrypted for security. " + gPluginRegistry.getApplicationName() + " uses AES-256\n"
             + "(Advanced Encryption System) to ensure your information is secure.\n"
             + "If encrypted, the password must be supplied when opening the database.\n"
             + "Don't lose the password, as there is no way to retrieve it or break the encryption!\n\n\n"
@@ -63,6 +63,6 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
      * @return wizard page description for the LH area
      */
     public static String getDescription() {
-        return "About " + gAppDetails.getApplicationName() + " databases";
+        return "About " + gPluginRegistry.getApplicationName() + " databases";
     }
 }

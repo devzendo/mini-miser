@@ -14,7 +14,6 @@ import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.pluginmanager.AppDetailsPropertiesLoader;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
@@ -38,18 +37,18 @@ public final class MiniMiser {
         // nothing
     }
 
-    private static void initialisePrefs(final SpringLoader springLoader,
-            final AppDetails appDetails) {
+    private static void initialisePrefs(final SpringLoader springLoader) {
         final PrefsLocation prefsLocation = springLoader.getBean("prefsLocation", PrefsLocation.class);
         LOGGER.debug("Prefs directory is " + prefsLocation.getPrefsDir().getAbsolutePath());
         LOGGER.debug("Prefs file is " + prefsLocation.getPrefsFile().getAbsolutePath());
         if (!prefsLocation.prefsDirectoryExists()) {
-            LOGGER.info(String.format("Prefs directory %s does not exist - creating it", prefsLocation.getPrefsDir().getAbsolutePath()));
+            LOGGER.info(String.format("Prefs directory %s does not exist - creating it",
+                prefsLocation.getPrefsDir().getAbsolutePath()));
             if (!prefsLocation.createPrefsDirectory()) {
                 LOGGER.warn("Failed to create prefs directory");
                 GUIUtils.runOnEventThread(new Runnable() {
                     public void run() {
-                        showPrefsDirCreationFailureMessage(prefsLocation, appDetails);
+                        showPrefsDirCreationFailureMessage(prefsLocation);
                     }
                 });
             } else {
@@ -60,15 +59,13 @@ public final class MiniMiser {
         prefsFactory.setPrefs(prefsLocation.getPrefsFile().getAbsolutePath());
     }
 
-    private static void showPrefsDirCreationFailureMessage(final PrefsLocation prefsLocation,
-            final AppDetails appDetails) {
+    private static void showPrefsDirCreationFailureMessage(final PrefsLocation prefsLocation) {
         JOptionPane.showMessageDialog(null, 
             // NOTE user-centric message
             // I18N
-            String.format("%s could not create the '%s' folder, and cannot continue.\n"
+            String.format("The '%s' folder cannot be created - the application cannot continue.\n"
                 + "This folder would be used to remember your options and settings.\n\n"
                 + "Failure to create this folder may be be due to security permissions, or a full disk.",
-                appDetails.getApplicationName(),
                 prefsLocation.getPrefsDir().getAbsolutePath()),
             "Could not create settings folder",
             JOptionPane.ERROR_MESSAGE);
@@ -85,7 +82,10 @@ public final class MiniMiser {
         LOGGER.info("Framework starting...");
         final ArrayList<String> finalArgList = argList;
         final SpringLoader springLoader = initSpringLoader();
-        final AppDetails appDetails = initialiseAppDetails(springLoader);
+
+        // Not doing anything else with the framework name/version
+        // for now, just logging it.
+        new AppDetailsPropertiesLoader();
         
         //
         // Sun changed their recommendations and now recommends the UI be built
@@ -98,12 +98,12 @@ public final class MiniMiser {
         // So let's create it on the EDT anyway
         //
         ThreadCheckingRepaintManager.initialise();
-        initialisePrefs(springLoader, appDetails);
+        initialisePrefs(springLoader);
 
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 try {
-                    Beautifier.makeBeautiful(appDetails);
+                    Beautifier.makeBeautiful();
 
                     // Process command line
                     for (int i = 0; i < finalArgList.size(); i++) {
@@ -119,15 +119,7 @@ public final class MiniMiser {
 
         });
     }
-    
-    private static AppDetails initialiseAppDetails(final SpringLoader springLoader) {
-        final AppDetailsPropertiesLoader appDetailsPropertiesLoader = new AppDetailsPropertiesLoader();
-        final AppDetails appDetails = springLoader.getBean("appDetails", AppDetails.class);
-        appDetails.setApplicationName(appDetailsPropertiesLoader.getName());
-        appDetails.setApplicationVersion(appDetailsPropertiesLoader.getVersion());
-        return appDetails;
-    }
-
+  
     private static SpringLoader initSpringLoader() {
         // Now load up Spring...
         final long startSpring = System.currentTimeMillis();

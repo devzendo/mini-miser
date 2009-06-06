@@ -9,7 +9,7 @@ import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.SimpleMessage;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.util.Today;
@@ -36,7 +36,7 @@ public final class DefaultUpdateChecker implements UpdateChecker {
     private final ChangeLogTransformer mChangeLogTransformer;
     private final Today mTodayGenerator;
     private final WorkerPool mWorkerPool;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * @param preferences the prefs to check for 'update check allowed' flag
@@ -51,19 +51,19 @@ public final class DefaultUpdateChecker implements UpdateChecker {
      * @param today used to find out today's date
      * @param pool the worker pool, upon which requests to do the update will
      * be queued
-     * @param appDetails used to find out the application's version
+     * @param pluginRegistry used to find out the application's version
      */
     public DefaultUpdateChecker(final Prefs preferences, final MessageQueue msgQueue,
             final RemoteFileRetriever retriever, final ChangeLogTransformer logXform,
             final Today today, final WorkerPool pool,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         mPrefs = preferences;
         mMessageQueue = msgQueue;
         mRemoteFileRetriever = retriever;
         mChangeLogTransformer = logXform;
         mTodayGenerator = today;
         mWorkerPool = pool;
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
     }
 
     /**
@@ -153,11 +153,11 @@ public final class DefaultUpdateChecker implements UpdateChecker {
         final ComparableVersion thisVersion;
         final ComparableVersion remoteVersion;
         try {
-            thisVersion = new ComparableVersion(mAppDetails.getApplicationVersion());
+            thisVersion = new ComparableVersion(mPluginRegistry.getApplicationVersion());
             remoteVersion = new ComparableVersion(remoteVersionNumber);
         } catch (final IllegalArgumentException iae) {
             LOGGER.warn("Could not transform change log due to bad version numbers [runtime '"
-                + mAppDetails.getApplicationVersion() + "'] [remote '"
+                + mPluginRegistry.getApplicationVersion() + "'] [remote '"
                 + remoteVersionNumber + "']: " + iae.getMessage());
             progressAdapter.transformFailure(new IOException(iae.getMessage()));
             return;
@@ -209,7 +209,7 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             return false;
         }
         
-        if (!mAppDetails.isApplicationVersionSet()) {
+        if (mPluginRegistry.getApplicationVersion().equals(PluginRegistry.UNKNOWN_VERSION)) {
             LOGGER.error("Update checking cannot continue since the application plugin has not declared its version");
             progressAdapter.noApplicationVersionDeclared();
             return false;

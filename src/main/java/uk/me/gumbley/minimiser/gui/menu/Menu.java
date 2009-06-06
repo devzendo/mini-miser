@@ -175,7 +175,7 @@ public interface Menu {
     
     /**
      * Rebuild the help menu with the application name taken from
-     * the AppDetails
+     * the PluginRegistry's Application PluginDescriptor
      * @param applicationName the application name
      */
     void rebuildHelpMenu(String applicationName);

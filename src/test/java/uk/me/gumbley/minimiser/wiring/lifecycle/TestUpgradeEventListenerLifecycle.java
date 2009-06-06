@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import uk.me.gumbley.minimiser.gui.tab.TabIdentifier;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -32,7 +32,7 @@ public final class TestUpgradeEventListenerLifecycle extends SpringLoaderUnittes
     private File mPrefsFile;
     private LifecycleManager mLifecycleManager;
     private StubRecordingUpgradeListener mStubUpgradeListener;
-    private AppDetails mAppDetails;
+    private PluginRegistry mPluginRegistry;
 
     /**
      * @throws IOException on prefs creation failure
@@ -46,9 +46,7 @@ public final class TestUpgradeEventListenerLifecycle extends SpringLoaderUnittes
         final PrefsFactory prefsFactory = getSpringLoader().getBean("&prefs", PrefsFactory.class);
         prefsFactory.setPrefs(mPrefs);
 
-        mAppDetails = getSpringLoader().getBean("appDetails", AppDetails.class);
-        mAppDetails.setApplicationName("foo");
-        mAppDetails.setApplicationVersion("1.0.0-SNAPSHOT");
+        mPluginRegistry = getSpringLoader().getBean("pluginRegistry", PluginRegistry.class);
         
         mLifecycleManager = getSpringLoader().getBean("lifecycleManager", LifecycleManager.class);
         Assert.assertNotNull(mLifecycleManager);
@@ -73,7 +71,7 @@ public final class TestUpgradeEventListenerLifecycle extends SpringLoaderUnittes
         final FreshInstallEvent freshInstallEvent = (FreshInstallEvent) upgradeEvent;
         final String runningVersion = freshInstallEvent.getRunningVersion();
         Assert.assertNotNull(runningVersion);
-        Assert.assertEquals(mAppDetails.getApplicationVersion(), runningVersion);
+        Assert.assertEquals(mPluginRegistry.getApplicationVersion(), runningVersion);
     }
     
     /**

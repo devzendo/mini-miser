@@ -18,7 +18,16 @@ public final class PluginDescriptor {
     private final String mUpdateURL;
     private final String mDevelopersMailAddress;
 
-    private PluginDescriptor(final boolean isApplication,
+    /**
+     * Create a plugin descriptor.
+     * @param isApplication true iff an application plugin
+     * @param name the application name
+     * @param version the application version
+     * @param schemaVersion the schema version
+     * @param updateURL the URL of the update site
+     * @param developersMailAddress the email address of the developers
+     */
+    public PluginDescriptor(final boolean isApplication,
             final String name,
             final String version,
             final String schemaVersion,
@@ -72,44 +81,6 @@ public final class PluginDescriptor {
      */
     public String getDevelopersMailAddress() {
         return mDevelopersMailAddress;
-    }
-
-    /**
-     * Static factory method to create an application plugin
-     * descriptor.
-     * @param name the application name
-     * @param version the application version
-     * @param schemaVersion the schema version
-     * @param updateURL the URL of the update site
-     * @param developersMailAddress the email address of the developers
-     * @return the application PluginDescriptor
-     */
-    public static PluginDescriptor createApplicationPluginDescriptor(
-            final String name,
-            final String version,
-            final String schemaVersion,
-            final String updateURL,
-            final String developersMailAddress) {
-        return new PluginDescriptor(true, name, version, schemaVersion, updateURL, developersMailAddress);
-    }
-    
-    /**
-     * Static factory method to create a normal plugin
-     * descriptor.
-     * @param name the application name
-     * @param version the application version
-     * @param schemaVersion the schema version
-     * @param updateURL the URL of the update site
-     * @param developersMailAddress the email address of the developers
-     * @return the application PluginDescriptor
-     */
-    public static PluginDescriptor createPluginDescriptor(
-            final String name,
-            final String version,
-            final String schemaVersion,
-            final String updateURL,
-            final String developersMailAddress) {
-        return new PluginDescriptor(false, name, version, schemaVersion, updateURL, developersMailAddress);
     }
     
     /**

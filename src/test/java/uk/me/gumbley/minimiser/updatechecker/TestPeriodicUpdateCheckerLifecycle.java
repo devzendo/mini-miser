@@ -12,7 +12,8 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -48,8 +49,7 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
     private Today mToday;
     private WorkerPool mWorkerPool;
     private Sleeper mSleeper;
-
-    private AppDetails mAppDetails;
+    private PluginRegistry mPluginRegistry;
 
     /**
      * @throws IOException on failure
@@ -64,12 +64,10 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
         mChangeLogTransformer = new NullChangeLogTransformer();
         mToday = new StubToday(TODAYS_DATE);
         mWorkerPool = new WorkerPool();
-        mAppDetails = new AppDetails();
-        mAppDetails.setApplicationName("Foo");
-        mAppDetails.setApplicationVersion(VERSION_1_0_0);
+        mPluginRegistry = new DummyAppPluginRegistry("Foo", VERSION_1_0_0);
         mUpdateChecker = new DefaultUpdateChecker(mPrefs, mMessageQueue,
                 mRemoteFileRetriever, mChangeLogTransformer, mToday,
-                mWorkerPool, mAppDetails);
+                mWorkerPool, mPluginRegistry);
         mSleeper = new Sleeper(3600);
     }
     
@@ -115,7 +113,8 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
         mRemoteFileRetriever.injectReturnedVersionNumber(VERSION_1_0_0);
         mRemoteFileRetriever.injectReturnedChangeLogContents("change log");
         
-        final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
+        final UpdateProgressAdapter adapter =
+            EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.checkStarted();
         adapter.updateAvailable();
         adapter.finished();
@@ -124,9 +123,11 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
         final WaitForFinishUpdateProgressAdapterDecorator decoratedAdapter =
             new WaitForFinishUpdateProgressAdapterDecorator(adapter);
         
-        final UpdateProgressAdapterFactory adapterFactory = new StubUpdateProgressAdapterFactory(decoratedAdapter);
+        final UpdateProgressAdapterFactory adapterFactory =
+            new StubUpdateProgressAdapterFactory(decoratedAdapter);
 
-        final PeriodicUpdateCheckerLifecycle periodicUpdateChecker = new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, adapterFactory);
+        final PeriodicUpdateCheckerLifecycle periodicUpdateChecker =
+            new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, adapterFactory);
         periodicUpdateChecker.startup();
         
         LOGGER.debug("sleeping");

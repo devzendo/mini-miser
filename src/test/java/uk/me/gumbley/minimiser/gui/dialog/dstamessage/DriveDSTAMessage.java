@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.gui.Beautifier;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
 
@@ -90,7 +89,7 @@ public final class DriveDSTAMessage {
 
             public void run() {
                 LOGGER.info("SQL Tab experimentation starting...");
-                Beautifier.makeBeautiful(new AppDetails());
+                Beautifier.makeBeautiful();
                 try {
                     new DriveDSTAMessage();
                 } catch (final IOException e) {

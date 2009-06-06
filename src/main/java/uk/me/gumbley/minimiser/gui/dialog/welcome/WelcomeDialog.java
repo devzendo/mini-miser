@@ -26,7 +26,7 @@ import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.updatechecker.DefaultChangeLogTransformer;
 import uk.me.gumbley.minimiser.updatechecker.ParseException;
 
@@ -47,7 +47,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     private static final int TEXTPANE_HEIGHT = 350;
     private JButton switchButton;
     private final boolean mWelcome;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
     private final Map<String, CountDownLatch> loadedResourceLatchMap;
     private JButton cancelButton;
     private JPanel cardPanel;
@@ -58,16 +58,16 @@ public final class WelcomeDialog extends AbstractSnailDialog {
      * Construct the Welcome Dialog
      * @param parentFrame the main app frame
      * @param cursor the cursor manager
-     * @param appDetails the application details
+     * @param pluginRegistry the plugin registry
      * @param showWelcome true iff showing the welcome screen initally, false
      * for the what's new screen.
      */
     public WelcomeDialog(final Frame parentFrame,
             final CursorManager cursor,
-            final AppDetails appDetails,
+            final PluginRegistry pluginRegistry,
             final boolean showWelcome) {
         super(parentFrame, cursor, "Loading...");
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
         mWelcome = showWelcome;
         loadedResourceLatchMap = new HashMap<String, CountDownLatch>();
         loadedResourceLatchMap.put(WELCOME_HTML, new CountDownLatch(1));
@@ -216,7 +216,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             e1.printStackTrace();
         }
         setTitle("What's new in this release?");
-        switchButton.setText("Welcome to " + mAppDetails.getApplicationName());
+        switchButton.setText("Welcome to " + mPluginRegistry.getApplicationName());
         switchButton.setVisible(true);
         setSwitchActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
@@ -236,7 +236,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         } catch (final InterruptedException e1) {
             e1.printStackTrace();
         }
-        setTitle("Welcome to " + mAppDetails.getApplicationName());
+        setTitle("Welcome to " + mPluginRegistry.getApplicationName());
         switchButton.setText("What's new in this release?");
         switchButton.setVisible(true);
         setSwitchActionListener(new ActionListener() {

@@ -15,7 +15,8 @@ import org.apache.log4j.BasicConfigurator;
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.gui.dialog.welcome.WelcomeDialog;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 
 /**
@@ -37,7 +38,7 @@ public final class DriveWelcome {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
-                Beautifier.makeBeautiful(new AppDetails());
+                Beautifier.makeBeautiful();
                 
                 final JFrame frame = new JFrame("title");
                 frame.setLayout(new BorderLayout());
@@ -50,10 +51,8 @@ public final class DriveWelcome {
                 final JButton launch = new JButton("Launch Welcome");
                 launch.addActionListener(new ActionListener() {
                     public void actionPerformed(final ActionEvent e) {
-                        final AppDetails appDetails = new AppDetails();
-                        appDetails.setApplicationName("DriveWelcome");
-                        appDetails.setApplicationVersion("0.0.0");
-                        final WelcomeDialog welcome = new WelcomeDialog(frame, cursorManager, appDetails, true);
+                        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry();
+                        final WelcomeDialog welcome = new WelcomeDialog(frame, cursorManager, pluginRegistry, true);
                         welcome.pack();
                         welcome.setVisible(true);
                     }

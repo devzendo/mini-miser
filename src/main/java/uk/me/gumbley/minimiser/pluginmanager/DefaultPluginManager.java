@@ -29,22 +29,22 @@ public final class DefaultPluginManager implements PluginManager {
      * Construct a PluginManager that will pass the SpringLoader
      * to loaded plugins
      * @param springLoader the SpringLoader
-     * @param appDetails the bean for storing application details
+     * @param pluginRegistry the PluginRegistry for storing plugin details
      */
     public DefaultPluginManager(final SpringLoader springLoader,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         mObserverList = new ObserverList<PluginEvent>();
-        mPluginInitialiser = new PluginInitialiser(springLoader, appDetails);
+        mPluginInitialiser = new PluginInitialiser(springLoader, pluginRegistry);
     }
     
     /**
      * Construct a PluginManager that will not pass any
      * SpringLoader to loaded plugins - only used by tests.
-     * @param appDetails the bean for storing application details
+     * @param pluginRegistry the PluginRegistry for storing plugin details
      */
-    public DefaultPluginManager(final AppDetails appDetails) {
+    public DefaultPluginManager(final PluginRegistry pluginRegistry) {
         mObserverList = new ObserverList<PluginEvent>();
-        mPluginInitialiser = new PluginInitialiser(null, appDetails);
+        mPluginInitialiser = new PluginInitialiser(null, pluginRegistry);
     }
 
     /**

@@ -12,7 +12,8 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -55,22 +56,21 @@ public final class TestUpdateChecker extends LoggingTestCase {
     }
 
 
-    private void createUpdateCheckerWithAppDetails(final AppDetails appDetails) {
+    private void createUpdateCheckerWithAppDetails(final PluginRegistry pluginRegistry) {
         mUpdateChecker = new DefaultUpdateChecker(mPrefs,
             mMessageQueue, mRemoteFileRetriever,
             mChangeLogTransformer, mToday, mWorkerPool,
-            appDetails);
+            pluginRegistry);
     }
 
     private void createUpdateChecker() {
-        final AppDetails appDetails = new AppDetails();
-        appDetails.setApplicationVersion("1.0.0-SNAPSHOT");
-        createUpdateCheckerWithAppDetails(appDetails);
+        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", "1.0.0-SNAPSHOT");
+        createUpdateCheckerWithAppDetails(pluginRegistry);
     }
     
     private void createUpdateCheckerWithNoApplicationVersion() {
-        final AppDetails appDetails = new AppDetails();
-        createUpdateCheckerWithAppDetails(appDetails);
+        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", PluginRegistry.UNKNOWN_VERSION);
+        createUpdateCheckerWithAppDetails(pluginRegistry);
     }
 
     private void startUpdateAndWait(final UpdateProgressAdapter adapter) {

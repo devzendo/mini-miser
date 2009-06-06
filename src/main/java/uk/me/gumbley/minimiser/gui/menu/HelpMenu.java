@@ -6,7 +6,7 @@ import javax.swing.JSeparator;
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * The Help menu. Small, has no interesting functionality that
@@ -25,11 +25,11 @@ public final class HelpMenu extends AbstractRebuildableMenuGroup {
      * Construct the help menu
      * 
      * @param wiring the menu wiring
-     * @param appDetails the application details
+     * @param pluginRegistry the plugin registry
      */
-    public HelpMenu(final MenuWiring wiring, final AppDetails appDetails) {
+    public HelpMenu(final MenuWiring wiring, final PluginRegistry pluginRegistry) {
         super(wiring);
-        mApplicationName = appDetails.getApplicationName();
+        mApplicationName = pluginRegistry.getApplicationName();
 
         mHelpmenu = new JMenu("Help");
         mHelpmenu.setMnemonic('H');

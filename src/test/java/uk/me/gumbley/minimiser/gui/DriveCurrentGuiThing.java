@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.util.DelayedExecutor;
 
 
@@ -37,7 +36,7 @@ public final class DriveCurrentGuiThing {
         ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         LOGGER.info("GUI experimentation starting...");
-        Beautifier.makeBeautiful(new AppDetails());
+        Beautifier.makeBeautiful();
         
         final JFrame frame = new JFrame("title");
         frame.setLayout(new BorderLayout());

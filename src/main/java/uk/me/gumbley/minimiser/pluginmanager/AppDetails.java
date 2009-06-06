@@ -7,8 +7,10 @@ package uk.me.gumbley.minimiser.pluginmanager;
  * when the ApplicationPlugin has been loaded.
  *  
  * @author matt
+ * @deprecated use PluginRegistry
  *
  */
+@Deprecated
 public final class AppDetails {
     private static final String UNKNOWN = "unknown";
     

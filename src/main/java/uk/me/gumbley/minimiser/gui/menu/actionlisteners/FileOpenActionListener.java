@@ -14,7 +14,7 @@ import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardC
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardIntroPage;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * Triggers the start of the wizard from the File/Open menu.
@@ -26,24 +26,24 @@ public final class FileOpenActionListener extends SnailActionListener {
     private final OpenDatabaseList mOpenDatabaseList;
     private final CursorManager mCursorManager;
     private final Opener mOpener;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * Construct the listener
      * @param openDatabaseList the open database list singleton
      * @param cursorManager the cursor manager
      * @param opener the database opener
-     * @param appDetails the application name and version
+     * @param pluginRegistry the plugin registry
      */
     public FileOpenActionListener(final OpenDatabaseList openDatabaseList,
             final CursorManager cursorManager,
             final Opener opener,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         super(cursorManager);
         mOpenDatabaseList = openDatabaseList;
         mCursorManager = cursorManager;
         mOpener = opener;
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
     }
 
     /**
@@ -52,7 +52,7 @@ public final class FileOpenActionListener extends SnailActionListener {
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
         final WizardPage[] wizardPages = new WizardPage[] {
-                new FileOpenWizardIntroPage(mAppDetails),
+                new FileOpenWizardIntroPage(mPluginRegistry),
                 new FileOpenWizardChooseFolderPage(mOpenDatabaseList),
         };
         final WizardResultProducer producer = new WizardResultProducer() {

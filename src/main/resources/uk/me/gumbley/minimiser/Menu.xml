@@ -82,7 +82,7 @@
 	<bean id="menuPluginLoadedObserver" class="uk.me.gumbley.minimiser.wiring.menu.MenuPluginLoadedObserver">
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="pluginManager" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 	
 	<!-- menus -->
@@ -110,7 +110,7 @@
 
 	<bean id="helpMenu" class="uk.me.gumbley.minimiser.gui.menu.HelpMenu">
 		<constructor-arg ref="menuWiring" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 	
     <!-- menu action listeners -->
@@ -118,13 +118,13 @@
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="accessFactory" />
 		<constructor-arg ref="cursorManager" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 	<bean id="menuALFileOpen" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileOpenActionListener">
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="cursorManager" />
 		<constructor-arg ref="opener" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 	<bean id="menuALFileClose" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.FileCloseActionListener">
 		<constructor-arg ref="openDatabaseList" />
@@ -145,7 +145,7 @@
 
 
 	<bean id="menuALHelpAbout" class="uk.me.gumbley.minimiser.gui.menu.actionlisteners.HelpAboutActionListener">
-		<constructor-arg ref="appDetails" />	
+		<constructor-arg ref="pluginRegistry" />	
 		<constructor-arg ref="mainFrame" />	
 		<constructor-arg ref="cursorManager" />
 	</bean>

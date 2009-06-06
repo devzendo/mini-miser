@@ -45,7 +45,7 @@
 		<constructor-arg ref="mainFrame" />
 		<constructor-arg ref="messageQueue" />
 		<constructor-arg ref="cursorManager" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 	
 	<bean id="statusBar" class="uk.me.gumbley.minimiser.gui.MainFrameStatusBar" >
@@ -78,7 +78,7 @@
 	<bean id="tabSQL" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTab" >
 		<constructor-arg ref="databaseDescriptor" />
 		<constructor-arg ref="cursorManager" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 
 	<bean id="tabCATEGORIES" scope="prototype" class="uk.me.gumbley.minimiser.gui.tab.impl.DemoTab" >
@@ -122,7 +122,8 @@
 			    <value>problemDialogHelperInitialisingLifecycle</value>
 			    
 			    <value>pluginManagerLifecycle</value> <!--  this must be first after the helper initialisers -->
-			    <value>menuInitialisingLifecycle</value> <!--  must come after plugins so help menu has correct text from appdetails -->
+			    <value>menuInitialisingLifecycle</value> <!--  must come after plugins so help menu 
+			                                                   has correct text from the plugin registry -->
 			    <value>mainFrameCloseActionListenerInitialisingLifecycle</value>
 
 			    <value>tabEventListenerLifecycle</value>
@@ -192,7 +193,7 @@
 
 	<bean id="upgradeEventListenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
 		<constructor-arg ref="upgradeEventListenerManager" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 	
 	<bean id="dstaMessageHelperInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DSTAMessageHelperInitialisingLifecycle">
@@ -341,7 +342,7 @@
 	<bean id="queueUpdateAvailableFlagSettingMessageListener" class="uk.me.gumbley.minimiser.upgradedetector.QueueUpdateAvailableFlagSettingMessageListener">
 		<constructor-arg ref="prefs" />
 		<constructor-arg ref="messageQueue" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 
     <!-- update checker -->
@@ -352,7 +353,7 @@
 		<constructor-arg ref="changeLogTransformer" />
 		<constructor-arg ref="today" />
 		<constructor-arg ref="workerPool" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 
 	<bean id="updateProgressAdapterFactory" class="uk.me.gumbley.minimiser.updatechecker.DefaultUpdateProgressAdapterFactory">
@@ -373,10 +374,10 @@
 	<!-- miscellaneous -->
 	<bean id="pluginManager" class="uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager">
 		<constructor-arg ref="springLoader" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 	
-	<bean id="appDetails" class="uk.me.gumbley.minimiser.pluginmanager.AppDetails" />
+	<bean id="pluginRegistry" class="uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry" />
 	
 	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl">
 		<constructor-arg ref="prefs" />

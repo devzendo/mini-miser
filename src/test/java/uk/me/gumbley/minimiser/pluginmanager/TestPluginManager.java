@@ -18,18 +18,16 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
  *
  */
 public final class TestPluginManager extends LoggingTestCase {
-    private static final String UNKNOWN = "unknown";
-    
-    private AppDetails mAppDetails;
     private DefaultPluginManager mDefaultPluginManager;
+    private PluginRegistry mPluginRegistry;
 
     /**
      * 
      */
     @Before
     public void getPrerequisites() {
-        mAppDetails = new AppDetails();
-        mDefaultPluginManager = new DefaultPluginManager(mAppDetails);
+        mPluginRegistry = new DefaultPluginRegistry();
+        mDefaultPluginManager = new DefaultPluginManager(mPluginRegistry);
     }
     
     /**
@@ -77,14 +75,14 @@ public final class TestPluginManager extends LoggingTestCase {
      * @throws PluginException never
      */
     @Test
-    public void appPluginHasItsDetailsStoredInAppDetails() throws PluginException {
-        Assert.assertEquals(UNKNOWN, mAppDetails.getApplicationName());
-        Assert.assertEquals(UNKNOWN, mAppDetails.getApplicationVersion());
+    public void appPluginHasItsDetailsStoredInPluginRegistry() throws PluginException {
+        Assert.assertEquals(PluginRegistry.UNKNOWN_APPLICATION, mPluginRegistry.getApplicationName());
+        Assert.assertEquals(PluginRegistry.UNKNOWN_VERSION, mPluginRegistry.getApplicationVersion());
 
         mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
         
-        Assert.assertEquals("Application", mAppDetails.getApplicationName());
-        Assert.assertEquals("1.0.0", mAppDetails.getApplicationVersion());
+        Assert.assertEquals("Application", mPluginRegistry.getApplicationName());
+        Assert.assertEquals("1.0.0", mPluginRegistry.getApplicationVersion());
     }
     
     /**
@@ -92,7 +90,7 @@ public final class TestPluginManager extends LoggingTestCase {
      */
     @Test(expected = PluginException.class)
     public void thereMustBeAnApplicationPlugin() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mAppDetails);
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/noappplugin.properties");
     }
     
@@ -101,7 +99,7 @@ public final class TestPluginManager extends LoggingTestCase {
      */
     @Test(expected = PluginException.class)
     public void thereMustBeOnlyOneApplicationPlugin() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mAppDetails);
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/twoappplugin.properties");
     }
     
@@ -113,7 +111,7 @@ public final class TestPluginManager extends LoggingTestCase {
      */
     @Test(expected = PluginException.class)
     public void nonexistantPluginPropertiesMustThrow() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mAppDetails);
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/doesnotexist.properties");
     }
 }

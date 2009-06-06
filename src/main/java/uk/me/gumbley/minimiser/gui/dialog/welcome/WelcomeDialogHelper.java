@@ -5,7 +5,7 @@ import java.awt.Frame;
 import javax.swing.SwingUtilities;
 
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
 public final class WelcomeDialogHelper {
     private static Frame mParentFrame;
     private static CursorManager mCursorManager;
-    private static AppDetails mAppDetails;
+    private static PluginRegistry mPluginRegistry;
 
     /**
      * 
@@ -35,7 +35,7 @@ public final class WelcomeDialogHelper {
     public static void initialise(final SpringLoader springLoader) {
         mParentFrame = springLoader.getBean("mainFrame", Frame.class);
         mCursorManager = springLoader.getBean("cursorManager", CursorManager.class);
-        mAppDetails = springLoader.getBean("appDetails", AppDetails.class);
+        mPluginRegistry = springLoader.getBean("pluginRegistry", PluginRegistry.class);
     }
     
     /**
@@ -55,7 +55,7 @@ public final class WelcomeDialogHelper {
     private static void showDialog(final boolean isWelcome) {
         assert SwingUtilities.isEventDispatchThread();
         final WelcomeDialog dialog = new WelcomeDialog(mParentFrame,
-            mCursorManager, mAppDetails, isWelcome);
+            mCursorManager, mPluginRegistry, isWelcome);
         dialog.pack();
         dialog.setLocationRelativeTo(mParentFrame);
         dialog.setVisible(true);

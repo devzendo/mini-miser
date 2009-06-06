@@ -11,15 +11,14 @@ import java.util.Set;
  * @author matt
  *
  */
-public final class DefaultPluginRegistryImpl implements PluginRegistry {
-    
+public final class DefaultPluginRegistry implements PluginRegistry {
     private final Set<PluginDescriptor> mPluginDescriptors;
     private PluginDescriptor mApplicationPluginDescriptor;
 
     /**
      * Construct the default plugin registry
      */
-    public DefaultPluginRegistryImpl() {
+    public DefaultPluginRegistry() {
         mPluginDescriptors = new HashSet<PluginDescriptor>();
     }
 
@@ -42,8 +41,37 @@ public final class DefaultPluginRegistryImpl implements PluginRegistry {
      */
     public void addPluginDescriptor(final PluginDescriptor pluginDescriptor) {
         if (pluginDescriptor.isApplication()) {
+            if (mApplicationPluginDescriptor != null && !mApplicationPluginDescriptor.equals(pluginDescriptor)) {
+                throw new IllegalStateException("Cannot add multiple application plugin descriptors");
+            }
             mApplicationPluginDescriptor = pluginDescriptor;
         }
         mPluginDescriptors.add(pluginDescriptor);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getApplicationName() {
+        if (mApplicationPluginDescriptor != null) {
+            final String appName = mApplicationPluginDescriptor.getName();
+            if (appName != null && appName.length() > 0) {
+                return appName;
+            }
+        }
+        return UNKNOWN_APPLICATION;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getApplicationVersion() {
+        if (mApplicationPluginDescriptor != null) {
+            final String appVersion = mApplicationPluginDescriptor.getVersion();
+            if (appVersion != null && appVersion.length() > 0) {
+                return appVersion;
+            }
+        }
+        return UNKNOWN_VERSION;
     }
 }

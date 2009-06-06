@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.about.AboutDialog;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * Triggers display of the about dialog.
@@ -15,17 +15,17 @@ import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
  */
 public final class HelpAboutActionListener extends SnailActionListener {
     private final Frame mMainFrame;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
-     * @param appDetails the application details
+     * @param pluginRegistry the plugin registry
      * @param frame the main frame
      * @param cursor the cursor manager 
      */
-    public HelpAboutActionListener(final AppDetails appDetails,
+    public HelpAboutActionListener(final PluginRegistry pluginRegistry,
             final Frame frame, final CursorManager cursor) {
         super(cursor);
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
         mMainFrame = frame;
     }
 
@@ -34,6 +34,6 @@ public final class HelpAboutActionListener extends SnailActionListener {
      */
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
-        AboutDialog.showAbout(mAppDetails, mMainFrame, getCursorManager());
+        AboutDialog.showAbout(mPluginRegistry, mMainFrame, getCursorManager());
     }
 }

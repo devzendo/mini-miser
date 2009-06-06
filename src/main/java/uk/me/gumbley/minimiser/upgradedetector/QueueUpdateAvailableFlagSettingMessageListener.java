@@ -6,7 +6,7 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.messagequeue.BooleanFlagSettingMessage;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -22,22 +22,22 @@ public final class QueueUpdateAvailableFlagSettingMessageListener implements Obs
             .getLogger(QueueUpdateAvailableFlagSettingMessageListener.class);
     private final Prefs mPrefs;
     private final MessageQueue mMessageQueue;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * Construct the listener
      * @param preferences used to test for the 'check updates allowed' flag
      * before queueing the message
      * @param queue the message queue to queue the message on
-     * @param appDetails the application name and version
+     * @param pluginRegistry the plugin registry
      */
     public QueueUpdateAvailableFlagSettingMessageListener(
             final Prefs preferences,
             final MessageQueue queue,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         mPrefs = preferences;
         mMessageQueue = queue;
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
     }
 
     /**
@@ -59,7 +59,7 @@ public final class QueueUpdateAvailableFlagSettingMessageListener implements Obs
     private void queueMessage() {
         final Message.Importance importance = Message.Importance.MEDIUM;
         final String subject = "Please decide whether you want update checks";
-        final String content = mAppDetails.getApplicationName() + " can check periodically for software updates.<br>"
+        final String content = mPluginRegistry.getApplicationName() + " can check periodically for software updates.<br>"
             + "This requires an active Internet connection.<br>"
             + "Only the latest software details are obtained from our web site.<br>"
             + "No personal information is sent, other than your computer's IP address.<br>"

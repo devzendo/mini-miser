@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabPaneManager;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -27,70 +27,69 @@ public class MainFrame {
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
     private static final String MAIN_FRAME_NAME = "main";
 
-    private JFrame mainFrame;
-    private final SpringLoader springLoader;
-    private final CursorManager cursorManager;
-    private final WindowGeometryStore windowGeometryStore;
-    private final MainFrameStatusBar statusBar;
-    private final AppDetails mAppDetails;
+    private JFrame mMainFrame;
+    private final SpringLoader mSpringLoader;
+    private final CursorManager mCursorManager;
+    private final WindowGeometryStore mWindowGeometryStore;
+    private final MainFrameStatusBar mStatusBar;
+    private final PluginRegistry mPluginRegistry;
 
     /**
-     * @param loader the IoC container abstraction
+     * @param springLoader the IoC container abstraction
      * @param argList the command line arguments after logging has been processed
      * @throws AppException upon fatal application failure
      */
-    public MainFrame(final SpringLoader loader, 
+    public MainFrame(final SpringLoader springLoader, 
             final ArrayList<String> argList)
             throws AppException {
         super();
-        this.springLoader = loader;
-        mAppDetails = springLoader.getBean("appDetails", AppDetails.class);
-        windowGeometryStore = springLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
+        mSpringLoader = springLoader;
+        mPluginRegistry = mSpringLoader.getBean("pluginRegistry", PluginRegistry.class);
+        mWindowGeometryStore = mSpringLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
 
         // Create new Window and exit handler
         createMainFrame();
-        cursorManager = springLoader.getBean("cursorManager", CursorManager.class);
-        cursorManager.setMainFrame(mainFrame);
+        mCursorManager = mSpringLoader.getBean("cursorManager", CursorManager.class);
+        mCursorManager.setMainFrame(mMainFrame);
         
-        statusBar = springLoader.getBean("statusBar", MainFrameStatusBar.class);
-        mainFrame.add(statusBar.getPanel(), BorderLayout.SOUTH);
+        mStatusBar = mSpringLoader.getBean("statusBar", MainFrameStatusBar.class);
+        mMainFrame.add(mStatusBar.getPanel(), BorderLayout.SOUTH);
         
         // Menu
         //mainFrame.setJMenuBar(createMenu());
         
         // Main panel
-        final TabPaneManager tabPaneManager = springLoader.getBean("tabPaneManager", TabPaneManager.class);
+        final TabPaneManager tabPaneManager = mSpringLoader.getBean("tabPaneManager", TabPaneManager.class);
         final JPanel mainPanel = tabPaneManager.getMainPanel();
         mainPanel.setPreferredSize(new Dimension(640, 480));
-        mainFrame.add(mainPanel, BorderLayout.CENTER);
+        mMainFrame.add(mainPanel, BorderLayout.CENTER);
         
-        if (!windowGeometryStore.hasStoredGeometry(mainFrame)) {
-            mainFrame.pack();
+        if (!mWindowGeometryStore.hasStoredGeometry(mMainFrame)) {
+            mMainFrame.pack();
         }
-        windowGeometryStore.loadGeometry(mainFrame);
+        mWindowGeometryStore.loadGeometry(mMainFrame);
         attachVisibilityListenerForLifecycleManagerStartup();
-        mainFrame.setVisible(true);
+        mMainFrame.setVisible(true);
     }
 
     private void attachVisibilityListenerForLifecycleManagerStartup() {
         Toolkit.getDefaultToolkit().addAWTEventListener(
-            new LifecycleStartupAWTEventListener(springLoader),
+            new LifecycleStartupAWTEventListener(mSpringLoader),
             AWTEvent.WINDOW_EVENT_MASK);
     }
 
     private void createMainFrame() {
-        mainFrame = new JFrame(mAppDetails.getApplicationName() + " v"
-                + mAppDetails.getApplicationVersion());
+        mMainFrame = new JFrame();
 
-        mainFrame.setIconImage(createImageIcon("icons/application.gif").getImage());
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        mMainFrame.setIconImage(createImageIcon("icons/application.gif").getImage());
+        mMainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setMainFrameInFactory();
         
         createAndSetMainFrameTitleInFactory();
 
-        mainFrame.setName(MAIN_FRAME_NAME);
-        mainFrame.setLayout(new BorderLayout());
+        mMainFrame.setName(MAIN_FRAME_NAME);
+        mMainFrame.setLayout(new BorderLayout());
     }
 
     /**
@@ -107,13 +106,13 @@ public class MainFrame {
     }
     
     private void createAndSetMainFrameTitleInFactory() {
-        final MainFrameTitleFactory mainFrameTitleFactory = springLoader.getBean("&mainFrameTitle", MainFrameTitleFactory.class);
+        final MainFrameTitleFactory mainFrameTitleFactory = mSpringLoader.getBean("&mainFrameTitle", MainFrameTitleFactory.class);
         mainFrameTitleFactory.setMainFrameTitle(
-            new DefaultMainFrameTitleImpl(mainFrame, mAppDetails));
+            new DefaultMainFrameTitleImpl(mMainFrame, mPluginRegistry));
     }
 
     private void setMainFrameInFactory() {
-        final MainFrameFactory mainFrameFactory = springLoader.getBean("&mainFrame", MainFrameFactory.class);
-        mainFrameFactory.setMainFrame(mainFrame);
+        final MainFrameFactory mainFrameFactory = mSpringLoader.getBean("&mainFrame", MainFrameFactory.class);
+        mainFrameFactory.setMainFrame(mMainFrame);
     }
 }

@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.StatusBar;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * The factory for Swing-based MessageQueueViewers
@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 public final class DefaultMessageQueueViewerFactory extends 
         AbstractMessageQueueViewerFactory {
     private final CursorManager mCursorManager;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * Pass the status bar on to the abstract base class for factories
@@ -25,16 +25,16 @@ public final class DefaultMessageQueueViewerFactory extends
      * @param main the main application frame
      * @param queue the message queue
      * @param cursor the cursor manager
-     * @param appDetails the application name and version
+     * @param pluginRegistry the plugin registry
      */
     public DefaultMessageQueueViewerFactory(final StatusBar bar,
             final Frame main,
             final MessageQueue queue,
             final CursorManager cursor,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         super(bar, main, queue);
         mCursorManager = cursor;
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
     }
 
     /**
@@ -49,7 +49,7 @@ public final class DefaultMessageQueueViewerFactory extends
         final DefaultMessageQueueViewer messageQueueViewer =
             new DefaultMessageQueueViewer(this, 
                 new MessageRendererFactory(),
-                mAppDetails);
+                mPluginRegistry);
         mCursorManager.normal(this.getClass().getSimpleName());
         return messageQueueViewer;
     }

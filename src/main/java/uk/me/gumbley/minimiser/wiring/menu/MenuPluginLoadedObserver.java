@@ -6,10 +6,10 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.menu.Menu;
 import uk.me.gumbley.minimiser.gui.menu.MenuWiringAdapter;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPluginLoadedEvent;
 import uk.me.gumbley.minimiser.pluginmanager.PluginEvent;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * Adapts between plugin manager 'application plugin loaded' events
@@ -25,7 +25,7 @@ public final class MenuPluginLoadedObserver implements MenuWiringAdapter,
 
     private final Menu mMenu;
     private final PluginManager mPluginManager;
-    private final AppDetails mAppDetails;
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * Construct the adapter given other system objects for interaction.
@@ -34,14 +34,14 @@ public final class MenuPluginLoadedObserver implements MenuWiringAdapter,
      *        the menu
      * @param pluginManager
      *        the plugin manager
-     * @param appDetails the application details
+     * @param pluginRegistry the plugin registry
      */
     public MenuPluginLoadedObserver(final Menu menu,
             final PluginManager pluginManager,
-            final AppDetails appDetails) {
+            final PluginRegistry pluginRegistry) {
         mMenu = menu;
         mPluginManager = pluginManager;
-        mAppDetails = appDetails;
+        mPluginRegistry = pluginRegistry;
     }
 
     /**
@@ -61,8 +61,9 @@ public final class MenuPluginLoadedObserver implements MenuWiringAdapter,
         // KLUDGE: this next line hasn't been done TDD
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             public void run() {
-                LOGGER.debug("Optimistically rebuilding help menu with " + mAppDetails.getApplicationName());
-                mMenu.rebuildHelpMenu(mAppDetails.getApplicationName());
+                LOGGER.debug("Optimistically rebuilding help menu with "
+                    + mPluginRegistry.getApplicationName());
+                mMenu.rebuildHelpMenu(mPluginRegistry.getApplicationName());
             }
         });
     }

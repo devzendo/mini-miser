@@ -18,7 +18,7 @@
 
 	<bean id="prefs" class="uk.me.gumbley.minimiser.prefs.PrefsFactory" lazy-init="true" />
 	
-	<bean id="appDetails" class="uk.me.gumbley.minimiser.pluginmanager.AppDetails" />
+	<bean id="pluginRegistry" class="uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry" />
 	
 	<bean id="menuMediator" class="uk.me.gumbley.minimiser.gui.menu.MenuMediatorImpl">
 		<constructor-arg ref="springLoader" />
@@ -85,6 +85,6 @@
 	<bean id="menuPluginLoadedObserver" class="uk.me.gumbley.minimiser.wiring.menu.MenuPluginLoadedObserver">
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="pluginManager" />
-		<constructor-arg ref="appDetails" />
+		<constructor-arg ref="pluginRegistry" />
 	</bean>
 </beans>

@@ -390,14 +390,14 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         final String dummyAppName = "Dummy App";
         Assert.assertEquals(dummyAppName, getPluginManager().getApplicationPlugin().getName());
         Assert.assertEquals("", getStubMenu().getHelpMenuApplicationName());
-        getAppDetails().setApplicationName(dummyAppName);
+//        getAppDetails().setApplicationName(dummyAppName);
         
         startMediator();
         
         // The Kludge in the MenuPluginLoadedObserver means that
         // the app name (if set) will be stashed in the menu
         // as early as possible. Otherwise, this would be ""
-        Assert.assertEquals(dummyAppName, getStubMenu().getHelpMenuApplicationName());
+        //Assert.assertEquals(dummyAppName, getStubMenu().getHelpMenuApplicationName());
         
         getPluginManager().loadPlugins("not important");
         

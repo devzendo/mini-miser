@@ -10,7 +10,8 @@ import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueEvent;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueModifiedEvent;
 import uk.me.gumbley.minimiser.messagequeue.StubMessageQueuePrefs;
-import uk.me.gumbley.minimiser.pluginmanager.AppDetails;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 
@@ -36,10 +37,8 @@ public final class TestQueueUpdateAvailableFlagSettingMessageListener {
         messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(prefs));
         recorder = new MessageQueueModifiedRecorder();
         messageQueue.addMessageQueueEventObserver(recorder);
-        final AppDetails appDetails = new AppDetails();
-        appDetails.setApplicationName("Test App");
-        appDetails.setApplicationVersion("0.1.0");
-        listener = new QueueUpdateAvailableFlagSettingMessageListener(prefs, messageQueue, appDetails);
+        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Test App", "0.1.0");
+        listener = new QueueUpdateAvailableFlagSettingMessageListener(prefs, messageQueue, pluginRegistry);
     }
     
     private class MessageQueueModifiedRecorder implements Observer<MessageQueueEvent> {
