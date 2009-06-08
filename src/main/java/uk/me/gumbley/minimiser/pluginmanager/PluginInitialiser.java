@@ -76,6 +76,7 @@ public final class PluginInitialiser {
         // can obtain it.
         for (Plugin plugin : mPlugins) {
             final PluginDescriptor pluginDescriptor = getDescriptorFromPlugin(plugin);
+            LOGGER.debug("Adding to registry: " + pluginDescriptor);
             mPluginRegistry.addPluginDescriptor(pluginDescriptor);
         }
     }
@@ -85,7 +86,7 @@ public final class PluginInitialiser {
             plugin instanceof ApplicationPlugin, 
             plugin.getName(),
             plugin.getVersion(),
-            "1", /*plugin.getSchemaVersion(),*/ // TODO plugins need a schema version
+            "1.0", /*plugin.getSchemaVersion(),*/ // TODO plugins need a schema version
             plugin.getUpdateSiteBaseURL(),
             "bob@aol.com"); //plugin.getDevelopersEmailAddress(), // TODO
     }

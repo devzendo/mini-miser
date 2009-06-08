@@ -108,7 +108,7 @@ public class MainFrame {
     private void createAndSetMainFrameTitleInFactory() {
         final MainFrameTitleFactory mainFrameTitleFactory = mSpringLoader.getBean("&mainFrameTitle", MainFrameTitleFactory.class);
         mainFrameTitleFactory.setMainFrameTitle(
-            new DefaultMainFrameTitleImpl(mMainFrame, mPluginRegistry));
+            new DefaultMainFrameTitleImpl(mMainFrame));
     }
 
     private void setMainFrameInFactory() {

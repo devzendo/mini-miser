@@ -44,7 +44,7 @@ public final class Sleeper {
             Thread.sleep(millis / fasterBy);
         } catch (final InterruptedException e) {
             final String warning = "Interupted whilst asleep";
-            LOGGER.warn(warning, e);
+            LOGGER.debug(warning); // this isn't serious?
         }
     }
 }

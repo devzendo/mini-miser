@@ -62,7 +62,14 @@ public final class TestPluginManager extends LoggingTestCase {
     @Test
     public void loadingApplicationPluginFiresListeners() throws PluginException {
         final Observer<PluginEvent> obs = EasyMock.createStrictMock(Observer.class);
-        obs.eventOccurred(EasyMock.eq(new ApplicationPluginLoadedEvent("Application", "1.0.0")));
+        obs.eventOccurred(EasyMock.eq(
+            new ApplicationPluginLoadedEvent(new PluginDescriptor(
+                    true,
+                    "Application",
+                    "1.0.0",
+                    "1.0",
+                    "http://localhost/",
+                    "bob@aol.com"))));
         EasyMock.replay(obs);
 
         mDefaultPluginManager.addPluginEventObserver(obs);

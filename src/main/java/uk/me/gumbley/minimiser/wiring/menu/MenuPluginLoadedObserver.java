@@ -7,6 +7,7 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.menu.Menu;
 import uk.me.gumbley.minimiser.gui.menu.MenuWiringAdapter;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPluginLoadedEvent;
+import uk.me.gumbley.minimiser.pluginmanager.PluginDescriptor;
 import uk.me.gumbley.minimiser.pluginmanager.PluginEvent;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
@@ -75,9 +76,10 @@ public final class MenuPluginLoadedObserver implements MenuWiringAdapter,
         LOGGER.info("PluginEvent received");
         if (observableEvent instanceof ApplicationPluginLoadedEvent) {
             final ApplicationPluginLoadedEvent appLoadEvent = (ApplicationPluginLoadedEvent) observableEvent;
-            LOGGER.info("Requesting help menu update with application name " + appLoadEvent.getName()
-                    + " version " + appLoadEvent.getVersion());
-            mMenu.rebuildHelpMenu(appLoadEvent.getName());
+            final PluginDescriptor pluginDescriptor = appLoadEvent.getPluginDescriptor();
+            LOGGER.info("Requesting help menu update with application name " + pluginDescriptor.getName()
+                    + " version " + pluginDescriptor.getVersion());
+            mMenu.rebuildHelpMenu(pluginDescriptor.getName());
         }
     }
 }

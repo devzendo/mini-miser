@@ -120,6 +120,8 @@
 			    <value>messageQueueHelperInitialisingLifecycle</value>
 			    <value>welcomeDialogHelperInitialisingLifecycle</value>
 			    <value>problemDialogHelperInitialisingLifecycle</value>
+
+			    <value>mainFrameTitleInitialisingPluginLoadedObservingLifecycle</value>                                               
 			    
 			    <value>pluginManagerLifecycle</value> <!--  this must be first after the helper initialisers -->
 			    <value>menuInitialisingLifecycle</value> <!--  must come after plugins so help menu 
@@ -150,6 +152,11 @@
 	
 	<bean id="mainFrameCloseActionListenerInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MainFrameCloseActionListenerInitialisingLifecycle">
 		<constructor-arg ref="springLoader" />
+	</bean>
+
+	<bean id="mainFrameTitleInitialisingPluginLoadedObservingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MainFrameTitleInitialisingPluginLoadedObservingLifecycle">
+		<constructor-arg ref="pluginManager" />
+		<constructor-arg ref="mainFrameTitle" />
 	</bean>
 	
 	<bean id="menuInitialisingLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MenuInitialisingLifecycle">

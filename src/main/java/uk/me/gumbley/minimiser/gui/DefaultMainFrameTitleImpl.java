@@ -2,8 +2,9 @@ package uk.me.gumbley.minimiser.gui;
 
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * Main Frame Title controller.
@@ -12,24 +13,24 @@ import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
  *
  */
 public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
+    private static final Logger LOGGER = Logger
+            .getLogger(DefaultMainFrameTitleImpl.class);
     private String mDatabaseName;
+    private String mApplicationName;
     private final JFrame mMainFrame;
     private final Object mLock;
-    private final PluginRegistry mPluginRegistry;
     
     /**
      * Create the Main Frame Title controller, updating the main frame.
      * @param mainframe the main application frame
-     * @param pluginRegistry the plugin registry, used to get
-     * the name and version of the main application
      */
-    public DefaultMainFrameTitleImpl(final JFrame mainframe, 
-            final PluginRegistry pluginRegistry) {
+    public DefaultMainFrameTitleImpl(final JFrame mainframe) {
+        LOGGER.debug("Starting Main Frame Title");
         mMainFrame = mainframe;
-        mPluginRegistry = pluginRegistry;
         mLock = new Object();
         synchronized (mLock) {
             mDatabaseName = null;
+            mApplicationName = null;
         }
         update();
     }
@@ -66,16 +67,30 @@ public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
     private void update() {
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             public void run() {
-                final StringBuilder title = new StringBuilder(
-                    mPluginRegistry.getApplicationName());
+                final StringBuilder title = new StringBuilder();
                 synchronized (mLock) {
-                    if (mDatabaseName != null) {
+                    if (mApplicationName != null) {
+                        title.append(mApplicationName);
+                    }
+                    if (mApplicationName != null & mDatabaseName != null) {
                         title.append(" - ");
+                    }
+                    if (mDatabaseName != null) {
                         title.append(mDatabaseName);
                     }
                 }
                 mMainFrame.setTitle(title.toString());
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setApplicationName(final String applicationName) {
+        synchronized (mLock) {
+            mApplicationName = applicationName;
+        }
+        update();
     }
 }

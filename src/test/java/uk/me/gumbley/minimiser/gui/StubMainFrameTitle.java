@@ -7,26 +7,41 @@ package uk.me.gumbley.minimiser.gui;
  *
  */
 public final class StubMainFrameTitle implements MainFrameTitle {
-    private String databaseName = null;
+    private String mDatabaseName = null;
+    private String mApplicationName = null;
 
     /**
      * {@inheritDoc}
      */
     public void clearCurrentDatabaseName() {
-        databaseName = null;
+        mDatabaseName = null;
     }
 
     /**
      * {@inheritDoc}
      */
     public String getCurrentDatabaseName() {
-        return databaseName;
+        return mDatabaseName;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setCurrentDatabaseName(final String databasename) {
-        databaseName = databasename;
+        mDatabaseName = databasename;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setApplicationName(final String applicationName) {
+        mApplicationName = applicationName;
+    }
+
+    /**
+     * @return the applicationName
+     */
+    public String getApplicationName() {
+        return mApplicationName;
     }
 }

@@ -123,4 +123,24 @@ public final class PluginDescriptor {
             .append(this.mIsApplication)
             .toHashCode();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(mIsApplication ? "App" : "Plugin");
+        sb.append(" name ");
+        sb.append(mName);
+        sb.append(" versions: code:");
+        sb.append(mVersion);
+        sb.append(" schema:");
+        sb.append(mSchemaVersion);
+        sb.append(" updateURL: ");
+        sb.append(mUpdateURL);
+        sb.append(" email:");
+        sb.append(mDevelopersMailAddress);
+        return sb.toString();
+    }
 }

@@ -131,7 +131,14 @@ public final class DummyAppPluginManager implements PluginManager {
      */
     public void loadPlugins(final String propertiesResourcePath)
             throws PluginException {
-        mObserverList.eventOccurred(new ApplicationPluginLoadedEvent(getApplicationPlugin().getName(), getApplicationPlugin().getVersion()));
+        mObserverList.eventOccurred(
+            new ApplicationPluginLoadedEvent(
+                new PluginDescriptor(true, 
+                    getApplicationPlugin().getName(),
+                    getApplicationPlugin().getVersion(),
+                    "2.1",
+                    getApplicationPlugin().getUpdateSiteBaseURL(),
+                    "bob@aol.com")));
     }
 
     /**

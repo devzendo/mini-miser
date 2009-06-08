@@ -10,6 +10,12 @@ package uk.me.gumbley.minimiser.gui;
 public interface MainFrameTitle {
 
     /**
+     * Set application name.
+     * @param applicationName the application name
+     */
+    void setApplicationName(String applicationName);
+    
+    /**
      * Clear the current database name. getCurrentDatabaseName will return null.
      */
     void clearCurrentDatabaseName();

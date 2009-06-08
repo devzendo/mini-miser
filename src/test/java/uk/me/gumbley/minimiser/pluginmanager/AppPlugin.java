@@ -53,7 +53,7 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
      * {@inheritDoc}
      */
     public String getUpdateSiteBaseURL() {
-        return null;
+        return "http://localhost/";
     }
 
 }

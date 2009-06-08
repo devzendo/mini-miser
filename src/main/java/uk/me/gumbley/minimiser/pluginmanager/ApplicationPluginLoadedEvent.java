@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.pluginmanager;
 
 
+
 /**
  * The ApplicationPlugin has been loaded, and here are its details.
  * 
@@ -8,42 +9,28 @@ package uk.me.gumbley.minimiser.pluginmanager;
  *
  */
 public final class ApplicationPluginLoadedEvent extends PluginEvent {
-    private final String mName;
-    private final String mVersion;
+    private final PluginDescriptor mPluginDescriptor;
 
     /**
-     * @param name the application plugin name
-     * @param version the application plugin version
+     * @param pluginDescriptor the plugin descriptor of the application plugin
      */
-    public ApplicationPluginLoadedEvent(final String name, final String version) {
-        mName = name;
-        mVersion = version;
+    public ApplicationPluginLoadedEvent(final PluginDescriptor pluginDescriptor) {
+        mPluginDescriptor = pluginDescriptor;
     }
 
     /**
-     * @return the application plugin name
+     * @return the pluginDescriptor
      */
-    public String getName() {
-        return mName;
+    public PluginDescriptor getPluginDescriptor() {
+        return mPluginDescriptor;
     }
 
-    /**
-     * @return the application plugin version
-     */
-    public String getVersion() {
-        return mVersion;
-    }
-    
     /**
      * {@inheritDoc}
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((mName == null) ? 0 : mName.hashCode());
-        result = prime * result + ((mVersion == null) ? 0 : mVersion.hashCode());
-        return result;
+        return mPluginDescriptor.hashCode();
     }
 
     /**
@@ -57,22 +44,15 @@ public final class ApplicationPluginLoadedEvent extends PluginEvent {
         if (obj == null) {
             return false;
         }
-        if (!ApplicationPluginLoadedEvent.class.isAssignableFrom(obj.getClass())) {
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
         final ApplicationPluginLoadedEvent other = (ApplicationPluginLoadedEvent) obj;
-        if (mName == null) {
-            if (other.mName != null) {
+        if (mPluginDescriptor == null) {
+            if (other.mPluginDescriptor != null) {
                 return false;
             }
-        } else if (!mName.equals(other.mName)) {
-            return false;
-        }
-        if (mVersion == null) {
-            if (other.mVersion != null) {
-                return false;
-            }
-        } else if (!mVersion.equals(other.mVersion)) {
+        } else if (!mPluginDescriptor.equals(other.mPluginDescriptor)) {
             return false;
         }
         return true;

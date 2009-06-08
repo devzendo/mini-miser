@@ -23,6 +23,7 @@ public final class DefaultPluginManager implements PluginManager {
             .getLogger(DefaultPluginManager.class);
     private final PluginInitialiser mPluginInitialiser;
     private final ObserverList<PluginEvent> mObserverList;
+    private final PluginRegistry mPluginRegistry;
 
     
     /**
@@ -33,6 +34,7 @@ public final class DefaultPluginManager implements PluginManager {
      */
     public DefaultPluginManager(final SpringLoader springLoader,
             final PluginRegistry pluginRegistry) {
+        mPluginRegistry = pluginRegistry;
         mObserverList = new ObserverList<PluginEvent>();
         mPluginInitialiser = new PluginInitialiser(springLoader, pluginRegistry);
     }
@@ -43,6 +45,7 @@ public final class DefaultPluginManager implements PluginManager {
      * @param pluginRegistry the PluginRegistry for storing plugin details
      */
     public DefaultPluginManager(final PluginRegistry pluginRegistry) {
+        mPluginRegistry = pluginRegistry;
         mObserverList = new ObserverList<PluginEvent>();
         mPluginInitialiser = new PluginInitialiser(null, pluginRegistry);
     }
@@ -93,8 +96,17 @@ public final class DefaultPluginManager implements PluginManager {
             throw new PluginException(warning);
         }
         
-        LOGGER.info("Notifying observers of application " + applicationPlugin.getName() + " details");
-        mObserverList.eventOccurred(new ApplicationPluginLoadedEvent(applicationPlugin.getName(), applicationPlugin.getVersion()));
+        final PluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+        LOGGER.info("Notifying observers of application " + applicationPluginDescriptor.getName() + " details");
+        final ApplicationPluginLoadedEvent appLoadedEvent = new ApplicationPluginLoadedEvent(new PluginDescriptor(
+            true,
+            applicationPluginDescriptor.getName(),
+            applicationPluginDescriptor.getVersion(),
+            applicationPluginDescriptor.getSchemaVersion(),
+            applicationPluginDescriptor.getUpdateURL(),
+            applicationPluginDescriptor.getDevelopersMailAddress()));
+        LOGGER.debug("notification event: " + appLoadedEvent);
+        mObserverList.eventOccurred(appLoadedEvent);
     }
     
     private List<Plugin> loadPluginsFromClasspath(final String propertiesResourcePath) throws PluginException {
