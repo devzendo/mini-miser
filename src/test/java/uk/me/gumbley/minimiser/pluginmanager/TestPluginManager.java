@@ -69,7 +69,8 @@ public final class TestPluginManager extends LoggingTestCase {
                     "1.0.0",
                     "1.0",
                     "http://localhost/",
-                    "bob@aol.com"))));
+                    "bob@aol.com",
+                    "(C) 2009 J. R. Bob Dobbs"))));
         EasyMock.replay(obs);
 
         mDefaultPluginManager.addPluginEventObserver(obs);

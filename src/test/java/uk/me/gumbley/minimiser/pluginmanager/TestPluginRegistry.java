@@ -27,13 +27,13 @@ public final class TestPluginRegistry {
     public void getPrerequisites() {
         mPluginRegistry = new DefaultPluginRegistry();
         mAppPluginDescriptor = new PluginDescriptor(true, 
-            "App Name", "1.0.0", "3.4", "http://localhost", "developers@appplugin.com");
+            "App Name", "1.0.0", "3.4", "http://localhost", "developers@appplugin.com", "GPL");
         mNormalPluginDescriptor = new PluginDescriptor(false,
-            "Plugin Name", "0.1.0", "4.5", "http://theirhost", "developers@plugin.co.uk");
+            "Plugin Name", "0.1.0", "4.5", "http://theirhost", "developers@plugin.co.uk", "BSD");
         mBadAppPluginDescriptor = new PluginDescriptor(true,
-            "", "", "3.4", "http://localhost", "developers@appplugin.com"); // no name or version
+            "", "", "3.4", "http://localhost", "developers@appplugin.com", "Apache"); // no name or version
         mNullDetailsAppPluginDescriptor = new PluginDescriptor(true,
-            null, null, "3.4", "http://localhost", "developers@appplugin.com"); // no name or version
+            null, null, "3.4", "http://localhost", "developers@appplugin.com", "(C) 2009 MJG"); // no name or version
     }
 
     /**

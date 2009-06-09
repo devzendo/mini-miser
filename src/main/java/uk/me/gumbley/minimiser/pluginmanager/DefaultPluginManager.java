@@ -13,7 +13,11 @@ import com.mycila.plugin.api.PluginBinding;
 
 /**
  * The Default Plugin manager obtains plugin customisation data
- * by scanning the classpath for plugin descriptions.
+ * by scanning the classpath for plugin descriptions. It loads the
+ * plugins found there, and passes them on to the PluginInitialiser
+ * for initialisation, from where they are published (as
+ * PluginDescriptors) in the PluginRegistry.
+ * 
  * 
  * @author matt
  *
@@ -104,7 +108,8 @@ public final class DefaultPluginManager implements PluginManager {
             applicationPluginDescriptor.getVersion(),
             applicationPluginDescriptor.getSchemaVersion(),
             applicationPluginDescriptor.getUpdateURL(),
-            applicationPluginDescriptor.getDevelopersMailAddress()));
+            applicationPluginDescriptor.getDevelopersContactDetails(),
+            applicationPluginDescriptor.getLicenseDetails()));
         LOGGER.debug("notification event: " + appLoadedEvent);
         mObserverList.eventOccurred(appLoadedEvent);
     }

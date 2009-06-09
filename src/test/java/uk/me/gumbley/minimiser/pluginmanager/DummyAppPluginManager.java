@@ -63,6 +63,18 @@ public final class DummyAppPluginManager implements PluginManager {
             public List<String> getBefore() {
                 return null;
             }
+
+            public String getDevelopersContactDetails() {
+                return null;
+            }
+
+            public String getLicenseDetails() {
+                return null;
+            }
+
+            public String getSchemaVersion() {
+                return null;
+            }
         };
         mDummyPlugin = new Plugin() {
 
@@ -97,6 +109,18 @@ public final class DummyAppPluginManager implements PluginManager {
             }
 
             public List<String> getBefore() {
+                return null;
+            }
+
+            public String getDevelopersContactDetails() {
+                return null;
+            }
+
+            public String getLicenseDetails() {
+                return null;
+            }
+
+            public String getSchemaVersion() {
                 return null;
             }
         };
@@ -136,9 +160,10 @@ public final class DummyAppPluginManager implements PluginManager {
                 new PluginDescriptor(true, 
                     getApplicationPlugin().getName(),
                     getApplicationPlugin().getVersion(),
-                    "2.1",
+                    getApplicationPlugin().getSchemaVersion(),
                     getApplicationPlugin().getUpdateSiteBaseURL(),
-                    "bob@aol.com")));
+                    getApplicationPlugin().getDevelopersContactDetails(),
+                    getApplicationPlugin().getLicenseDetails())));
     }
 
     /**

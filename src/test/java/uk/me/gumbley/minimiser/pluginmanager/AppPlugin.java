@@ -56,4 +56,24 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
         return "http://localhost/";
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String getDevelopersContactDetails() {
+        return "bob@aol.com";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLicenseDetails() {
+        return "(C) 2009 J. R. Bob Dobbs";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getSchemaVersion() {
+        return "1.0";
+    }
 }

@@ -16,7 +16,8 @@ public final class PluginDescriptor {
     private final String mVersion;
     private final String mSchemaVersion;
     private final String mUpdateURL;
-    private final String mDevelopersMailAddress;
+    private final String mDevelopersContactDetails;
+    private final String mLicenseDetails;
 
     /**
      * Create a plugin descriptor.
@@ -25,20 +26,24 @@ public final class PluginDescriptor {
      * @param version the application version
      * @param schemaVersion the schema version
      * @param updateURL the URL of the update site
-     * @param developersMailAddress the email address of the developers
+     * @param developersContactDetails the contact details of the
+     * developers
+     * @param licenseDetails the licensing details of this plugin
      */
     public PluginDescriptor(final boolean isApplication,
             final String name,
             final String version,
             final String schemaVersion,
             final String updateURL,
-            final String developersMailAddress) {
+            final String developersContactDetails,
+            final String licenseDetails) {
                 mIsApplication = isApplication;
                 mName = name;
                 mVersion = version;
                 mSchemaVersion = schemaVersion;
                 mUpdateURL = updateURL;
-                mDevelopersMailAddress = developersMailAddress;
+                mDevelopersContactDetails = developersContactDetails;
+                mLicenseDetails = licenseDetails;
     }
 
     /**
@@ -77,12 +82,19 @@ public final class PluginDescriptor {
     }
 
     /**
-     * @return the developers email address
+     * @return the developers contact details
      */
-    public String getDevelopersMailAddress() {
-        return mDevelopersMailAddress;
+    public String getDevelopersContactDetails() {
+        return mDevelopersContactDetails;
     }
     
+    /**
+     * @return the licenseDetails
+     */
+    public String getLicenseDetails() {
+        return mLicenseDetails;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -103,7 +115,8 @@ public final class PluginDescriptor {
             .append(this.mVersion, castObj.mVersion)
             .append(this.mSchemaVersion, castObj.mSchemaVersion)
             .append(this.mUpdateURL, castObj.mUpdateURL)
-            .append(this.mDevelopersMailAddress, castObj.mDevelopersMailAddress)
+            .append(this.mDevelopersContactDetails, castObj.mDevelopersContactDetails)
+            .append(this.mLicenseDetails, castObj.mLicenseDetails)
             .append(this.mIsApplication, castObj.mIsApplication)
             .isEquals();
     }
@@ -119,7 +132,8 @@ public final class PluginDescriptor {
             .append(this.mVersion)
             .append(this.mSchemaVersion)
             .append(this.mUpdateURL)
-            .append(this.mDevelopersMailAddress)
+            .append(this.mDevelopersContactDetails)
+            .append(this.mLicenseDetails)
             .append(this.mIsApplication)
             .toHashCode();
     }
@@ -137,10 +151,12 @@ public final class PluginDescriptor {
         sb.append(mVersion);
         sb.append(" schema:");
         sb.append(mSchemaVersion);
-        sb.append(" updateURL: ");
+        sb.append(" updateURL:");
         sb.append(mUpdateURL);
-        sb.append(" email:");
-        sb.append(mDevelopersMailAddress);
+        sb.append(" contact:");
+        sb.append(mDevelopersContactDetails);
+        sb.append(" license:");
+        sb.append(mLicenseDetails);
         return sb.toString();
     }
 }

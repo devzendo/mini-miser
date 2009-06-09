@@ -40,4 +40,25 @@ public final class NormalPlugin extends AbstractPlugin implements Plugin {
     public String getUpdateSiteBaseURL() {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getDevelopersContactDetails() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getLicenseDetails() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getSchemaVersion() {
+        return null;
+    }
 }

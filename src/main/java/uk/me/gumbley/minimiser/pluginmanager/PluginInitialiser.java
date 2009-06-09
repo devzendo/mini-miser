@@ -81,14 +81,22 @@ public final class PluginInitialiser {
         }
     }
 
-    private PluginDescriptor getDescriptorFromPlugin(final Plugin plugin) {
-        return new PluginDescriptor(
-            plugin instanceof ApplicationPlugin, 
-            plugin.getName(),
-            plugin.getVersion(),
-            "1.0", /*plugin.getSchemaVersion(),*/ // TODO plugins need a schema version
-            plugin.getUpdateSiteBaseURL(),
-            "bob@aol.com"); //plugin.getDevelopersEmailAddress(), // TODO
+    private PluginDescriptor getDescriptorFromPlugin(final Plugin plugin) throws PluginException {
+        try {
+            final PluginDescriptor pluginDescriptor = new PluginDescriptor(
+                plugin instanceof ApplicationPlugin, 
+                plugin.getName(),
+                plugin.getVersion(),
+                plugin.getSchemaVersion(),
+                plugin.getUpdateSiteBaseURL(),
+                plugin.getDevelopersContactDetails(),
+                plugin.getLicenseDetails());
+            return pluginDescriptor;
+        } catch (final Throwable t) {
+            final String warning = "Couldn't get plugin descriptor details from plugin:" + t.getMessage();
+            LOGGER.error(warning, t);
+            throw new PluginException(warning);
+        }
     }
 
     /**
