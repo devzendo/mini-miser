@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.persistence.dao;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,9 +9,10 @@ import org.junit.Test;
 
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
-import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
+import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 
@@ -41,20 +44,52 @@ public final class TestVersionDao extends PersistenceUnittestCase {
         doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, "", new RunOnMiniMiserDatabase() {
             
             public void runOnMiniMiserDatabase(final MiniMiserDatabase openedDatabase) {
-                final Version dbVersion = openedDatabase.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
+                final Plugin appPlugin = getAppPlugin();
+                Assert.assertNotNull(appPlugin);
+                checkVersionForPlugin(appPlugin, openedDatabase.getVersionDao());
+                
+                final Plugin normalPlugin = getNormalPlugin();
+                Assert.assertNotNull(normalPlugin);
+                checkVersionForPlugin(normalPlugin, openedDatabase.getVersionDao());
+            }
+
+            private Plugin getNormalPlugin() {
+                final List<Plugin> plugins = TestVersionDao.this.mPluginManager.getPlugins();
+                for (Plugin plugin : plugins) {
+                    if (!(plugin instanceof ApplicationPlugin)) {
+                        return plugin;
+                    }
+                }
+                return null;
+            }
+            
+            private Plugin getAppPlugin() {
+                final List<Plugin> plugins = TestVersionDao.this.mPluginManager.getPlugins();
+                for (Plugin plugin : plugins) {
+                    if (plugin instanceof ApplicationPlugin) {
+                        return plugin;
+                    }
+                }
+                return null;
+            }
+
+            private void checkVersionForPlugin(
+                    final Plugin plugin,
+                    final VersionDao versionDao) {
+                
+                final Version dbVersion = versionDao.findVersion(plugin.getName(), VersionableEntity.SCHEMA_VERSION);
                 LOGGER.info(String.format("... schema version returned from db should not be null - it is %s", dbVersion));
                 Assert.assertNotNull(dbVersion);
+                Assert.assertEquals(plugin.getName(), dbVersion.getPluginName());
                 Assert.assertEquals(VersionableEntity.SCHEMA_VERSION, dbVersion.getEntity());
-                Assert.assertEquals(CurrentSchemaVersion.CURRENT_SCHEMA_VERSION, dbVersion.getVersion());
+                Assert.assertEquals(plugin.getSchemaVersion(), dbVersion.getVersion());
                 //
-                final Version appVersion = openedDatabase.getVersionDao().findVersion(VersionableEntity.APPLICATION_VERSION);
+                final Version appVersion = versionDao.findVersion(plugin.getName(), VersionableEntity.APPLICATION_VERSION);
                 LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
                 Assert.assertNotNull(dbVersion);
+                Assert.assertEquals(plugin.getName(), appVersion.getPluginName());
                 Assert.assertEquals(VersionableEntity.APPLICATION_VERSION, appVersion.getEntity());
-                Assert.assertEquals(mPluginManager.getApplicationPlugin().getVersion(), appVersion.getVersion());
-                // TODO check the versions of all plugins, not
-                // just the application plugin.
-                Assert.fail("Plugin versions are not being stored in the versions table yet");
+                Assert.assertEquals(plugin.getVersion(), appVersion.getVersion());
             }
             
         });

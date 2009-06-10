@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
@@ -15,6 +16,7 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
  *
  */
 public final class Benchmarks extends PersistenceUnittestCase {
+    private static final String PLUGIN_NAME = "MyPlugin";
     private static final Logger LOGGER = Logger
             .getLogger(Benchmarks.class);
 
@@ -38,14 +40,14 @@ public final class Benchmarks extends PersistenceUnittestCase {
             final VersionDao versionDao = mmData.getVersionDao();
             // populate
             for (int i = 0; i < 1000; i++) {
-                final Version v = new Version(String.format("Benchmark%d", i), String.format("Version%d", i));
+                final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), String.format("Version%d", i));
                 versionDao.persistVersion(v);
             }
             // Reload using select by entity
             final long selectEntityStart = System.currentTimeMillis();
             for (int i = 999; i >= 0; i--) {
                 final String entityPK = String.format("Benchmark%d", i);
-                final Version v = versionDao.findVersion(entityPK);
+                final Version v = versionDao.findVersion(PLUGIN_NAME, entityPK);
                 Assert.assertNotNull(v);
                 //Assert.assertEquals(String.format("Version%d", i), v.getVersion());
                 //Assert.assertEquals(entityPK, v.getEntity());
@@ -57,7 +59,7 @@ public final class Benchmarks extends PersistenceUnittestCase {
             final long countEntityStart = System.currentTimeMillis();
             for (int i = 0; i < 1000; i++) {
                 final String entityPK = String.format("Benchmark%d", i);
-                final boolean exists = versionDao.exists(entityPK);
+                final boolean exists = versionDao.exists(PLUGIN_NAME, entityPK);
                 Assert.assertTrue(exists);
             }
             final long countEntityStop = System.currentTimeMillis();
@@ -106,13 +108,13 @@ public final class Benchmarks extends PersistenceUnittestCase {
                 final int rows = 100000;
                 // populate
                 for (int i = 0; i < rows; i++) {
-                    final Version v = new Version(String.format("Benchmark%d", i), String.format("Version%d", i));
+                    final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), String.format("Version%d", i));
                     versionDao.persistVersion(v);
                 }
                 // Reload using select by entity
                 for (int i = rows - 1; i >= 0; i--) {
                     final String entityPK = String.format("Benchmark%d", i);
-                    final Version v = versionDao.findVersion(entityPK);
+                    final Version v = versionDao.findVersion(PLUGIN_NAME, entityPK);
                     Assert.assertNotNull(v);
                     //Assert.assertEquals(String.format("Version%d", i), v.getVersion());
                     //Assert.assertEquals(entityPK, v.getEntity());

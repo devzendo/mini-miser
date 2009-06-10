@@ -8,7 +8,8 @@ import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
- * A Plugin Manager for tests that returns a single App.
+ * A Plugin Manager for tests that returns a single App, and a
+ * single normal plugin.
  * 
  * @author matt
  *
@@ -73,7 +74,7 @@ public final class DummyAppPluginManager implements PluginManager {
             }
 
             public String getSchemaVersion() {
-                return null;
+                return "1.0";
             }
         };
         mDummyPlugin = new Plugin() {
@@ -121,7 +122,7 @@ public final class DummyAppPluginManager implements PluginManager {
             }
 
             public String getSchemaVersion() {
-                return null;
+                return "0.1";
             }
         };
     }

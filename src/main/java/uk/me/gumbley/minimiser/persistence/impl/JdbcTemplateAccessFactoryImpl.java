@@ -15,9 +15,9 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
-import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 /**
@@ -33,13 +33,13 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             .getLogger(JdbcTemplateAccessFactoryImpl.class);
     private static final String[] CREATION_DDL_STRINGS = new String[] {
         "CREATE TABLE Versions("
-                + "entity VARCHAR(40) PRIMARY KEY,"
+                + "plugin VARCHAR(40),"
+                + "entity VARCHAR(40),"
                 + "version VARCHAR(40)"
                 + ")",
         "CREATE SEQUENCE Sequence START WITH 1 INCREMENT BY 1",
                 
     };
-    private static final int POPULATION_STEPS = 1;
     private static final int STATIC_CREATION_STEPS = 4;
     
     private static final Observer<PersistenceObservableEvent> IGNORING_LISTENER = new Observer<PersistenceObservableEvent>() {
@@ -53,6 +53,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
      * Construct a JDBC Template Access factory, given the
      * PluginManager so that the versions of any plugins can be
      * stored in any created / migrated databases.
+     * @param pluginManager the plugin manager
      */
     public JdbcTemplateAccessFactoryImpl(final PluginManager pluginManager) {
         mPluginManager = pluginManager;
@@ -207,14 +208,17 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         // Don't forget to adjust POPULATION_STEPS when we add steps to
         // the population.
         // TODO get this from Spring when we have a factory bean that can
-        // create a JdbcTemplate from a programmatically created
+        // create a JdbcTemplate from a programatically created
         // DataSource.
-        observer.eventOccurred(new PersistenceObservableEvent("Populating table 1 of 1"));
         final VersionDao versionDao = new JdbcTemplateVersionDao(dbDetails.getJdbcTemplate());
-        final Version schemaVersion = new Version(VersionableEntity.SCHEMA_VERSION, CurrentSchemaVersion.CURRENT_SCHEMA_VERSION);
-        versionDao.persistVersion(schemaVersion);
-        final Version appVersion = new Version(VersionableEntity.APPLICATION_VERSION, mPluginManager.getApplicationPlugin().getVersion());
-        versionDao.persistVersion(appVersion);
+        for (final Plugin plugin : mPluginManager.getPlugins()) {
+            observer.eventOccurred(new PersistenceObservableEvent("Populating table 1 of 1 for " + plugin.getName() + " plugin"));
+            final String pluginName = plugin.getName();
+            final Version schemaVersion = new Version(pluginName, VersionableEntity.SCHEMA_VERSION, plugin.getSchemaVersion());
+            versionDao.persistVersion(schemaVersion);
+            final Version appVersion = new Version(pluginName, VersionableEntity.APPLICATION_VERSION, plugin.getVersion());
+            versionDao.persistVersion(appVersion);
+        }
         // TODO more tables here...
     }
 
@@ -223,7 +227,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
      */
     public int getNumberOfDatabaseCreationSteps() {
         return CREATION_DDL_STRINGS.length
-            + POPULATION_STEPS
+            + mPluginManager.getPlugins().size()
             + STATIC_CREATION_STEPS;
     }
 }

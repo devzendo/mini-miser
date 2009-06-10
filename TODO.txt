@@ -18,9 +18,6 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
-* plugins should publish their metadata to a plugin registry, that
-  is accessed from the jdbctemplatefactory amongst others e.g.
-  dummyapppluginmanager. 
 * app plugin should have an email address or web page to which
   reports can be sent - for the problem reporter's dialog, rather
   than the @gumbley.me.uk one. 

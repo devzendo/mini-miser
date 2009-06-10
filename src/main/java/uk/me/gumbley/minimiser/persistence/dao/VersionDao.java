@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.persistence.dao;
 
 import org.springframework.dao.DataAccessException;
+
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 
 /**
@@ -19,11 +20,13 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
 public interface VersionDao {
     /**
      * Find a Version for a given entity
+     * @param pluginName the name of a plugin that should be
+     * checked for existence
      * @param entity the name of the entity whose version should be found 
      * @return a Version for a versionable entity.
      * @throws DataAccessException on database failures
      */
-    Version findVersion(String entity) throws DataAccessException;
+    Version findVersion(String pluginName, String entity) throws DataAccessException;
 
     /**
      * Store a specific Version
@@ -35,9 +38,12 @@ public interface VersionDao {
 
     /**
      * Check for existence of a specific verison
-     * @param entity the name of an entity that should be checked for existence
+     * @param pluginName the name of a plugin that should be
+     * checked for existence
+     * @param entity the name of an entity that should be checked
+     * for existence
      * @return true if it exists, false if not
      * @throws DataAccessException on database failures
      */
-    boolean exists(String entity) throws DataAccessException;
+    boolean exists(String pluginName, String entity) throws DataAccessException;
 }

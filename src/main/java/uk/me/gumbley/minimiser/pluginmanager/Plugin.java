@@ -56,6 +56,9 @@ public interface Plugin extends com.mycila.plugin.api.Plugin {
      * this is the Application Plugin, in the help menu, main frame
      * title bar, and other displays wherever the application name
      * is shown.
+     * 
+     * The column used to store this in the database is 40
+     * characters wide.
      *  
      * @return the name of this plugin
      */

@@ -13,9 +13,9 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.closer.Closer;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
-import uk.me.gumbley.minimiser.persistence.domain.CurrentSchemaVersion;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 
@@ -279,21 +279,19 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
                 String.format("There are %d files in the dir, this should be positive",
                     numberOfFilesInDatabaseDirectory),
                     numberOfFilesInDatabaseDirectory > 0);
+
             LOGGER.info(String.format("... %s file(s) in dir, testing version", numberOfFilesInDatabaseDirectory));
             // is it correct?
-            final Version dbVersion = mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
-            LOGGER.info(String.format("... schema version returned from db should not be null - it is %s", dbVersion));
-            Assert.assertNotNull(dbVersion);
-            Assert.assertEquals(VersionableEntity.SCHEMA_VERSION, dbVersion.getEntity());
-            Assert.assertEquals(CurrentSchemaVersion.CURRENT_SCHEMA_VERSION, dbVersion.getVersion());
-            //
-            final Version appVersion = mmData.getVersionDao().findVersion(VersionableEntity.APPLICATION_VERSION);
-            LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
-            Assert.assertNotNull(dbVersion);
-            Assert.assertEquals(VersionableEntity.APPLICATION_VERSION, appVersion.getEntity());
-            Assert.assertEquals(mPluginManager.getApplicationPlugin().getVersion(), appVersion.getVersion());
             // The versions of the plugins will be checked for in
             // TestVersionDao so don't be exhaustive here.
+            final Plugin appPlugin = mPluginManager.getApplicationPlugin();
+            final Version dbVersion = mmData.getVersionDao().findVersion(appPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
+            LOGGER.info(String.format("... schema version returned from db should not be null - it is %s", dbVersion));
+            Assert.assertNotNull(dbVersion);
+            //
+            final Version appVersion = mmData.getVersionDao().findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+            LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
+            Assert.assertNotNull(dbVersion);
             
             // Here, ensure the complete design of the static data populated
             // in the database is checked for consistency here.
@@ -358,7 +356,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
             mmData.close();
             assertDatabaseShouldBeClosed(dbName);
             LOGGER.info("... now trying to getVersionDao");
-            mmData.getVersionDao().findVersion(VersionableEntity.SCHEMA_VERSION);
+            mmData.getVersionDao().findVersion(null, VersionableEntity.SCHEMA_VERSION);
         } finally {
             LOGGER.info("... deleting");
             deleteDatabaseFiles(dbName);
