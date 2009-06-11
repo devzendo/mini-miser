@@ -53,7 +53,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
      * Create the DefaultMessageQueueViewer given its factory.
      * @param factory this viewer's factory
      * @param rendererFactory the message renderer factory
-     * @param PluginRegistry the plugin registry
+     * @param pluginRegistry the plugin registry
      */
     public DefaultMessageQueueViewer(final MessageQueueViewerFactory factory,
             final MessageRendererFactory rendererFactory,

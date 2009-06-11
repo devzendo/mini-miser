@@ -69,12 +69,16 @@ public final class DummyAppPluginManager implements PluginManager {
                 return null;
             }
 
-            public String getLicenseDetails() {
+            public String getShortLicenseDetails() {
                 return null;
             }
 
             public String getSchemaVersion() {
                 return "1.0";
+            }
+
+            public String getFullLicenceDetailsResourcePath() {
+                return null;
             }
         };
         mDummyPlugin = new Plugin() {
@@ -117,12 +121,16 @@ public final class DummyAppPluginManager implements PluginManager {
                 return null;
             }
 
-            public String getLicenseDetails() {
+            public String getShortLicenseDetails() {
                 return null;
             }
 
             public String getSchemaVersion() {
                 return "0.1";
+            }
+
+            public String getFullLicenceDetailsResourcePath() {
+                return null;
             }
         };
     }
@@ -164,7 +172,8 @@ public final class DummyAppPluginManager implements PluginManager {
                     getApplicationPlugin().getSchemaVersion(),
                     getApplicationPlugin().getUpdateSiteBaseURL(),
                     getApplicationPlugin().getDevelopersContactDetails(),
-                    getApplicationPlugin().getLicenseDetails())));
+                    getApplicationPlugin().getShortLicenseDetails(),
+                    getApplicationPlugin().getFullLicenceDetailsResourcePath())));
     }
 
     /**

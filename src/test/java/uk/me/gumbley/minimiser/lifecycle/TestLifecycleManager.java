@@ -1,8 +1,10 @@
 package uk.me.gumbley.minimiser.lifecycle;
 
 import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 import uk.me.gumbley.minimiser.util.OrderMonitor;
@@ -144,6 +146,5 @@ public final class TestLifecycleManager extends SpringLoaderUnittestCase {
         Assert.assertEquals("c shutdown", shutdownOrdering.get(0));
         Assert.assertEquals("b shutdown", shutdownOrdering.get(1));
         Assert.assertEquals("a shutdown", shutdownOrdering.get(2));
-        
     }
 }

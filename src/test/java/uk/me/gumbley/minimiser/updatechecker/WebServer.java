@@ -23,7 +23,7 @@ public final class WebServer {
     /**
      * @param baseURL the base URL - the port that the server is
      * bound to is retrieved from here.
-     * @throws IOException 
+     * @throws IOException on server error
      */
     public WebServer(final String baseURL) throws IOException {
         mAlive = true;

@@ -90,7 +90,8 @@ public final class PluginInitialiser {
                 plugin.getSchemaVersion(),
                 plugin.getUpdateSiteBaseURL(),
                 plugin.getDevelopersContactDetails(),
-                plugin.getLicenseDetails());
+                plugin.getShortLicenseDetails(),
+                plugin.getFullLicenceDetailsResourcePath());
             return pluginDescriptor;
         } catch (final Throwable t) {
             final String warning = "Couldn't get plugin descriptor details from plugin:" + t.getMessage();

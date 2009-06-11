@@ -140,7 +140,27 @@ public interface Plugin extends com.mycila.plugin.api.Plugin {
      * 
      * @return short copyright/license text.
      */
-    String getLicenseDetails();
+    String getShortLicenseDetails();
+    
+    /**
+     * Obtain a path to a resource file that contains the copyright
+     * or license text of this plugin. Used by the About dialog.
+     * 
+     * This resource can be a .txt or .html/.htm file; it will be
+     * shown in a text or HTML rendered component accordingly.
+     * 
+     * If left null or blank, an empty tab will be shown in the
+     * About box. If the resource cannot be found, the tab will
+     * indicate this.
+     * 
+     * If you use the GPL version 2, you may use the framework's
+     * copy of this text by returning "COPYING.txt" here.
+     * 
+     * e.g. META-INF/minimiser/ApachePublicLicense2.html
+     * 
+     * @return a resource path
+     */
+    String getFullLicenceDetailsResourcePath();
     
     /**
      * Shut down the plugin, freeing any resources. Called by the

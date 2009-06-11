@@ -15,16 +15,20 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
+import org.apache.commons.lang.StringUtils;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.CursorManager;
+import uk.me.gumbley.minimiser.pluginmanager.PluginDescriptor;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
@@ -64,8 +68,12 @@ public final class AboutDialog extends JDialog implements
         msg.append(mPluginRegistry.getApplicationName());
         msg.append(" v");
         msg.append(mPluginRegistry.getApplicationVersion());
-        // TODO get copyright text from app plugin
-        msg.append("\n(C) 2008 Matt Gumbley");
+        msg.append("\n");
+        final PluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+        if (applicationPluginDescriptor != null
+            && !StringUtils.isBlank(applicationPluginDescriptor.getShortLicenseDetails())) {
+            msg.append(applicationPluginDescriptor.getShortLicenseDetails().trim());
+        }
 
         final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         tabbedPane.addTab("About", getAboutComponent());
@@ -113,7 +121,23 @@ public final class AboutDialog extends JDialog implements
     }
 
     private Component getLicenseComponent() {
-        return getTextResourceTextPane("COPYING.txt");
+        final PluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+        if (applicationPluginDescriptor != null
+            && !StringUtils.isBlank(applicationPluginDescriptor.getFullLicenseDetailsResourcePath())) {
+            final String licenseResourcePath = applicationPluginDescriptor.getFullLicenseDetailsResourcePath().trim();
+            if (ResourceLoader.resourceExists(licenseResourcePath)) {
+                final String lowerLicenseResourcePath = licenseResourcePath.toLowerCase();
+                if (lowerLicenseResourcePath.endsWith(".txt")) {
+                    return getTextResourceTextPane(licenseResourcePath);
+                } else if (lowerLicenseResourcePath.endsWith(".html")
+                         || lowerLicenseResourcePath.endsWith(".htm")) {
+                    return getHTMLResourceTextPane(licenseResourcePath);
+                }
+            } else {
+                return new JLabel("License text '" + licenseResourcePath + "' not found");
+            }
+        }
+        return new JLabel("");
     }
 
     private Component getCreditsComponent() {

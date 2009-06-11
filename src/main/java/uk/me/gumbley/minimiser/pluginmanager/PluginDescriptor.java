@@ -17,7 +17,8 @@ public final class PluginDescriptor {
     private final String mSchemaVersion;
     private final String mUpdateURL;
     private final String mDevelopersContactDetails;
-    private final String mLicenseDetails;
+    private final String mShortLicenseDetails;
+    private final String mFullLicenseDetailsResourcePath;
 
     /**
      * Create a plugin descriptor.
@@ -28,7 +29,10 @@ public final class PluginDescriptor {
      * @param updateURL the URL of the update site
      * @param developersContactDetails the contact details of the
      * developers
-     * @param licenseDetails the licensing details of this plugin
+     * @param shortLicenseDetails the licensing details of this
+     * plugin
+     * @param fullLicenseDetailsResourcePath the resource path of
+     * the license text/HTML file
      */
     public PluginDescriptor(final boolean isApplication,
             final String name,
@@ -36,14 +40,16 @@ public final class PluginDescriptor {
             final String schemaVersion,
             final String updateURL,
             final String developersContactDetails,
-            final String licenseDetails) {
+            final String shortLicenseDetails,
+            final String fullLicenseDetailsResourcePath) {
                 mIsApplication = isApplication;
                 mName = name;
                 mVersion = version;
                 mSchemaVersion = schemaVersion;
                 mUpdateURL = updateURL;
                 mDevelopersContactDetails = developersContactDetails;
-                mLicenseDetails = licenseDetails;
+                mShortLicenseDetails = shortLicenseDetails;
+                mFullLicenseDetailsResourcePath = fullLicenseDetailsResourcePath;
     }
 
     /**
@@ -91,8 +97,15 @@ public final class PluginDescriptor {
     /**
      * @return the licenseDetails
      */
-    public String getLicenseDetails() {
-        return mLicenseDetails;
+    public String getShortLicenseDetails() {
+        return mShortLicenseDetails;
+    }
+
+    /**
+     * @return the fullLicenseDetailsResourcePath
+     */
+    public String getFullLicenseDetailsResourcePath() {
+        return mFullLicenseDetailsResourcePath;
     }
 
     /**
@@ -116,7 +129,8 @@ public final class PluginDescriptor {
             .append(this.mSchemaVersion, castObj.mSchemaVersion)
             .append(this.mUpdateURL, castObj.mUpdateURL)
             .append(this.mDevelopersContactDetails, castObj.mDevelopersContactDetails)
-            .append(this.mLicenseDetails, castObj.mLicenseDetails)
+            .append(this.mShortLicenseDetails, castObj.mShortLicenseDetails)
+            .append(this.mFullLicenseDetailsResourcePath, castObj.mFullLicenseDetailsResourcePath)
             .append(this.mIsApplication, castObj.mIsApplication)
             .isEquals();
     }
@@ -133,7 +147,8 @@ public final class PluginDescriptor {
             .append(this.mSchemaVersion)
             .append(this.mUpdateURL)
             .append(this.mDevelopersContactDetails)
-            .append(this.mLicenseDetails)
+            .append(this.mShortLicenseDetails)
+            .append(this.mFullLicenseDetailsResourcePath)
             .append(this.mIsApplication)
             .toHashCode();
     }
@@ -156,7 +171,9 @@ public final class PluginDescriptor {
         sb.append(" contact:");
         sb.append(mDevelopersContactDetails);
         sb.append(" license:");
-        sb.append(mLicenseDetails);
+        sb.append(mShortLicenseDetails);
+        sb.append(" license text:");
+        sb.append(mFullLicenseDetailsResourcePath);
         return sb.toString();
     }
 }

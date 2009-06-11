@@ -385,6 +385,9 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         Assert.assertTrue(getStubMenu().isViewMenuBuilt());
     }
     
+    /**
+     * @throws PluginException on error
+     */
     @Test
     public void helpMenuIsRebuiltWhenAppPluginLoaded() throws PluginException {
         final String dummyAppName = "Dummy App";

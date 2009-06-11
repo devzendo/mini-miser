@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.wiring.lifecycle;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.gui.HeadlessStatusBar;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
@@ -63,6 +64,9 @@ public final class TestStatusBarAdapterLifecycle extends SpringLoaderUnittestCas
         Assert.assertTrue(headlessStatusBar.isMessageQueueIndicatorEnabled());
     }
     
+    /**
+     * 
+     */
     @Test
     public void launchViewerButtonBoundOnStartup() {
         Assert.assertFalse(headlessStatusBar.isLaunchMessageQueueActionListenerSet());

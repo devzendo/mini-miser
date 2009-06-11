@@ -51,7 +51,7 @@ public final class NormalPlugin extends AbstractPlugin implements Plugin {
     /**
      * {@inheritDoc}
      */
-    public String getLicenseDetails() {
+    public String getShortLicenseDetails() {
         return null;
     }
 
@@ -59,6 +59,13 @@ public final class NormalPlugin extends AbstractPlugin implements Plugin {
      * {@inheritDoc}
      */
     public String getSchemaVersion() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getFullLicenceDetailsResourcePath() {
         return null;
     }
 }

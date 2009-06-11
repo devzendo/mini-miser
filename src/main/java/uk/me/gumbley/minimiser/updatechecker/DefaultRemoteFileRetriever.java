@@ -16,7 +16,7 @@ public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
     private final String mBaseUrl;
 
     /**
-     * @param baseUrl the base URL of the update site
+     * @param pluginManager the plugin manager
      */
     public DefaultRemoteFileRetriever(final PluginManager pluginManager) {
         this.mBaseUrl = pluginManager.getUpdateSiteBaseURL();

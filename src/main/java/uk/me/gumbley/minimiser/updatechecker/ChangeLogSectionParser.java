@@ -3,7 +3,6 @@ package uk.me.gumbley.minimiser.updatechecker;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,8 +31,8 @@ public final class ChangeLogSectionParser {
 
     private static final String SEPARATOR_REGEX = "\\s*[-:]?\\s*";
 
-    private Matcher versionDateTitleMatcher;
-    private InputStream logInputStream;
+    private final Matcher versionDateTitleMatcher;
+    private final InputStream logInputStream;
     
     // state used when building up a new Section
     private String versionText;
@@ -53,7 +52,7 @@ public final class ChangeLogSectionParser {
         private final String informationText;
         private final String dateText;
         private final String titleText;
-        private ComparableVersion comparableVersion;
+        private final ComparableVersion comparableVersion;
 
         /**
          * Create a Section
@@ -189,7 +188,7 @@ public final class ChangeLogSectionParser {
     }
 
     private void processChangeLogfile(final SectionHandler rangeChecker)
-            throws FileNotFoundException, IOException, ParseException {
+            throws IOException, ParseException {
         resetSectionState();
         int lineNo = 0;
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(logInputStream));

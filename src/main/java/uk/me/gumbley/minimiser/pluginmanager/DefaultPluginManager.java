@@ -109,7 +109,8 @@ public final class DefaultPluginManager implements PluginManager {
             applicationPluginDescriptor.getSchemaVersion(),
             applicationPluginDescriptor.getUpdateURL(),
             applicationPluginDescriptor.getDevelopersContactDetails(),
-            applicationPluginDescriptor.getLicenseDetails()));
+            applicationPluginDescriptor.getShortLicenseDetails(),
+            applicationPluginDescriptor.getFullLicenseDetailsResourcePath()));
         LOGGER.debug("notification event: " + appLoadedEvent);
         mObserverList.eventOccurred(appLoadedEvent);
     }

@@ -32,8 +32,7 @@ public final class MenuInitialisingLifecycle implements Lifecycle {
 
     /**
      * Construct
-     * @param mainFrame the main window, which will have been
-     * populated in the MainFrameFactory by now.
+     * @param springLoader the spring loader
      */
     public MenuInitialisingLifecycle(final SpringLoader springLoader) {
         mSpringLoader = springLoader;

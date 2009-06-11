@@ -13,6 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.apache.commons.lang.StringUtils;
+
+import uk.me.gumbley.minimiser.pluginmanager.PluginDescriptor;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
@@ -35,7 +38,8 @@ public final class ProblemDialog extends JDialog implements
      * @param exception any Exception that occurred, or null if the
      * problem isn't due to an exception.
      * @param caller the calling Thread
-     * @param pluginRegistry the plugin registry
+     * @param pluginRegistry the plugin registry which will be used
+     * to obtain details of the app
      */
     public ProblemDialog(final Frame parentFrame,
             final String whileDoing,
@@ -69,8 +73,8 @@ public final class ProblemDialog extends JDialog implements
             detail.append("\n\n");
             detail.append(exceptionDetails(exception));
         }
-        msg.append("Please copy all of the following details of the problem into an email\n");
-        msg.append("and send it to " + getEmailAddress() + ".\n");
+        msg.append("Please copy all of the following details of the problem\n");
+        msg.append("and send it to " + getContactDetails() + "\n");
 
         final JTextArea msgArea = new JTextArea(msg.toString()); 
         msgArea.setEditable(false);
@@ -151,11 +155,16 @@ public final class ProblemDialog extends JDialog implements
         }
     }
 
-    private String getEmailAddress() {
+    private String getContactDetails() {
         final StringBuilder mailaddr = new StringBuilder();
-        mailaddr.append(mPluginRegistry.getApplicationName());
-        mailaddr.append("-developers@gumbley.me.uk"); // TODO this should be a resource?
-        return mailaddr.toString().toLowerCase();
+        final PluginDescriptor appPlugin = mPluginRegistry.getApplicationPluginDescriptor();
+        if (appPlugin == null
+            || StringUtils.isBlank(appPlugin.getDevelopersContactDetails())) {
+            mailaddr.append("minimiser-dev@gumbley.me.uk"); // TODO make this a resource?
+        } else {
+            mailaddr.append(appPlugin.getDevelopersContactDetails().trim());
+        }
+        return mailaddr.toString();
     }
 
     /**

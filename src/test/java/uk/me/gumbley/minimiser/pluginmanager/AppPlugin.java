@@ -66,7 +66,7 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
     /**
      * {@inheritDoc}
      */
-    public String getLicenseDetails() {
+    public String getShortLicenseDetails() {
         return "(C) 2009 J. R. Bob Dobbs";
     }
 
@@ -75,5 +75,12 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
      */
     public String getSchemaVersion() {
         return "1.0";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getFullLicenceDetailsResourcePath() {
+        return "COPYING.txt";
     }
 }

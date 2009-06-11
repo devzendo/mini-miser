@@ -50,7 +50,7 @@ public final class AnotherAppPlugin extends AbstractPlugin implements Applicatio
     /**
      * {@inheritDoc}
      */
-    public String getLicenseDetails() {
+    public String getShortLicenseDetails() {
         return null;
     }
 
@@ -58,6 +58,13 @@ public final class AnotherAppPlugin extends AbstractPlugin implements Applicatio
      * {@inheritDoc}
      */
     public String getSchemaVersion() {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getFullLicenceDetailsResourcePath() {
         return null;
     }
 }

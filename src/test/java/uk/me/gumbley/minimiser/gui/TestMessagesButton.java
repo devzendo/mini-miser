@@ -2,11 +2,13 @@ package uk.me.gumbley.minimiser.gui;
 
 import java.awt.Color;
 import java.util.HashSet;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.util.Sleeper;
 
@@ -31,6 +33,9 @@ public final class TestMessagesButton extends LoggingTestCase {
         button = new MessagesButton(sleeper);
     }
     
+    /**
+     * 
+     */
     @After
     public void terminateWithPrejudice() {
         button.interruptThread();
