@@ -15,10 +15,10 @@ import org.junit.Test;
  */
 public final class TestPluginRegistry {
     private DefaultPluginRegistry mPluginRegistry;
-    private PluginDescriptor mAppPluginDescriptor;
+    private ApplicationPluginDescriptor mAppPluginDescriptor;
     private PluginDescriptor mNormalPluginDescriptor;
-    private PluginDescriptor mBadAppPluginDescriptor;
-    private PluginDescriptor mNullDetailsAppPluginDescriptor;
+    private ApplicationPluginDescriptor mBadAppPluginDescriptor;
+    private ApplicationPluginDescriptor mNullDetailsAppPluginDescriptor;
     
     /**
      * 
@@ -26,18 +26,17 @@ public final class TestPluginRegistry {
     @Before
     public void getPrerequisites() {
         mPluginRegistry = new DefaultPluginRegistry();
-        mAppPluginDescriptor = new PluginDescriptor(true, 
+        mAppPluginDescriptor = new ApplicationPluginDescriptor(true, 
             "App Name", "1.0.0", "3.4", "http://localhost",
-            "developers@appplugin.com", "GPL", "");
+            "developers@appplugin.com", "GPL", "License", "About");
         mNormalPluginDescriptor = new PluginDescriptor(false,
-            "Plugin Name", "0.1.0", "4.5", "http://theirhost",
-            "developers@plugin.co.uk", "BSD", "");
-        mBadAppPluginDescriptor = new PluginDescriptor(true,
+            "Plugin Name", "0.1.0", "4.5");
+        mBadAppPluginDescriptor = new ApplicationPluginDescriptor(true,
             "", "", "3.4", "http://localhost",
-            "developers@appplugin.com", "Apache", ""); // no name or version
-        mNullDetailsAppPluginDescriptor = new PluginDescriptor(true,
+            "developers@appplugin.com", "Apache", "License", "About"); // no name or version
+        mNullDetailsAppPluginDescriptor = new ApplicationPluginDescriptor(true,
             null, null, "3.4", "http://localhost",
-            "developers@appplugin.com", "(C) 2009 MJG", ""); // no name or version
+            "developers@appplugin.com", "(C) 2009 MJG", "License", "About"); // no name or version
     }
 
     /**

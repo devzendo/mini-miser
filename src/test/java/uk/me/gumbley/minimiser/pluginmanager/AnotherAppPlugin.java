@@ -67,4 +67,11 @@ public final class AnotherAppPlugin extends AbstractPlugin implements Applicatio
     public String getFullLicenceDetailsResourcePath() {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getAboutDetailsResourcePath() {
+        return null;
+    }
 }

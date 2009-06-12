@@ -15,7 +15,7 @@ import javax.swing.JTextArea;
 
 import org.apache.commons.lang.StringUtils;
 
-import uk.me.gumbley.minimiser.pluginmanager.PluginDescriptor;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPluginDescriptor;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
@@ -157,7 +157,7 @@ public final class ProblemDialog extends JDialog implements
 
     private String getContactDetails() {
         final StringBuilder mailaddr = new StringBuilder();
-        final PluginDescriptor appPlugin = mPluginRegistry.getApplicationPluginDescriptor();
+        final ApplicationPluginDescriptor appPlugin = mPluginRegistry.getApplicationPluginDescriptor();
         if (appPlugin == null
             || StringUtils.isBlank(appPlugin.getDevelopersContactDetails())) {
             mailaddr.append("minimiser-dev@gumbley.me.uk"); // TODO make this a resource?

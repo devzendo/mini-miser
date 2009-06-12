@@ -18,6 +18,8 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
+* update checker needs to do updates for all plugins
+
 * if there is no app plugin, the framework should terminate after
   displaying the problem reporter - needs to be a way to indicate
   a fatal error to the lifecycle manager that shuts down the

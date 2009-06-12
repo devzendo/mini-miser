@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public final class DefaultPluginRegistry implements PluginRegistry {
     private final Set<PluginDescriptor> mPluginDescriptors;
-    private PluginDescriptor mApplicationPluginDescriptor;
+    private ApplicationPluginDescriptor mApplicationPluginDescriptor;
 
     /**
      * Construct the default plugin registry
@@ -25,7 +25,7 @@ public final class DefaultPluginRegistry implements PluginRegistry {
     /**
      * {@inheritDoc}
      */
-    public PluginDescriptor getApplicationPluginDescriptor() {
+    public ApplicationPluginDescriptor getApplicationPluginDescriptor() {
         return mApplicationPluginDescriptor;
     }
 
@@ -44,7 +44,7 @@ public final class DefaultPluginRegistry implements PluginRegistry {
             if (mApplicationPluginDescriptor != null && !mApplicationPluginDescriptor.equals(pluginDescriptor)) {
                 throw new IllegalStateException("Cannot add multiple application plugin descriptors");
             }
-            mApplicationPluginDescriptor = pluginDescriptor;
+            mApplicationPluginDescriptor = (ApplicationPluginDescriptor) pluginDescriptor;
         }
         mPluginDescriptors.add(pluginDescriptor);
     }

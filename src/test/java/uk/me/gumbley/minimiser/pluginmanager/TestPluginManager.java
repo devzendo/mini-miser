@@ -63,7 +63,7 @@ public final class TestPluginManager extends LoggingTestCase {
     public void loadingApplicationPluginFiresListeners() throws PluginException {
         final Observer<PluginEvent> obs = EasyMock.createStrictMock(Observer.class);
         obs.eventOccurred(EasyMock.eq(
-            new ApplicationPluginLoadedEvent(new PluginDescriptor(
+            new ApplicationPluginLoadedEvent(new ApplicationPluginDescriptor(
                     true,
                     "Application",
                     "1.0.0",
@@ -71,7 +71,8 @@ public final class TestPluginManager extends LoggingTestCase {
                     "http://localhost/",
                     "bob@aol.com",
                     "(C) 2009 J. R. Bob Dobbs",
-                    "COPYING.txt"))));
+                    "COPYING.txt",
+                    "About.txt"))));
         EasyMock.replay(obs);
 
         mDefaultPluginManager.addPluginEventObserver(obs);

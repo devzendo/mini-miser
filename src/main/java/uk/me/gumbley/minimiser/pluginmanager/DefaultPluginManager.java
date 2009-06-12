@@ -102,15 +102,7 @@ public final class DefaultPluginManager implements PluginManager {
         
         final PluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
         LOGGER.info("Notifying observers of application " + applicationPluginDescriptor.getName() + " details");
-        final ApplicationPluginLoadedEvent appLoadedEvent = new ApplicationPluginLoadedEvent(new PluginDescriptor(
-            true,
-            applicationPluginDescriptor.getName(),
-            applicationPluginDescriptor.getVersion(),
-            applicationPluginDescriptor.getSchemaVersion(),
-            applicationPluginDescriptor.getUpdateURL(),
-            applicationPluginDescriptor.getDevelopersContactDetails(),
-            applicationPluginDescriptor.getShortLicenseDetails(),
-            applicationPluginDescriptor.getFullLicenseDetailsResourcePath()));
+        final ApplicationPluginLoadedEvent appLoadedEvent = new ApplicationPluginLoadedEvent(applicationPluginDescriptor);
         LOGGER.debug("notification event: " + appLoadedEvent);
         mObserverList.eventOccurred(appLoadedEvent);
     }

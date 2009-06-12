@@ -83,15 +83,26 @@ public final class PluginInitialiser {
 
     private PluginDescriptor getDescriptorFromPlugin(final Plugin plugin) throws PluginException {
         try {
+            final boolean isApplicationPlugin = plugin instanceof ApplicationPlugin;
+            if (isApplicationPlugin) {
+                final ApplicationPlugin applicationPlugin = (ApplicationPlugin) plugin;
+                final ApplicationPluginDescriptor appLicationPluginDescriptor = new ApplicationPluginDescriptor(
+                    isApplicationPlugin, 
+                    applicationPlugin.getName(),
+                    applicationPlugin.getVersion(),
+                    applicationPlugin.getSchemaVersion(),
+                    applicationPlugin.getUpdateSiteBaseURL(),
+                    applicationPlugin.getDevelopersContactDetails(),
+                    applicationPlugin.getShortLicenseDetails(),
+                    applicationPlugin.getFullLicenceDetailsResourcePath(),
+                    applicationPlugin.getAboutDetailsResourcePath());
+                return appLicationPluginDescriptor;
+            }
             final PluginDescriptor pluginDescriptor = new PluginDescriptor(
-                plugin instanceof ApplicationPlugin, 
+                isApplicationPlugin, 
                 plugin.getName(),
                 plugin.getVersion(),
-                plugin.getSchemaVersion(),
-                plugin.getUpdateSiteBaseURL(),
-                plugin.getDevelopersContactDetails(),
-                plugin.getShortLicenseDetails(),
-                plugin.getFullLicenceDetailsResourcePath());
+                plugin.getSchemaVersion());
             return pluginDescriptor;
         } catch (final Throwable t) {
             final String warning = "Couldn't get plugin descriptor details from plugin:" + t.getMessage();

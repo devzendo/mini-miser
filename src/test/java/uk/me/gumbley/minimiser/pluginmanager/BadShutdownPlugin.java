@@ -49,13 +49,6 @@ public final class BadShutdownPlugin extends AbstractPlugin implements Plugin {
     /**
      * {@inheritDoc}
      */
-    public String getUpdateSiteBaseURL() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public String getDevelopersContactDetails() {
         return null;
     }

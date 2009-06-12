@@ -12,7 +12,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * the framework also makes several lifecycle method calls into
  * the plugin, in order:
  * <ul>
- * <li> getName and getVersion are called</li>
+ * <li> getName() and getVersion() are called</li>
  * <li> getApplicationContexts() allows the plugin to register
  *      any custom XML application context files provided as
  *      resources</li>
@@ -27,14 +27,6 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * <ul>
  * <li> getSchemaVersion() is called when this plugin's database
  *      schema is being checked or stored in the database.
- * <li> getUpdateSiteURL() is called whenever update availability
- *      checks are being performed, if this facility has been
- *      enabled
- * <li> getDevelopersContactDetails() is called whenever this info
- *      is displayed to the user, e.g. in the About or Problem
- *      dialogs.
- * <li> getLicenseDetails() is called whenever the plugin is being
- *      described, e.g. in the About dialog.
  * </ul>
  * <p/>
  * Upon system shutdown, the following calls will be made, in
@@ -109,58 +101,6 @@ public interface Plugin extends com.mycila.plugin.api.Plugin {
      * @return the database schema version of this plugin
      */
     String getSchemaVersion();
-    
-    /**
-     * Where is the update site for this plugin?
-     * 
-     * The files 'version.txt' and 'changes'txt' should be
-     * available at this URL.
-     * 
-     * @return the Base URL of the update site for this plugin 
-     */
-    String getUpdateSiteBaseURL();
-
-    /**
-     * How can users of this plugin contact the developers?
-     * 
-     * This may be a personal address, or mailing list. It is
-     * displayed in the About box, and if this is the Application
-     * Plugin, shown in the Problem Reporter.
-     * 
-     * @return an email address, or could be a URL.
-     */
-    String getDevelopersContactDetails();
-
-    /**
-     * Obtain a short description of the copyright/license details
-     * of this plugin. Used by the About dialog.
-     * 
-     * e.g. (C) 2009 Algebraic, Inc.
-     * or GPL2 2009 The FrooBar project
-     * 
-     * @return short copyright/license text.
-     */
-    String getShortLicenseDetails();
-    
-    /**
-     * Obtain a path to a resource file that contains the copyright
-     * or license text of this plugin. Used by the About dialog.
-     * 
-     * This resource can be a .txt or .html/.htm file; it will be
-     * shown in a text or HTML rendered component accordingly.
-     * 
-     * If left null or blank, an empty tab will be shown in the
-     * About box. If the resource cannot be found, the tab will
-     * indicate this.
-     * 
-     * If you use the GPL version 2, you may use the framework's
-     * copy of this text by returning "COPYING.txt" here.
-     * 
-     * e.g. META-INF/minimiser/ApachePublicLicense2.html
-     * 
-     * @return a resource path
-     */
-    String getFullLicenceDetailsResourcePath();
     
     /**
      * Shut down the plugin, freeing any resources. Called by the

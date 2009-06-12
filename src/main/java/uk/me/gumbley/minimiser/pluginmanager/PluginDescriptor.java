@@ -10,15 +10,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author matt
  *
  */
-public final class PluginDescriptor {
+public class PluginDescriptor {
     private final boolean mIsApplication;
     private final String mName;
     private final String mVersion;
     private final String mSchemaVersion;
-    private final String mUpdateURL;
-    private final String mDevelopersContactDetails;
-    private final String mShortLicenseDetails;
-    private final String mFullLicenseDetailsResourcePath;
 
     /**
      * Create a plugin descriptor.
@@ -26,86 +22,43 @@ public final class PluginDescriptor {
      * @param name the application name
      * @param version the application version
      * @param schemaVersion the schema version
-     * @param updateURL the URL of the update site
-     * @param developersContactDetails the contact details of the
-     * developers
-     * @param shortLicenseDetails the licensing details of this
-     * plugin
-     * @param fullLicenseDetailsResourcePath the resource path of
-     * the license text/HTML file
      */
     public PluginDescriptor(final boolean isApplication,
             final String name,
             final String version,
-            final String schemaVersion,
-            final String updateURL,
-            final String developersContactDetails,
-            final String shortLicenseDetails,
-            final String fullLicenseDetailsResourcePath) {
-                mIsApplication = isApplication;
-                mName = name;
-                mVersion = version;
-                mSchemaVersion = schemaVersion;
-                mUpdateURL = updateURL;
-                mDevelopersContactDetails = developersContactDetails;
-                mShortLicenseDetails = shortLicenseDetails;
-                mFullLicenseDetailsResourcePath = fullLicenseDetailsResourcePath;
+            final String schemaVersion) {
+        mIsApplication = isApplication;
+        mName = name;
+        mVersion = version;
+        mSchemaVersion = schemaVersion;
     }
 
     /**
      * @return the isApplication
      */
-    public boolean isApplication() {
+    public final boolean isApplication() {
         return mIsApplication;
     }
 
     /**
      * @return the name
      */
-    public String getName() {
+    public final String getName() {
         return mName;
     }
 
     /**
      * @return the version
      */
-    public String getVersion() {
+    public final String getVersion() {
         return mVersion;
     }
 
     /**
      * @return the schemaVersion
      */
-    public String getSchemaVersion() {
+    public final String getSchemaVersion() {
         return mSchemaVersion;
-    }
-
-    /**
-     * @return the update site URL
-     */
-    public String getUpdateURL() {
-        return mUpdateURL;
-    }
-
-    /**
-     * @return the developers contact details
-     */
-    public String getDevelopersContactDetails() {
-        return mDevelopersContactDetails;
-    }
-    
-    /**
-     * @return the licenseDetails
-     */
-    public String getShortLicenseDetails() {
-        return mShortLicenseDetails;
-    }
-
-    /**
-     * @return the fullLicenseDetailsResourcePath
-     */
-    public String getFullLicenseDetailsResourcePath() {
-        return mFullLicenseDetailsResourcePath;
     }
 
     /**
@@ -127,10 +80,6 @@ public final class PluginDescriptor {
             .append(this.mName, castObj.mName)
             .append(this.mVersion, castObj.mVersion)
             .append(this.mSchemaVersion, castObj.mSchemaVersion)
-            .append(this.mUpdateURL, castObj.mUpdateURL)
-            .append(this.mDevelopersContactDetails, castObj.mDevelopersContactDetails)
-            .append(this.mShortLicenseDetails, castObj.mShortLicenseDetails)
-            .append(this.mFullLicenseDetailsResourcePath, castObj.mFullLicenseDetailsResourcePath)
             .append(this.mIsApplication, castObj.mIsApplication)
             .isEquals();
     }
@@ -145,10 +94,6 @@ public final class PluginDescriptor {
             .append(this.mName)
             .append(this.mVersion)
             .append(this.mSchemaVersion)
-            .append(this.mUpdateURL)
-            .append(this.mDevelopersContactDetails)
-            .append(this.mShortLicenseDetails)
-            .append(this.mFullLicenseDetailsResourcePath)
             .append(this.mIsApplication)
             .toHashCode();
     }
@@ -166,14 +111,6 @@ public final class PluginDescriptor {
         sb.append(mVersion);
         sb.append(" schema:");
         sb.append(mSchemaVersion);
-        sb.append(" updateURL:");
-        sb.append(mUpdateURL);
-        sb.append(" contact:");
-        sb.append(mDevelopersContactDetails);
-        sb.append(" license:");
-        sb.append(mShortLicenseDetails);
-        sb.append(" license text:");
-        sb.append(mFullLicenseDetailsResourcePath);
         return sb.toString();
     }
 }

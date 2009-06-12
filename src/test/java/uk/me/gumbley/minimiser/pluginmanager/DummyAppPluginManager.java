@@ -80,6 +80,10 @@ public final class DummyAppPluginManager implements PluginManager {
             public String getFullLicenceDetailsResourcePath() {
                 return null;
             }
+
+            public String getAboutDetailsResourcePath() {
+                return null;
+            }
         };
         mDummyPlugin = new Plugin() {
 
@@ -92,10 +96,6 @@ public final class DummyAppPluginManager implements PluginManager {
             }
 
             public SpringLoader getSpringLoader() {
-                return null;
-            }
-
-            public String getUpdateSiteBaseURL() {
                 return null;
             }
 
@@ -117,20 +117,8 @@ public final class DummyAppPluginManager implements PluginManager {
                 return null;
             }
 
-            public String getDevelopersContactDetails() {
-                return null;
-            }
-
-            public String getShortLicenseDetails() {
-                return null;
-            }
-
             public String getSchemaVersion() {
                 return "0.1";
-            }
-
-            public String getFullLicenceDetailsResourcePath() {
-                return null;
             }
         };
     }
@@ -166,14 +154,15 @@ public final class DummyAppPluginManager implements PluginManager {
             throws PluginException {
         mObserverList.eventOccurred(
             new ApplicationPluginLoadedEvent(
-                new PluginDescriptor(true, 
+                new ApplicationPluginDescriptor(true, 
                     getApplicationPlugin().getName(),
                     getApplicationPlugin().getVersion(),
                     getApplicationPlugin().getSchemaVersion(),
                     getApplicationPlugin().getUpdateSiteBaseURL(),
                     getApplicationPlugin().getDevelopersContactDetails(),
                     getApplicationPlugin().getShortLicenseDetails(),
-                    getApplicationPlugin().getFullLicenceDetailsResourcePath())));
+                    getApplicationPlugin().getFullLicenceDetailsResourcePath(),
+                    getApplicationPlugin().getAboutDetailsResourcePath())));
     }
 
     /**

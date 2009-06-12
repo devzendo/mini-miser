@@ -11,7 +11,7 @@ import java.util.List;
  *
  */
 public final class DummyAppPluginRegistry implements PluginRegistry {
-    private final PluginDescriptor mAppPluginDescriptor;
+    private final ApplicationPluginDescriptor mAppPluginDescriptor;
     
     /**
      * Create the dummy registry with a fixed app
@@ -26,9 +26,9 @@ public final class DummyAppPluginRegistry implements PluginRegistry {
      * @param version the app version
      */
     public DummyAppPluginRegistry(final String name, final String version) {
-        mAppPluginDescriptor = new PluginDescriptor(true, 
+        mAppPluginDescriptor = new ApplicationPluginDescriptor(true, 
             name, version, "1.0", "http://localhost",
-            "devs@foo.com", "GPL3", "COPYING.txt");
+            "devs@foo.com", "GPL3", "COPYING.txt", "About");
     }
     
     /**
@@ -48,7 +48,7 @@ public final class DummyAppPluginRegistry implements PluginRegistry {
     /**
      * {@inheritDoc}
      */
-    public PluginDescriptor getApplicationPluginDescriptor() {
+    public ApplicationPluginDescriptor getApplicationPluginDescriptor() {
         return mAppPluginDescriptor;
     }
 

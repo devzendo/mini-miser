@@ -26,15 +26,13 @@ public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
      * {@inheritDoc}
      */
     public String getFileContents(final String fileName) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IOException("Download not yet written");
     }
 
     /**
      * {@inheritDoc}
      */
     public File saveFileContents(final String fileName) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new IOException("Download not yet written");
     }
 }

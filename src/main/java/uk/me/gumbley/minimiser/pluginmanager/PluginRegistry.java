@@ -24,7 +24,7 @@ public interface PluginRegistry {
      * @return the application plugin's descriptor, or null
      * if none has been loaded.
      */
-    PluginDescriptor getApplicationPluginDescriptor();
+    ApplicationPluginDescriptor getApplicationPluginDescriptor();
     
     /**
      * @return the list of plugin descriptors, which could be

@@ -28,7 +28,7 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.CursorManager;
-import uk.me.gumbley.minimiser.pluginmanager.PluginDescriptor;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPluginDescriptor;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 
 /**
@@ -69,7 +69,7 @@ public final class AboutDialog extends JDialog implements
         msg.append(" v");
         msg.append(mPluginRegistry.getApplicationVersion());
         msg.append("\n");
-        final PluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+        final ApplicationPluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
         if (applicationPluginDescriptor != null
             && !StringUtils.isBlank(applicationPluginDescriptor.getShortLicenseDetails())) {
             msg.append(applicationPluginDescriptor.getShortLicenseDetails().trim());
@@ -121,23 +121,28 @@ public final class AboutDialog extends JDialog implements
     }
 
     private Component getLicenseComponent() {
-        final PluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+        final ApplicationPluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
         if (applicationPluginDescriptor != null
             && !StringUtils.isBlank(applicationPluginDescriptor.getFullLicenseDetailsResourcePath())) {
-            final String licenseResourcePath = applicationPluginDescriptor.getFullLicenseDetailsResourcePath().trim();
-            if (ResourceLoader.resourceExists(licenseResourcePath)) {
-                final String lowerLicenseResourcePath = licenseResourcePath.toLowerCase();
-                if (lowerLicenseResourcePath.endsWith(".txt")) {
-                    return getTextResourceTextPane(licenseResourcePath);
-                } else if (lowerLicenseResourcePath.endsWith(".html")
-                         || lowerLicenseResourcePath.endsWith(".htm")) {
-                    return getHTMLResourceTextPane(licenseResourcePath);
-                }
-            } else {
-                return new JLabel("License text '" + licenseResourcePath + "' not found");
-            }
+            return getAppropriateComponentForResource(applicationPluginDescriptor.getFullLicenseDetailsResourcePath().trim());
         }
-        return new JLabel("");
+        return new JLabel("No Application Plugin, or no 'licence' resource defined");
+    }
+
+    private Component getAppropriateComponentForResource(final String resourcePath) {
+        if (ResourceLoader.resourceExists(resourcePath)) {
+            final String lowerResourcePath = resourcePath.toLowerCase();
+            if (lowerResourcePath.endsWith(".txt")) {
+                return getTextResourceTextPane(resourcePath);
+            } else if (lowerResourcePath.endsWith(".html")
+                     || lowerResourcePath.endsWith(".htm")) {
+                return getHTMLResourceTextPane(resourcePath);
+            } else {
+                return new JLabel("Resource '" + resourcePath + "' is not text or HTML");
+            }
+        } else {
+            return new JLabel("Resource '" + resourcePath + "' not found");
+        }
     }
 
     private Component getCreditsComponent() {
@@ -145,7 +150,12 @@ public final class AboutDialog extends JDialog implements
     }
 
     private Component getAboutComponent() {
-        return getHTMLResourceTextPane("about.html");
+        final ApplicationPluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+        if (applicationPluginDescriptor != null
+            && !StringUtils.isBlank(applicationPluginDescriptor.getAboutDetailsResourcePath())) {
+            return getAppropriateComponentForResource(applicationPluginDescriptor.getAboutDetailsResourcePath().trim());
+        }
+        return new JLabel("No Application Plugin, or no 'about' resource defined");
     }
 
     private Component getHTMLResourceTextPane(final String resourceName) {
