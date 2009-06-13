@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.updatechecker;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
@@ -215,6 +216,13 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             progressAdapter.noApplicationVersionDeclared();
             return false;
         }
+        
+        if (StringUtils.isBlank(mPluginRegistry.getApplicationPluginDescriptor().getUpdateURL())) {
+            LOGGER.error("Update checking cannot continue since the application plugin has not declared its update URL");
+            progressAdapter.noUpdateURLDeclared();
+            return false;
+        }
+        
         LOGGER.info("All OK for check to proceed");
         return true;
     }

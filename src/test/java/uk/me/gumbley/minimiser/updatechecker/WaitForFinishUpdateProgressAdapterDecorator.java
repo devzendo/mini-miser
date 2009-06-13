@@ -52,6 +52,13 @@ public final class WaitForFinishUpdateProgressAdapterDecorator implements Update
     /**
      * {@inheritDoc}
      */
+    public void noUpdateURLDeclared() {
+        mUpdateProgressAdapter.noUpdateURLDeclared();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void commsFailure(final IOException exception) {
         mUpdateProgressAdapter.commsFailure(exception);
     }

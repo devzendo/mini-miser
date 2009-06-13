@@ -43,6 +43,13 @@ public interface UpdateProgressAdapter {
     void noApplicationVersionDeclared();
     
     /**
+     * The application plugin has not reported an update URL. This
+     * is an error. Only the finished method will be made after
+     * receiving this.
+     */
+    void noUpdateURLDeclared();
+    
+    /**
      * The remote version is the same as that installed locally. Only the
      * finished method call after this.
      */

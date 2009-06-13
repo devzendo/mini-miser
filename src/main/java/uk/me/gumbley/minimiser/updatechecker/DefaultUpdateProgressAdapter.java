@@ -46,6 +46,13 @@ public final class DefaultUpdateProgressAdapter implements UpdateProgressAdapter
     /**
      * {@inheritDoc}
      */
+    public void noUpdateURLDeclared() {
+        mStatusBar.displayTemporaryMessage("Application does not have an update site", 10);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void commsFailure(final IOException exception) {
         mStatusBar.displayTemporaryMessage("Update check failed: " + exception.getMessage(), 10);
     }

@@ -12,6 +12,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPluginDescriptor;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
@@ -172,6 +173,28 @@ public final class TestUpdateChecker extends LoggingTestCase {
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoApplicationVersion();
     }
+    
+    /**
+     * 
+     */
+    @Test(timeout = 3000)
+    public void applicationPluginHasNullUpdateBaseURL_ReportsNoURL() {
+        final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
+        pluginRegistry.addPluginDescriptor(new ApplicationPluginDescriptor(true, "Foo", "1.0", "1.0", null, "", "", "", ""));
+        createUpdateCheckerWithAppDetails(pluginRegistry);
+        checkNoUpdateURL();
+    }
+
+    /**
+     * 
+     */
+    @Test(timeout = 3000)
+    public void applicationPluginHasEmptyUpdateBaseURL_ReportsNoURL() {
+        final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
+        pluginRegistry.addPluginDescriptor(new ApplicationPluginDescriptor(true, "Foo", "1.0", "1.0", "", "", "", "", ""));
+        createUpdateCheckerWithAppDetails(pluginRegistry);
+        checkNoUpdateURL();
+    }
 
     /**
      * 
@@ -200,6 +223,25 @@ public final class TestUpdateChecker extends LoggingTestCase {
     
         final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
         adapter.noApplicationVersionDeclared();
+        adapter.finished();
+        EasyMock.replay(adapter);
+
+        startUpdateAndWait(adapter);
+        
+        EasyMock.verify(adapter);
+        
+        Assert.assertEquals(NOT_TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
+        Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
+        Assert.assertEquals(0, mMessageQueue.size());
+    }
+    
+    private void checkNoUpdateURL() {
+        mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
+        mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
+        mPrefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
+    
+        final UpdateProgressAdapter adapter = EasyMock.createStrictMock(UpdateProgressAdapter.class);
+        adapter.noUpdateURLDeclared();
         adapter.finished();
         EasyMock.replay(adapter);
 
@@ -405,6 +447,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
             public void commsFailure(final IOException exception) {
             }
             public void noApplicationVersionDeclared() {
+            }
+            public void noUpdateURLDeclared() {
             }
             public void noUpdateAvailable() {
             }
