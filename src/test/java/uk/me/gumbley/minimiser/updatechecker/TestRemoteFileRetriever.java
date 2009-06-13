@@ -41,7 +41,7 @@ public class TestRemoteFileRetriever extends LoggingTestCase {
 
         try {
             remoteFileRetriever = new DefaultRemoteFileRetriever(pluginManager);
-            Assert.assertEquals(CHANGELOG_CONTENTS, remoteFileRetriever.getFileContents(CHANGELOG_TXT));
+            Assert.assertEquals(CHANGELOG_CONTENTS, remoteFileRetriever.getFileContents("", CHANGELOG_TXT));
         } finally {
             webServer.stop();
             EasyMock.verify(pluginManager);

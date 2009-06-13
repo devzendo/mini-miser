@@ -25,14 +25,14 @@ public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
     /**
      * {@inheritDoc}
      */
-    public String getFileContents(final String fileName) throws IOException {
+    public String getFileContents(String updateBaseURL, final String fileName) throws IOException {
         throw new IOException("Download not yet written");
     }
 
     /**
      * {@inheritDoc}
      */
-    public File saveFileContents(final String fileName) throws IOException {
+    public File saveFileContents(String updateBaseURL, final String fileName) throws IOException {
         throw new IOException("Download not yet written");
     }
 }

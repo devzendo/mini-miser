@@ -16,6 +16,7 @@ public final class StubRemoteFileRetriever implements RemoteFileRetriever {
     private IOException changeLogRetrievalCommsFailureException;
     private String version;
     private String changeLogContents;
+    private String mUpdateURL;
 
     /**
      * 
@@ -48,7 +49,8 @@ public final class StubRemoteFileRetriever implements RemoteFileRetriever {
     /**
      * {@inheritDoc}
      */
-    public String getFileContents(final String fileName) throws IOException {
+    public String getFileContents(final String updateBaseURL, final String fileName) throws IOException {
+        mUpdateURL = updateBaseURL;
         if (versionNumberRetrievalCommsFailureException != null) {
             throw versionNumberRetrievalCommsFailureException;
         }
@@ -58,7 +60,8 @@ public final class StubRemoteFileRetriever implements RemoteFileRetriever {
     /**
      * {@inheritDoc}
      */
-    public File saveFileContents(final String fileName) throws IOException {
+    public File saveFileContents(final String updateBaseURL, final String fileName) throws IOException {
+        mUpdateURL = updateBaseURL;
         if (changeLogRetrievalCommsFailureException != null) {
             throw changeLogRetrievalCommsFailureException;
         }
@@ -72,4 +75,10 @@ public final class StubRemoteFileRetriever implements RemoteFileRetriever {
         return file;
     }
 
+    /**
+     * @return the update URL
+     */
+    public String getUpdateURL() {
+        return mUpdateURL;
+    }
 }

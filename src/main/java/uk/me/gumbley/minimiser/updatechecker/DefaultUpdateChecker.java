@@ -104,7 +104,9 @@ public final class DefaultUpdateChecker implements UpdateChecker {
         final String remoteVersionNumber;
         try {
             LOGGER.info("Retrieving " + VERSION_NUMBER_FILE + "...");
-            remoteVersionNumber = mRemoteFileRetriever.getFileContents(VERSION_NUMBER_FILE);
+            remoteVersionNumber = mRemoteFileRetriever.getFileContents(
+                mPluginRegistry.getApplicationPluginDescriptor().getUpdateURL(),
+                VERSION_NUMBER_FILE);
             LOGGER.info("... retrieved");
         } catch (final IOException e) {
             LOGGER.warn("Could not retrieve latest version number: " + e.getMessage());
@@ -126,7 +128,9 @@ public final class DefaultUpdateChecker implements UpdateChecker {
         File remoteChangeLogTempFile = null;
         try {
             LOGGER.info("Retrieving " + CHANGE_LOG_FILE + "...");
-            remoteChangeLogTempFile = mRemoteFileRetriever.saveFileContents(CHANGE_LOG_FILE);
+            remoteChangeLogTempFile = mRemoteFileRetriever.saveFileContents(
+                mPluginRegistry.getApplicationPluginDescriptor().getUpdateURL(),
+                CHANGE_LOG_FILE);
             LOGGER.info("... retrieved");
             
             processDownloadedChangeLog(progressAdapter, remoteVersionNumber,

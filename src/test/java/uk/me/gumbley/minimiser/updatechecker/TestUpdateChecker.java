@@ -66,7 +66,12 @@ public final class TestUpdateChecker extends LoggingTestCase {
     }
 
     private void createUpdateChecker() {
-        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", "1.0.0-SNAPSHOT");
+        //final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", "1.0.0-SNAPSHOT");
+        final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
+        pluginRegistry.addPluginDescriptor(
+            new ApplicationPluginDescriptor(
+                true, "Foo", "1.0.0-SNAPSHOT", "1.0", 
+                "http://localhost/", "", "", "", ""));
         createUpdateCheckerWithAppDetails(pluginRegistry);
     }
     
@@ -168,7 +173,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
      * 
      */
     @Test(timeout = 3000)
-    public void applicationPluginDoesNotExist_ReportsNoVersion() {
+    public void ifApplicationPluginDoesNotExistUpdateCheckerReportsNoVersion() {
         final PluginRegistry pluginRegistry = new DefaultPluginRegistry();        
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoApplicationVersion();
@@ -178,7 +183,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
      * 
      */
     @Test(timeout = 3000)
-    public void applicationPluginHasNullUpdateBaseURL_ReportsNoURL() {
+    public void ifApplicationPluginHasNullUpdateBaseURLUpdateCheckerReportsNoURL() {
         final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
         pluginRegistry.addPluginDescriptor(new ApplicationPluginDescriptor(true, "Foo", "1.0", "1.0", null, "", "", "", ""));
         createUpdateCheckerWithAppDetails(pluginRegistry);
@@ -189,7 +194,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
      * 
      */
     @Test(timeout = 3000)
-    public void applicationPluginHasEmptyUpdateBaseURL_ReportsNoURL() {
+    public void ifApplicationPluginHasEmptyUpdateBaseURLUpdateCheckerReportsNoURL() {
         final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
         pluginRegistry.addPluginDescriptor(new ApplicationPluginDescriptor(true, "Foo", "1.0", "1.0", "", "", "", "", ""));
         createUpdateCheckerWithAppDetails(pluginRegistry);
@@ -200,7 +205,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
      * 
      */
     @Test(timeout = 3000)
-    public void applicationPluginReportsUnknownVersion_ReporteNoVersion() {
+    public void ifApplicationPluginReportsUnknownVersionUpdateCheckerReporteNoVersion() {
         final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", PluginRegistry.UNKNOWN_VERSION);
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoApplicationVersion();
@@ -210,7 +215,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
      * 
      */
     @Test(timeout = 3000)
-    public void applicationPluginReportsEmptyVersion_reportsNoVersion() {
+    public void ifApplicationPluginReportsEmptyVersionUpdateCheckerReportsNoVersion() {
         final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", "");
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoApplicationVersion();
@@ -360,6 +365,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
         
+        Assert.assertEquals("http://localhost/", mRemoteFileRetriever.getUpdateURL());
         Assert.assertEquals(TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
         Assert.assertEquals(VERSION_1_0_0, mPrefs.getLastRemoteUpdateVersion());
         Assert.assertEquals(1, mMessageQueue.size());
