@@ -12,6 +12,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.messagequeue.Message;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueue;
 import uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory;
+import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
@@ -68,11 +69,6 @@ public final class TestUpdateChecker extends LoggingTestCase {
         createUpdateCheckerWithAppDetails(pluginRegistry);
     }
     
-    private void createUpdateCheckerWithNoApplicationVersion() {
-        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", PluginRegistry.UNKNOWN_VERSION);
-        createUpdateCheckerWithAppDetails(pluginRegistry);
-    }
-
     private void startUpdateAndWait(final UpdateProgressAdapter adapter) {
         final WaitForFinishUpdateProgressAdapterDecorator decoratedAdapter =
             new WaitForFinishUpdateProgressAdapterDecorator(adapter);
@@ -166,13 +162,38 @@ public final class TestUpdateChecker extends LoggingTestCase {
         
         EasyMock.verify(adapter);
     }
+
+    /**
+     * 
+     */
+    @Test(timeout = 3000)
+    public void applicationPluginDoesNotExist_ReportsNoVersion() {
+        final PluginRegistry pluginRegistry = new DefaultPluginRegistry();        
+        createUpdateCheckerWithAppDetails(pluginRegistry);
+        checkNoApplicationVersion();
+    }
+
+    /**
+     * 
+     */
+    @Test(timeout = 3000)
+    public void applicationPluginReportsUnknownVersion_ReporteNoVersion() {
+        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", PluginRegistry.UNKNOWN_VERSION);
+        createUpdateCheckerWithAppDetails(pluginRegistry);
+        checkNoApplicationVersion();
+    }
     
     /**
      * 
      */
     @Test(timeout = 3000)
-    public void applicationPluginReportsNoVersion() {
-        createUpdateCheckerWithNoApplicationVersion();
+    public void applicationPluginReportsEmptyVersion_reportsNoVersion() {
+        final PluginRegistry pluginRegistry = new DummyAppPluginRegistry("Foo", "");
+        createUpdateCheckerWithAppDetails(pluginRegistry);
+        checkNoApplicationVersion();
+    }
+
+    private void checkNoApplicationVersion() {
         mPrefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
         mPrefs.setDateOfLastUpdateAvailableCheck(NOT_TODAYS_DATE);
         mPrefs.setLastRemoteUpdateVersion(VERSION_0_9_0);
@@ -190,6 +211,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
         Assert.assertEquals(VERSION_0_9_0, mPrefs.getLastRemoteUpdateVersion());
         Assert.assertEquals(0, mMessageQueue.size());
     }
+    
     /**
      * 
      */

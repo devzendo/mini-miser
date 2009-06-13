@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * The default implementation of the PluginRegistry.
  * 
@@ -55,7 +57,7 @@ public final class DefaultPluginRegistry implements PluginRegistry {
     public String getApplicationName() {
         if (mApplicationPluginDescriptor != null) {
             final String appName = mApplicationPluginDescriptor.getName();
-            if (appName != null && appName.length() > 0) {
+            if (!StringUtils.isBlank(appName)) {
                 return appName;
             }
         }
@@ -68,7 +70,7 @@ public final class DefaultPluginRegistry implements PluginRegistry {
     public String getApplicationVersion() {
         if (mApplicationPluginDescriptor != null) {
             final String appVersion = mApplicationPluginDescriptor.getVersion();
-            if (appVersion != null && appVersion.length() > 0) {
+            if (!StringUtils.isBlank(appVersion)) {
                 return appVersion;
             }
         }

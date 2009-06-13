@@ -56,7 +56,9 @@ public final class DefaultPluginManager implements PluginManager {
 
     /**
      * {@inheritDoc}
+     * @deprecated
      */
+    @Deprecated
     public String getUpdateSiteBaseURL() {
         // TODO Auto-generated method stub
         return "http://localhost:9876";

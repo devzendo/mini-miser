@@ -209,11 +209,13 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             return false;
         }
         
+        LOGGER.debug("Application plugin version is '" + mPluginRegistry.getApplicationVersion() + "'");
         if (mPluginRegistry.getApplicationVersion().equals(PluginRegistry.UNKNOWN_VERSION)) {
             LOGGER.error("Update checking cannot continue since the application plugin has not declared its version");
             progressAdapter.noApplicationVersionDeclared();
             return false;
         }
+        LOGGER.info("All OK for check to proceed");
         return true;
     }
 
