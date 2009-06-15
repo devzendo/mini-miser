@@ -123,7 +123,7 @@
 	<dependency>
 	    <groupId>org.simpleframework</groupId>
 	    <artifactId>simple</artifactId>
-	    <version>4.1.6</version>
+	    <version>4.1.10</version>
 	    <scope>test</scope>
 	</dependency>
 	

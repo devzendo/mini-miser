@@ -371,9 +371,7 @@
 		<constructor-arg ref="statusBar" />
 	</bean>
 
-	<bean id="remoteFileRetriever" class="uk.me.gumbley.minimiser.updatechecker.DefaultRemoteFileRetriever">
-		<constructor-arg ref="pluginManager" />
-	</bean>
+	<bean id="remoteFileRetriever" class="uk.me.gumbley.minimiser.updatechecker.DefaultRemoteFileRetriever" />
 
 	<bean id="changeLogTransformer" class="uk.me.gumbley.minimiser.updatechecker.DefaultChangeLogTransformer">
 	</bean>
