@@ -22,20 +22,20 @@ import org.simpleframework.transport.connect.SocketConnection;
  */
 public final class WebServer implements Container {
     private static final Logger LOGGER = Logger.getLogger(WebServer.class);
-    private volatile boolean mAlive;
     private Connection mConnection;
     private final HashMap<String, Map<String, String>> mData;
     
     /**
-     * Create a web server for the given base URL on the given port
+     * Factory for creating a web server on the given port.
      * @param port the port at which the server can be contacted
-     * @return
-     * @throws IOException
+     * @return the WebServer
+     * @throws IOException on creation failure, typically port in
+     * use.
      */
     public static WebServer createServer(final int port) throws IOException {
         final WebServer container = new WebServer();
-        Connection connection = new SocketConnection(container);
-        SocketAddress address = new InetSocketAddress(port);
+        final Connection connection = new SocketConnection(container);
+        final SocketAddress address = new InetSocketAddress(port);
 
         connection.connect(address);
         container.setConnection(connection);
@@ -46,7 +46,7 @@ public final class WebServer implements Container {
      * @throws IOException on server error
      */
     private WebServer() throws IOException {
-        mData = new HashMap<String, Map<String,String>>();
+        mData = new HashMap<String, Map<String, String>>();
     }
     
     private void setConnection(final Connection connection) {
@@ -68,6 +68,10 @@ public final class WebServer implements Container {
      * Serve the given contents for the given file, acting as a
      * server for multiple URLs. i.e. the same file name could
      * return different contents for different URLs.
+     * <p>
+     * Note that due to a limitation in the Simple HTTP Server
+     * this server is unable to differentiate requests on their
+     * intended host/port.
      * @param baseURL the URL to serve this file/contents for
      * @param fileName the name of the file
      * @param contents its contents
