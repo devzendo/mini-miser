@@ -28,9 +28,6 @@ public final class DefaultUpdateChecker implements UpdateChecker {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultUpdateChecker.class);
 
-    private static final String VERSION_NUMBER_FILE = "version.txt";
-    private static final String CHANGE_LOG_FILE = "changes.txt";
-
     private final Prefs mPrefs;
     private final MessageQueue mMessageQueue;
     private final RemoteFileRetriever mRemoteFileRetriever;
@@ -113,6 +110,9 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             progressAdapter.commsFailure(e);
             return;
         }
+        // TODO may need to do some massaging of the remote
+        // version number, removing whitespace, extra newlines,
+        // etc.
         LOGGER.info("Remote version number is " + remoteVersionNumber);
         final String lastRemoteUpdateVersion = mPrefs.getLastRemoteUpdateVersion();
         LOGGER.info("Last remote update version number is " + lastRemoteUpdateVersion);
@@ -232,6 +232,9 @@ public final class DefaultUpdateChecker implements UpdateChecker {
     }
 
     private void lastSuccessfulUpdateWasToday() {
-        mPrefs.setDateOfLastUpdateAvailableCheck(mTodayGenerator.getUKDateString());
+        final String dateString = mTodayGenerator.getUKDateString();
+        assert dateString != null;
+        LOGGER.debug("Setting date of last update available check to '" + dateString + "'");
+        mPrefs.setDateOfLastUpdateAvailableCheck(dateString);
     }
 }

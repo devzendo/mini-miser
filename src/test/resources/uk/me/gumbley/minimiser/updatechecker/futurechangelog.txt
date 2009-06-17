@@ -1,0 +1,22 @@
+# MiniMiser Change history
+
+
+v3.0.0 - witty title goes here
+==============================
+This is the first major release.
+Blah
+Blah
+Blah
+
+
+
+v7.9.8 another witty title
+------
+Fixed some bugs
+* with a
+* simple list
+and some text
+
+v8.9
+thought I'd release again
+* a list of one is valid

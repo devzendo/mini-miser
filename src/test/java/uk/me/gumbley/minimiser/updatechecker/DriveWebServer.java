@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
+import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 
 /**
@@ -39,7 +40,10 @@ public final class DriveWebServer {
         
         try {
             final WebServer server = WebServer.createServer(port);
-            server.serveFileContents("http://localhost:" + port, "test.txt", "This is a test file");
+            final String baseURL = "http://localhost:" + port;
+            server.serveFileContents(baseURL, UpdateChecker.VERSION_NUMBER_FILE, "8.9");
+            server.serveFileContents(baseURL, UpdateChecker.CHANGE_LOG_FILE,
+                ResourceLoader.readResource("uk/me/gumbley/minimiser/updatechecker/futurechangelog.txt"));
 
             GUIUtils.runOnEventThread(new Runnable() {
 

@@ -42,14 +42,18 @@ public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
             LOGGER.debug("Response as string: '" + responseString + "'");
             return responseString;
         } catch (final UnknownHostException e) {
-            LOGGER.warn("Unknown host: " + e.getMessage());
-            // Just having the host name as the exception text is not helpful
-            throw new IOException("The '" + e.getMessage() + " server is unknown");
-            // WOZERE - replicate this exception logic in saveFileContents, and extract duplicates
+            throw convertUnknownHostExceptionToUsefulIOException(e);
         } catch (final IOException e) {
             LOGGER.warn("Could not perform HTTP GET: " + e.getMessage(), e);
             throw e;
         }
+    }
+
+    private IOException convertUnknownHostExceptionToUsefulIOException(
+            final UnknownHostException e) {
+        LOGGER.warn("Unknown host: " + e.getMessage());
+        // Just having the host name as the exception text is not helpful
+        return new IOException("The '" + e.getMessage() + " server is unknown");
     }
 
     private HttpMethod createGetMethod(final String fileName) {
@@ -82,13 +86,20 @@ public final class DefaultRemoteFileRetriever implements RemoteFileRetriever {
             final HostConfiguration hostConfiguration = createHostConfiguration(updateBaseURL);
             final HttpMethod method = createGetMethod(fileName);
             final HttpClient httpClient = new HttpClient();
-            final int result = httpClient.executeMethod(hostConfiguration, method);
-            LOGGER.debug("Result is " + result);
-            final InputStream responseBodyAsStream = method.getResponseBodyAsStream();
             try {
-                copyStream(responseBodyAsStream, fileOutputStream);
-            } finally {
-                responseBodyAsStream.close();
+                final int result = httpClient.executeMethod(hostConfiguration, method);
+                LOGGER.debug("Result is " + result);
+                final InputStream responseBodyAsStream = method.getResponseBodyAsStream();
+                try {
+                    copyStream(responseBodyAsStream, fileOutputStream);
+                } finally {
+                    responseBodyAsStream.close();
+                }
+            } catch (final UnknownHostException e) {
+                throw convertUnknownHostExceptionToUsefulIOException(e);
+            } catch (final IOException e) {
+                LOGGER.warn("Could not perform HTTP GET: " + e.getMessage(), e);
+                throw e;
             }
         } finally {
             fileOutputStream.close();

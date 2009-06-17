@@ -79,7 +79,7 @@ public final class TestRemoteFileRetriever extends LoggingTestCase {
     }
 
     private String loadFile(final File savedFile) throws IOException {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final BufferedReader br = new BufferedReader(new FileReader(savedFile));
         while (true) {
             final String line = br.readLine();
