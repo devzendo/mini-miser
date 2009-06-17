@@ -3,6 +3,7 @@ MiniMiser - a simple embedded database client framework
 Current outstanding small tasks:
 
 BUGS:
+* beancounter: clean out config, restart - about text says minimiser 
 * triggering an update check causes an NPE (that's correctly
   reported using the problem reporter). Closing the problem
   reprter, the status bar still says checking for updates. 
@@ -18,8 +19,6 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
-* update checker needs to do updates for all plugins
-
 * if there is no app plugin, the framework should terminate after
   displaying the problem reporter - needs to be a way to indicate
   a fatal error to the lifecycle manager that shuts down the
