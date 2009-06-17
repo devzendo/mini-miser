@@ -1,7 +1,6 @@
 package uk.me.gumbley.minimiser.gui;
 
 import java.awt.Color;
-import org.apache.log4j.Logger;
 
 /**
  * A ColorTransform is initialised with a start and an end color. It computes
@@ -18,16 +17,16 @@ import org.apache.log4j.Logger;
  *
  */
 public final class ColorTransform {
-    private static final Logger LOGGER = Logger.getLogger(ColorTransform.class);
+//    private static final Logger LOGGER = Logger.getLogger(ColorTransform.class);
 
     private final Color startColor;
     private final Color endColor;
-    private int redDistance;
-    private int greenDistance;
-    private int blueDistance;
-    private int dRed;
-    private int dGreen;
-    private int dBlue;
+    private final int redDistance;
+    private final int greenDistance;
+    private final int blueDistance;
+    private final int dRed;
+    private final int dGreen;
+    private final int dBlue;
 
     /**
      * Initialise the ColorTransform with its start and end colors.
@@ -37,7 +36,7 @@ public final class ColorTransform {
     public ColorTransform(final Color start, final Color end) {
         this.startColor = start;
         this.endColor = end;
-        LOGGER.debug("ColorTransform(" + startColor + ", " + endColor + ")");
+//        LOGGER.debug("ColorTransform(" + startColor + ", " + endColor + ")");
         // calculate distances
         redDistance = Math.abs(startColor.getRed() - endColor.getRed());
         greenDistance = Math.abs(startColor.getGreen() - endColor.getGreen());
@@ -48,8 +47,8 @@ public final class ColorTransform {
         dRed = startColor.getRed() > endColor.getRed() ? -1 : 1;
         dGreen = startColor.getGreen() > endColor.getGreen() ? -1 : 1;
         dBlue = startColor.getBlue() > endColor.getBlue() ? -1 : 1;
-        LOGGER.debug("Distance: red: " + redDistance + " green: " + greenDistance + " blue: " + blueDistance);
-        LOGGER.debug("Direction: red: " + dRed + " green: " + dGreen + " blue: " + dBlue);
+//        LOGGER.debug("Distance: red: " + redDistance + " green: " + greenDistance + " blue: " + blueDistance);
+//        LOGGER.debug("Direction: red: " + dRed + " green: " + dGreen + " blue: " + dBlue);
     }
 
     /**
@@ -64,7 +63,7 @@ public final class ColorTransform {
         if (proportion < 0.0 || proportion > 1.0) {
             throw new IllegalArgumentException("Proportion of " + proportion + " is outside the range [0.0, 1.0]");
         }
-        LOGGER.debug("Color " + proportion + " between " + startColor + " and " + endColor);
+//        LOGGER.debug("Color " + proportion + " between " + startColor + " and " + endColor);
         final double redShift = (dRed * proportion * redDistance);
         final double newRed = startColor.getRed() + redShift; 
         final double greenShift = (dGreen * proportion * greenDistance);
@@ -74,9 +73,9 @@ public final class ColorTransform {
         final int iNewRed = roundBounded(newRed);
         final int iNewGreen = roundBounded(newGreen);
         final int iNewBlue = roundBounded(newBlue);
-        LOGGER.debug("New red: " + newRed + " = " + iNewRed + "; shift = " + redShift);
-        LOGGER.debug("New green: " + newGreen + " = " + iNewGreen + "; shift = " + greenShift);
-        LOGGER.debug("New blue: " + newBlue + " = " + iNewBlue + "; shift = " + blueShift);
+//        LOGGER.debug("New red: " + newRed + " = " + iNewRed + "; shift = " + redShift);
+//        LOGGER.debug("New green: " + newGreen + " = " + iNewGreen + "; shift = " + greenShift);
+//        LOGGER.debug("New blue: " + newBlue + " = " + iNewBlue + "; shift = " + blueShift);
         return new Color(iNewRed, iNewGreen, iNewBlue);
     }
 
