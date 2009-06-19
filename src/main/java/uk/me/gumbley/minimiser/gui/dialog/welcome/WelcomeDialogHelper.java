@@ -36,6 +36,9 @@ public final class WelcomeDialogHelper {
         mParentFrame = springLoader.getBean("mainFrame", Frame.class);
         mCursorManager = springLoader.getBean("cursorManager", CursorManager.class);
         mPluginRegistry = springLoader.getBean("pluginRegistry", PluginRegistry.class);
+        assert mParentFrame != null;
+        assert mCursorManager != null;
+        assert mPluginRegistry != null;
     }
     
     /**
@@ -56,6 +59,7 @@ public final class WelcomeDialogHelper {
         assert SwingUtilities.isEventDispatchThread();
         final WelcomeDialog dialog = new WelcomeDialog(mParentFrame,
             mCursorManager, mPluginRegistry, isWelcome);
+        dialog.postConstruct();
         dialog.pack();
         dialog.setLocationRelativeTo(mParentFrame);
         dialog.setVisible(true);

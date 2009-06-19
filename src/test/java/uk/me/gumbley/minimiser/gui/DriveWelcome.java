@@ -53,6 +53,7 @@ public final class DriveWelcome {
                     public void actionPerformed(final ActionEvent e) {
                         final PluginRegistry pluginRegistry = new DummyAppPluginRegistry();
                         final WelcomeDialog welcome = new WelcomeDialog(frame, cursorManager, pluginRegistry, true);
+                        welcome.postConstruct();
                         welcome.pack();
                         welcome.setVisible(true);
                     }

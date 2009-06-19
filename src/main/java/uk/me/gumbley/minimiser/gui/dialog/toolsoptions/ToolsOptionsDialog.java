@@ -148,6 +148,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
                 final ToolsOptionsDialog dialog =
                     new ToolsOptionsDialog(parentFrame, cursorManager,
                                            prefs, tabFactory);
+                dialog.postConstruct();
                 dialog.pack();
                 dialog.setLocationRelativeTo(parentFrame);
                 dialog.setVisible(true);

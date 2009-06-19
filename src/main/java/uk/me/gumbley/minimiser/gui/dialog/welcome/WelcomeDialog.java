@@ -22,10 +22,13 @@ import javax.swing.JSeparator;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.StringUtils;
+
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPluginDescriptor;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.updatechecker.DefaultChangeLogTransformer;
 import uk.me.gumbley.minimiser.updatechecker.ParseException;
@@ -40,20 +43,20 @@ import uk.me.gumbley.minimiser.updatechecker.ParseException;
  */
 @SuppressWarnings("serial")
 public final class WelcomeDialog extends AbstractSnailDialog {
-    private static final String WELCOME_HTML = "welcome.html";
-    private static final String CHANGELOG_HTML = "*changelog.html*";
+    private static final String WELCOME_NAME = "*welcome.html*";
+    private static final String CHANGELOG_NAME = "*changelog.html*";
     private static final String BLANK_PANEL_NAME = "*special*blank*panel*";
     private static final int TEXTPANE_WIDTH = 550;
     private static final int TEXTPANE_HEIGHT = 350;
     private JButton switchButton;
     private final boolean mWelcome;
     private final PluginRegistry mPluginRegistry;
-    private final Map<String, CountDownLatch> loadedResourceLatchMap;
     private JButton cancelButton;
     private JPanel cardPanel;
     private CardLayout cardLayout;
     private ActionListener switchActionListener;
-
+    private final Map<String, CountDownLatch> loadedResourceLatchMap;
+    
     /**
      * Construct the Welcome Dialog
      * @param parentFrame the main app frame
@@ -68,10 +71,11 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             final boolean showWelcome) {
         super(parentFrame, cursor, "Loading...");
         mPluginRegistry = pluginRegistry;
+        assert mPluginRegistry != null;
         mWelcome = showWelcome;
         loadedResourceLatchMap = new HashMap<String, CountDownLatch>();
-        loadedResourceLatchMap.put(WELCOME_HTML, new CountDownLatch(1));
-        loadedResourceLatchMap.put(CHANGELOG_HTML, new CountDownLatch(1));
+        loadedResourceLatchMap.put(WELCOME_NAME, new CountDownLatch(1));
+        loadedResourceLatchMap.put(CHANGELOG_NAME, new CountDownLatch(1));
     }
 
     /**
@@ -139,16 +143,12 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     }
     
     private abstract class HTMLDisplayingSwingWorker extends SwingWorker {
-        private final String resource;
+        private final String mLatchKey;
 
-        public HTMLDisplayingSwingWorker(final String resourceName) {
-            this.resource = resourceName;
+        public HTMLDisplayingSwingWorker(final String latchKey) {
+            mLatchKey = latchKey;
         }
 
-        protected String getResource() {
-            return resource;
-        }
-        
         @Override
         public abstract Object construct();
         
@@ -159,41 +159,41 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             final JScrollPane scrollPane = new JScrollPane(textPane);
             scrollPane.setPreferredSize(new Dimension(TEXTPANE_WIDTH, TEXTPANE_HEIGHT));
             scrollPane.setMinimumSize(new Dimension(TEXTPANE_WIDTH, TEXTPANE_HEIGHT));
-            cardPanel.add(scrollPane, resource);
+            cardPanel.add(scrollPane, mLatchKey);
 
             textPane.setText(get().toString());
             textPane.moveCaretPosition(0);
             
-            loadedResourceLatchMap.get(resource).countDown();
+            loadedResourceLatchMap.get(mLatchKey).countDown();
         }
     }
     
     private final class ResourceLoadingSwingWorker extends HTMLDisplayingSwingWorker {
-        public ResourceLoadingSwingWorker(final String resourceName) {
-            super(resourceName);
+        private final String mResourceName;
+
+        public ResourceLoadingSwingWorker(final String latchKey, final String resourceName) {
+            super(latchKey);
+            mResourceName = resourceName;
+            assert resourceName != null;
         }
         
         @Override
         public Object construct() {
             assert (!EventQueue.isDispatchThread());
-            final StringBuilder text = new StringBuilder();
-            ResourceLoader.readResource(text, getResource());
-            return text.toString();
+            return ResourceLoader.readResource(mResourceName);
         }
     }
 
     private final class ChangeLogTransformingSwingWorker extends HTMLDisplayingSwingWorker {
-        public ChangeLogTransformingSwingWorker(final String resourceName) {
-            super(resourceName);
+        public ChangeLogTransformingSwingWorker() {
+            super(CHANGELOG_NAME);
         }
         
         @Override
         public Object construct() {
             assert (!EventQueue.isDispatchThread());
-            final InputStream resourceAsStream = Thread.currentThread().
-                getContextClassLoader().
-                getResourceAsStream("changelog.txt");
-            final DefaultChangeLogTransformer transformer = new DefaultChangeLogTransformer(); // TODO WOZERE inject this!!
+            final InputStream resourceAsStream = ResourceLoader.getResourceInputStream("changelog.txt");
+            final DefaultChangeLogTransformer transformer = new DefaultChangeLogTransformer(); // TODO inject this!!
             try {
                 final String transformedChangeLog = transformer.readAllStream(resourceAsStream);
                 return transformedChangeLog;
@@ -206,14 +206,22 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     }
 
     private SwingWorker addWelcomeResourceLoader() {
-        return new ResourceLoadingSwingWorker(WELCOME_HTML);
+        assert mPluginRegistry != null;
+        final ApplicationPluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+        assert applicationPluginDescriptor != null;
+        if (applicationPluginDescriptor != null
+            && !StringUtils.isBlank(applicationPluginDescriptor.getAboutDetailsResourcePath())) {
+            return new ResourceLoadingSwingWorker(WELCOME_NAME, applicationPluginDescriptor.getAboutDetailsResourcePath());
+        }
+        return new ResourceLoadingSwingWorker(WELCOME_NAME, "welcome.html"); // from the framework 
+        
     }
     
     private void switchToWhatsNew() {
         try {
-            loadedResourceLatchMap.get(CHANGELOG_HTML).await();
+            loadedResourceLatchMap.get(CHANGELOG_NAME).await();
         } catch (final InterruptedException e1) {
-            e1.printStackTrace();
+            // do nothing
         }
         setTitle("What's new in this release?");
         switchButton.setText("Welcome to " + mPluginRegistry.getApplicationName());
@@ -223,18 +231,18 @@ public final class WelcomeDialog extends AbstractSnailDialog {
                 switchToWelcome();
             }
         });
-        cardLayout.show(cardPanel, CHANGELOG_HTML);
+        cardLayout.show(cardPanel, CHANGELOG_NAME);
     }
 
     private SwingWorker addWhatsNewResourceLoader() {
-        return new ChangeLogTransformingSwingWorker(CHANGELOG_HTML);
+        return new ChangeLogTransformingSwingWorker();
     }
 
     private void switchToWelcome() {
         try {
-            loadedResourceLatchMap.get(WELCOME_HTML).await();
+            loadedResourceLatchMap.get(WELCOME_NAME).await();
         } catch (final InterruptedException e1) {
-            e1.printStackTrace();
+            // do nothing
         }
         setTitle("Welcome to " + mPluginRegistry.getApplicationName());
         switchButton.setText("What's new in this release?");
@@ -244,7 +252,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
                 switchToWhatsNew();
             }
         });
-        cardLayout.show(cardPanel, WELCOME_HTML);
+        cardLayout.show(cardPanel, WELCOME_NAME);
     }
 
     private synchronized void setSwitchActionListener(final ActionListener listener) {
@@ -261,9 +269,9 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             public Object construct() {
                 try {
                     if (mWelcome) {
-                        loadedResourceLatchMap.get(WELCOME_HTML).await();
+                        loadedResourceLatchMap.get(WELCOME_NAME).await();
                     } else {
-                        loadedResourceLatchMap.get(CHANGELOG_HTML).await();
+                        loadedResourceLatchMap.get(CHANGELOG_NAME).await();
 
                     }
                 } catch (final InterruptedException e) {
