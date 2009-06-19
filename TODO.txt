@@ -19,6 +19,8 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
+* need to provide a log4j configuration - apache httpclient and
+  spring framework are barfing waaay too much
 * if there is no app plugin, the framework should terminate after
   displaying the problem reporter - needs to be a way to indicate
   a fatal error to the lifecycle manager that shuts down the
@@ -178,7 +180,15 @@ MAVEN / BUILD:
 * create installer for windows
 * create .deb package for Ubuntu
 * create .dmg disk image for Mac OS X
-
+* make platform-specific artifacts for the framework, and move
+  look-n-feel initialisation to them, with a platform.xml
+  application context that defines the appropriate platform LnF
+  bean to use. Then move quaqua's jars to be dependencies against
+  the macosx platform artifact (all platform artifacts depend on
+  the core framework). Then the BeanCounterMacOSX would depend on
+  MiniMiserMacOSX. Perhaps quaqua's JNI libs and the assembly
+  that extracts them could be against the framework, rather than
+  the app?
 OUTSTANDING QUERIES:
 * Q: Why prompt for close confirmation if we have databases open, on exit?
   It's not as though you'd lose any data (it is all in a database, after all).
