@@ -19,7 +19,7 @@ public final class TestHelpCheckForUpdatesMenuInitialiserLifecycle extends MenuM
      * 
      */
     @Test
-    public void isMenuDisabledWhenUpdatesDisabled() {
+    public void isCheckForUpdatesMenuDisabledWhenUpdatesDisabled() {
         Assert.assertFalse(getPrefs().isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
         
         Assert.assertFalse(getStubMenu().isHelpCheckForUpdatesEnabled());
@@ -41,7 +41,7 @@ public final class TestHelpCheckForUpdatesMenuInitialiserLifecycle extends MenuM
      * 
      */
     @Test
-    public void isMenuEnabledWhenUpdatesEnabled() {
+    public void isCheckForUpdatesMenuEnabledWhenUpdatesEnabled() {
         getPrefs().setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
 
         Assert.assertTrue(getPrefs().isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
