@@ -14,7 +14,7 @@ import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 
 /**
  * Tests the transformation of change log in Sections to HTML
- * fragents.
+ * fragments.
  * 
  * @author matt
  *
@@ -194,7 +194,7 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
          * @return this
          */
         public HTMLMatcher linebreak() {
-            append("</br>");
+            append("<br>");
             return this;
         }
         /**
@@ -202,7 +202,7 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
          * @return this
          */
         public HTMLMatcher parabreak() {
-            append("</p>");
+            append("<p>");
             return this;
         }
         /**
@@ -369,6 +369,21 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
             .bold("v0.9")
             .linebreak()
             .text("thought I'd release again")
+            .anything();
+            
+        matcher.assertMatch(subsection);
+    }
+    
+    @Test
+    public void titleIsFollowedByLineBreak() throws IOException, ParseException {
+        final String subsection = changeLogTransformer.readFileSubsection(
+            new ComparableVersion("v1.0.0"),
+            new ComparableVersion("v1.0.0"), testLog);
+        final HTMLMatcher matcher = new HTMLMatcher()
+            .bold("v1.0.0")
+            .text(" - ")
+            .emph("witty title goes here")
+            .linebreak()
             .anything();
             
         matcher.assertMatch(subsection);

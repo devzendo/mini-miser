@@ -47,7 +47,7 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
             final Section section  = versionSections.get(i);
             sb.append(addSection(section));
             if (i != versionSections.size() - 1) {
-                sb.append("</p>");
+                sb.append("<p>");
             }
         }
         sb.append("</body></html>");
@@ -62,7 +62,12 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
             ParseException {
         final ChangeLogSectionParser parser = new ChangeLogSectionParser(changeLogFile);
         final List<Section> versionSections = parser.getAllVersionSections();
-        LOGGER.debug("Transforming all " + versionSections.size() + " sections to HTML");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Transforming all " + versionSections.size() + " sections to HTML");
+            for (Section section : versionSections) {
+                LOGGER.debug("Section: " + section);
+            }
+        }
         return transformSectionsToHTML(versionSections);
     }
     
@@ -84,7 +89,7 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
             sb.append(surround("em", section.getTitleText()));
         }
         
-        sb.append("</br>");
+        sb.append("<br>");
         
         sb.append(transformedInformationText(section.getInformationText()));
         
@@ -170,7 +175,7 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
             } else {
                 if (!inList) {
                     LOGGER.debug("adding line break");
-                    sb.append("</br>");
+                    sb.append("<br>");
                 }
             }
         }

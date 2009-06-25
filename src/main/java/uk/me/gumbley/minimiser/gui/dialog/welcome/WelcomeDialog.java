@@ -23,6 +23,7 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
@@ -43,6 +44,7 @@ import uk.me.gumbley.minimiser.updatechecker.ParseException;
  */
 @SuppressWarnings("serial")
 public final class WelcomeDialog extends AbstractSnailDialog {
+    private static final Logger LOGGER = Logger.getLogger(WelcomeDialog.class);
     private static final String WELCOME_NAME = "*welcome.html*";
     private static final String CHANGELOG_NAME = "*changelog.html*";
     private static final String BLANK_PANEL_NAME = "*special*blank*panel*";
@@ -196,6 +198,10 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             final DefaultChangeLogTransformer transformer = new DefaultChangeLogTransformer(); // TODO inject this!!
             try {
                 final String transformedChangeLog = transformer.readAllStream(resourceAsStream);
+                LOGGER.debug("The HTML is:");
+                LOGGER.debug("vvvvvvvvv");
+                LOGGER.debug(transformedChangeLog);
+                LOGGER.debug("^^^^^^^^^");
                 return transformedChangeLog;
             } catch (final IOException e) {
                 return ("Could not read change log: " + e.getMessage());

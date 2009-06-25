@@ -113,6 +113,25 @@ public final class ChangeLogSectionParser {
         public int compareTo(final Section o) {
             return comparableVersion.compareTo(o.comparableVersion) * -1;
         }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("Comparable Version: ");
+            sb.append(comparableVersion);
+            sb.append(" Version text: ");
+            sb.append(versionText);
+            sb.append(" Date: ");
+            sb.append(dateText);
+            sb.append(" Title: ");
+            sb.append(titleText);
+            sb.append(" Info: ");
+            sb.append(informationText);
+            return sb.toString();
+        }
     }
     
     /**
