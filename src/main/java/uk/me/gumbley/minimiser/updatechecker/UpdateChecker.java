@@ -18,7 +18,7 @@ public interface UpdateChecker {
     /**
      * The name of the remote file that contains the change log.
      */
-    String CHANGE_LOG_FILE = "changes.txt";
+    String CHANGE_LOG_FILE = "changelog.txt";
 
     /**
      * Trigger an update check, providing feedback using the progress adapter
