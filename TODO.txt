@@ -243,3 +243,7 @@ LATER RELEASES:
 
 * add 'clear all DSTA flags' option to tools->options
   
+* update checker should use a DSTA if the remote version is different
+  that the last saved remote version, otherwise the update available
+  only appears once.
+  
