@@ -122,6 +122,10 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             lastSuccessfulUpdateWasToday();
             return;
         }
+        // TODO not sure whether comparing the remote version against the
+        // last downloaded remote version is right - it means that
+        // we only do the update check once. There needs to be a DSTA
+        // placed against the 'remote version is different'.
         
         // There's an update available. Get the change log into a
         // temp file.
