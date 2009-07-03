@@ -384,6 +384,8 @@
 	
 	<bean id="pluginRegistry" class="uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry" />
 	
+	<bean id="appDetailsPropertiesLoader" class="uk.me.gumbley.minimiser.pluginmanager.AppDetailsPropertiesLoader" />
+	
 	<bean id="recentFilesList" class="uk.me.gumbley.minimiser.recentlist.DefaultRecentFilesListImpl">
 		<constructor-arg ref="prefs" />
 	</bean>

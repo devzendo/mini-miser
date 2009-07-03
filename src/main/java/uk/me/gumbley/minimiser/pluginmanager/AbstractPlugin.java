@@ -38,6 +38,9 @@ public abstract class AbstractPlugin implements Plugin {
      * {@inheritDoc}
      */
     public final SpringLoader getSpringLoader() {
+        if (mSpringLoader == null) {
+            throw new IllegalStateException("Cannot use the SpringLoader as it has not been set");
+        }
         return mSpringLoader;
     }
 

@@ -51,18 +51,28 @@ public final class PluginInitialiser {
             LOGGER.warn(warning);
             throw new PluginException(warning);
         }
-        for (Plugin plugin : loadedPlugins) {
-            addLoadedPlugin(plugin);
-            if (mSpringLoader != null) {
-                addPluginApplicationContextsToSpringLoader(plugin);
+        
+        // Request all plugin application contexts, and let 
+        // plugins have the SpringLoader
+        if (mSpringLoader == null) {
+            LOGGER.debug("No SpringLoader available, so not obtaining application contexts or passing the SpringLoader to plugins");
+        } else {
+            for (Plugin plugin : loadedPlugins) {
+                try {
+                    LOGGER.debug("Getting app context for " + plugin);
+                    addPluginApplicationContextsToSpringLoader(plugin);
+                    LOGGER.debug("Injecting SpringLoader in " + plugin);
+                    giveSpringLoaderToPlugin(plugin);
+                } catch (final RuntimeException re) {
+                    final String warning = "Caught " + re.getClass().getSimpleName() + " when performing Spring initialisation on plugin " + plugin;
+                    LOGGER.warn(warning, re);
+                    throw new PluginException(warning);
+                }
             }
         }
-        // Now all app contexts have been loaded, let the
-        // plugins have the SpringLoader
-        if (mSpringLoader != null) {
-            for (Plugin plugin : loadedPlugins) {
-                giveSpringLoaderToPlugin(plugin);
-            }
+        LOGGER.debug("Adding loaded plugins");
+        for (Plugin plugin : loadedPlugins) {
+            addLoadedPlugin(plugin);
         }
 
         if (mApplicationPlugin == null) {
@@ -136,7 +146,7 @@ public final class PluginInitialiser {
      * @param plugin
      */
     private void giveSpringLoaderToPlugin(final Plugin plugin) {
-        LOGGER.info("Giving SpringLoader to plugin " + plugin.getName());
+        LOGGER.info("Giving SpringLoader to plugin " + plugin);
         plugin.setSpringLoader(mSpringLoader);
     }
 
@@ -149,7 +159,7 @@ public final class PluginInitialiser {
      * to be added.
      */
     private void addPluginApplicationContextsToSpringLoader(final Plugin plugin) throws PluginException {
-        LOGGER.info("Requesting application contexts from plugin " + plugin.getName());
+        LOGGER.info("Requesting application contexts from plugin " + plugin);
         final List<String> applicationContextResourcePaths = plugin.getApplicationContextResourcePaths();
         if (applicationContextResourcePaths == null || applicationContextResourcePaths.size() == 0) {
             LOGGER.info("No application contexts provided");

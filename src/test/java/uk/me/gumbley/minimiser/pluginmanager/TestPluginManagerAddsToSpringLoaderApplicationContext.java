@@ -21,6 +21,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends SpringLoaderUnittestCase {
 
     private PluginRegistry mPluginRegistry;
+    private DefaultPluginManager mDefaultPluginManager;
 
     /**
      * 
@@ -28,6 +29,7 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
     @Before
     public void getPrerequisites() {
         mPluginRegistry = new DefaultPluginRegistry();
+        mDefaultPluginManager = new DefaultPluginManager(getSpringLoader(), mPluginRegistry);
     }
     
     /**
@@ -35,9 +37,8 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
      */
     @Test
     public void pluginsExtendSpringLoaderAppContexts() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(getSpringLoader(), mPluginRegistry);
-        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
-        final List<Plugin> plugins = defaultPluginManager.getPlugins();
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
         
         // this bean is defined in the AppPlugin's declared
@@ -53,13 +54,26 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
      */
     @Test
     public void pluginsAreGivenSpringLoader() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(getSpringLoader(), mPluginRegistry);
-        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
-        final List<Plugin> plugins = defaultPluginManager.getPlugins();
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
         
-        final AppPlugin appPlugin = (AppPlugin) defaultPluginManager.getApplicationPlugin();
+        final AppPlugin appPlugin = (AppPlugin) mDefaultPluginManager.getApplicationPlugin();
         
+        Assert.assertNotNull(getSpringLoader());
         Assert.assertSame(getSpringLoader(), appPlugin.getSpringLoader());
+    }
+    
+    /**
+     * @throws PluginException nope
+     */
+    @Test
+    public void pluginsNameAndVersionNotRequestedUntilSpringInitialised() throws PluginException {
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/springcontractplugin.properties");
+        final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
+        Assert.assertEquals(1, plugins.size());
+        
+        final SpringContractPlugin appPlugin = (SpringContractPlugin) mDefaultPluginManager.getApplicationPlugin();
+        Assert.assertTrue(appPlugin.nameAndVersionNotCalledUntilSpringInitialised());
     }
 }
