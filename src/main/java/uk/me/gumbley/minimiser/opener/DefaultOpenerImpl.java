@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.opener;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
@@ -87,7 +88,7 @@ public final class DefaultOpenerImpl implements Opener {
                 tryingToOpenMessage = "Trying to open database '" + dbName + "'";
             } catch (final DataAccessResourceFailureException darfe) {
                 LOGGER.warn("Could not open database: " + darfe.getMessage());
-                openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database " + dbName + "' not found");
+                openerAdapter.reportProgress(ProgressStage.NOT_PRESENT, "Database '" + dbName + "' not found");
                 openerAdapter.databaseNotFound(darfe);
                 openerAdapter.stopOpening();
                 return null;
