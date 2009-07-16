@@ -53,7 +53,7 @@ public final class MinimiserPlugin extends AbstractPlugin implements Plugin {
      * {@inheritDoc}
      */
     public String getVersion() {
-        return getSpringLoader().getBean("appDetailsPropertiesLoader", AppDetailsPropertiesLoader.class).getName();
+        return getAppDetailsPropertyLoader().getVersion();
     }
 
     /**
