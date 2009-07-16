@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
@@ -66,6 +67,7 @@ public final class DatabaseOpenerLifecycle implements Lifecycle {
         final String lastActiveDatabaseName = prefs.getLastActiveFile();
         if (lastActiveDatabaseName == null) {
             LOGGER.info("No last active database recorded, so cannot switch");
+            openDatabaseList.checkForEmptiness();
         } else {
             LOGGER.info("Switching to last active database");
             openDatabaseList.switchDatabase(lastActiveDatabaseName);

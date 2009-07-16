@@ -2,15 +2,20 @@ package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseListEmptyEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
@@ -61,16 +66,6 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
                 openDatabaseList.addOpenedDatabase(observableEvent.getDatabase());
             }
         });
-
-        // store the db names so we'll repoen them on lifecycle startup
-        final List<String> pairs = new ArrayList<String>();
-        for (DatabaseOpenDetails detail : dbDetails) {
-            final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
-            final String pair = DatabasePairEncapsulator.escape(detail.getName(), dbDirPlusDbName);
-            pairs.add(pair);
-        }
-        prefs.setOpenFiles(pairs.toArray(new String[0]));
-    
     }
 
     /**
@@ -79,6 +74,8 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
     @Test
     public void shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup() {
         LOGGER.info(">>> shouldOpenLastSessionsDatabasesAndNotSwitchWhenNoLastActiveDatabaseOnStartup");
+        storeDatabaseNames();
+
         doCreateDatabasesBoilerplateWithOpenClosedTests(accessFactory, dbDetails, new RunOnCreatedDbs() {
             public void runOnCreatedDbs() {
 
@@ -105,6 +102,8 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
     @Test
     public void shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup() {
         LOGGER.info(">>> shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup");
+        storeDatabaseNames();
+
         doCreateDatabasesBoilerplateWithOpenClosedTests(accessFactory, dbDetails, new RunOnCreatedDbs() {
             public void runOnCreatedDbs() {
                 
@@ -124,6 +123,19 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
             }
         });
         LOGGER.info("<<< shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup");
+    }
+
+    @Test
+    public void noDatabasesToOpenFiresEmptyEvent() {
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(DatabaseListEmptyEvent.class));
+        EasyMock.replay(obs);
+        openDatabaseList.addDatabaseEventObserver(obs);
+        
+        lifecycleManager.startup();
+        
+        Assert.assertEquals(0, openDatabaseList.getNumberOfDatabases());
+        EasyMock.verify(obs);
     }
 
     private void closeOpenDatabases() {
@@ -146,5 +158,16 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
             Assert.assertEquals(getAbsoluteDatabaseDirectory(detail.getName()), descriptor.getDatabasePath());
             assertDatabaseShouldBeOpen(detail.getName());
         }
+    }
+
+    private void storeDatabaseNames() {
+        // store the db names so we'll repoen them on lifecycle startup
+        final List<String> pairs = new ArrayList<String>();
+        for (DatabaseOpenDetails detail : dbDetails) {
+            final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
+            final String pair = DatabasePairEncapsulator.escape(detail.getName(), dbDirPlusDbName);
+            pairs.add(pair);
+        }
+        prefs.setOpenFiles(pairs.toArray(new String[0]));
     }
 }
