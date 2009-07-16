@@ -17,8 +17,9 @@ package uk.me.gumbley.minimiser.pluginmanager;
  *      checks are being performed, if this facility has been
  *      enabled
  * <li> getShortLicenseDetails(),
- *      getFullLicenseDetailsResourcePath() and
- *      getAboutDetailsResourcePath() 
+ *      getFullLicenseDetailsResourcePath(),
+ *      getAboutDetailsResourcePath() and
+ *      getChangeLogResourcePath()
  *      are called by the About dialog.
  * </ul>
  * 
@@ -40,7 +41,7 @@ public interface ApplicationPlugin extends Plugin {
     /**
      * Where is the update site for this plugin?
      * 
-     * The files 'version.txt' and 'changes'txt' should be
+     * The files 'version.txt' and 'changelog.txt' should be
      * available at this URL.
      * 
      * @return the Base URL of the update site for this plugin 
@@ -58,11 +59,29 @@ public interface ApplicationPlugin extends Plugin {
      * About tab of the About dialog. If the resource cannot be
      * found, the tab will indicate this.
      * 
-     * e.g. META-INF/minimiser/AboutMyApplication.html
+     * e.g. META-INF/minimiser/myapp/AboutMyApplication.html
      * 
      * @return a resource path
      */
     String getAboutDetailsResourcePath();
+    
+    /**
+     * Obtain a path to a resource file that contains the text
+     * shown in the "What's new in this release?" dialog - i.e.
+     * the change log.
+     * 
+     * This resource is a .txt file in wiki-like markup syntax
+     * as described inthe framework user guide; it will be
+     * transformed and rendered as HTML accordingly.
+     * 
+     * If left null or blank, or if the resource cannot be
+     * found, the tab will indicate this.
+     * 
+     * e.g. META-INF/minimiser/myapp/changelog.txt
+     * 
+     * @return a resource path
+     */
+    String getChangeLogResourcePath();
     
     /**
      * Obtain a short description of the copyright/license details
@@ -90,7 +109,7 @@ public interface ApplicationPlugin extends Plugin {
      * If you use the GPL version 2, you may use the framework's
      * copy of this text by returning "COPYING.txt" here.
      * 
-     * e.g. META-INF/minimiser/ApachePublicLicense2.html
+     * e.g. META-INF/minimiser/myapp/ApachePublicLicense2.html
      * 
      * @return a resource path
      */

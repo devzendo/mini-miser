@@ -17,6 +17,7 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
     private final String mShortLicenseDetails;
     private final String mFullLicenseDetailsResourcePath;
     private final String mAboutDetailsResourcePath;
+    private final String mChangeLogResourcePath;
 
     /**
      * Create an application plugin descriptor.
@@ -33,6 +34,8 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
      * the license text/HTML file
      * @param aboutDetailsResourcePath the resource path of the
      * about text/HTML file
+     * @param changeLogResourcePath the resource path of the
+     * change log markup file
      */
     public ApplicationPluginDescriptor(final boolean isApplication,
             final String name,
@@ -42,13 +45,15 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
             final String developersContactDetails,
             final String shortLicenseDetails,
             final String fullLicenseDetailsResourcePath,
-            final String aboutDetailsResourcePath) {
+            final String aboutDetailsResourcePath,
+            final String changeLogResourcePath) {
         super(isApplication, name, version, schemaVersion);
         mUpdateURL = updateURL;
         mDevelopersContactDetails = developersContactDetails;
         mShortLicenseDetails = shortLicenseDetails;
         mFullLicenseDetailsResourcePath = fullLicenseDetailsResourcePath;
         mAboutDetailsResourcePath = aboutDetailsResourcePath;
+        mChangeLogResourcePath = changeLogResourcePath;
     }
 
     /**
@@ -87,6 +92,13 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
     }
 
     /**
+     * @return the changeLogResourcePath
+     */
+    public String getChangeLogResourcePath() {
+        return mChangeLogResourcePath;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -110,6 +122,7 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
             .append(this.mShortLicenseDetails, castObj.mShortLicenseDetails)
             .append(this.mFullLicenseDetailsResourcePath, castObj.mFullLicenseDetailsResourcePath)
             .append(this.mAboutDetailsResourcePath, castObj.mAboutDetailsResourcePath)
+            .append(this.mChangeLogResourcePath, castObj.mChangeLogResourcePath)
             .isEquals();
     }
     
@@ -126,6 +139,7 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
             .append(this.mShortLicenseDetails)
             .append(this.mFullLicenseDetailsResourcePath)
             .append(this.mAboutDetailsResourcePath)
+            .append(this.mChangeLogResourcePath)
             .toHashCode();
     }
 
@@ -146,6 +160,8 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
         sb.append(mFullLicenseDetailsResourcePath);
         sb.append(" about resource:");
         sb.append(mAboutDetailsResourcePath);
+        sb.append(" change log resource:");
+        sb.append(mChangeLogResourcePath);
         return sb.toString();
     }
 }

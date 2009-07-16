@@ -140,4 +140,11 @@ public final class SpringContractPlugin implements ApplicationPlugin {
     public boolean nameAndVersionNotCalledUntilSpringInitialised() {
         return mGetNameCalledOK && mGetVersionCalledOK;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getChangeLogResourcePath() {
+        return "changelog.txt";
+    }
 }

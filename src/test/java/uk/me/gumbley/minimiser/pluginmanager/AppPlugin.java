@@ -90,4 +90,11 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
     public String getAboutDetailsResourcePath() {
         return "About.txt";
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getChangeLogResourcePath() {
+        return "changelog.txt";
+    }
 }

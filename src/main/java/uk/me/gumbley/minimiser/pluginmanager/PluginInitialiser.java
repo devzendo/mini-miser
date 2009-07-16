@@ -105,7 +105,8 @@ public final class PluginInitialiser {
                     applicationPlugin.getDevelopersContactDetails(),
                     applicationPlugin.getShortLicenseDetails(),
                     applicationPlugin.getFullLicenceDetailsResourcePath(),
-                    applicationPlugin.getAboutDetailsResourcePath());
+                    applicationPlugin.getAboutDetailsResourcePath(),
+                    applicationPlugin.getChangeLogResourcePath());
                 return appLicationPluginDescriptor;
             }
             final PluginDescriptor pluginDescriptor = new PluginDescriptor(

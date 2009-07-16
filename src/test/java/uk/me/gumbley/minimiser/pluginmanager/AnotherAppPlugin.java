@@ -74,4 +74,11 @@ public final class AnotherAppPlugin extends AbstractPlugin implements Applicatio
     public String getAboutDetailsResourcePath() {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getChangeLogResourcePath() {
+        return null;
+    }
 }

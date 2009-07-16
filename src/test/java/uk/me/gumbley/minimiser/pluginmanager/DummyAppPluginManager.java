@@ -84,6 +84,10 @@ public final class DummyAppPluginManager implements PluginManager {
             public String getAboutDetailsResourcePath() {
                 return null;
             }
+
+            public String getChangeLogResourcePath() {
+                return null;
+            }
         };
         mDummyPlugin = new Plugin() {
 
@@ -164,7 +168,8 @@ public final class DummyAppPluginManager implements PluginManager {
                     getApplicationPlugin().getDevelopersContactDetails(),
                     getApplicationPlugin().getShortLicenseDetails(),
                     getApplicationPlugin().getFullLicenceDetailsResourcePath(),
-                    getApplicationPlugin().getAboutDetailsResourcePath())));
+                    getApplicationPlugin().getAboutDetailsResourcePath(),
+                    getApplicationPlugin().getChangeLogResourcePath())));
     }
 
     /**
