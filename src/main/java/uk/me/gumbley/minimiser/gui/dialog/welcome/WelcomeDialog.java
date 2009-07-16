@@ -187,6 +187,8 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     }
 
     private final class ChangeLogTransformingSwingWorker extends HTMLDisplayingSwingWorker {
+        private static final String CHANGELOG_TXT = "changelog.txt";
+
         public ChangeLogTransformingSwingWorker() {
             super(CHANGELOG_NAME);
         }
@@ -194,7 +196,19 @@ public final class WelcomeDialog extends AbstractSnailDialog {
         @Override
         public Object construct() {
             assert (!EventQueue.isDispatchThread());
-            final InputStream resourceAsStream = ResourceLoader.getResourceInputStream("changelog.txt");
+            assert mPluginRegistry != null;
+
+            final ApplicationPluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
+            assert applicationPluginDescriptor != null;
+            final String changeLogResourcePath = applicationPluginDescriptor.getChangeLogResourcePath();
+            if (StringUtils.isBlank(changeLogResourcePath)) {
+                return "No change log available";
+            }
+            
+            final InputStream resourceAsStream = ResourceLoader.getResourceInputStream(changeLogResourcePath);
+            if (resourceAsStream == null) {
+                return "No " + changeLogResourcePath + " available";
+            }
             final DefaultChangeLogTransformer transformer = new DefaultChangeLogTransformer(); // TODO inject this!!
             try {
                 final String transformedChangeLog = transformer.readAllStream(resourceAsStream);
