@@ -32,7 +32,7 @@ public final class TestCurrentChangeLogParses extends LoggingTestCase {
     public void currentChangeLogParses() throws IOException, ParseException {
         final InputStream resourceAsStream = Thread.currentThread().
             getContextClassLoader().
-            getResourceAsStream("changelog.txt");
+            getResourceAsStream("framework-changelog.txt");
         
         sectionParser = new ChangeLogSectionParser(resourceAsStream);
         
