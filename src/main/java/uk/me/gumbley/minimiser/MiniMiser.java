@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -80,6 +81,12 @@ public final class MiniMiser {
         ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         LOGGER.info("Framework starting...");
+        
+        final String javaLibraryPath = System.getProperty("java.library.path");
+        LOGGER.debug("java.library.path is '" + javaLibraryPath + "'");
+        final File quaqua = new File(javaLibraryPath, "libquaqua.jnilib");
+        LOGGER.debug("Quaqua JNI library exists there (for Mac OS X)? " + quaqua.exists());
+        
         final ArrayList<String> finalArgList = argList;
         final SpringLoader springLoader = initSpringLoader();
 
