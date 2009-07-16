@@ -57,6 +57,7 @@ public final class FileNewActionListener extends SnailActionListener {
                 new FileNewWizardChooseFolderPage(mOpenDatabaseList),
                 new FileNewWizardSecurityOptionPage(),
                 // TODO add back in a later release new FileNewWizardCurrencyPage(),
+                // rather, get other pages from the plugins...
         };
         final WizardResultProducer producer = new WizardResultProducer() {
             @SuppressWarnings("unchecked")
