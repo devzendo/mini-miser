@@ -71,7 +71,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
         pluginRegistry.addPluginDescriptor(
             new ApplicationPluginDescriptor(
                 true, "Foo", "1.0.0-SNAPSHOT", "1.0", 
-                "http://localhost/", "", "", "", ""));
+                "http://localhost/", "", "", "", "", ""));
         createUpdateCheckerWithAppDetails(pluginRegistry);
     }
     
@@ -185,7 +185,9 @@ public final class TestUpdateChecker extends LoggingTestCase {
     @Test(timeout = 3000)
     public void ifApplicationPluginHasNullUpdateBaseURLUpdateCheckerReportsNoURL() {
         final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
-        pluginRegistry.addPluginDescriptor(new ApplicationPluginDescriptor(true, "Foo", "1.0", "1.0", null, "", "", "", ""));
+        pluginRegistry.addPluginDescriptor(
+            new ApplicationPluginDescriptor(
+                true, "Foo", "1.0", "1.0", null, "", "", "", "", ""));
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoUpdateURL();
     }
@@ -196,7 +198,9 @@ public final class TestUpdateChecker extends LoggingTestCase {
     @Test(timeout = 3000)
     public void ifApplicationPluginHasEmptyUpdateBaseURLUpdateCheckerReportsNoURL() {
         final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
-        pluginRegistry.addPluginDescriptor(new ApplicationPluginDescriptor(true, "Foo", "1.0", "1.0", "", "", "", "", ""));
+        pluginRegistry.addPluginDescriptor(
+            new ApplicationPluginDescriptor(
+                true, "Foo", "1.0", "1.0", "", "", "", "", "", ""));
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoUpdateURL();
     }
