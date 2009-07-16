@@ -2,11 +2,13 @@ package uk.me.gumbley.minimiser.openlist;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 
@@ -448,6 +450,45 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
 
         list.switchDatabase("wazoo");
         
+        EasyMock.verify(obs);
+    }
+    
+    /**
+     * Open a database, check for empty state, listener does not
+     * receive the empty notification
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void openDatabaseThenCheckForEmptinessDoesNotFireListener() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("testdb");
+        Assert.assertFalse(list.containsDatabase(databaseDescriptor));
+
+        list.addOpenedDatabase(databaseDescriptor);
+        
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        EasyMock.replay(obs);
+        list.addDatabaseEventObserver(obs);
+        
+        list.checkForEmptiness();
+
+        EasyMock.verify(obs);
+        Assert.assertTrue(list.containsDatabase(databaseDescriptor));
+    }
+
+    /**
+     * Do not open any databasees, check for empty state, listener
+     * does receive the empty notification
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void noDatabasesOpenOnCheckforEmptinessFiresListener() {
+        final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.isA(DatabaseListEmptyEvent.class));
+        EasyMock.replay(obs);
+        list.addDatabaseEventObserver(obs);
+        
+        list.checkForEmptiness();
+
         EasyMock.verify(obs);
     }
 }

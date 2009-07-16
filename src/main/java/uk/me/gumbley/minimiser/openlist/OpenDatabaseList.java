@@ -159,4 +159,20 @@ public final class OpenDatabaseList {
         final boolean contained = databaseList.contains(databaseDescriptor);
         return contained;
     }
+
+    /**
+     * If the list is empty, send the DatabaseListEmptyEvent event
+     * so update listeners that need to do something on emptiness
+     * in the case where the list is not populated on startup - i.e
+     * when there are no databases to load.
+     */
+    public void checkForEmptiness() {
+        final int size = databaseList.size();
+        if (size == 0) {
+            LOGGER.info("Database list is empty");
+            observerList.eventOccurred(new DatabaseListEmptyEvent());
+        } else {
+            LOGGER.info("Database list is not empty (" + size + " elements)");
+        }
+    }
 }
