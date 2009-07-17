@@ -14,6 +14,7 @@ import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.exception.AppException;
+import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabPaneManager;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
@@ -96,7 +97,7 @@ public class MainFrame {
      *  Returns an ImageIcon, or null if the path was invalid.
      */
     private ImageIcon createImageIcon(final String path) {
-        final java.net.URL imgURL = getClass().getClassLoader().getResource(path);
+        final java.net.URL imgURL = ResourceLoader.getResourceURL(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
