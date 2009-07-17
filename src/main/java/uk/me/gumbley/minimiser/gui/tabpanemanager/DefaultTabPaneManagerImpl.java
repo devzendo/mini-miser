@@ -8,6 +8,7 @@ import javax.swing.JTabbedPane;
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.commoncode.gui.GUIUtils;
+import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
  * Extends the core Tab Pane Manager functionality with GUI code.
@@ -22,23 +23,31 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
     private static final String INTRO_PANEL_NAME = "*special*intro*panel*";
     
     private final JPanel mMainPanel;
-    private final JPanel mIntroPanel;
     private final CardLayout mCardLayout;
+    private JPanel mIntroPanel;
+    private final SpringLoader mSpringLoader;
     
     /**
      * Construct the main panel with the card layout that'll accommodate the
      * tabbed panes.
-     * @param introPanel the introduction panel that provides a
-     * set of useful 'getting started' menu shortcuts on buttons.
+     * @param springLoader used to load the intro panel when it
+     * is first required. 
+     * 
+     * KLUDGE: Note that the intro panel is loaded delayed since
+     * it needs the application plugin loading, and when the tab
+     * manager is instantiated, the plugins may not be loaded.
+     * When the tab panes are hidden, the plugins must have been
+     * loaded, so the background graphic can be obtained.
      * 
      */
-    public DefaultTabPaneManagerImpl(final JPanel introPanel) {
+    public DefaultTabPaneManagerImpl(final SpringLoader springLoader) {
         super();
-        mIntroPanel = introPanel;
+        mSpringLoader = springLoader;
+        mIntroPanel = null;
         mMainPanel = new JPanel();
         mCardLayout = new CardLayout();
         mMainPanel.setLayout(mCardLayout);
-        mMainPanel.add(mIntroPanel, INTRO_PANEL_NAME);
+        mMainPanel.add(new JPanel(), INTRO_PANEL_NAME);
         mMainPanel.add(new JPanel(), BLANK_PANEL_NAME);
         mCardLayout.show(mMainPanel, BLANK_PANEL_NAME);
     }
@@ -95,8 +104,15 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
      */
     public void hideTabPanes() {
         LOGGER.info("Hide all Tab Panes");
+        
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
+                synchronized (DefaultTabPaneManagerImpl.this) {
+                    if (mIntroPanel == null) {
+                        mIntroPanel = mSpringLoader.getBean("introPanel", IntroPanel.class);
+                        mMainPanel.add(mIntroPanel, INTRO_PANEL_NAME);
+                    }
+                }
                 mCardLayout.show(mMainPanel, INTRO_PANEL_NAME);
             }
         });

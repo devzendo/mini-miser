@@ -53,11 +53,12 @@
     </bean>
 
 	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" >
-        <constructor-arg ref="introPanel" />
+        <constructor-arg ref="springLoader" />
 	</bean>
 
 	<bean id="introPanel" class="uk.me.gumbley.minimiser.gui.tabpanemanager.IntroPanel">
         <constructor-arg ref="menuWiring" />
+        <constructor-arg ref="pluginRegistry" />
 	</bean>
 
 	<bean id="problemReporter" class="uk.me.gumbley.minimiser.gui.dialog.problem.DefaultProblemReporterImpl">
