@@ -19,28 +19,9 @@ BUGS:
   refresh to show that there are now more messages.
 
 CURRENT TASKS:
-* if there is no open database, a friendly getting started screen
-  should be displayed, allowing the user to:
-  * create a new database
-  * open an existing database
-  
-* if there is no app plugin, the framework should terminate after
-  displaying the problem reporter - needs to be a way to indicate
-  a fatal error to the lifecycle manager that shuts down the
-  lifecycles that have initialised already, and does not cause any
-  subsequent lifecycles to be started.
-  * define a LifecycleStartupException
-  * Lifecycle.startup can throw this
-  * lifecycle manager should detect LifecycleStartupExceptions
-    and stop going through its lifecycle.startup list, and throw
-    a LifecycleStartupException again.
-  * LifecycleStartupAWTEventListener that calls LifecycleManager
-    startup should detect the LifecycleStartupException and do what
-    the MainFrameCloseActionListener's doShutdown method does.
-      
-  * plugin manager lifecycle throws LifecycleStartupException after
-    it has shown the problem dialog
-      
+* New database - wizards/schema-work from plugins.
+* Open database - migration framework for plugins.
+
 * add the real swing update progress adapter
 
 * sql table view would benefit from the stripe list renderer
@@ -100,7 +81,7 @@ CROSS-PLATFORM UI ISSUES:
 * rename product
 
 
-DRY / TDD improvements:
+DRY / TDD / architecture improvements:
 * Factor out general HTML-dialog-from-resource code?
 
 * Why do StatusBars need DelayedExecutors?
@@ -142,14 +123,37 @@ DRY / TDD improvements:
   
 * MessageQueue - need to factor out the handling of DSTA messages (getting /
   setting flags on add/remove)
-  
+
+* Set the TabPaneManager in the MainFrame immediately after the
+  plugins have loaded, rather than letting the IntroPanel get
+  loaded on demand when tabs are hidden?
+     
+* if there is no app plugin, the framework should terminate after
+  displaying the problem reporter - needs to be a way to indicate
+  a fatal error to the lifecycle manager that shuts down the
+  lifecycles that have initialised already, and does not cause any
+  subsequent lifecycles to be started.
+  * define a LifecycleStartupException
+  * Lifecycle.startup can throw this
+  * lifecycle manager should detect LifecycleStartupExceptions
+    and stop going through its lifecycle.startup list, and throw
+    a LifecycleStartupException again.
+  * LifecycleStartupAWTEventListener that calls LifecycleManager
+    startup should detect the LifecycleStartupException and do what
+    the MainFrameCloseActionListener's doShutdown method does.
+      
+  * plugin manager lifecycle throws LifecycleStartupException after
+    it has shown the problem dialog
+     
 NIGGLES:
 * need to provide a log4j configuration - apache httpclient and
   spring framework are barfing waaay too much
   
-* IntroPanel should have a background graphic, the buttons should
+* Buttons on the should
   just contain pretty icons, and the text that's currently in the
   buttons should be next to them.
+
+
 
 DOCUMENTATION:
 * fill in the rest of the acks in credits.html
