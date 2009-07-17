@@ -31,7 +31,7 @@ public final class DummyAppPluginRegistry implements PluginRegistry {
         mApplicationPluginDescriptor = new ApplicationPluginDescriptor(true, 
             name, version, "1.0", "http://localhost",
             "devs@foo.com", "GPL3", "COPYING.txt", "about.html",
-            "changelog.txt");
+            "changelog.txt", null);
     }
     
     /**

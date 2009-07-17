@@ -28,17 +28,18 @@ public final class TestPluginRegistry {
         mPluginRegistry = new DefaultPluginRegistry();
         mAppPluginDescriptor = new ApplicationPluginDescriptor(true, 
             "App Name", "1.0.0", "3.4", "http://localhost",
-            "developers@appplugin.com", "GPL", "License", "About", "changelog.txt");
+            "developers@appplugin.com", "GPL", "License", "About",
+            "changelog.txt", null);
         mNormalPluginDescriptor = new PluginDescriptor(false,
             "Plugin Name", "0.1.0", "4.5");
         mBadAppPluginDescriptor = new ApplicationPluginDescriptor(true,
             "", "", "3.4", "http://localhost",
             "developers@appplugin.com", "Apache", "License", "About",
-            "changelog.txt"); // no name or version
+            "changelog.txt", null); // no name or version
         mNullDetailsAppPluginDescriptor = new ApplicationPluginDescriptor(true,
             null, null, "3.4", "http://localhost",
             "developers@appplugin.com", "(C) 2009 MJG", "License", "About",
-            "changelog.txt"); // no name or version
+            "changelog.txt", null); // no name or version
     }
 
     /**

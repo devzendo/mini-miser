@@ -97,4 +97,11 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
     public String getChangeLogResourcePath() {
         return "changelog.txt";
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getIntroPanelBackgroundGraphicResourcePath() {
+        return null;
+    }
 }

@@ -18,6 +18,7 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
     private final String mFullLicenseDetailsResourcePath;
     private final String mAboutDetailsResourcePath;
     private final String mChangeLogResourcePath;
+    private final String mIntroPanelBackgroundGraphicResourcePath;
 
     /**
      * Create an application plugin descriptor.
@@ -36,6 +37,8 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
      * about text/HTML file
      * @param changeLogResourcePath the resource path of the
      * change log markup file
+     * @param introPanelBackgroundGraphicResourcePath the
+     * resource path of the intro panel background graphic
      */
     public ApplicationPluginDescriptor(final boolean isApplication,
             final String name,
@@ -46,7 +49,8 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
             final String shortLicenseDetails,
             final String fullLicenseDetailsResourcePath,
             final String aboutDetailsResourcePath,
-            final String changeLogResourcePath) {
+            final String changeLogResourcePath,
+            final String introPanelBackgroundGraphicResourcePath) {
         super(isApplication, name, version, schemaVersion);
         mUpdateURL = updateURL;
         mDevelopersContactDetails = developersContactDetails;
@@ -54,6 +58,7 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
         mFullLicenseDetailsResourcePath = fullLicenseDetailsResourcePath;
         mAboutDetailsResourcePath = aboutDetailsResourcePath;
         mChangeLogResourcePath = changeLogResourcePath;
+        mIntroPanelBackgroundGraphicResourcePath = introPanelBackgroundGraphicResourcePath;
     }
 
     /**
@@ -99,6 +104,13 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
     }
 
     /**
+     * @return the introPanelBackgroundGraphicResourcePath
+     */
+    public String getIntroPanelBackgroundGraphicResourcePath() {
+        return mIntroPanelBackgroundGraphicResourcePath;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -123,6 +135,7 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
             .append(this.mFullLicenseDetailsResourcePath, castObj.mFullLicenseDetailsResourcePath)
             .append(this.mAboutDetailsResourcePath, castObj.mAboutDetailsResourcePath)
             .append(this.mChangeLogResourcePath, castObj.mChangeLogResourcePath)
+            .append(this.mIntroPanelBackgroundGraphicResourcePath, castObj.mIntroPanelBackgroundGraphicResourcePath)
             .isEquals();
     }
     
@@ -140,6 +153,7 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
             .append(this.mFullLicenseDetailsResourcePath)
             .append(this.mAboutDetailsResourcePath)
             .append(this.mChangeLogResourcePath)
+            .append(this.mIntroPanelBackgroundGraphicResourcePath)
             .toHashCode();
     }
 
@@ -162,6 +176,8 @@ public final class ApplicationPluginDescriptor extends PluginDescriptor {
         sb.append(mAboutDetailsResourcePath);
         sb.append(" change log resource:");
         sb.append(mChangeLogResourcePath);
+        sb.append(" intro panel resource:");
+        sb.append(mIntroPanelBackgroundGraphicResourcePath);
         return sb.toString();
     }
 }

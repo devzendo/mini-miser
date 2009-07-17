@@ -114,4 +114,17 @@ public interface ApplicationPlugin extends Plugin {
      * @return a resource path
      */
     String getFullLicenceDetailsResourcePath();
+    
+    /**
+     * Obtain a path to a resource file that will be shown in the
+     * background of the intro panel (i.e. the panel that shows the
+     * 'Create new database', 'Open existing database' and 'exit'
+     * buttons.
+     * 
+     * e.g. META-INF/minimiser/myapp/myimage.png
+     * 
+     * @return a resource path
+     * @return
+     */
+    String getIntroPanelBackgroundGraphicResourcePath();
 }

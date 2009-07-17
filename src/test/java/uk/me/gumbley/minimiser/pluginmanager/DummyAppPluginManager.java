@@ -88,6 +88,10 @@ public final class DummyAppPluginManager implements PluginManager {
             public String getChangeLogResourcePath() {
                 return null;
             }
+
+            public String getIntroPanelBackgroundGraphicResourcePath() {
+                return null;
+            }
         };
         mDummyPlugin = new Plugin() {
 
@@ -169,7 +173,8 @@ public final class DummyAppPluginManager implements PluginManager {
                     getApplicationPlugin().getShortLicenseDetails(),
                     getApplicationPlugin().getFullLicenceDetailsResourcePath(),
                     getApplicationPlugin().getAboutDetailsResourcePath(),
-                    getApplicationPlugin().getChangeLogResourcePath())));
+                    getApplicationPlugin().getChangeLogResourcePath(),
+                    getApplicationPlugin().getIntroPanelBackgroundGraphicResourcePath())));
     }
 
     /**

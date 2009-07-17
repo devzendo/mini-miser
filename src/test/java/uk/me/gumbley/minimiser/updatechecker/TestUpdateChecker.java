@@ -71,7 +71,7 @@ public final class TestUpdateChecker extends LoggingTestCase {
         pluginRegistry.addPluginDescriptor(
             new ApplicationPluginDescriptor(
                 true, "Foo", "1.0.0-SNAPSHOT", "1.0", 
-                "http://localhost/", "", "", "", "", ""));
+                "http://localhost/", "", "", "", "", "", null));
         createUpdateCheckerWithAppDetails(pluginRegistry);
     }
     
@@ -187,7 +187,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
         final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
         pluginRegistry.addPluginDescriptor(
             new ApplicationPluginDescriptor(
-                true, "Foo", "1.0", "1.0", null, "", "", "", "", ""));
+                true, "Foo", "1.0", "1.0", null, "", "", "", "",
+                "", null));
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoUpdateURL();
     }
@@ -200,7 +201,8 @@ public final class TestUpdateChecker extends LoggingTestCase {
         final PluginRegistry pluginRegistry = new DefaultPluginRegistry();
         pluginRegistry.addPluginDescriptor(
             new ApplicationPluginDescriptor(
-                true, "Foo", "1.0", "1.0", "", "", "", "", "", ""));
+                true, "Foo", "1.0", "1.0", "", "", "", "", "",
+                "", null));
         createUpdateCheckerWithAppDetails(pluginRegistry);
         checkNoUpdateURL();
     }

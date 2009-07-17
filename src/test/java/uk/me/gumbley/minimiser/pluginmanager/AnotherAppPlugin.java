@@ -81,4 +81,11 @@ public final class AnotherAppPlugin extends AbstractPlugin implements Applicatio
     public String getChangeLogResourcePath() {
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getIntroPanelBackgroundGraphicResourcePath() {
+        return null;
+    }
 }

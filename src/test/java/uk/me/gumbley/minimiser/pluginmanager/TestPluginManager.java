@@ -73,7 +73,8 @@ public final class TestPluginManager extends LoggingTestCase {
                     "(C) 2009 J. R. Bob Dobbs",
                     "COPYING.txt",
                     "About.txt",
-                    "changelog.txt"))));
+                    "changelog.txt",
+                    null))));
         EasyMock.replay(obs);
 
         mDefaultPluginManager.addPluginEventObserver(obs);
