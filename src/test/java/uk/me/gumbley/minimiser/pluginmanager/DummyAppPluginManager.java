@@ -190,4 +190,11 @@ public final class DummyAppPluginManager implements PluginManager {
     public void removePluginEventObserver(final Observer<PluginEvent> observer) {
         mObserverList.removeListener(observer);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public <F> List<F> getPluginsImplementingFacade(final Class<F> facadeType) {
+        return null;
+    }
 }

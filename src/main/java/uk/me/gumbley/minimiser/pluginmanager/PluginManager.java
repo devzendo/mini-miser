@@ -41,7 +41,14 @@ public interface PluginManager {
      * @return the single ApplicationPlugin
      */
     ApplicationPlugin getApplicationPlugin();
-    
+
+    /**
+     * @param <F> the type of facade-implementor to return 
+     * @param facadeType the type of the facade-implementor to return
+     * @return a list of plugins implementing the given type
+     */
+    <F> List<F> getPluginsImplementingFacade(Class<F> facadeType);
+
     /**
      * Add an observer of PluginEvents
      * @param observer the observer

@@ -38,10 +38,7 @@ public final class TestPluginManager extends LoggingTestCase {
         mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
-        final Map<String, Plugin> pluginMap = new HashMap<String, Plugin>();
-        for (Plugin plugin : plugins) {
-            pluginMap.put(plugin.getName(), plugin);
-        }
+        final Map<String, Plugin> pluginMap = pluginsToMap(plugins);
         final ApplicationPlugin appPlugin = (ApplicationPlugin) pluginMap.get("Application");
         Assert.assertNotNull(appPlugin);
         final Plugin normalPlugin = pluginMap.get("Normal");
@@ -125,5 +122,44 @@ public final class TestPluginManager extends LoggingTestCase {
     public void nonexistantPluginPropertiesMustThrow() throws PluginException {
         final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/doesnotexist.properties");
+    }
+
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void plugnFacadesCanBeObtained() throws PluginException {
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/pluginswithfacades.properties");
+        final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
+        
+        Assert.assertEquals(4, plugins.size());
+        final Map<String, Plugin> pluginMap = pluginsToMap(plugins);
+        Assert.assertNotNull(pluginMap.get("AppFacadeAPlugin"));
+        Assert.assertNotNull(pluginMap.get("NormalFacadeAPlugin"));
+        Assert.assertNotNull(pluginMap.get("NormalFacadeBPlugin"));
+        Assert.assertNotNull(pluginMap.get("NormalFacadeABPlugin"));
+        
+        final List<FacadeA> facadeAs = mDefaultPluginManager.getPluginsImplementingFacade(FacadeA.class);
+        Assert.assertEquals(3, facadeAs.size());
+        Assert.assertTrue(facadeAs.contains(pluginMap.get("AppFacadeAPlugin")));
+        Assert.assertTrue(facadeAs.contains(pluginMap.get("NormalFacadeAPlugin")));
+        Assert.assertTrue(facadeAs.contains(pluginMap.get("NormalFacadeABPlugin")));
+        Assert.assertFalse(facadeAs.contains(pluginMap.get("NormalFacadeBPlugin")));
+
+        final List<FacadeB> facadeBs = mDefaultPluginManager.getPluginsImplementingFacade(FacadeB.class);
+        Assert.assertEquals(2, facadeBs.size());
+        Assert.assertTrue(facadeBs.contains(pluginMap.get("NormalFacadeABPlugin")));
+        Assert.assertTrue(facadeBs.contains(pluginMap.get("NormalFacadeBPlugin")));
+
+        final List<FacadeNeverImplemented> facadeNeverImplementeds = mDefaultPluginManager.getPluginsImplementingFacade(FacadeNeverImplemented.class);
+        Assert.assertEquals(0, facadeNeverImplementeds.size());
+    }
+
+    private Map<String, Plugin> pluginsToMap(final List<Plugin> plugins) {
+        final Map<String, Plugin> pluginMap = new HashMap<String, Plugin>();
+        for (Plugin plugin : plugins) {
+            pluginMap.put(plugin.getName(), plugin);
+        }
+        return pluginMap;
     }
 }

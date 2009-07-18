@@ -25,6 +25,10 @@ import com.mycila.plugin.api.PluginBinding;
  * @author matt
  *
  */
+/**
+ * @author matt
+ *
+ */
 public final class DefaultPluginManager implements PluginManager {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultPluginManager.class);
@@ -79,6 +83,23 @@ public final class DefaultPluginManager implements PluginManager {
      */
     public List<Plugin> getPlugins() {
         return mPluginInitialiser.getPlugins();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public <F> List<F> getPluginsImplementingFacade(final Class<F> facadeType) {
+        LOGGER.debug("Obtaining implementors of " + facadeType.getSimpleName());
+        final ArrayList<F> facades = new ArrayList<F>();
+        final List<Plugin> plugins = getPlugins();
+        for (final Plugin plugin : plugins) {
+            if (facadeType.isAssignableFrom(plugin.getClass())) {
+                facades.add((F) plugin);
+                LOGGER.debug("  Returning " + plugin.getClass().getSimpleName());
+            }
+        }
+        return facades;
     }
 
     /**
@@ -172,5 +193,4 @@ public final class DefaultPluginManager implements PluginManager {
         LOGGER.debug("Removing observer " + observer.getClass().getSimpleName());
         mObserverList.removeListener(observer);
     }
-
 }
