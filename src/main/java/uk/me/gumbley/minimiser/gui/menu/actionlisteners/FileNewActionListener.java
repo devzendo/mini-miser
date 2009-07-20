@@ -1,6 +1,8 @@
 package uk.me.gumbley.minimiser.gui.menu.actionlisteners;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.netbeans.spi.wizard.Wizard;
@@ -15,7 +17,10 @@ import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardInt
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardSecurityOptionPage;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseWizardPages;
+import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseWizardPagesFacade;
 
 /**
  * Triggers the start of the wizard from the File/New menu.
@@ -28,6 +33,7 @@ public final class FileNewActionListener extends SnailActionListener {
     private final AccessFactory mAccessFactory;
     private final CursorManager mCursorManager;
     private final PluginRegistry mPluginRegistry;
+    private final PluginManager mPluginManager;
 
     /**
      * Construct the listener
@@ -35,16 +41,19 @@ public final class FileNewActionListener extends SnailActionListener {
      * @param accessFactory the access factory singleton
      * @param cursorManager the cursor manager singleton
      * @param pluginRegistry the plugin registry
+     * @param pluginManager Tthe plugin manager
      */
     public FileNewActionListener(final OpenDatabaseList openDatabaseList,
             final AccessFactory accessFactory,
             final CursorManager cursorManager,
-            final PluginRegistry pluginRegistry) {
+            final PluginRegistry pluginRegistry,
+            final PluginManager pluginManager) {
         super(cursorManager);
         mOpenDatabaseList = openDatabaseList;
         mAccessFactory = accessFactory;
         mCursorManager = cursorManager;
         mPluginRegistry = pluginRegistry;
+        mPluginManager = pluginManager;
     }
 
     /**
@@ -52,13 +61,7 @@ public final class FileNewActionListener extends SnailActionListener {
      */
     @Override
     public void actionPerformedSlowly(final ActionEvent e) {
-        final WizardPage[] wizardPages = new WizardPage[] {
-                new FileNewWizardIntroPage(mPluginRegistry),
-                new FileNewWizardChooseFolderPage(mOpenDatabaseList),
-                new FileNewWizardSecurityOptionPage(),
-                // TODO add back in a later release new FileNewWizardCurrencyPage(),
-                // rather, get other pages from the plugins...
-        };
+        final WizardPage[] wizardPages = getWizardPages();
         final WizardResultProducer producer = new WizardResultProducer() {
             @SuppressWarnings("unchecked")
             public boolean cancel(final Map settings) {
@@ -75,5 +78,29 @@ public final class FileNewActionListener extends SnailActionListener {
         final Wizard wizard = WizardPage.createWizard(wizardPages, producer);
         // ... and on with the show...
         wizard.show();
+    }
+
+    private WizardPage[] getWizardPages() {
+        final ArrayList<WizardPage> wizardPages = new ArrayList<WizardPage>();
+        // Standard pages....
+        wizardPages.add(new FileNewWizardIntroPage(mPluginRegistry));
+        wizardPages.add(new FileNewWizardChooseFolderPage(mOpenDatabaseList));
+        wizardPages.add(new FileNewWizardSecurityOptionPage());
+        // pages from plugins...
+        final List<NewDatabaseWizardPages> newDatabaseWizardPagesPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseWizardPages.class);
+        for (final NewDatabaseWizardPages newDatabaseWizardPages : newDatabaseWizardPagesPlugins) {
+            final NewDatabaseWizardPagesFacade newDatabaseWizardPagesFacade = newDatabaseWizardPages.getNewDatabaseWizardPagesFacade();
+            if (newDatabaseWizardPagesFacade != null) {
+                final List<WizardPage> wizardPagesList = newDatabaseWizardPagesFacade.getWizardPages();
+                if (wizardPagesList != null) {
+                    for (final WizardPage wizardPage : wizardPagesList) {
+                        if (wizardPage != null) {
+                            wizardPages.add(wizardPage);
+                        }
+                    }
+                }
+            }
+        }
+        return wizardPages.toArray(new WizardPage[0]);
     }
 }

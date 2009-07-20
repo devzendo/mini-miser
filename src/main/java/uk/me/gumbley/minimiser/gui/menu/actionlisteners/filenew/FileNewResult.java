@@ -3,10 +3,12 @@ package uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew;
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 import org.springframework.dao.DataAccessException;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
@@ -49,7 +51,7 @@ public final class FileNewResult extends DeferredWizardResult {
     @SuppressWarnings("unchecked")
     @Override
     public void start(final Map map, final ResultProgressHandle progress) {
-        final Map<String, Object> result = (Map<String, Object>) map;
+        final Map<String, Object> result = map;
         if (result == null) {
             LOGGER.info("User cancelled File|New");
             return;
@@ -60,20 +62,22 @@ public final class FileNewResult extends DeferredWizardResult {
         cursorMan.hourglassViaEventThread(this.getClass().getSimpleName());
         try {
             progress.setProgress("Converting params", stepNo.incrementAndGet(), maxSteps);
-            final FileNewParameters params = new FileNewParameters(
-                (String) result.get(FileNewWizardChooseFolderPage.PATH_NAME),
-                (Boolean) result.get(FileNewWizardSecurityOptionPage.ENCRYPTED),
-                (String) result.get(FileNewWizardSecurityOptionPage.PASSWORD),
-                (String) result.get(FileNewWizardCurrencyPage.CURRENCY));
-    
-            LOGGER.info("Creating database at " + params.getPath());
+            final Boolean dbEncrypted = (Boolean) result.get(FileNewWizardSecurityOptionPage.ENCRYPTED);
+            if (!dbEncrypted) {
+                result.put(FileNewWizardSecurityOptionPage.PASSWORD, "");
+            }
+            final String dbPassword = (String) result.get(FileNewWizardSecurityOptionPage.PASSWORD);
+            final String dbPath = (String) result.get(FileNewWizardChooseFolderPage.PATH_NAME);
+            dumpWizardResults(result);
+            
+            LOGGER.info("Creating database at " + dbPath);
             // need the db path to be /path/to/db/databasename/databasename
             // i.e. duplicate the directory component at the end
             progress.setProgress("Getting path", stepNo.incrementAndGet(), maxSteps);
     
-            final File path = new File(params.getPath());
-            final String dbName = path.getName();
-            final String dbFullPath = StringUtils.slashTerminate(path.getAbsolutePath()) + dbName;
+            final File dbPathFile = new File(dbPath);
+            final String dbName = dbPathFile.getName();
+            final String dbFullPath = StringUtils.slashTerminate(dbPathFile.getAbsolutePath()) + dbName;
             LOGGER.info("Final db path is " + dbFullPath);
             progress.setProgress("Creating DB", stepNo.incrementAndGet(), maxSteps);
     
@@ -84,7 +88,10 @@ public final class FileNewResult extends DeferredWizardResult {
                 }
             };
             try {
-                final MiniMiserDatabase database = access.createDatabase(dbFullPath, params.isEncrypted() ? params.getPassword() : "", observer);
+                // TODO pass result map into access.createDatabase so that plugins can
+                // populate the database with info entered on the wizard pages.
+                
+                final MiniMiserDatabase database = access.createDatabase(dbFullPath, dbPassword, observer);
                 progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
         
                 LOGGER.info("Database created; adding to open database list");
@@ -103,34 +110,9 @@ public final class FileNewResult extends DeferredWizardResult {
         }
     }
 
-    private final class FileNewParameters {
-        private final String newPath;
-        private final boolean newEncrypted;
-        private final String newPassword;
-        private final String newCurrency;
-
-        public FileNewParameters(final String path, final boolean encrypted, final String password, final String currency) {
-            this.newPath = path;
-            this.newEncrypted = encrypted;
-            this.newPassword = password;
-            this.newCurrency = currency;
-        }
-
-        public String getCurrency() {
-            return newCurrency;
-        }
-
-        public String getPassword() {
-            return newPassword;
-        }
-
-        public String getPath() {
-            return newPath;
-        }
-        
-        public boolean isEncrypted() {
-            return newEncrypted;
-        }
+    private void dumpWizardResults(final Map<String, Object> result) {
+//        for (iterable_type iterable_element : iterable) {
+//            
+//        }
     }
-
 }
