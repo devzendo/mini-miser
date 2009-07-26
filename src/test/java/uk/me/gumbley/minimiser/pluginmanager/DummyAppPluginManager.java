@@ -195,6 +195,6 @@ public final class DummyAppPluginManager implements PluginManager {
      * {@inheritDoc}
      */
     public <F> List<F> getPluginsImplementingFacade(final Class<F> facadeType) {
-        return null;
+        return new ArrayList<F>();
     }
 }
