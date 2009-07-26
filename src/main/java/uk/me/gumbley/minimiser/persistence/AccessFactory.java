@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.persistence;
 
+import java.util.Map;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
@@ -67,11 +69,17 @@ public interface AccessFactory {
      * @param password the password, if the database is encrypted, or,
      * if not encrypted, this can be the empty string or null.
      * @param observer the listener of creation events.
+     * @param pluginProperties a map of name=value-object pairs
+     * that has typically been provided by plugins via the File|New
+     * wizard. Can be empty or null. Is passed to all plugins that
+     * implement NewDatabaseCreation to use as input data whilst
+     * creating or populating the database.
      * @return a MiniMiserDatabase object allowing you to access the
      * database.
      */
     MiniMiserDatabase createDatabase(String databasePath, String password,
-            Observer<PersistenceObservableEvent> observer);
+            Observer<PersistenceObservableEvent> observer,
+            Map<String, Object> pluginProperties);
 
     /**
      * For displaying progress bars during database creation, we need to know
@@ -80,7 +88,12 @@ public interface AccessFactory {
      * the creation progress bar increasing.
      * This number of steps is dependent on the number of tables and other
      * administrative activities involved.
-     * @return the numebr of database creation steps.
+     * @param pluginProperties a map of name=value-object pairs
+     * that has typically been provided by plugins via the File|New
+     * wizard. Can be empty or null. Is passed to all plugins that
+     * implement NewDatabaseCreation to use as input data whilst
+     * creating or populating the database.
+     * @return the number of database creation steps.
      */
-    int getNumberOfDatabaseCreationSteps();
+    int getNumberOfDatabaseCreationSteps(Map<String, Object> pluginProperties);
 }

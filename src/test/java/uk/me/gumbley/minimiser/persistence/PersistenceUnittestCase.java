@@ -8,10 +8,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+
 import uk.me.gumbley.commoncode.os.OSTypeDetect;
 import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 import uk.me.gumbley.commoncode.string.StringUtils;
@@ -290,7 +292,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
                     numWithinTolerance++;
                 }
             }
-            final double randomness = (double) numWithinTolerance / 256.0;
+            final double randomness = numWithinTolerance / 256.0;
             //LOGGER.debug(String.format("Randomness is %f", randomness));
             return randomness >= 0.75;
         } catch (final IOException e) {
@@ -367,7 +369,7 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
     }
     
     /**
-     * Run this oer multiple databases
+     * Run this over multiple databases
      * @author matt
      *
      */

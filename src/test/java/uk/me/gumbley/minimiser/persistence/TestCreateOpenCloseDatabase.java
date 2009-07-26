@@ -25,7 +25,7 @@ import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
  * @author matt
  *
  */
-public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
+public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final String SQUEAMISH_OSSIFRAGE = "Squeamish Ossifrage";
 
     private static final Logger LOGGER = Logger
@@ -259,10 +259,10 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
         };  
         final String dbName = "testcreate";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "", observer);
+        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "", observer, null);
         final boolean shouldBeRandom = false;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
-        final int numberOfDatabaseCreationSteps = getAccessFactory().getNumberOfDatabaseCreationSteps();
+        final int numberOfDatabaseCreationSteps = getAccessFactory().getNumberOfDatabaseCreationSteps(null);
         Assert.assertTrue(count.get() == numberOfDatabaseCreationSteps);
         LOGGER.info("Database creation steps: currently " + count.get());
         LOGGER.info("<<< testCreatePlaintextDatabaseWithListener");
@@ -327,7 +327,7 @@ public final class TestCreateOpenCloseDatabase extends PersistenceUnittestCase {
     @Test
     public void testThereAreDatabaseCreationSteps() {
         LOGGER.info(">>> testThereAreDatabaseCreationSteps");
-        final int numberOfDatabaseCreationSteps = getAccessFactory().getNumberOfDatabaseCreationSteps();
+        final int numberOfDatabaseCreationSteps = getAccessFactory().getNumberOfDatabaseCreationSteps(null);
         Assert.assertTrue(numberOfDatabaseCreationSteps > 0);
         LOGGER.info("There are " + numberOfDatabaseCreationSteps + " DB creation steps");
         LOGGER.info("<<< testThereAreDatabaseCreationSteps");

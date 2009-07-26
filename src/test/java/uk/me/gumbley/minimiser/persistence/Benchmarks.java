@@ -15,7 +15,7 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
  * @author matt
  *
  */
-public final class Benchmarks extends PersistenceUnittestCase {
+public final class Benchmarks extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final String PLUGIN_NAME = "MyPlugin";
     private static final Logger LOGGER = Logger
             .getLogger(Benchmarks.class);

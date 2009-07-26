@@ -5,8 +5,6 @@
 	<bean id="testConfig" class="uk.me.gumbley.minimiser.config.UnittestingConfig">
 	</bean>
 	
-	<bean id="pluginManager" class="uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager" />
-	
 	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" >
 		<constructor-arg ref="pluginManager" />
 	</bean>

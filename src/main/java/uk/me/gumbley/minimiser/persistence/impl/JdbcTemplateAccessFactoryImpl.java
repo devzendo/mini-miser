@@ -1,6 +1,8 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.h2.constant.ErrorCode;
@@ -19,6 +21,8 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
+import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreation;
+import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreationFacade;
 
 /**
  * An AccessFactory that uses Spring's JdbcTemplate.
@@ -161,13 +165,17 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
      * {@inheritDoc}
      */
     public MiniMiserDatabase createDatabase(final String databasePath, final String password) {
-        return createDatabase(databasePath, password, IGNORING_LISTENER);
+        return createDatabase(databasePath, password, IGNORING_LISTENER, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDatabase createDatabase(final String databasePath, final String password, final Observer<PersistenceObservableEvent> observer) {
+    public MiniMiserDatabase createDatabase(
+            final String databasePath,
+            final String password,
+            final Observer<PersistenceObservableEvent> observer,
+            final Map<String, Object> pluginProperties) {
         LOGGER.debug("Creating database with path '" + databasePath + "' and password '" + password + "'");
         // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
@@ -183,8 +191,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 String.format("Database closed when should be open - SQL Error Code %d",
                 e.getErrorCode()), e);
         }
-        createTables(dbSetup, observer);
-        populateTables(dbSetup, observer);
+        createTables(dbSetup, observer, pluginProperties);
+        populateTables(dbSetup, observer, pluginProperties);
         final JdbcTemplateMiniMiserDatabaseImpl templateImpl =
             new JdbcTemplateMiniMiserDatabaseImpl(
                 dbSetup.getDbURL(),
@@ -196,15 +204,31 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     }
 
     // TODO move this to VersionsDao?
-    private void createTables(final DatabaseSetup dbDetails, final Observer<PersistenceObservableEvent> observer) {
+    private void createTables(
+            final DatabaseSetup dbDetails, 
+            final Observer<PersistenceObservableEvent> observer, 
+            final Map<String, Object> pluginProperties) {
         final SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
         for (int i = 0; i < CREATION_DDL_STRINGS.length; i++) {
             observer.eventOccurred(new PersistenceObservableEvent("Creating table " + (i + 1) + " of " + CREATION_DDL_STRINGS.length));
             jdbcTemplate.getJdbcOperations().execute(CREATION_DDL_STRINGS[i]);
         }
+        // Now let the plugins loose
+        final List<NewDatabaseCreation> newDatabaseCreationPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseCreation.class);
+        for (final NewDatabaseCreation newDatabaseCreation : newDatabaseCreationPlugins) {
+            final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
+            if (newDatabaseCreationFacade != null) {
+                LOGGER.debug("Plugin " + newDatabaseCreation.getClass().getName() + " creating database");
+                newDatabaseCreationFacade.createDatabase(dbDetails.getJdbcTemplate(),
+                    dbDetails.getDataSource(), observer, pluginProperties);
+            }
+        }
     }
     
-    private void populateTables(final DatabaseSetup dbDetails, final Observer<PersistenceObservableEvent> observer) {
+    private void populateTables(
+            final DatabaseSetup dbDetails,
+            final Observer<PersistenceObservableEvent> observer,
+            final Map<String, Object> pluginProperties) {
         // Don't forget to adjust POPULATION_STEPS when we add steps to
         // the population.
         // TODO get this from Spring when we have a factory bean that can
@@ -219,16 +243,39 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final Version appVersion = new Version(pluginName, VersionableEntity.APPLICATION_VERSION, plugin.getVersion());
             versionDao.persistVersion(appVersion);
         }
-        // TODO more tables here...
+        // Now let the plugins loose
+        final List<NewDatabaseCreation> newDatabaseCreationPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseCreation.class);
+        for (final NewDatabaseCreation newDatabaseCreation : newDatabaseCreationPlugins) {
+            final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
+            if (newDatabaseCreationFacade != null) {
+                LOGGER.debug("Plugin " + newDatabaseCreation.getClass().getName() + " populating database");
+                newDatabaseCreationFacade.populateDatabase(dbDetails.getJdbcTemplate(),
+                    dbDetails.getDataSource(), observer, pluginProperties);
+            }
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getNumberOfDatabaseCreationSteps() {
-        return CREATION_DDL_STRINGS.length
-            + mPluginManager.getPlugins().size()
+    public int getNumberOfDatabaseCreationSteps(final Map<String, Object> pluginProperties) {
+        final int staticSize = CREATION_DDL_STRINGS.length
+            + mPluginManager.getPlugins().size() // each plugin contributes version info
             + STATIC_CREATION_STEPS;
+        final int dynamicSize = getNumberOfDatabaseCreationStepsFromPlugins(pluginProperties);
+        return staticSize + dynamicSize;
+    }
+
+    private int getNumberOfDatabaseCreationStepsFromPlugins(final Map<String, Object> pluginProperties) {
+        int count = 0;
+        final List<NewDatabaseCreation> newDatabaseCreationPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseCreation.class);
+        for (final NewDatabaseCreation newDatabaseCreation : newDatabaseCreationPlugins) {
+            final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
+            if (newDatabaseCreationFacade != null) {
+                count += newDatabaseCreationFacade.getNumberOfDatabaseCreationSteps(pluginProperties);
+            }
+        }
+        return count;
     }
 }
 

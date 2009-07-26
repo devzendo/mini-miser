@@ -19,8 +19,8 @@ import uk.me.gumbley.minimiser.openlist.DatabaseListEmptyEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
-import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
@@ -34,7 +34,7 @@ import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
  *
  */
 @ApplicationContext("uk/me/gumbley/minimiser/wiring/lifecycle/LifecycleTestCase.xml")
-public final class TestDatabaseOpener extends PersistenceUnittestCase {
+public final class TestDatabaseOpener extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestDatabaseCloser.class);
     private AccessFactory accessFactory;
@@ -125,6 +125,10 @@ public final class TestDatabaseOpener extends PersistenceUnittestCase {
         LOGGER.info("<<< shouldOpenLastSessionsDatabasesAndSwitchToLastActiveDatabaseOnStartup");
     }
 
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
     @Test
     public void noDatabasesToOpenFiresEmptyEvent() {
         final Observer<DatabaseEvent> obs = EasyMock.createStrictMock(Observer.class);

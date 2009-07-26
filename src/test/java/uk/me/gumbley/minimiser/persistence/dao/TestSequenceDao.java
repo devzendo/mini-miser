@@ -3,8 +3,9 @@ package uk.me.gumbley.minimiser.persistence.dao;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+
+import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
-import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 
 
 /**
@@ -13,7 +14,7 @@ import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
  * @author matt
  *
  */
-public final class TestSequenceDao extends PersistenceUnittestCase {
+public final class TestSequenceDao extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger.getLogger(TestSequenceDao.class);
 
     /**

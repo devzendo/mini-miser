@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -15,11 +16,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
-import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 import uk.me.gumbley.minimiser.util.FileUnittestHelper;
 
 
@@ -28,7 +30,7 @@ import uk.me.gumbley.minimiser.util.FileUnittestHelper;
  * @author matt
  *
  */
-public final class TestOpener extends PersistenceUnittestCase {
+public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger.getLogger(TestOpener.class);
     
     private AccessFactory accessFactory;
@@ -41,8 +43,8 @@ public final class TestOpener extends PersistenceUnittestCase {
      *
      */
     private final class ProgressRecorder {
-        private Map<ProgressStage, List<String>> progressReceived = new HashMap<ProgressStage, List<String>>();
-        private Set<ProgressStage> assertedStages = new HashSet<ProgressStage>();
+        private final Map<ProgressStage, List<String>> progressReceived = new HashMap<ProgressStage, List<String>>();
+        private final Set<ProgressStage> assertedStages = new HashSet<ProgressStage>();
         private boolean startReceived = false;
         private boolean stopReceived = false;
         private boolean illegalProgressBeforeStart = false;

@@ -7,8 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
-import uk.me.gumbley.minimiser.persistence.PersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
@@ -22,7 +22,7 @@ import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
  * @author matt
  *
  */
-public final class TestVersionDao extends PersistenceUnittestCase {
+public final class TestVersionDao extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger.getLogger(TestVersionDao.class);
     
     private PluginManager mPluginManager;

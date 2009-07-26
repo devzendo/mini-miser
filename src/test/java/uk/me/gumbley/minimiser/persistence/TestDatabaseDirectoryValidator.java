@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestDatabaseDirectoryValidator extends PersistenceUnittestCase {
+public final class TestDatabaseDirectoryValidator extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestDatabaseDirectoryValidator.class);
     

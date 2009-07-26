@@ -51,24 +51,24 @@ public final class FileNewResult extends DeferredWizardResult {
     @SuppressWarnings("unchecked")
     @Override
     public void start(final Map map, final ResultProgressHandle progress) {
-        final Map<String, Object> result = map;
-        if (result == null) {
+        final Map<String, Object> pluginProperties = map;
+        if (pluginProperties == null) {
             LOGGER.info("User cancelled File|New");
             return;
         }
-        final int maxSteps = access.getNumberOfDatabaseCreationSteps() + SETUP_STEPS;
+        final int maxSteps = access.getNumberOfDatabaseCreationSteps(pluginProperties) + SETUP_STEPS;
         final AtomicInteger stepNo = new AtomicInteger(1);
         progress.setProgress("Starting creation", stepNo.incrementAndGet(), maxSteps);
         cursorMan.hourglassViaEventThread(this.getClass().getSimpleName());
         try {
             progress.setProgress("Converting params", stepNo.incrementAndGet(), maxSteps);
-            final Boolean dbEncrypted = (Boolean) result.get(FileNewWizardSecurityOptionPage.ENCRYPTED);
+            final Boolean dbEncrypted = (Boolean) pluginProperties.get(FileNewWizardSecurityOptionPage.ENCRYPTED);
             if (!dbEncrypted) {
-                result.put(FileNewWizardSecurityOptionPage.PASSWORD, "");
+                pluginProperties.put(FileNewWizardSecurityOptionPage.PASSWORD, "");
             }
-            final String dbPassword = (String) result.get(FileNewWizardSecurityOptionPage.PASSWORD);
-            final String dbPath = (String) result.get(FileNewWizardChooseFolderPage.PATH_NAME);
-            dumpWizardResults(result);
+            final String dbPassword = (String) pluginProperties.get(FileNewWizardSecurityOptionPage.PASSWORD);
+            final String dbPath = (String) pluginProperties.get(FileNewWizardChooseFolderPage.PATH_NAME);
+            dumpWizardResults(pluginProperties);
             
             LOGGER.info("Creating database at " + dbPath);
             // need the db path to be /path/to/db/databasename/databasename
@@ -88,10 +88,7 @@ public final class FileNewResult extends DeferredWizardResult {
                 }
             };
             try {
-                // TODO pass result map into access.createDatabase so that plugins can
-                // populate the database with info entered on the wizard pages.
-                
-                final MiniMiserDatabase database = access.createDatabase(dbFullPath, dbPassword, observer);
+                final MiniMiserDatabase database = access.createDatabase(dbFullPath, dbPassword, observer, pluginProperties);
                 progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
         
                 LOGGER.info("Database created; adding to open database list");
@@ -111,8 +108,15 @@ public final class FileNewResult extends DeferredWizardResult {
     }
 
     private void dumpWizardResults(final Map<String, Object> result) {
-//        for (iterable_type iterable_element : iterable) {
-//            
-//        }
+        LOGGER.info("Wizard results:");
+        for (final String key : result.keySet()) {
+            final Object valueObject = result.get(key);
+            final String valueString = valueObject == null ? "" : valueObject.toString();
+            final String value =
+                key.equals(FileNewWizardSecurityOptionPage.PASSWORD) ?
+                        StringUtils.maskSensitiveText(valueString) :
+                        valueString;
+            LOGGER.info(String.format("  Key %s: Value %s", key, value));
+        }
     }
 }

@@ -3,9 +3,11 @@ package uk.me.gumbley.minimiser.persistence;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess.ResultType;
 
@@ -15,7 +17,7 @@ import uk.me.gumbley.minimiser.persistence.sql.SQLAccess.ResultType;
  * @author matt
  *
  */
-public final class TestSQLAccess extends PersistenceUnittestCase {
+public final class TestSQLAccess extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger.getLogger(TestSQLAccess.class);
     
     /**

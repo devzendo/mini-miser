@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.commoncode.os.OSTypeDetect;
 import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 import uk.me.gumbley.minimiser.util.OpenFilesDetector;
@@ -20,7 +22,7 @@ import uk.me.gumbley.minimiser.util.OpenFilesDetector;
  * @author matt
  *
  */
-public final class TestOpenFilesInDbDirDetector extends PersistenceUnittestCase {
+public final class TestOpenFilesInDbDirDetector extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestOpenFilesInDbDirDetector.class);
     /**
