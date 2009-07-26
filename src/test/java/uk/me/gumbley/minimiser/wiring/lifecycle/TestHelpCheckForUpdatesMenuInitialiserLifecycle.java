@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.wiring.lifecycle;
 import org.junit.Assert;
 import org.junit.Test;
 
+import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 import uk.me.gumbley.minimiser.gui.menu.MenuMediatorUnittestCase;
 import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 
@@ -58,6 +59,7 @@ public final class TestHelpCheckForUpdatesMenuInitialiserLifecycle extends MenuM
         lifecycle.startup();
 
         // now it should have changed
+        ThreadUtils.waitNoInterruption(100);
         Assert.assertTrue(getStubMenu().isHelpCheckForUpdatesEnabled());
     }
 }
