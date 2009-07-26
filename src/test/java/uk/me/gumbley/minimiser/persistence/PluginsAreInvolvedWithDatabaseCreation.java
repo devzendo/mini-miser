@@ -28,8 +28,6 @@ public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginM
     private static final Logger LOGGER = Logger
             .getLogger(PluginsAreInvolvedWithDatabaseCreation.class);
     private static final String PLUGINDBNAME = "plugindb";
-    private static final String WIZARDKEY = "WIZARDKEY";
-    private static final String WIZARDVALUE = "WIZARDVALUE";
     private PluginManager mPluginManager;
     private DatabaseCreationAppPlugin mDatabaseCreationAppPlugin;
     private AccessFactory mAccessFactory;
@@ -80,6 +78,7 @@ public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginM
         try {
             final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
             database = mAccessFactory.createDatabase(dbDirPlusDbName, "", mPluginObserver, pluginProperties);
+            Assert.assertTrue(mDatabaseCreationAppPlugin.correctPluginPropertiesPassed());
             Assert.assertTrue(mDatabaseCreationAppPlugin.allCreationMethodsCalled());
             Assert.assertTrue(mPluginObserver.haveSeenPluginEvent());
         } finally {
@@ -95,7 +94,7 @@ public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginM
 
     private HashMap<String, Object> createPluginProperties() {
         final HashMap<String, Object> results = new HashMap<String, Object>();
-        results.put(WIZARDKEY, WIZARDVALUE);
+        results.put(DatabaseCreationAppPlugin.WIZARDKEY, DatabaseCreationAppPlugin.WIZARDVALUE);
         return results;
     }
 }
