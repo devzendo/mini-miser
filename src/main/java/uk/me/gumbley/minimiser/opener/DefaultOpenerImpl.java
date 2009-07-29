@@ -70,6 +70,8 @@ public final class DefaultOpenerImpl implements Opener {
                 
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, pathToDatabase);
                 databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
+                // TODO call other plugins to add their 'MiniMiserDatabase' analogues
+                // i.e. DAO factories - to the DatabaseDescriptor?
                 observerList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
 
                 return database;

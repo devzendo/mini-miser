@@ -24,7 +24,7 @@ public interface MiniMiserDatabase {
     SequenceDao getSequenceDao();
     
     /**
-     * Obtain low-lvel access to the database. Can throw an SQLAccessExcception
+     * Obtain low-lvel access to the database. Can throw an SQLAccessException
      * (a RuntimeException) on failure to get low-level access.
      * @return an interface for performing low-level direct SQL access to the
      * database, e.g. for migration and validating/parsing SQL statements.

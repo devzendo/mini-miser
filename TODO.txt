@@ -20,6 +20,21 @@ BUGS:
 
 CURRENT TASKS:
 * New database - wizards/schema-work from plugins.
+  * need to define a DAOFactory interface
+  * need to define an AbstractDAOFactory interface that provides
+    the close() and SQL access functionality from MiniMiserDatabase
+  * MiniMiserDatabase should extend AbstractDAOFactory
+  * Rename MiniMiserDatabase MiniMiserDAOFactory
+  * access factory open/create needs to return a list of
+    DAOFactory, not just MiniMiserDAOFactory; callers will need to
+    get the appropriate one out - perhaps a map keyed on
+    plugin name?
+  * access factory needs to call each plugin that
+    implements some new facade (ProvidesDAOFactory?) to get the
+    DAOFactory from the plugin
+  * Opener should also return a list of DAOFactory
+  * Opener should set all DAOFactory instances in the
+    DatabaseDescriptor
 * Open database - migration framework for plugins.
 
 * add the real swing update progress adapter
