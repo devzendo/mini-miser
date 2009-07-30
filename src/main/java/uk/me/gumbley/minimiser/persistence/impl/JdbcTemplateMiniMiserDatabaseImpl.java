@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateSequenceDao;
@@ -20,7 +20,7 @@ import uk.me.gumbley.minimiser.persistence.sql.impl.H2SQLAccess;
  * @author matt
  *
  */
-public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDatabase {
+public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDAOFactory {
     private static final Logger LOGGER = Logger.getLogger(JdbcTemplateMiniMiserDatabaseImpl.class);
     
     @SuppressWarnings("unused")

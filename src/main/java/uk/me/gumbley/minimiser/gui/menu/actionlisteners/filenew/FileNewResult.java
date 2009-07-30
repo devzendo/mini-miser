@@ -16,7 +16,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 
 /**
@@ -88,7 +88,7 @@ public final class FileNewResult extends DeferredWizardResult {
                 }
             };
             try {
-                final MiniMiserDatabase database = access.createDatabase(dbFullPath, dbPassword, observer, pluginProperties);
+                final MiniMiserDAOFactory database = access.createDatabase(dbFullPath, dbPassword, observer, pluginProperties);
                 progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
         
                 LOGGER.info("Database created; adding to open database list");

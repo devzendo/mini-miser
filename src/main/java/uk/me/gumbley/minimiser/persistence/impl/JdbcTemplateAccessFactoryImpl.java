@@ -13,7 +13,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
@@ -127,7 +127,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDatabase openDatabase(final String databasePath, final String password) {
+    public MiniMiserDAOFactory openDatabase(final String databasePath, final String password) {
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false, IGNORING_LISTENER);
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
@@ -164,14 +164,14 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDatabase createDatabase(final String databasePath, final String password) {
+    public MiniMiserDAOFactory createDatabase(final String databasePath, final String password) {
         return createDatabase(databasePath, password, IGNORING_LISTENER, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDatabase createDatabase(
+    public MiniMiserDAOFactory createDatabase(
             final String databasePath,
             final String password,
             final Observer<PersistenceObservableEvent> observer,

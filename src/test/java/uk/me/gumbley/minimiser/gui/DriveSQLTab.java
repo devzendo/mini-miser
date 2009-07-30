@@ -16,7 +16,7 @@ import uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
 import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
@@ -60,7 +60,7 @@ public final class DriveSQLTab {
                 final PluginManager dummyPluginManager = new DummyAppPluginManager();
                 final AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl(dummyPluginManager);
                 final String dbPath = "/home/matt/Desktop/crap/clear-test-1/clear-test-1";
-                final MiniMiserDatabase miniMiserDatabase = accessFactory.openDatabase(dbPath, "");
+                final MiniMiserDAOFactory miniMiserDatabase = accessFactory.openDatabase(dbPath, "");
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("clear-test-1", dbPath);
                 databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDatabase);
                 LOGGER.info("Database open");

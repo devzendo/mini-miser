@@ -49,7 +49,7 @@ public interface AccessFactory {
      * @return a MiniMiserDatabase, from which DAOs can be obtained, and DDL
      * executed. 
      */
-    MiniMiserDatabase openDatabase(String directory, String password);
+    MiniMiserDAOFactory openDatabase(String directory, String password);
     
     /**
      * Create a database for normal use.
@@ -60,7 +60,7 @@ public interface AccessFactory {
      * @return a MiniMiserDatabase object allowing you to access the
      * database.
      */
-    MiniMiserDatabase createDatabase(String databasePath, String password);
+    MiniMiserDAOFactory createDatabase(String databasePath, String password);
 
     /**
      * Create a database for normal use, listening for events during creation.
@@ -77,7 +77,7 @@ public interface AccessFactory {
      * @return a MiniMiserDatabase object allowing you to access the
      * database.
      */
-    MiniMiserDatabase createDatabase(String databasePath, String password,
+    MiniMiserDAOFactory createDatabase(String databasePath, String password,
             Observer<PersistenceObservableEvent> observer,
             Map<String, Object> pluginProperties);
 

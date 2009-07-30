@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 
 
 /**
@@ -26,7 +26,7 @@ public final class TestSequenceDao extends DummyAppPluginManagerPersistenceUnitt
         final String dbName = "checksequenceincrements";
         doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, "", new RunOnMiniMiserDatabase() {
             
-            public void runOnMiniMiserDatabase(final MiniMiserDatabase openedDatabase) {
+            public void runOnMiniMiserDatabase(final MiniMiserDAOFactory openedDatabase) {
                 final SequenceDao sequenceDao = openedDatabase.getSequenceDao();
                 long last = -1;
                 for (int i = 0; i < 40; i++) {

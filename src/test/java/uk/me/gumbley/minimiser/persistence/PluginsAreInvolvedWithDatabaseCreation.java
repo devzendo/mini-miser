@@ -74,7 +74,7 @@ public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginM
     @Test
     public void pluginsReceiveWizardResults() {
         final Map<String, Object> pluginProperties = createPluginProperties();
-        MiniMiserDatabase database = null;
+        MiniMiserDAOFactory database = null;
         try {
             final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
             database = mAccessFactory.createDatabase(dbDirPlusDbName, "", mPluginObserver, pluginProperties);

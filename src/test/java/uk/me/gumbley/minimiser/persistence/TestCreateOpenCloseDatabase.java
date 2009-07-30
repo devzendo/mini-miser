@@ -85,7 +85,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
-                final MiniMiserDatabase openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
+                final MiniMiserDAOFactory openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
                 try {
                     assertDatabaseShouldBeOpen(dbName);
                     Assert.assertFalse(openedDatabase.isClosed());
@@ -115,7 +115,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, dbPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
-                final MiniMiserDatabase openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
+                final MiniMiserDAOFactory openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
                 try {
                     assertDatabaseShouldBeOpen(dbName);
                     Assert.assertNotNull(openedDatabase);
@@ -144,7 +144,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, dbCreationPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
-                MiniMiserDatabase openedDatabase = null;
+                MiniMiserDAOFactory openedDatabase = null;
                 boolean caughtBPE = false;
                 try {
                     openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbEvilHackerPassword);
@@ -180,7 +180,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, dbCreationPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
-                MiniMiserDatabase openedDatabase = null;
+                MiniMiserDAOFactory openedDatabase = null;
                 boolean caughtBPE = false;
                 try {
                     openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbEvilHackerPassword);
@@ -238,7 +238,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "");
+        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "");
         final boolean shouldBeRandom = false;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
         LOGGER.info("<<< testCreatePlaintextDatabase");
@@ -259,7 +259,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         };  
         final String dbName = "testcreate";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "", observer, null);
+        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "", observer, null);
         final boolean shouldBeRandom = false;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
         final int numberOfDatabaseCreationSteps = getAccessFactory().getNumberOfDatabaseCreationSteps(null);
@@ -269,7 +269,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
     }
     
     private void checkDatabaseInvariants(final String dbName,
-            final MiniMiserDatabase mmData, final boolean shouldBeRandom,
+            final MiniMiserDAOFactory mmData, final boolean shouldBeRandom,
             final boolean doDeleteAndClosureCheck) {
         try {
             LOGGER.info("... created");
@@ -315,7 +315,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         LOGGER.info(">>> testCreateEncryptedDatabase");
         final String dbName = "encrypted";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(dbDirPlusDbName, SQUEAMISH_OSSIFRAGE);
+        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, SQUEAMISH_OSSIFRAGE);
         final boolean shouldBeRandom = true;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
         LOGGER.info("<<< testCreateEncryptedDatabase");
@@ -346,7 +346,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "");
+        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "");
         LOGGER.info("... created");
         try {
             // now close and open it
@@ -376,7 +376,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         final String dbName = "testcloser";
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
-                final MiniMiserDatabase openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
+                final MiniMiserDAOFactory openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
                 final DatabaseDescriptor dd = new DatabaseDescriptor(dbName, dbDirPlusDbName);
                 dd.setAttribute(AttributeIdentifier.Database, openedDatabase);
 

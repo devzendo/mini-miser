@@ -10,7 +10,7 @@ import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
  * @author matt
  *
  */
-public interface MiniMiserDatabase extends DAOFactory {
+public interface MiniMiserDAOFactory extends DAOFactory {
     /**
      * VersionDAO added in V1 of the schema.
      * @return the DAO for accessing the Versions table

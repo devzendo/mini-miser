@@ -11,7 +11,7 @@ import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
@@ -57,7 +57,7 @@ public final class TestDatabaseCloser extends DummyAppPluginManagerPersistenceUn
         LOGGER.info(">>> openDatabasesShouldBeClosedOnLifecycleShutdown");
         doCreateDatabasesBoilerplateWithOpenClosedTests(accessFactory, dbDetails, new RunOnCreatedDbs() {
             public void runOnCreatedDbs() {
-                final MiniMiserDatabase[] openDatabases = new MiniMiserDatabase[dbDetails.length];
+                final MiniMiserDAOFactory[] openDatabases = new MiniMiserDAOFactory[dbDetails.length];
                 LOGGER.info("... re-opening");
                 try {
                     for (int i = 0; i < dbDetails.length; i++) {

@@ -6,7 +6,7 @@ import org.springframework.dao.DataAccessException;
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 
 /**
  * Toolkit for closing databases
@@ -31,7 +31,7 @@ public final class Closer {
         final String databaseName = descriptor.getDatabaseName();
         LOGGER.info("Closing database '" + databaseName + "'");
         try {
-            final MiniMiserDatabase database = (MiniMiserDatabase) descriptor.getAttribute(AttributeIdentifier.Database);
+            final MiniMiserDAOFactory database = (MiniMiserDAOFactory) descriptor.getAttribute(AttributeIdentifier.Database);
             if (database == null) {
                 LOGGER.warn("No database stored in database descriptor for database name '" + databaseName + "'");
                 return false;

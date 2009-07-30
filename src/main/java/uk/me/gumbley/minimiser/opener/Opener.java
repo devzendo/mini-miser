@@ -1,7 +1,7 @@
 package uk.me.gumbley.minimiser.opener;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 
 /**
  * The Opener is responsible for opening databases, informing the user and
@@ -74,7 +74,7 @@ public interface Opener {
      * the MiniMiserDatabase is returned. Observers of DatabaseOpenEvents are
      * notified.
      */
-    MiniMiserDatabase openDatabase(
+    MiniMiserDAOFactory openDatabase(
             final String dbName,
             final String pathToDatabase,
             final OpenerAdapter openerAdapter);

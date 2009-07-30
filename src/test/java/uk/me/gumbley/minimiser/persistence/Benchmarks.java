@@ -34,7 +34,7 @@ public final class Benchmarks extends DummyAppPluginManagerPersistenceUnittestCa
         LOGGER.info("*** testBenchmarkSelectAndCountForPersist start");
         final String dbName = "benchmark";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final MiniMiserDatabase mmData = getAccessFactory().createDatabase(
+        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(
             dbDirPlusDbName, "");
         try {
             final VersionDao versionDao = mmData.getVersionDao();
@@ -101,7 +101,7 @@ public final class Benchmarks extends DummyAppPluginManagerPersistenceUnittestCa
         try {
             final long start = System.currentTimeMillis();
             final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-            final MiniMiserDatabase mmData = getAccessFactory().createDatabase(
+            final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(
                 dbDirPlusDbName, encrypted ? "secret squirrel" : "");
             try {
                 final VersionDao versionDao = mmData.getVersionDao();

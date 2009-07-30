@@ -29,7 +29,7 @@ public final class TestSQLAccess extends DummyAppPluginManagerPersistenceUnittes
         final String dbPassword = "";
         doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, dbPassword, new RunOnMiniMiserDatabase() {
             
-            public void runOnMiniMiserDatabase(final MiniMiserDatabase mmData) {
+            public void runOnMiniMiserDatabase(final MiniMiserDAOFactory mmData) {
                 final SQLAccess sqlAccess = mmData.getSQLAccess();
                 final ResultType type = sqlAccess.parse("SELECT * FROM Versions");
                 Assert.assertSame(ResultType.ResultSet, type);
@@ -48,7 +48,7 @@ public final class TestSQLAccess extends DummyAppPluginManagerPersistenceUnittes
         
         doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, dbPassword, new RunOnMiniMiserDatabase() {
             
-            public void runOnMiniMiserDatabase(final MiniMiserDatabase mmData) {
+            public void runOnMiniMiserDatabase(final MiniMiserDAOFactory mmData) {
                 Statement statement = null;
                 try {
                     final SQLAccess sqlAccess = mmData.getSQLAccess();

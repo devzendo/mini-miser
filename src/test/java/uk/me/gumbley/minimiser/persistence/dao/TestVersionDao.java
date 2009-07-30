@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
@@ -43,7 +43,7 @@ public final class TestVersionDao extends DummyAppPluginManagerPersistenceUnitte
         final String dbName = "checkversionpopulation";
         doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, "", new RunOnMiniMiserDatabase() {
             
-            public void runOnMiniMiserDatabase(final MiniMiserDatabase openedDatabase) {
+            public void runOnMiniMiserDatabase(final MiniMiserDAOFactory openedDatabase) {
                 final Plugin appPlugin = getAppPlugin();
                 Assert.assertNotNull(appPlugin);
                 checkVersionForPlugin(appPlugin, openedDatabase.getVersionDao());

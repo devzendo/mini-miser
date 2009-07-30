@@ -11,7 +11,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 
 /**
  * Default implementation of Opener.
@@ -47,7 +47,7 @@ public final class DefaultOpenerImpl implements Opener {
      * {@inheritDoc}
      */
     
-    public MiniMiserDatabase openDatabase(
+    public MiniMiserDAOFactory openDatabase(
             final String dbName,
             final String pathToDatabase,
             final OpenerAdapter openerAdapter) {
@@ -62,7 +62,7 @@ public final class DefaultOpenerImpl implements Opener {
         while (true) {
             try {
                 openerAdapter.reportProgress(ProgressStage.OPENING, tryingToOpenMessage);
-                final MiniMiserDatabase database = access.openDatabase(pathToDatabase, dbPassword);
+                final MiniMiserDAOFactory database = access.openDatabase(pathToDatabase, dbPassword);
                 LOGGER.info("Opened OK");
         
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened '" + dbName + "' OK");

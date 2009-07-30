@@ -20,7 +20,7 @@ import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDatabase;
+import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
@@ -146,7 +146,7 @@ public final class TestDatabaseOpener extends DummyAppPluginManagerPersistenceUn
         final int numOpened = openDatabaseList.getNumberOfDatabases();
         for (int i = 0; i < numOpened; i++) {
             final DatabaseDescriptor openDescriptor = openDatabaseList.getOpenDatabases().get(i);
-            final MiniMiserDatabase database = (MiniMiserDatabase) openDescriptor.getAttribute(AttributeIdentifier.Database);
+            final MiniMiserDAOFactory database = (MiniMiserDAOFactory) openDescriptor.getAttribute(AttributeIdentifier.Database);
             database.close();
             assertDatabaseShouldBeClosed(openDescriptor.getDatabaseName());
         }
