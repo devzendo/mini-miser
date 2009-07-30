@@ -47,7 +47,9 @@
 	<!-- resources shared between tests -->
 	<bean id="openDatabaseList" class="uk.me.gumbley.minimiser.openlist.OpenDatabaseList" />
 
-	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" />
+	<bean id="accessFactory" class="uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" >
+		<constructor-arg ref="pluginManager" />
+	</bean>
 	
 	<bean id="prefs" class="uk.me.gumbley.minimiser.wiring.lifecycle.StubOpenListPrefs" />
 

@@ -33,7 +33,7 @@ import uk.me.gumbley.minimiser.util.DatabasePairEncapsulator;
  * @author matt
  *
  */
-@ApplicationContext("uk/me/gumbley/minimiser/wiring/lifecycle/LifecycleTestCase.xml")
+@ApplicationContext("uk/me/gumbley/minimiser/wiring/lifecycle/DatabaseOpenerAndCloserLifecycleTestCase.xml")
 public final class TestDatabaseOpener extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestDatabaseCloser.class);
