@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.exception.AppException;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.tabpanemanager.TabPaneManager;
-import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**
@@ -33,7 +32,6 @@ public class MainFrame {
     private final CursorManager mCursorManager;
     private final WindowGeometryStore mWindowGeometryStore;
     private final MainFrameStatusBar mStatusBar;
-    private final PluginRegistry mPluginRegistry;
 
     /**
      * @param springLoader the IoC container abstraction
@@ -45,7 +43,6 @@ public class MainFrame {
             throws AppException {
         super();
         mSpringLoader = springLoader;
-        mPluginRegistry = mSpringLoader.getBean("pluginRegistry", PluginRegistry.class);
         mWindowGeometryStore = mSpringLoader.getBean("windowGeometryStore", WindowGeometryStore.class);
 
         // Create new Window and exit handler
