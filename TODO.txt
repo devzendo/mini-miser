@@ -28,6 +28,7 @@ CURRENT TASKS:
     get the appropriate one out - perhaps a map keyed on
     plugin name or DAOFactory subtype (generically like the
     PluginManager.getPluginsImplementingFacade)?
+  * Rename JdbcTemplateMiniMiserAccessFactory like DAOFactory
   * access factory needs to call each plugin that
     implements some new facade (ProvidesDAOFactory?) to get the
     DAOFactory from the plugin
@@ -35,7 +36,8 @@ CURRENT TASKS:
   * DatabaseDescriptor needs to store DAOFactory separately from
     the other attributes - perhaps a map keyed on
     plugin name or DAOFactory subtype (generically like the
-    PluginManager.getPluginsImplementingFacade)?
+    PluginManager.getPluginsImplementingFacade)? Or perhaps store
+    the InstanceSet<DAOFactory> as AttributeIdentifier.Database?
   * Deprecate the AttributeIdentifier.Database
   * Replace all usage of AttributeIdentifier.Database with calls
     to get the appropriately subtyped DAOFactory
@@ -175,7 +177,8 @@ NIGGLES:
   just contain pretty icons, and the text that's currently in the
   buttons should be next to them.
 
-
+* Intro panel is shown briefly when closing (since the
+  OpenDatabaseList reaches empty during close). Crowbar?
 
 DOCUMENTATION:
 * fill in the rest of the acks in credits.html
