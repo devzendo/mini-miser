@@ -351,7 +351,9 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
         LOGGER.info(String.format("... dbPassword = '%s'", dbPassword));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDAOFactory mmData = access.createDatabase(dbDirPlusDbName, dbPassword);
+        final MiniMiserDAOFactory mmData = 
+            access.createDatabase(dbDirPlusDbName, dbPassword).
+            getInstanceOf(MiniMiserDAOFactory.class);
         LOGGER.info("... created");
         try {
             // now close and open it
@@ -405,7 +407,9 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
                 LOGGER.info(String.format("... dbPassword = '%s'", detail.getPassword()));
                 // create it...
                 LOGGER.info("... creating");
-                final MiniMiserDAOFactory mmData = access.createDatabase(dbDirPlusDbName, detail.getPassword());
+                final MiniMiserDAOFactory mmData = 
+                    access.createDatabase(dbDirPlusDbName, detail.getPassword()).
+                    getInstanceOf(MiniMiserDAOFactory.class);
                 LOGGER.info("... created");
                 // now close and open it
                 assertDatabaseShouldBeOpen(detail.getName());
@@ -463,7 +467,9 @@ public class PersistenceUnittestCase extends SpringLoaderUnittestCase {
         LOGGER.info(String.format("... dbPassword = '%s'", dbPassword));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDAOFactory mmData = access.createDatabase(dbDirPlusDbName, dbPassword);
+        final MiniMiserDAOFactory mmData = 
+            access.createDatabase(dbDirPlusDbName, dbPassword).
+            getInstanceOf(MiniMiserDAOFactory.class);
         LOGGER.info("... created");
         try {
             try {

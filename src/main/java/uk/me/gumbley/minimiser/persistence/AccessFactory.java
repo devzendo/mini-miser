@@ -3,6 +3,7 @@ package uk.me.gumbley.minimiser.persistence;
 import java.util.Map;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
  * This is the entry point into the persistence layer.
@@ -46,10 +47,11 @@ public interface AccessFactory {
      * @param directory the directory containing the database
      * @param password an optional password for encrypted databases; ignored
      * for unencrypted databases
-     * @return a MiniMiserDatabase, from which DAOs can be obtained, and DDL
-     * executed. 
+     * @return an InstanceSet of DAOFactory, from which DAO
+     * factories for all plugins (and MiniMiserDAOFactory) can be
+     * obtained, and DDL executed. 
      */
-    MiniMiserDAOFactory openDatabase(String directory, String password);
+    InstanceSet<DAOFactory> openDatabase(String directory, String password);
     
     /**
      * Create a database for normal use.
@@ -57,10 +59,11 @@ public interface AccessFactory {
      * @param databasePath the path to the database.
      * @param password the password, if the database is encrypted, or,
      * if not encrypted, this can be the empty string or null.
-     * @return a MiniMiserDatabase object allowing you to access the
-     * database.
+     * @return an InstanceSet of DAOFactory, from which DAO
+     * factories for all plugins (and MiniMiserDAOFactory) can be
+     * obtained, and DDL executed.
      */
-    MiniMiserDAOFactory createDatabase(String databasePath, String password);
+    InstanceSet<DAOFactory> createDatabase(String databasePath, String password);
 
     /**
      * Create a database for normal use, listening for events during creation.
@@ -74,10 +77,11 @@ public interface AccessFactory {
      * wizard. Can be empty or null. Is passed to all plugins that
      * implement NewDatabaseCreation to use as input data whilst
      * creating or populating the database.
-     * @return a MiniMiserDatabase object allowing you to access the
-     * database.
+     * @return an InstanceSet of DAOFactory, from which DAO
+     * factories for all plugins (and MiniMiserDAOFactory) can be
+     * obtained, and DDL executed.
      */
-    MiniMiserDAOFactory createDatabase(String databasePath, String password,
+    InstanceSet<DAOFactory> createDatabase(String databasePath, String password,
             Observer<PersistenceObservableEvent> observer,
             Map<String, Object> pluginProperties);
 

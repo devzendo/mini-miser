@@ -60,7 +60,7 @@ public final class DriveSQLTab {
                 final PluginManager dummyPluginManager = new DummyAppPluginManager();
                 final AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl(dummyPluginManager);
                 final String dbPath = "/home/matt/Desktop/crap/clear-test-1/clear-test-1";
-                final MiniMiserDAOFactory miniMiserDatabase = accessFactory.openDatabase(dbPath, "");
+                final MiniMiserDAOFactory miniMiserDatabase = accessFactory.openDatabase(dbPath, "").getInstanceOf(MiniMiserDAOFactory.class);
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("clear-test-1", dbPath);
                 databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDatabase);
                 LOGGER.info("Database open");

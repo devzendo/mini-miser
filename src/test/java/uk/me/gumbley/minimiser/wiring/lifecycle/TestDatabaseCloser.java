@@ -63,7 +63,10 @@ public final class TestDatabaseCloser extends DummyAppPluginManagerPersistenceUn
                     for (int i = 0; i < dbDetails.length; i++) {
                         final DatabaseOpenDetails detail = dbDetails[i];
                         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(detail.getName());
-                        openDatabases[i] = accessFactory.openDatabase(dbDirPlusDbName, detail.getPassword());
+                        openDatabases[i] = 
+                            accessFactory.
+                            openDatabase(dbDirPlusDbName, detail.getPassword()).
+                            getInstanceOf(MiniMiserDAOFactory.class);
                         assertDatabaseShouldBeOpen(detail.getName());
                         Assert.assertNotNull(openDatabases[i]);
                         LOGGER.info("... we opened the database!");

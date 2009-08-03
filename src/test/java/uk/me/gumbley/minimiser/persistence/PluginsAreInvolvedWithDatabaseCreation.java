@@ -77,7 +77,10 @@ public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginM
         MiniMiserDAOFactory database = null;
         try {
             final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
-            database = mAccessFactory.createDatabase(dbDirPlusDbName, "", mPluginObserver, pluginProperties);
+            database = 
+                mAccessFactory.
+                createDatabase(dbDirPlusDbName, "", mPluginObserver, pluginProperties).
+                getInstanceOf(MiniMiserDAOFactory.class);
             Assert.assertTrue(mDatabaseCreationAppPlugin.correctPluginPropertiesPassed());
             Assert.assertTrue(mDatabaseCreationAppPlugin.allCreationMethodsCalled());
             Assert.assertTrue(mPluginObserver.haveSeenPluginEvent());

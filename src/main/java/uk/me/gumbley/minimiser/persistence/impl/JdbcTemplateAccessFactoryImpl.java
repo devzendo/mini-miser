@@ -13,6 +13,7 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
@@ -23,6 +24,7 @@ import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreation;
 import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreationFacade;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
  * An AccessFactory that uses Spring's JdbcTemplate.
@@ -127,7 +129,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDAOFactory openDatabase(final String databasePath, final String password) {
+    public InstanceSet<DAOFactory> openDatabase(final String databasePath, final String password) {
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false, IGNORING_LISTENER);
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
@@ -158,20 +160,26 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             }
         }
         LOGGER.debug("Creating new JdbcTemplateMigratableDatabaseImpl");
-        return new JdbcTemplateMiniMiserDatabaseImpl(dbSetup.getDbURL(), dbSetup.getDbPath(), dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
+        final JdbcTemplateMiniMiserDatabaseImpl miniMiserDAOFactory = 
+            new JdbcTemplateMiniMiserDatabaseImpl(
+                dbSetup.getDbURL(), dbSetup.getDbPath(), 
+                dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
+        final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
+        daoFactories.addInstance(MiniMiserDAOFactory.class, miniMiserDAOFactory);
+        return daoFactories;
     }
 
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDAOFactory createDatabase(final String databasePath, final String password) {
+    public InstanceSet<DAOFactory> createDatabase(final String databasePath, final String password) {
         return createDatabase(databasePath, password, IGNORING_LISTENER, null);
     }
 
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDAOFactory createDatabase(
+    public InstanceSet<DAOFactory> createDatabase(
             final String databasePath,
             final String password,
             final Observer<PersistenceObservableEvent> observer,
@@ -200,7 +208,9 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 dbSetup.getJdbcTemplate(),
                 dbSetup.getDataSource());
         observer.eventOccurred(new PersistenceObservableEvent("Database creation complete"));
-        return templateImpl;
+        final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
+        daoFactories.addInstance(MiniMiserDAOFactory.class, templateImpl);
+        return daoFactories;
     }
 
     // TODO move this to VersionsDao?

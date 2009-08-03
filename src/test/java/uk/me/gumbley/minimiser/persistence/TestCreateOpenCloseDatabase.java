@@ -85,7 +85,9 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
-                final MiniMiserDAOFactory openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
+                final MiniMiserDAOFactory openedDatabase = 
+                    getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword).
+                    getInstanceOf(MiniMiserDAOFactory.class);
                 try {
                     assertDatabaseShouldBeOpen(dbName);
                     Assert.assertFalse(openedDatabase.isClosed());
@@ -115,7 +117,9 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, dbPassword, new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
                 LOGGER.info("... re-opening");
-                final MiniMiserDAOFactory openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
+                final MiniMiserDAOFactory openedDatabase = 
+                    getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword).
+                    getInstanceOf(MiniMiserDAOFactory.class);
                 try {
                     assertDatabaseShouldBeOpen(dbName);
                     Assert.assertNotNull(openedDatabase);
@@ -147,7 +151,10 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
                 MiniMiserDAOFactory openedDatabase = null;
                 boolean caughtBPE = false;
                 try {
-                    openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbEvilHackerPassword);
+                    openedDatabase = 
+                        getAccessFactory().
+                        openDatabase(dbDirPlusDbName, dbEvilHackerPassword).
+                        getInstanceOf(MiniMiserDAOFactory.class);
                     Assert.fail("Should not have been able to open an encrypted database with some other password");
                 } catch (final BadPasswordException bpe) {
                     LOGGER.info("Correctly caught bad password exception: " + bpe.getMessage());
@@ -183,7 +190,10 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
                 MiniMiserDAOFactory openedDatabase = null;
                 boolean caughtBPE = false;
                 try {
-                    openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbEvilHackerPassword);
+                    openedDatabase = 
+                        getAccessFactory().
+                        openDatabase(dbDirPlusDbName, dbEvilHackerPassword).
+                        getInstanceOf(MiniMiserDAOFactory.class);
                     Assert.fail("Should not have been able to open an encrypted database with an empty password");
                 } catch (final BadPasswordException bpe) {
                     LOGGER.info("Correctly caught bad password exception: " + bpe.getMessage());
@@ -238,7 +248,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "");
+        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "").getInstanceOf(MiniMiserDAOFactory.class);
         final boolean shouldBeRandom = false;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
         LOGGER.info("<<< testCreatePlaintextDatabase");
@@ -259,7 +269,10 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         };  
         final String dbName = "testcreate";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "", observer, null);
+        final MiniMiserDAOFactory mmData = 
+            getAccessFactory().
+            createDatabase(dbDirPlusDbName, "", observer, null).
+            getInstanceOf(MiniMiserDAOFactory.class);
         final boolean shouldBeRandom = false;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
         final int numberOfDatabaseCreationSteps = getAccessFactory().getNumberOfDatabaseCreationSteps(null);
@@ -315,7 +328,10 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         LOGGER.info(">>> testCreateEncryptedDatabase");
         final String dbName = "encrypted";
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
-        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, SQUEAMISH_OSSIFRAGE);
+        final MiniMiserDAOFactory mmData = 
+            getAccessFactory().
+            createDatabase(dbDirPlusDbName, SQUEAMISH_OSSIFRAGE).
+            getInstanceOf(MiniMiserDAOFactory.class);
         final boolean shouldBeRandom = true;
         checkDatabaseInvariants(dbName, mmData, shouldBeRandom, true);
         LOGGER.info("<<< testCreateEncryptedDatabase");
@@ -327,7 +343,8 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
     @Test
     public void testThereAreDatabaseCreationSteps() {
         LOGGER.info(">>> testThereAreDatabaseCreationSteps");
-        final int numberOfDatabaseCreationSteps = getAccessFactory().getNumberOfDatabaseCreationSteps(null);
+        final int numberOfDatabaseCreationSteps = 
+            getAccessFactory().getNumberOfDatabaseCreationSteps(null);
         Assert.assertTrue(numberOfDatabaseCreationSteps > 0);
         LOGGER.info("There are " + numberOfDatabaseCreationSteps + " DB creation steps");
         LOGGER.info("<<< testThereAreDatabaseCreationSteps");
@@ -346,7 +363,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         LOGGER.info(String.format("... dbDirPlusDbName = %s", dbDirPlusDbName));
         // create it...
         LOGGER.info("... creating");
-        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "");
+        final MiniMiserDAOFactory mmData = getAccessFactory().createDatabase(dbDirPlusDbName, "").getInstanceOf(MiniMiserDAOFactory.class);
         LOGGER.info("... created");
         try {
             // now close and open it
@@ -376,7 +393,10 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         final String dbName = "testcloser";
         doCreateDatabaseBoilerplate(getAccessFactory(), dbName, "", new RunOnCreatedDb() {
             public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
-                final MiniMiserDAOFactory openedDatabase = getAccessFactory().openDatabase(dbDirPlusDbName, dbPassword);
+                final MiniMiserDAOFactory openedDatabase = 
+                    getAccessFactory().
+                    openDatabase(dbDirPlusDbName, dbPassword).
+                    getInstanceOf(MiniMiserDAOFactory.class);
                 final DatabaseDescriptor dd = new DatabaseDescriptor(dbName, dbDirPlusDbName);
                 dd.setAttribute(AttributeIdentifier.Database, openedDatabase);
 
