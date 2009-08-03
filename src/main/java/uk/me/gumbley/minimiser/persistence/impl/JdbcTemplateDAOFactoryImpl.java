@@ -1,11 +1,14 @@
 package uk.me.gumbley.minimiser.persistence.impl;
 
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
@@ -15,13 +18,13 @@ import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 import uk.me.gumbley.minimiser.persistence.sql.impl.H2SQLAccess;
 
 /**
- * A MiniMiserDatabase DAO factory that uses a SimpleJdbcTemplate
+ * A MiniMiser DAO factory that uses a SimpleJdbcTemplate
  * 
  * @author matt
  *
  */
-public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDAOFactory {
-    private static final Logger LOGGER = Logger.getLogger(JdbcTemplateMiniMiserDatabaseImpl.class);
+public final class JdbcTemplateDAOFactoryImpl implements MiniMiserDAOFactory {
+    private static final Logger LOGGER = Logger.getLogger(JdbcTemplateDAOFactoryImpl.class);
     
     @SuppressWarnings("unused")
     private final String dbURL;
@@ -40,7 +43,7 @@ public final class JdbcTemplateMiniMiserDatabaseImpl implements MiniMiserDAOFact
      * @param template the SimpleJdbcTemplate to access this database with
      * @param source the dataSource to access this databse with
      */
-    public JdbcTemplateMiniMiserDatabaseImpl(final String url, final String path, final SimpleJdbcTemplate template, final DataSource source) {
+    public JdbcTemplateDAOFactoryImpl(final String url, final String path, final SimpleJdbcTemplate template, final DataSource source) {
         this.dbURL = url;
         this.dbPath = path;
         this.jdbcTemplate = template;

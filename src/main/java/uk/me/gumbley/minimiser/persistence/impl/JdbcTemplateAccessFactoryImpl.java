@@ -160,8 +160,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             }
         }
         LOGGER.debug("Creating new JdbcTemplateMigratableDatabaseImpl");
-        final JdbcTemplateMiniMiserDatabaseImpl miniMiserDAOFactory = 
-            new JdbcTemplateMiniMiserDatabaseImpl(
+        final JdbcTemplateDAOFactoryImpl miniMiserDAOFactory = 
+            new JdbcTemplateDAOFactoryImpl(
                 dbSetup.getDbURL(), dbSetup.getDbPath(), 
                 dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
         final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
@@ -201,8 +201,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         }
         createTables(dbSetup, observer, pluginProperties);
         populateTables(dbSetup, observer, pluginProperties);
-        final JdbcTemplateMiniMiserDatabaseImpl templateImpl =
-            new JdbcTemplateMiniMiserDatabaseImpl(
+        final JdbcTemplateDAOFactoryImpl templateImpl =
+            new JdbcTemplateDAOFactoryImpl(
                 dbSetup.getDbURL(),
                 dbSetup.getDbPath(),
                 dbSetup.getJdbcTemplate(),
