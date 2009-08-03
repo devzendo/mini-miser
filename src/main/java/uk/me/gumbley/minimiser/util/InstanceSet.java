@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 
 
 /**
@@ -20,6 +22,7 @@ import java.util.Map;
  *
  */
 public final class InstanceSet<T> {
+    private static final Logger LOGGER = Logger.getLogger(InstanceSet.class);
     private final Map<Class<T>, T> mTypeMap;
 
     /**
@@ -48,7 +51,29 @@ public final class InstanceSet<T> {
      */
     @SuppressWarnings("unchecked")
     public void addInstance(final T instance) {
+        if (instance == null) {
+            throw new IllegalArgumentException("Cannot add null to an InstanceSet");
+        }
+        LOGGER.debug("Adding instance of " + instance.getClass().getSimpleName() + " = " + instance);
         final Class<T> instanceClass = (Class<T>) instance.getClass();
         mTypeMap.put(instanceClass, instance);
+    }
+
+    /**
+     * Add an instance of T (or some subtype of T), specifying
+     * some interface that it implements as a declared type.
+     * Replace any existing instance of that type.
+     * @param <S> the subtype of the map type T to retrieve
+     * @param klass a class/interface that the instance
+     * implements that you want to use as the class by which to
+     * later retrieve this instance. 
+     * @param instance the instance of type T
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends T> void addInstance(final Class<S> klass, final T instance) {
+        if (instance == null) {
+            throw new IllegalArgumentException("Cannot add null to an InstanceSet");
+        }
+        mTypeMap.put((Class<T>) klass, instance);
     }
 }

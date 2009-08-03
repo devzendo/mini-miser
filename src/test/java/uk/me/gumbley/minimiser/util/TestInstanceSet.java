@@ -15,7 +15,7 @@ public final class TestInstanceSet {
     private InstanceSet<BaseInterface> mTypeMap;
 
     private interface BaseInterface {
-        // marker interface
+        String getData();
     }
     
     private abstract class AbstractBase implements BaseInterface {
@@ -76,6 +76,22 @@ public final class TestInstanceSet {
     /**
      * 
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void cantAddNull() {
+        mTypeMap.addInstance(null);
+    }
+    
+    /**
+     * 
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void cantAddNullAsDeclaredType() {
+        mTypeMap.addInstance(BaseInterface.class, null);
+    }
+    
+    /**
+     * 
+     */
     @Test
     public void canStoreAndRetrieveByType() {
         final A a = new A("foo");
@@ -107,5 +123,21 @@ public final class TestInstanceSet {
         final A retrievedA = mTypeMap.getInstanceOf(A.class);
         Assert.assertTrue(retrievedA instanceof A);
         Assert.assertEquals("bar", retrievedA.getData());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void canOnlyStoreOneInstanceByDeclaredType() {
+        final A a = new A("foo");
+        mTypeMap.addInstance(BaseInterface.class, a);
+
+        final B b = new B("bar");
+        mTypeMap.addInstance(BaseInterface.class, b);
+        
+        final BaseInterface base = mTypeMap.getInstanceOf(BaseInterface.class);
+        Assert.assertSame(b, base);
+        Assert.assertEquals("bar", base.getData());
     }
 }
