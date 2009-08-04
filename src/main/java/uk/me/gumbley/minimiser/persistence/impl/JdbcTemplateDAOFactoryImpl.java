@@ -58,9 +58,11 @@ public final class JdbcTemplateDAOFactoryImpl implements MiniMiserDAOFactory {
      */
     public void close() {
         if (isClosed) {
+            LOGGER.info("Database at '" + dbPath + "' is already closed");
             return;
         }
         try {
+            LOGGER.info("Closing database at '" + dbPath + "'");
             DataSourceUtils.getConnection(dataSource).close();
             isClosed = true;
         } catch (final CannotGetJdbcConnectionException e) {
