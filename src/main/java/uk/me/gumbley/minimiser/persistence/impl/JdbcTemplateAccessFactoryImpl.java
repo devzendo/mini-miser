@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
@@ -130,6 +131,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
      * {@inheritDoc}
      */
     public InstanceSet<DAOFactory> openDatabase(final String databasePath, final String password) {
+        LOGGER.info("Opening database at '" + databasePath + "'");
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false, IGNORING_LISTENER);
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
@@ -184,7 +186,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final String password,
             final Observer<PersistenceObservableEvent> observer,
             final Map<String, Object> pluginProperties) {
-        LOGGER.debug("Creating database with path '" + databasePath + "' and password '" + password + "'");
+        LOGGER.info("Creating database at '" + databasePath + "' and password '" + StringUtils.maskSensitiveText(password) + "'");
         // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);
