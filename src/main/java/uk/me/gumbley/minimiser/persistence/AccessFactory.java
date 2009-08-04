@@ -44,14 +44,14 @@ public interface AccessFactory {
      * indicating that the database (probably) doesn't exist.
      * </ul>
      *  
-     * @param directory the directory containing the database
+     * @param databasePath the path to the database.
      * @param password an optional password for encrypted databases; ignored
      * for unencrypted databases
      * @return an InstanceSet of DAOFactory, from which DAO
      * factories for all plugins (and MiniMiserDAOFactory) can be
      * obtained, and DDL executed. 
      */
-    InstanceSet<DAOFactory> openDatabase(String directory, String password);
+    InstanceSet<DAOFactory> openDatabase(String databasePath, String password);
     
     /**
      * Create a database for normal use.
