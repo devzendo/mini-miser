@@ -27,18 +27,20 @@ import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreat
 public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger
             .getLogger(PluginsAreInvolvedWithDatabaseCreation.class);
-    private static final String PLUGINDBNAME = "plugindb";
+    private static final String PLUGINDBNAME = "plugincreationdb";
     private PluginManager mPluginManager;
     private DatabaseCreationAppPlugin mDatabaseCreationAppPlugin;
     private AccessFactory mAccessFactory;
     private PluginObserver mPluginObserver;
+    private String mDbDirPlusDbName;
+    
     /**
      * @throws PluginException never
      */
     @Before
     public void getPrerequisites() throws PluginException {
         mPluginManager = getPluginManager();
-        mPluginManager.loadPlugins("uk/me/gumbley/minimiser/persistence/persistenceplugin.properties");
+        mPluginManager.loadPlugins("uk/me/gumbley/minimiser/persistence/persistencecreationplugin.properties");
         final List<Plugin> plugins = mPluginManager.getPlugins();
         Assert.assertEquals(1, plugins.size());
         mDatabaseCreationAppPlugin = (DatabaseCreationAppPlugin) plugins.get(0);
@@ -48,6 +50,7 @@ public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginM
         mAccessFactory = getAccessFactory();
         Assert.assertNotNull(mAccessFactory);
         mPluginObserver = new PluginObserver();
+        mDbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
     }
     
     private class PluginObserver implements Observer<PersistenceObservableEvent> {
@@ -76,10 +79,9 @@ public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginM
         final Map<String, Object> pluginProperties = createPluginProperties();
         MiniMiserDAOFactory database = null;
         try {
-            final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
             database = 
                 mAccessFactory.
-                createDatabase(dbDirPlusDbName, "", mPluginObserver, pluginProperties).
+                createDatabase(mDbDirPlusDbName, "", mPluginObserver, pluginProperties).
                 getInstanceOf(MiniMiserDAOFactory.class);
             Assert.assertTrue(mDatabaseCreationAppPlugin.correctPluginPropertiesPassed());
             Assert.assertTrue(mDatabaseCreationAppPlugin.allCreationMethodsCalled());
