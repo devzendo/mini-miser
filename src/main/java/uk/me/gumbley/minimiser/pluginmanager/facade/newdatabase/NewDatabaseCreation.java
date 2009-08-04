@@ -4,6 +4,10 @@ package uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase;
  * Plugins that want to create database content after the File|New
  * wizard has collected user input must implement this and provide
  * the facade.
+ * <p>
+ * It is highly likely that such plugins would want to implement
+ * DatabaseOpening, as if they create this data, they would want
+ * to provide access to it.
  * 
  * @author matt
  *
