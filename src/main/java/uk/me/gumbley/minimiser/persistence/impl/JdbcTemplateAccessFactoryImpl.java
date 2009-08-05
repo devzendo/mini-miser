@@ -25,6 +25,9 @@ import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreation;
 import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreationFacade;
+import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpening;
+import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpeningFacade;
+import uk.me.gumbley.minimiser.util.InstancePair;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -161,13 +164,32 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                             e.getErrorCode()), "", e);
             }
         }
-        LOGGER.debug("Creating new JdbcTemplateMigratableDatabaseImpl");
-        final JdbcTemplateDAOFactoryImpl miniMiserDAOFactory = 
-            new JdbcTemplateDAOFactoryImpl(
+        
+        final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
+        
+        LOGGER.debug("Creating new JdbcTemplateMiniMiserDAOFactoryImpl");
+        final JdbcTemplateMiniMiserDAOFactoryImpl miniMiserDAOFactory = 
+            new JdbcTemplateMiniMiserDAOFactoryImpl(
                 dbSetup.getDbURL(), dbSetup.getDbPath(), 
                 dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
-        final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
         daoFactories.addInstance(MiniMiserDAOFactory.class, miniMiserDAOFactory);
+
+        // Now let the plugins create their own DAOFactory objects.
+        final List<DatabaseOpening> databaseOpeningPlugins = mPluginManager.getPluginsImplementingFacade(DatabaseOpening.class);
+        for (final DatabaseOpening databaseOpeningPlugin : databaseOpeningPlugins) {
+            final DatabaseOpeningFacade databaseOpeningFacade = databaseOpeningPlugin.getDatabaseOpeningFacade();
+            if (databaseOpeningFacade != null) {
+                LOGGER.debug("Plugin " + databaseOpeningPlugin.getClass().getName() + " creating DAOFactory for database");
+                final InstancePair<DAOFactory> daoFactoryPair = 
+                    databaseOpeningFacade.createDAOFactory(
+                        dbSetup.getJdbcTemplate(),
+                        dbSetup.getDataSource());
+                if (daoFactoryPair != null) {
+                    daoFactories.addInstance(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
+                }
+            }
+        }
+        
         return daoFactories;
     }
 
@@ -203,8 +225,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         }
         createTables(dbSetup, observer, pluginProperties);
         populateTables(dbSetup, observer, pluginProperties);
-        final JdbcTemplateDAOFactoryImpl templateImpl =
-            new JdbcTemplateDAOFactoryImpl(
+        final JdbcTemplateMiniMiserDAOFactoryImpl templateImpl =
+            new JdbcTemplateMiniMiserDAOFactoryImpl(
                 dbSetup.getDbURL(),
                 dbSetup.getDbPath(),
                 dbSetup.getJdbcTemplate(),

@@ -5,10 +5,14 @@ package uk.me.gumbley.minimiser.persistence;
 
 import java.util.List;
 
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+
 import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpening;
 import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpeningFacade;
+import uk.me.gumbley.minimiser.util.InstancePair;
 
 /**
  * @author matt
@@ -17,6 +21,8 @@ import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpening
 public final class DatabaseOpeningAppPlugin extends AbstractPlugin implements
         ApplicationPlugin, DatabaseOpening {
     private final DatabaseOpeningFacade mDatabaseOpeningFacade;
+
+    private boolean mCreateDAOFactoryCalled;
     
     /**
      * Expected data from the dummy wizard data 
@@ -33,6 +39,14 @@ public final class DatabaseOpeningAppPlugin extends AbstractPlugin implements
      */
     public DatabaseOpeningAppPlugin() {
         mDatabaseOpeningFacade = new DatabaseOpeningFacade() {
+
+            public InstancePair<DAOFactory> createDAOFactory(
+                    final SimpleJdbcTemplate jdbcTemplate,
+                    final SingleConnectionDataSource dataSource) {
+                mCreateDAOFactoryCalled = true;
+                final DatabaseOpeningDAOFactory daoFactory = new DatabaseOpeningDAOFactory();
+                return new InstancePair<DAOFactory>(DatabaseOpeningDAOFactory.class, daoFactory);
+            }
         };
     }
     
@@ -123,7 +137,7 @@ public final class DatabaseOpeningAppPlugin extends AbstractPlugin implements
      * @return true iff the open methods have been called
      */
     public boolean allOpeningMethodsCalled() {
-        return false;
+        return mCreateDAOFactoryCalled;
     }
 
     /**

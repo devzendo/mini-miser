@@ -23,12 +23,11 @@ import uk.me.gumbley.minimiser.persistence.sql.impl.H2SQLAccess;
  * @author matt
  *
  */
-public final class JdbcTemplateDAOFactoryImpl implements MiniMiserDAOFactory {
-    private static final Logger LOGGER = Logger.getLogger(JdbcTemplateDAOFactoryImpl.class);
+public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFactory {
+    private static final Logger LOGGER = Logger.getLogger(JdbcTemplateMiniMiserDAOFactoryImpl.class);
     
     @SuppressWarnings("unused")
     private final String dbURL;
-    @SuppressWarnings("unused")
     private final String dbPath;
     private final SimpleJdbcTemplate jdbcTemplate;
     private volatile boolean isClosed = true;
@@ -43,7 +42,7 @@ public final class JdbcTemplateDAOFactoryImpl implements MiniMiserDAOFactory {
      * @param template the SimpleJdbcTemplate to access this database with
      * @param source the dataSource to access this databse with
      */
-    public JdbcTemplateDAOFactoryImpl(final String url, final String path, final SimpleJdbcTemplate template, final DataSource source) {
+    public JdbcTemplateMiniMiserDAOFactoryImpl(final String url, final String path, final SimpleJdbcTemplate template, final DataSource source) {
         this.dbURL = url;
         this.dbPath = path;
         this.jdbcTemplate = template;
