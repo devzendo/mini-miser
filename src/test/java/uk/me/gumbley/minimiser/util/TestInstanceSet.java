@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.me.gumbley.minimiser.util.InstanceClasses.A;
+import uk.me.gumbley.minimiser.util.InstanceClasses.B;
+import uk.me.gumbley.minimiser.util.InstanceClasses.BaseInterface;
 
 /**
  * Tests for the instance set.
@@ -14,48 +17,6 @@ import org.junit.Test;
 public final class TestInstanceSet {
     private InstanceSet<BaseInterface> mTypeMap;
 
-    private interface BaseInterface {
-        String getData();
-    }
-    
-    private abstract class AbstractBase implements BaseInterface {
-        private final String mData;
-
-        /**
-         * @return the data
-         */
-        public AbstractBase(final String data) {
-            mData = data;
-        }
-        public String getData() {
-            return mData;
-        }
-    }
-
-    /**
-     *
-     */
-    private final class A extends AbstractBase {
-        /**
-         * @param data
-         */
-        public A(final String data) {
-            super(data);
-        }
-    }
-    
-    /**
-     *
-     */
-    private final class B extends AbstractBase {
-        /**
-         * @param data
-         */
-        public B(final String data) {
-            super(data);
-        }
-    }
-    
     /**
      * 
      */
