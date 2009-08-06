@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.util;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,5 +102,34 @@ public final class TestInstanceSet {
         final BaseInterface base = mTypeMap.getInstanceOf(BaseInterface.class);
         Assert.assertSame(b, base);
         Assert.assertEquals("bar", base.getData());
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void canGetAllInstancesAsList() {
+        final A a = new A("foo");
+        mTypeMap.addInstance(a);
+        final B b = new B("bar");
+        mTypeMap.addInstance(b);
+        
+        final List<InstancePair<BaseInterface>> list = mTypeMap.asList();
+        
+        Assert.assertEquals(2, list.size());
+        boolean aFound = false;
+        boolean bFound = false;
+        for (InstancePair<BaseInterface> instancePair : list) {
+            if (instancePair.getInstance().getData().equals("foo")) {
+                aFound = true;
+                Assert.assertSame(A.class, instancePair.getClassOfInstance());
+            }
+            if (instancePair.getInstance().getData().equals("bar")) {
+                bFound = true;
+                Assert.assertSame(B.class, instancePair.getClassOfInstance());
+            }
+        }
+        Assert.assertTrue(aFound);
+        Assert.assertTrue(bFound);
     }
 }

@@ -1,8 +1,11 @@
 package uk.me.gumbley.minimiser.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
@@ -75,5 +78,18 @@ public final class InstanceSet<T> {
             throw new IllegalArgumentException("Cannot add null to an InstanceSet");
         }
         mTypeMap.put((Class<T>) klass, instance);
+    }
+
+    /**
+     * Obtain the entries in the InstanceSet as a list.
+     * @return a list of entries, each entry encapsulated in an
+     * InstancePair.
+     */
+    public List<InstancePair<T>> asList() {
+        final List<InstancePair<T>> list = new ArrayList<InstancePair<T>>();
+        for (Entry<Class<T>, T> entry : mTypeMap.entrySet()) {
+            list.add(new InstancePair<T>(entry.getKey(), entry.getValue()));
+        }
+        return list;
     }
 }
