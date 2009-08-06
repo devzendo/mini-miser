@@ -41,7 +41,7 @@ CURRENT TASKS:
   * Deprecate the AttributeIdentifier.Database
   * Replace all usage of AttributeIdentifier.Database with calls
     to get the appropriately subtyped DAOFactory
-  * Opener should set all DAOFactory instances in the
+- * Opener should set all DAOFactory instances in the
     DatabaseDescriptor
 * Open database - migration framework for plugins. Is
   MiniMiserDAOFactory SQLAccess used for it? 
