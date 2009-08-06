@@ -2,8 +2,10 @@ package uk.me.gumbley.minimiser.openlist;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
 
 
 /**
@@ -113,5 +115,30 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
         dd.setAttribute(AttributeIdentifier.Path, null);
         Assert.assertNull(dd.getDatabasePath());
         Assert.assertNull(dd.getAttribute(AttributeIdentifier.Path));
+    }
+
+    private class TestDAOFactory implements DAOFactory {
+        // do nothing
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void daoFactoriesAreEmptyInitially() {
+        final DatabaseDescriptor dd = new DatabaseDescriptor("one", "/tmp/foo");
+        Assert.assertNull(dd.getDAOFactory(TestDAOFactory.class));
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void daoFactoriesCanBeSetAndRetrieved() {
+        final DatabaseDescriptor dd = new DatabaseDescriptor("one", "/tmp/foo");
+        final TestDAOFactory testDAOFactory = new TestDAOFactory();
+        dd.setDAOFactory(TestDAOFactory.class, testDAOFactory);
+        final TestDAOFactory factory = dd.getDAOFactory(TestDAOFactory.class);
+        Assert.assertSame(testDAOFactory, factory);
     }
 }

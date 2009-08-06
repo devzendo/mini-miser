@@ -3,6 +3,9 @@ package uk.me.gumbley.minimiser.openlist;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
+import uk.me.gumbley.minimiser.util.InstanceSet;
+
 /**
  * A bean that gives a database a name, optionally a path, and (in subclasses)
  * references to the persistence/domain layer.
@@ -15,8 +18,9 @@ import java.util.Map;
  *
  */
 public final class DatabaseDescriptor {
-    private final String dbName;
-    private Map<AttributeIdentifier, Object> attributeMap;
+    private final String mDatabaseName;
+    private final Map<AttributeIdentifier, Object> mAttributeMap;
+    private final InstanceSet<DAOFactory> mDAOFactories;
     
     /**
      * The attribute identifiers.
@@ -56,8 +60,9 @@ public final class DatabaseDescriptor {
      * @param databaseFullPath the full path to the database.
      */
     public DatabaseDescriptor(final String databaseName, final String databaseFullPath) {
-        attributeMap = new HashMap<AttributeIdentifier, Object>();
-        this.dbName = databaseName;
+        mAttributeMap = new HashMap<AttributeIdentifier, Object>();
+        mDAOFactories = new InstanceSet<DAOFactory>();
+        this.mDatabaseName = databaseName;
         setAttribute(AttributeIdentifier.Path, databaseFullPath == null ? "" : databaseFullPath);
     }
 
@@ -66,7 +71,7 @@ public final class DatabaseDescriptor {
      * @return the database name
      */
     public String getDatabaseName() {
-        return dbName;
+        return mDatabaseName;
     }
 
     /**
@@ -80,8 +85,9 @@ public final class DatabaseDescriptor {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
-        return dbName;
+        return mDatabaseName;
     }
 
     /**
@@ -91,7 +97,7 @@ public final class DatabaseDescriptor {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((dbName == null) ? 0 : dbName.hashCode());
+        result = prime * result + ((mDatabaseName == null) ? 0 : mDatabaseName.hashCode());
         return result;
     }
 
@@ -110,11 +116,11 @@ public final class DatabaseDescriptor {
             return false;
         }
         final DatabaseDescriptor other = (DatabaseDescriptor) obj;
-        if (dbName == null) {
-            if (other.dbName != null) {
+        if (mDatabaseName == null) {
+            if (other.mDatabaseName != null) {
                 return false;
             }
-        } else if (!dbName.equals(other.dbName)) {
+        } else if (!mDatabaseName.equals(other.mDatabaseName)) {
             return false;
         }
         return true;
@@ -126,7 +132,7 @@ public final class DatabaseDescriptor {
      * @return the object, or null if nothing ahs been set
      */
     public Object getAttribute(final AttributeIdentifier attrId) {
-        return attributeMap.get(attrId);
+        return mAttributeMap.get(attrId);
     }
 
     /**
@@ -137,7 +143,7 @@ public final class DatabaseDescriptor {
      * to an empty string upon clearing.
      */
     public void setAttribute(final AttributeIdentifier attrId, final Object object) {
-        attributeMap.put(attrId, object);
+        mAttributeMap.put(attrId, object);
     }
 
     /**
@@ -146,9 +152,33 @@ public final class DatabaseDescriptor {
      */
     public void clearAttribute(final AttributeIdentifier attrId) {
         if (attrId == AttributeIdentifier.Path) {
-            attributeMap.put(AttributeIdentifier.Path, "");
+            mAttributeMap.put(AttributeIdentifier.Path, "");
         } else {
-            attributeMap.remove(attrId);
+            mAttributeMap.remove(attrId);
         }
+    }
+
+    /**
+     * Obtain a specific DAOFactory for a given DAOFactory subtype.
+     * @param <D> a subtype of DAOFactory
+     * @param daoFactoryInterface the subtype of DAOFactory
+     * @return an instance of D, or null if the DAOFactory for this
+     * interface has not been set.
+     */
+    public <D extends DAOFactory> D getDAOFactory(final Class<D> daoFactoryInterface) {
+        return mDAOFactories.getInstanceOf(daoFactoryInterface);
+    }
+
+    /**
+     * Store a specific DAOFactory for a given DAOFactory subtype.
+     * @param <D> a subtype of DAOFactory
+     * @param daoFactoryInstance the instance of the DAOFactory
+     * subtype
+     * @param daoFactoryInterface the subtype of DAOFactory
+     */
+    public <D extends DAOFactory> void setDAOFactory(
+            final Class<D> daoFactoryInterface,
+            final D daoFactoryInstance) {
+        mDAOFactories.addInstance(daoFactoryInterface, daoFactoryInstance);
     }
 }
