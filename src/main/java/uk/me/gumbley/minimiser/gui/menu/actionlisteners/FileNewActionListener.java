@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.netbeans.spi.wizard.Wizard;
 import org.netbeans.spi.wizard.WizardException;
 import org.netbeans.spi.wizard.WizardPage;
@@ -29,6 +30,8 @@ import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseWizar
  *
  */
 public final class FileNewActionListener extends SnailActionListener {
+    private static final Logger LOGGER = Logger
+            .getLogger(FileNewActionListener.class);
     private final OpenDatabaseList mOpenDatabaseList;
     private final AccessFactory mAccessFactory;
     private final CursorManager mCursorManager;
@@ -90,11 +93,26 @@ public final class FileNewActionListener extends SnailActionListener {
         final List<NewDatabaseWizardPages> newDatabaseWizardPagesPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseWizardPages.class);
         for (final NewDatabaseWizardPages newDatabaseWizardPages : newDatabaseWizardPagesPlugins) {
             final NewDatabaseWizardPagesFacade newDatabaseWizardPagesFacade = newDatabaseWizardPages.getNewDatabaseWizardPagesFacade();
-            if (newDatabaseWizardPagesFacade != null) {
+            if (newDatabaseWizardPagesFacade == null) {
+                LOGGER.warn(
+                    "NewDatabaseWizardPages class " 
+                    + newDatabaseWizardPages.getClass().getName() 
+                    + " returned a null facade - ignoring");
+            } else {
                 final List<WizardPage> wizardPagesList = newDatabaseWizardPagesFacade.getWizardPages();
-                if (wizardPagesList != null) {
+                if (wizardPagesList == null) {
+                    LOGGER.warn(
+                        "NewDatabaseWizardPagesFacade class "
+                        + newDatabaseWizardPagesFacade.getClass().getName()
+                        + " returned a null WizardPage list - ignoring");
+                } else {
                     for (final WizardPage wizardPage : wizardPagesList) {
-                        if (wizardPage != null) {
+                        if (wizardPage == null) {
+                            LOGGER.warn(
+                                "NewDatabaseWizardPagesFacade class " 
+                                + newDatabaseWizardPagesFacade.getClass().getName() 
+                                + " returned a null WizardPage in the list - ignoring");
+                        } else {
                             wizardPages.add(wizardPage);
                         }
                     }
