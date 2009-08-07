@@ -13,6 +13,7 @@ import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
+import uk.me.gumbley.minimiser.util.InstancePair;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -65,19 +66,25 @@ public final class DefaultOpenerImpl implements Opener {
             try {
                 openerAdapter.reportProgress(ProgressStage.OPENING, tryingToOpenMessage);
                 final InstanceSet<DAOFactory> daoFactories = access.openDatabase(pathToDatabase, dbPassword);
-                final MiniMiserDAOFactory database = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
+                final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
                 LOGGER.info("Opened OK");
         
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened '" + dbName + "' OK");
                 openerAdapter.stopOpening();
                 
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, pathToDatabase);
-                databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
-                // TODO call other plugins to add their 'MiniMiserDatabase' analogues
-                // i.e. DAO factories - to the DatabaseDescriptor?
+                // TODO: remove this legacy approach to getting the MiniMiserDAOFactory
+                databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDAOFactory);
+
+                // Add the MiniMiserDAOFactory and other plugins'
+                // DAOFactories to the DatabaseDescriptor
+                for (final InstancePair<DAOFactory> daoFactoryPair : daoFactories.asList()) {
+                    databaseDescriptor.setDAOFactory(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
+                }
+                
                 observerList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
 
-                return database;
+                return miniMiserDAOFactory;
                 
             } catch (final BadPasswordException bad) {
                 LOGGER.warn("Bad password: " + bad.getMessage());

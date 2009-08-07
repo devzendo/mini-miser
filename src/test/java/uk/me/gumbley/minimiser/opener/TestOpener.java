@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
@@ -222,19 +221,6 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
         }
     };
     
-    private class DatabaseOpenObserver implements Observer<DatabaseOpenEvent> {
-        private boolean databaseOpen = false;
-        public void assertDatabaseOpen() {
-            Assert.assertTrue(databaseOpen);
-        }
-        public void assertDatabaseNotOpen() {
-            Assert.assertFalse(databaseOpen);
-        }
-        public void eventOccurred(final DatabaseOpenEvent observableEvent) {
-            databaseOpen = true;
-        }
-    }
-
     /**
      * 
      */

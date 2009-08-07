@@ -25,10 +25,6 @@ import com.mycila.plugin.api.PluginBinding;
  * @author matt
  *
  */
-/**
- * @author matt
- *
- */
 public final class DefaultPluginManager implements PluginManager {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultPluginManager.class);
