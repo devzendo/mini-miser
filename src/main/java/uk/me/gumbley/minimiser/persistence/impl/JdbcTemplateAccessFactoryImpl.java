@@ -178,13 +178,23 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         final List<DatabaseOpening> databaseOpeningPlugins = mPluginManager.getPluginsImplementingFacade(DatabaseOpening.class);
         for (final DatabaseOpening databaseOpeningPlugin : databaseOpeningPlugins) {
             final DatabaseOpeningFacade databaseOpeningFacade = databaseOpeningPlugin.getDatabaseOpeningFacade();
-            if (databaseOpeningFacade != null) {
+            if (databaseOpeningFacade == null) {
+                LOGGER.warn(
+                    "DatabaseOpening class " 
+                    + databaseOpeningPlugin.getClass().getName() 
+                    + " returned a null facade - ignoring");
+            } else {
                 LOGGER.debug("Plugin " + databaseOpeningPlugin.getClass().getName() + " creating DAOFactory for database");
                 final InstancePair<DAOFactory> daoFactoryPair = 
                     databaseOpeningFacade.createDAOFactory(
                         dbSetup.getJdbcTemplate(),
                         dbSetup.getDataSource());
-                if (daoFactoryPair != null) {
+                if (daoFactoryPair == null) {
+                    LOGGER.warn(
+                        "DatabaseOpeningFacade class " 
+                        + databaseOpeningFacade.getClass().getName() 
+                        + " returned a null DAOFactory - ignoring");
+                } else {
                     daoFactories.addInstance(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
                 }
             }
@@ -281,7 +291,12 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         final List<NewDatabaseCreation> newDatabaseCreationPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseCreation.class);
         for (final NewDatabaseCreation newDatabaseCreation : newDatabaseCreationPlugins) {
             final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
-            if (newDatabaseCreationFacade != null) {
+            if (newDatabaseCreationFacade == null) {
+                LOGGER.warn(
+                    "NewDatabaseCreation class "
+                    + newDatabaseCreation.getClass().getName()
+                    + " returned a null facade - ignoring");
+            } else {
                 LOGGER.debug("Plugin " + newDatabaseCreation.getClass().getName() + " populating database");
                 newDatabaseCreationFacade.populateDatabase(dbDetails.getJdbcTemplate(),
                     dbDetails.getDataSource(), observer, pluginProperties);
@@ -305,7 +320,12 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         final List<NewDatabaseCreation> newDatabaseCreationPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseCreation.class);
         for (final NewDatabaseCreation newDatabaseCreation : newDatabaseCreationPlugins) {
             final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
-            if (newDatabaseCreationFacade != null) {
+            if (newDatabaseCreationFacade == null) {
+                LOGGER.warn(
+                    "NewDatabaseCreation class " 
+                    + newDatabaseCreation.getClass().getName() 
+                    + " returned a null facade - ignoring");
+            } else {
                 count += newDatabaseCreationFacade.getNumberOfDatabaseCreationSteps(pluginProperties);
             }
         }
