@@ -49,6 +49,10 @@ public final class PasswordValidator {
                 + " long, with at least " + PasswordValidator.MIN_DIGITS
                 + " " + StringUtils.pluralise("digit", PasswordValidator.MIN_DIGITS);
         }
+        return analysePassword(pwd);
+    }
+
+    private static String analysePassword(final char[] pwd) {
         int digits = 0;
         int letters = 0;
         int upper = 0;
