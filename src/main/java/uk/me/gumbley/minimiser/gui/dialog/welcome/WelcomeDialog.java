@@ -187,8 +187,6 @@ public final class WelcomeDialog extends AbstractSnailDialog {
     }
 
     private final class ChangeLogTransformingSwingWorker extends HTMLDisplayingSwingWorker {
-        private static final String CHANGELOG_TXT = "changelog.txt";
-
         public ChangeLogTransformingSwingWorker() {
             super(CHANGELOG_NAME);
         }
