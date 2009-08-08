@@ -1,5 +1,8 @@
 package uk.me.gumbley.minimiser.messagequeue;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 
 
 /**
@@ -63,12 +66,11 @@ public abstract class AbstractMessage implements Message {
      */
     @Override
     public final int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((messageContent == null) ? 0 : messageContent.hashCode());
-        result = prime * result + ((messageImportance == null) ? 0 : messageImportance.hashCode());
-        result = prime * result + ((messageSubject == null) ? 0 : messageSubject.hashCode());
-        return result;
+        return new HashCodeBuilder(1, 31)
+            .append(messageContent)
+            .append(messageImportance)
+            .append(messageSubject)
+            .toHashCode();
     }
 
     /**
@@ -83,27 +85,9 @@ public abstract class AbstractMessage implements Message {
             return false;
         }
         final AbstractMessage other = (AbstractMessage) obj;
-        if (messageContent == null) {
-            if (other.messageContent != null) {
-                return false;
-            }
-        } else if (!messageContent.equals(other.messageContent)) {
-            return false;
-        }
-        if (messageImportance == null) {
-            if (other.messageImportance != null) {
-                return false;
-            }
-        } else if (!messageImportance.equals(other.messageImportance)) {
-            return false;
-        }
-        if (messageSubject == null) {
-            if (other.messageSubject != null) {
-                return false;
-            }
-        } else if (!messageSubject.equals(other.messageSubject)) {
-            return false;
-        }
-        return true;
+        return new EqualsBuilder()
+            .append(this.messageContent, other.messageContent)
+            .append(this.messageImportance, other.messageImportance)
+            .append(this.messageSubject, other.messageSubject).isEquals();
     }
 }
