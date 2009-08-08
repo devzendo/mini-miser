@@ -1,11 +1,11 @@
 package uk.me.gumbley.minimiser.messagequeue;
 
 import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
-import uk.me.gumbley.minimiser.gui.dialog.dstamessage.DSTAMessageId;
-import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * The MessageQueue is used to hold non-persistent, asynchronously-delivered
