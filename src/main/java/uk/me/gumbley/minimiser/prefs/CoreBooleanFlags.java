@@ -5,7 +5,10 @@ package uk.me.gumbley.minimiser.prefs;
  * @author matt
  *
  */
-public class CoreBooleanFlags {
+public final class CoreBooleanFlags {
+    private CoreBooleanFlags() {
+        // no instances
+    }
     /**
      * Is a check for update availability allowed?
      */

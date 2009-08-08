@@ -374,6 +374,10 @@ public final class TestChangeLogTransformer extends LoggingTestCase {
         matcher.assertMatch(subsection);
     }
     
+    /**
+     * @throws IOException on error
+     * @throws ParseException on error
+     */
     @Test
     public void titleIsFollowedByLineBreak() throws IOException, ParseException {
         final String subsection = changeLogTransformer.readFileSubsection(

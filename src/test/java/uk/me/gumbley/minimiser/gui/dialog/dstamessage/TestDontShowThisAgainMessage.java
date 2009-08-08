@@ -2,10 +2,14 @@ package uk.me.gumbley.minimiser.gui.dialog.dstamessage;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JLabel;
+
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.TestPrefs;
@@ -25,14 +29,13 @@ public final class TestDontShowThisAgainMessage extends SpringLoaderUnittestCase
     private Prefs prefs;
     private File prefsFile;
     private DSTAMessageFactory messageFactory;
-    private DSTAMessageId messageId = DSTAMessageId.TEST;
+    private final DSTAMessageId messageId = DSTAMessageId.TEST;
     
 
     /**
      * Get all necessaries
      * @throws IOException on prefs file creation failure
      */
-    @SuppressWarnings("unchecked")
     @Before
     public void getMediatorPrerequisites() throws IOException {
         prefs = TestPrefs.createUnitTestPrefsFile();

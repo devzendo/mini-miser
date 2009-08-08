@@ -61,7 +61,6 @@ public final class TestQueueUpdateAvailableFlagSettingMessageListener {
      * Quite how the flag can be set on a fresh install is beyond me, but let's
      * test the case anyway
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void flagSetOnFreshInstallShouldYieldNoMessage() {
         prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
@@ -76,7 +75,6 @@ public final class TestQueueUpdateAvailableFlagSettingMessageListener {
     /**
      * 
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void flagSetOnUpgradeShouldYieldNoMessage() {
         prefs.setBooleanFlag(CoreBooleanFlags.UPDATE_CHECK_ALLOWED, true);
@@ -90,7 +88,6 @@ public final class TestQueueUpdateAvailableFlagSettingMessageListener {
     /**
      * This is the usual fresh startup case
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void flagNotSetOnFreshInstallShouldYieldMessage() {
         Assert.assertFalse(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
@@ -104,7 +101,6 @@ public final class TestQueueUpdateAvailableFlagSettingMessageListener {
     /**
      * 
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void flagNotSetOnUpgradeShouldYieldMessage() {
         Assert.assertFalse(prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED));
