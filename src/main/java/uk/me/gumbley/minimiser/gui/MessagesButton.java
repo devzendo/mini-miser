@@ -128,47 +128,55 @@ public final class MessagesButton extends JButton implements Runnable {
                 });
             } else {
                 LOGGER.debug("Cycling...");
-                final double amt = 0.02;
-                double prop = 0.0;
-                int dx = 1;
-                long millisWithThisText = 0L;
-                boolean showMessageCount = true;
-                while (bAlive && Thread.currentThread().isAlive() && numberOfMessages != 0) {
-                    final double finalProp = prop;
-                    GUIUtils.runOnEventThread(new Runnable() {
-                        public void run() {
-                            setBackground(transform.getProportionalColor(finalProp));
-                        }
-                    });
-                    prop = prop + (dx * amt);
-                    if (prop <= 0.0) {
-                        prop = 0.0;
-                        dx = -dx;
-                    } else if (prop > maxprop) {
-                        prop = maxprop;
-                        dx = -dx;
-                    }
-                    
-                    sleeper.sleep(sleepDelay);
-                    
-                    millisWithThisText += sleepDelay;
-                    if (millisWithThisText > millisUntilChangeText) {
-                        millisWithThisText = 0L;
-                        showMessageCount = !showMessageCount;
-                        final boolean finalShowMessageCount = showMessageCount;
-                        GUIUtils.runOnEventThread(new Runnable() {
-                            public void run() {
-                                if (finalShowMessageCount) {
-                                    setTextToNumberOfMessages();
-                                } else {
-                                    setText("Click to read");
-                                }
-                            }
-                        });
-                    }
-                    
-                }
+                cycle(transform, maxprop, millisUntilChangeText, sleepDelay);
             }
+        }
+    }
+
+    private void cycle(
+            final ColorTransform transform,
+            final double maxprop,
+            final long millisUntilChangeText,
+            final int sleepDelay) {
+        final double amt = 0.02;
+        double prop = 0.0;
+        int dx = 1;
+        long millisWithThisText = 0L;
+        boolean showMessageCount = true;
+        while (bAlive && Thread.currentThread().isAlive() && numberOfMessages != 0) {
+            final double finalProp = prop;
+            GUIUtils.runOnEventThread(new Runnable() {
+                public void run() {
+                    setBackground(transform.getProportionalColor(finalProp));
+                }
+            });
+            prop = prop + (dx * amt);
+            if (prop <= 0.0) {
+                prop = 0.0;
+                dx = -dx;
+            } else if (prop > maxprop) {
+                prop = maxprop;
+                dx = -dx;
+            }
+            
+            sleeper.sleep(sleepDelay);
+            
+            millisWithThisText += sleepDelay;
+            if (millisWithThisText > millisUntilChangeText) {
+                millisWithThisText = 0L;
+                showMessageCount = !showMessageCount;
+                final boolean finalShowMessageCount = showMessageCount;
+                GUIUtils.runOnEventThread(new Runnable() {
+                    public void run() {
+                        if (finalShowMessageCount) {
+                            setTextToNumberOfMessages();
+                        } else {
+                            setText("Click to read");
+                        }
+                    }
+                });
+            }
+            
         }
     }
 
