@@ -72,7 +72,8 @@ public interface Opener {
      * @return null if the database open was cancelled, e.g. if the password
      * was required, but the user cancelled entry of it. If the open succeeds,
      * the MiniMiserDatabase is returned. Observers of DatabaseOpenEvents are
-     * notified.
+     * notified. Null is also returned if the database cannot be found;
+     * observers are notified of the failure.
      */
     MiniMiserDAOFactory openDatabase(
             final String dbName,
