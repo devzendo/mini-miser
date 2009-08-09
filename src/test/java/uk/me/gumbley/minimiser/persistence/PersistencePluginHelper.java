@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.config.UnittestingConfig;
+import uk.me.gumbley.minimiser.opener.DefaultOpenerImpl;
+import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
@@ -32,6 +34,7 @@ public final class PersistencePluginHelper {
     private final JdbcTemplateAccessFactoryImpl mAccessFactory;
     private final File mTestDatabaseDirectory;
     private final ArrayList<String> mCreatedDatabaseNames;
+    private final DefaultOpenerImpl mOpener;
 
     /**
      * Create a helper that will check that the test database
@@ -53,6 +56,7 @@ public final class PersistencePluginHelper {
         mPluginRegistry = new DefaultPluginRegistry();
         mPluginManager = new DefaultPluginManager(mPluginRegistry);
         mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginManager);
+        mOpener = new DefaultOpenerImpl(mAccessFactory);
         mCreatedDatabaseNames = new ArrayList<String>();
     }
     
@@ -143,8 +147,8 @@ public final class PersistencePluginHelper {
         final InstanceSet<DAOFactory> daoFactorySet = mAccessFactory.createDatabase(dbDirPlusDbName, dbPassword, observer, null);
         mCreatedDatabaseNames.add(dbName);
         return daoFactorySet;
-        
     }
+    
     /**
      * Open a database given its name and optional password.
      * Typically called from a @Before method.
@@ -162,6 +166,24 @@ public final class PersistencePluginHelper {
         return daoFactorySet;
     }
 
+    /**
+     * Open a database given its name, with
+     * an OpenerAdapter to handle the opening workflow.
+     * Typically called from a @Before method.
+     * @param dbName the name of the database
+     * @param openerAdapter the OpenerAdapter.
+     * @return an InstabceSet<DAOFactory> via which data access
+     * objects can be obtained.
+     */
+    public InstanceSet<DAOFactory> openDatabase(final String dbName, final OpenerAdapter openerAdapter) {
+        final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
+        LOGGER.info(String.format("Opening database dbName = %s, dbDirPlusDbName = %s", dbName, dbDirPlusDbName));
+        final InstanceSet<DAOFactory> daoFactorySet = new InstanceSet<DAOFactory>();
+        // TODO change the return of the Opener to a full InstanceSet<DAOFactory>
+        daoFactorySet.addInstance(MiniMiserDAOFactory.class, mOpener.openDatabase(dbName, dbDirPlusDbName, openerAdapter)); 
+        mCreatedDatabaseNames.add(dbName);
+        return daoFactorySet;
+    }
     /**
      * Load the plugins given a resource path to a properties file
      * that lists the plugins to be loaded. Typically called from
