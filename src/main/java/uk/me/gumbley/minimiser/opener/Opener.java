@@ -1,7 +1,8 @@
 package uk.me.gumbley.minimiser.opener;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
  * The Opener is responsible for opening databases, informing the user and
@@ -75,7 +76,7 @@ public interface Opener {
      * notified. Null is also returned if the database cannot be found;
      * observers are notified of the failure.
      */
-    MiniMiserDAOFactory openDatabase(
+    InstanceSet<DAOFactory> openDatabase(
             final String dbName,
             final String pathToDatabase,
             final OpenerAdapter openerAdapter);

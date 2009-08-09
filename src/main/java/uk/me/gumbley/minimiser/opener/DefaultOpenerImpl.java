@@ -50,7 +50,7 @@ public final class DefaultOpenerImpl implements Opener {
      * {@inheritDoc}
      */
     
-    public MiniMiserDAOFactory openDatabase(
+    public InstanceSet<DAOFactory> openDatabase(
             final String dbName,
             final String pathToDatabase,
             final OpenerAdapter openerAdapter) {
@@ -84,7 +84,7 @@ public final class DefaultOpenerImpl implements Opener {
                 
                 observerList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
 
-                return miniMiserDAOFactory;
+                return daoFactories;
                 
             } catch (final BadPasswordException bad) {
                 LOGGER.warn("Bad password: " + bad.getMessage());

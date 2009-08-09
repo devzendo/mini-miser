@@ -178,12 +178,11 @@ public final class PersistencePluginHelper {
     public InstanceSet<DAOFactory> openDatabase(final String dbName, final OpenerAdapter openerAdapter) {
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         LOGGER.info(String.format("Opening database dbName = %s, dbDirPlusDbName = %s", dbName, dbDirPlusDbName));
-        final InstanceSet<DAOFactory> daoFactorySet = new InstanceSet<DAOFactory>();
-        // TODO change the return of the Opener to a full InstanceSet<DAOFactory>
-        daoFactorySet.addInstance(MiniMiserDAOFactory.class, mOpener.openDatabase(dbName, dbDirPlusDbName, openerAdapter)); 
+        final InstanceSet<DAOFactory> daoFactorySet = mOpener.openDatabase(dbName, dbDirPlusDbName, openerAdapter); 
         mCreatedDatabaseNames.add(dbName);
         return daoFactorySet;
     }
+    
     /**
      * Load the plugins given a resource path to a properties file
      * that lists the plugins to be loaded. Typically called from

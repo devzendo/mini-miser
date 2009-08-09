@@ -6,7 +6,8 @@ import uk.me.gumbley.minimiser.opener.DatabaseOpenEvent;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
  * A stub opener that just issues a DatabaseOpenEvent immediately when
@@ -35,7 +36,7 @@ public final class StubOpener implements Opener {
     /**
      * {@inheritDoc}
      */
-    public MiniMiserDAOFactory openDatabase(
+    public InstanceSet<DAOFactory> openDatabase(
             final String dbName,
             final String pathToDatabase,
             final OpenerAdapter openerAdapter) {

@@ -19,9 +19,11 @@ import org.springframework.dao.DataAccessResourceFailureException;
 
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.util.FileUnittestHelper;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
 /**
@@ -245,7 +247,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                 // it's prompted for (and provided by the OpenerAdapter). It's
                 // used by createDatabaseWithPluggableBehaviourBeforeDeletion
                 // since we may be creating an encrypted database for tests.
-                final MiniMiserDAOFactory database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
+                final InstanceSet<DAOFactory> database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
                 try {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
                     
@@ -264,7 +266,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                     obs.assertDatabaseOpen();
                 } finally {
                     if (database != null) {
-                        database.close();
+                        database.getInstanceOf(MiniMiserDAOFactory.class).close();
                     }
                 }
             }
@@ -296,7 +298,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                 // it's prompted for (and provided by the OpenerAdapter). It's
                 // used by createDatabaseWithPluggableBehaviourBeforeDeletion
                 // since we may be creating an encrypted database for tests.
-                final MiniMiserDAOFactory database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
+                final InstanceSet<DAOFactory> database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
                 try {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
                     
@@ -322,7 +324,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                     obs.assertDatabaseOpen();
                 } finally {
                     if (database != null) {
-                        database.close();
+                        database.getInstanceOf(MiniMiserDAOFactory.class).close();
                     }
                 }
             }
@@ -354,7 +356,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                 // it's prompted for (and provided by the OpenerAdapter). It's
                 // used by createDatabaseWithPluggableBehaviourBeforeDeletion
                 // since we may be creating an encrypted database for tests.
-                final MiniMiserDAOFactory database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
+                final InstanceSet<DAOFactory> database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
                 try {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
                     
@@ -378,7 +380,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                     obs.assertDatabaseNotOpen();
                 } finally {
                     if (database != null) {
-                        database.close();
+                        database.getInstanceOf(MiniMiserDAOFactory.class).close();
                     }
                 }
             }
@@ -414,7 +416,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                 // it's prompted for (and provided by the OpenerAdapter). It's
                 // used by createDatabaseWithPluggableBehaviourBeforeDeletion
                 // since we may be creating an encrypted database for tests.
-                final MiniMiserDAOFactory database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
+                final InstanceSet<DAOFactory> database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
                 try {
                     progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
                     
@@ -444,7 +446,7 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                     obs.assertDatabaseOpen();
                 } finally {
                     if (database != null) {
-                        database.close();
+                        database.getInstanceOf(MiniMiserDAOFactory.class).close();
                     }
                 }
             }

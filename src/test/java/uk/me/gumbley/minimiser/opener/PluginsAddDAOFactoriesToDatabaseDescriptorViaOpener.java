@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.DatabaseOpeningAppPlugin;
 import uk.me.gumbley.minimiser.persistence.DatabaseOpeningDAOFactory;
 import uk.me.gumbley.minimiser.persistence.DefaultPluginManagerPersistenceUnittestCase;
@@ -18,6 +19,7 @@ import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpening;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
 /**
@@ -87,11 +89,11 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
     public void openerAddsPluginDAOFactoryToDatabaseDescriptor() {
         final DatabaseOpenObserver openObserver = new DatabaseOpenObserver();
         mOpener.addDatabaseOpenObserver(openObserver);
-        MiniMiserDAOFactory miniMiserDAOFactory = null;
+        InstanceSet<DAOFactory> daoFactories = null;
         try {
             createDatabase();
-            miniMiserDAOFactory = mOpener.openDatabase(PLUGINDBNAME, mDbDirPlusDbName, new NullOpenerAdapter());
-            Assert.assertNotNull(miniMiserDAOFactory);
+            daoFactories = mOpener.openDatabase(PLUGINDBNAME, mDbDirPlusDbName, new NullOpenerAdapter());
+            Assert.assertNotNull(daoFactories);
             
             // Now was the plugin's DAOFactory added?
             // Some preliminary checks to make sure the MiniMiserDAOFactory is added also...
@@ -104,8 +106,8 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
             Assert.assertNotNull(databaseDescriptor.getDAOFactory(DatabaseOpeningDAOFactory.class));
         } finally {
             try {
-                if (miniMiserDAOFactory != null) {
-                    miniMiserDAOFactory.close();
+                if (daoFactories != null) {
+                    daoFactories.getInstanceOf(MiniMiserDAOFactory.class).close();
                 }
             } finally {
                 deleteDatabaseFiles(PLUGINDBNAME);
