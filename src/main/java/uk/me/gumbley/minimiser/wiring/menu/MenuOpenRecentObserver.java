@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.wiring.menu;
 
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.gui.menu.DatabaseNameAndPathChoice;
 import uk.me.gumbley.minimiser.gui.menu.Menu;
@@ -18,7 +19,7 @@ import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
  * @author matt
  *
  */
-public class MenuOpenRecentObserver implements MenuWiringAdapter, Observer<DatabaseNameAndPathChoice> {
+public final class MenuOpenRecentObserver implements MenuWiringAdapter, Observer<DatabaseNameAndPathChoice> {
   
     private static final Logger LOGGER = Logger
             .getLogger(MenuOpenRecentObserver.class);
