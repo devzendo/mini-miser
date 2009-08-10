@@ -26,8 +26,8 @@ public interface OpenerAdapter {
      *
      */
     public final class ProgressStage {
-        private int enumValue;
-        private String name;
+        private final int enumValue;
+        private final String name;
         private ProgressStage(final int val, final String psName) {
             enumValue = val;
             name = psName;
@@ -47,12 +47,13 @@ public interface OpenerAdapter {
          * @return the maximum value of a ProgressStage 
          */
         public int getMaximumValue() {
-            return 3;
+            return 4;
         }
         
         /**
          * {@inheritDoc}
          */
+        @Override
         public String toString() {
             return name;
         }
@@ -73,21 +74,30 @@ public interface OpenerAdapter {
         public static final ProgressStage PASSWORD_REQUIRED = new ProgressStage(2, "PASSWORD_REQUIRED"); 
 
         /**
+         * Sent if the database requires migration and the user should be prompted by the adapter. 
+         */
+        public static final ProgressStage MIGRATION_REQUIRED = new ProgressStage(3, "MIGRATION_REQUIRED"); 
+        /**
+         * Sent during migration if the user allowed it. 
+         */
+        public static final ProgressStage MIGRATING = new ProgressStage(3, "MIGRATING"); 
+
+        /**
          * Sent upon successful open. 
          */
-        public static final ProgressStage OPENED = new ProgressStage(3, "OPENED");
+        public static final ProgressStage OPENED = new ProgressStage(4, "OPENED");
         /**
          * The user cancelled the password entry on an encrypted database. 
          */
-        public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(3, "PASSWORD_CANCELLED");
+        public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(4, "PASSWORD_CANCELLED");
         /**
          * The database is not present. 
          */
-        public static final ProgressStage NOT_PRESENT = new ProgressStage(3, "NOT_PRESENT");
+        public static final ProgressStage NOT_PRESENT = new ProgressStage(4, "NOT_PRESENT");
         /**
          * Failed to open for a serious reason 
          */
-        public static final ProgressStage OPEN_FAILED = new ProgressStage(3, "OPEN_FAILED");
+        public static final ProgressStage OPEN_FAILED = new ProgressStage(4, "OPEN_FAILED");
     };
 
     /**
