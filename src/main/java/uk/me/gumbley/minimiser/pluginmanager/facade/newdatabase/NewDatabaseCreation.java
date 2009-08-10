@@ -7,7 +7,8 @@ package uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase;
  * <p>
  * It is highly likely that such plugins would want to implement
  * DatabaseOpening, as if they create this data, they would want
- * to provide access to it.
+ * to provide access to it. Also, DatabaseMigration to upgrade
+ * the schema between releases.
  * 
  * @author matt
  *
