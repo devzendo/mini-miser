@@ -15,7 +15,7 @@ package uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase;
 public interface DatabaseOpening {
     /**
      * @return an instance of the facade; this can be called
-     * several times during creation; perhaps this could be a
+     * several times during opening; perhaps this could be a
      * single instance that's returned?
      */
     DatabaseOpeningFacade getDatabaseOpeningFacade();
