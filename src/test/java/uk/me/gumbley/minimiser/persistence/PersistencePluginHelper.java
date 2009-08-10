@@ -2,8 +2,8 @@ package uk.me.gumbley.minimiser.persistence;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -14,8 +14,10 @@ import uk.me.gumbley.minimiser.config.UnittestingConfig;
 import uk.me.gumbley.minimiser.opener.DefaultOpenerImpl;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
@@ -33,8 +35,9 @@ public final class PersistencePluginHelper {
     private final DefaultPluginManager mPluginManager;
     private final JdbcTemplateAccessFactoryImpl mAccessFactory;
     private final File mTestDatabaseDirectory;
-    private final ArrayList<String> mCreatedDatabaseNames;
+    private final HashSet<String> mCreatedDatabaseNames;
     private final DefaultOpenerImpl mOpener;
+    private final boolean mSuppressEmptinessCheck;
 
     /**
      * Create a helper that will check that the test database
@@ -51,34 +54,50 @@ public final class PersistencePluginHelper {
      * check, false to check it
      */
     public PersistencePluginHelper(final boolean suppressEmptinessCheck) {
+        mSuppressEmptinessCheck = suppressEmptinessCheck;
         mTestDatabaseDirectory = new UnittestingConfig().getTestDatabaseDirectory();
-        validateTestDatabaseDirectory(mTestDatabaseDirectory, suppressEmptinessCheck);
         mPluginRegistry = new DefaultPluginRegistry();
         mPluginManager = new DefaultPluginManager(mPluginRegistry);
         mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginManager);
         mOpener = new DefaultOpenerImpl(mAccessFactory);
-        mCreatedDatabaseNames = new ArrayList<String>();
+        mCreatedDatabaseNames = new HashSet<String>();
     }
     
-    private void validateTestDatabaseDirectory(final File databaseDirectory, final boolean suppressEmptinessCheck) {
-        if (databaseDirectory == null
-                || databaseDirectory.getAbsolutePath().length() == 0) {
+    /**
+     * Add a database to the set that are to be deleted by
+     * deleteCreatedDatabases. For instance if you're using two
+     * instances of the helper, one to create a database with an
+     * old schema, using an "old" plugin, and one to verify
+     * migration to a new schema, using a "new plugin".
+     * @param dbName the name of the database to add to the
+     * deletion set.
+     */
+    public void addDatabaseToDelete(final String dbName) {
+        mCreatedDatabaseNames.add(dbName);
+    }
+    
+    /**
+     * Check for an empty test database directory
+     */
+    public void validateTestDatabaseDirectory() {
+        if (mTestDatabaseDirectory == null
+                || mTestDatabaseDirectory.getAbsolutePath().length() == 0) {
             final String err = "No database directory defined";
             LOGGER.error(err);
             throw new IllegalStateException(err);
         }
-        if (!databaseDirectory.exists() || !databaseDirectory.isDirectory()) {
+        if (!mTestDatabaseDirectory.exists() || !mTestDatabaseDirectory.isDirectory()) {
             final String err = String.format(
                             "Database dir %s does not exist or is not a directory",
-                            databaseDirectory.getAbsolutePath());
+                            mTestDatabaseDirectory.getAbsolutePath());
             LOGGER.error(err);
             throw new IllegalStateException(err);
         }
-        if (suppressEmptinessCheck) {
+        if (mSuppressEmptinessCheck) {
             return;
         }
         
-        checkForEmptiness(databaseDirectory);
+        checkForEmptiness(mTestDatabaseDirectory);
     }
 
     private void checkForEmptiness(final File databaseDirectory) {
@@ -189,11 +208,21 @@ public final class PersistencePluginHelper {
      * a @Before method.
      * @param propertiesResourcePath the path to the properties
      * file
+     * @return a list of loaded plugins
      * @throws PluginException on plugin load or initialisation
      * problems
      */
-    public void loadPlugins(final String propertiesResourcePath) throws PluginException {
+    public List<Plugin> loadPlugins(final String propertiesResourcePath) throws PluginException {
         mPluginManager.loadPlugins(propertiesResourcePath);
+        return mPluginManager.getPlugins();
+    }
+    
+    /**
+     * Obtain the application plugin.
+     * @return the application plugin, if loaded
+     */
+    public ApplicationPlugin getApplicationPlugin() {
+        return mPluginManager.getApplicationPlugin();
     }
     
     /**
@@ -210,11 +239,11 @@ public final class PersistencePluginHelper {
      * databases have been created. 
      */
     public void deleteCreatedDatabases() {
+        LOGGER.info("Deleting files for databases " + mCreatedDatabaseNames);
         for (final String dbName : mCreatedDatabaseNames) {
-            LOGGER.info("Deleting database " + dbName);
             int count = 0;
             boolean allGone = true;
-            LOGGER.info(String.format("Deleting database %s files", dbName));
+            LOGGER.info(String.format("Deleting database '%s' files", dbName));
             if (mTestDatabaseDirectory != null && mTestDatabaseDirectory.exists()
                     && mTestDatabaseDirectory.isDirectory()) {
                 final FileFilter filter = new FileFilter() {
@@ -225,6 +254,7 @@ public final class PersistencePluginHelper {
                 };
                 final File[] dbFiles = mTestDatabaseDirectory.listFiles(filter);
                 count = dbFiles.length;
+                LOGGER.debug("count is " + count);
                 for (File file : dbFiles) {
                     LOGGER.debug(String.format("Deleting %s", file.getAbsoluteFile()));
                     final boolean gone = file.delete();
