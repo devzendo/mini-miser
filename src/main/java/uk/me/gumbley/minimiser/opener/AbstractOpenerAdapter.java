@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.opener;
 
 import java.awt.Frame;
+import java.util.concurrent.Callable;
 
 import javax.swing.JOptionPane;
 
@@ -9,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
 import uk.me.gumbley.commoncode.gui.GUIUtils;
+import uk.me.gumbley.commoncode.gui.GUIValueObtainer;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.gui.dialog.passwordentry.PasswordEntryDialogHelper;
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
@@ -18,6 +20,7 @@ import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
  * <ul>
  * <li> hourglass cursor on start
  * <li> PasswordEntryDialogHelper used for password prompts
+ * <li> JOptionPane display of migration prompt
  * <li> JOptionPane display of database not found
  * <li> ProblemDialog display of serious problems
  * <li> normal cursor on stop
@@ -53,6 +56,36 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
         return passwordHelper.promptForPassword(parentFrame, dbName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public final boolean requestMigration() {
+        final GUIValueObtainer<Boolean> obtainer = new GUIValueObtainer<Boolean>();
+        try {
+            return obtainer.obtainFromEventThread(new Callable<Boolean>() {
+
+                public Boolean call() throws Exception {
+                    final int opt = JOptionPane.showConfirmDialog(parentFrame,
+                        "This database was created by an older version\n"
+                        + "of the software, and must be upgraded before\n"
+                        + "it can be used by this version.\n\n"
+                        + "After upgrading, you will no longer be able\n"
+                        + "to open it in older versions of the software.\n"
+                        + "Upgrading cannot be undone.\n\n"
+                        + "Choose Yes to upgrade the database, or\n"
+                        + "No to leave the database alone and not open it",
+                        "Confirm database upgrade",
+                        JOptionPane.YES_NO_OPTION);
+                    return opt == 0;
+                }
+                
+            });
+        } catch (final Exception e) {
+            // it has been logged by the GUIValueObtainer
+            return false;
+        }
+    }
+    
     /**
      * {@inheritDoc}
      */

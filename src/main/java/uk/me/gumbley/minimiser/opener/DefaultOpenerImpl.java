@@ -69,6 +69,25 @@ public final class DefaultOpenerImpl implements Opener {
                 final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
                 LOGGER.info("Opened OK");
         
+                /*if (migrationNeeded(daoFactories)) {
+                    if (migrationRejected(daoFactories)) {
+                        LOGGER.warn("Migration of " + dbName + " was rejected; not opening");
+                        try {
+                            LOGGER.info("Closing due to migration rejection");
+                            // since we return null, so the
+                            // MiniMiserDAOFactory isn't passed out,
+                            // closure can't be verified in a test
+                            miniMiserDAOFactory.close();
+                        } finally {
+                            openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
+                            openerAdapter.stopOpening();
+                            return null;
+                        }
+                    }
+                    migrate(daoFactories);
+                    updateVersions(daoFactories);
+                }*/
+                
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened '" + dbName + "' OK");
                 openerAdapter.stopOpening();
                 
@@ -113,5 +132,11 @@ public final class DefaultOpenerImpl implements Opener {
                 return null;
             }
         }
+    }
+
+    private boolean migrationRejected(
+            InstanceSet<DAOFactory> daoFactories) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

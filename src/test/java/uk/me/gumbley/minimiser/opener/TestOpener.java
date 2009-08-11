@@ -208,6 +208,11 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
             recorder.startReceived();
         }
         
+        public final boolean requestMigration() {
+            // migration uses easymock for testing, not this stub
+            return false;
+        }
+        
         public final void databaseNotFound(final DataAccessResourceFailureException darfe) {
             LOGGER.warn("Database not found: "  + darfe.getMessage());
             recorder.notFoundReceived();

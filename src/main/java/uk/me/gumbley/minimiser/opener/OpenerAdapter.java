@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.opener;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
@@ -59,6 +61,39 @@ public interface OpenerAdapter {
         }
         
         /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(final Object obj) {
+            if (null == obj) {
+                return false;
+            }
+            if (!(obj instanceof ProgressStage)) {
+                return false;
+            }
+            if (this == obj) {
+                return true;
+            }
+            final ProgressStage castObj = (ProgressStage) obj;
+            return new EqualsBuilder()
+                .append(this.name, castObj.name)
+                .append(this.enumValue, castObj.enumValue)
+                .isEquals();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+            // pick 2 hard-coded, odd, >0 ints as args
+            return new HashCodeBuilder(1, 31)
+                .append(this.name)
+                .append(this.enumValue)
+                .toHashCode();
+        }
+        
+        /**
          * The open operation is starting. Sent almost immediately to give some
          * immediate feedback.
          */
@@ -91,6 +126,10 @@ public interface OpenerAdapter {
          */
         public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(4, "PASSWORD_CANCELLED");
         /**
+         * The user rejected the migration request on an old database. 
+         */
+        public static final ProgressStage MIGRATION_REJECTED = new ProgressStage(4, "MIGRATION_REJECTED");
+        /**
          * The database is not present. 
          */
         public static final ProgressStage NOT_PRESENT = new ProgressStage(4, "NOT_PRESENT");
@@ -118,7 +157,17 @@ public interface OpenerAdapter {
      * @return the password, or null if the user cancels the password entry.
      */
     String requestPassword();
-    
+
+    /**
+     * This is an old database, and must be migrated before it can
+     * be used. Prompt the user to accept or reject the migration.
+     * If they reject, the database cannot be opened. If they
+     * accept, it will be migrated, and then opened.
+     * @return true if the migration is to be accepted, false to
+     * reject.
+     */
+    boolean requestMigration();
+
     /**
      * Report to the user that the database could not be found.
      * @param exception the not found exception that has occurred

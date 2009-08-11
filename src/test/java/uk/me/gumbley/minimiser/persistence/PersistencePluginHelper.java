@@ -11,7 +11,9 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.config.UnittestingConfig;
+import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.DefaultOpenerImpl;
+import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
@@ -19,6 +21,8 @@ import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
+import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -31,12 +35,12 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 public final class PersistencePluginHelper {
     private static final Logger LOGGER = Logger
             .getLogger(PersistencePluginHelper.class);
-    private final DefaultPluginRegistry mPluginRegistry;
-    private final DefaultPluginManager mPluginManager;
-    private final JdbcTemplateAccessFactoryImpl mAccessFactory;
+    private final PluginRegistry mPluginRegistry;
+    private final PluginManager mPluginManager;
+    private final AccessFactory mAccessFactory;
+    private final Opener mOpener;
     private final File mTestDatabaseDirectory;
     private final HashSet<String> mCreatedDatabaseNames;
-    private final DefaultOpenerImpl mOpener;
     private final boolean mSuppressEmptinessCheck;
 
     /**
@@ -275,5 +279,22 @@ public final class PersistencePluginHelper {
                 throw new IllegalStateException(err);
             }
         }
+    }
+
+    /**
+     * For opening databases using the opener, a DatabaseOpenObserver
+     * can be attached. 
+     * @param obs the observer
+     */
+    public void addDatabaseOpenObserver(final DatabaseOpenObserver obs) {
+        mOpener.addDatabaseOpenObserver(obs);
+    }
+
+    /**
+     * Obtain the plugin manager
+     * @return the plugin manager
+     */
+    public PluginManager getPluginManager() {
+        return mPluginManager;
     }
 }

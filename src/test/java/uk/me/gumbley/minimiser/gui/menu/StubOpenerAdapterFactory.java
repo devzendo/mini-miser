@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.gui.menu;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.opener.OpenerAdapterFactory;
 
@@ -23,6 +24,10 @@ public final class StubOpenerAdapterFactory implements OpenerAdapterFactory {
 
             public String requestPassword() {
                 return "";
+            }
+            
+            public boolean requestMigration() {
+                return false;
             }
 
             public void seriousProblemOccurred(final DataAccessException exception) {

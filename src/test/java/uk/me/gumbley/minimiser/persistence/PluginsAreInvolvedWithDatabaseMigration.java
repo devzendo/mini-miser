@@ -7,7 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
+import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
@@ -17,17 +19,18 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
 /**
- * The main migration tests. Creates a database with an old
- * plugin's schema version, then opens it with the opener, and
- * ensures that the opener adapter is called to notify the user
- * of the migration. Ensures that the responses from the opener
- * adapter cause the correct actions.
+ * The tests for the migration workflow in the opener.
+ * 
+ * Creates a database with an old plugin's schema version, then
+ * opens it with the opener, and ensures that the opener adapter
+ * is called to notify the user of the migration. Ensures that the
+ * responses from the opener adapter cause the correct actions.
  * 
  * @author matt
  *
  */
 public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCase {
-    private static final String MIGRATIONDB = "migration";
+    private static final String MIGRATIONDB = "openermigration";
     private PersistencePluginHelper mPersistencePluginHelper;
 
     /**
@@ -79,27 +82,53 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
         }
     }
     
+    /**
+     * @throws PluginException never
+     */
     @Test
     public void migrationCanBePreventedByUser() throws PluginException {
         createOldDatabase();
-
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginHelper.addDatabaseOpenObserver(obs);
         mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/persistence/persistencemigrationnewplugin.properties");
         final OpenerAdapter openerAdapter = EasyMock.createMock(OpenerAdapter.class);
-        //openerAdapter.
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_REQUIRED), EasyMock.isA(String.class));
+        openerAdapter.requestMigration();
+        EasyMock.expectLastCall().andReturn(false);
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_REJECTED), EasyMock.isA(String.class));
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
+
+        mPersistencePluginHelper.openDatabase(MIGRATIONDB, openerAdapter);
+        
+        obs.assertDatabaseNotOpen();
+        EasyMock.verify(openerAdapter);
     }
     
+    /**
+     * @throws PluginException never
+     */
     @Test
     public void migrationAcceptedAndUpgradesViaPluginWithLatestSchemaVersionStored() throws PluginException {
-        createOldDatabase();
+        Assert.fail("unfinished");
     }
     
+    /**
+     * 
+     */
     @Test
     public void cannotOpenADatabaseNewerThanThisSchema() {
-        
+        Assert.fail("unfinished");        
     }
     
+    /**
+     * 
+     */
     @Test
     public void cannotOpenADatabaseCreatedBySomeOtherApplication() {
-        
+        Assert.fail("unfinished");        
     }
 }

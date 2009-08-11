@@ -80,6 +80,10 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
 
         public void stopOpening() {
         }
+
+        public boolean requestMigration() {
+            throw new IllegalStateException("Wasn't expecting to have migration requested");
+        }
     }
     
     /**
