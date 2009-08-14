@@ -1,5 +1,6 @@
 package uk.me.gumbley.minimiser.persistence;
 
+import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
@@ -7,15 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.migrator.PersistenceMigratorHelper;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
-import uk.me.gumbley.minimiser.persistence.domain.Version;
-import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
-import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
 /**
@@ -30,8 +27,11 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  *
  */
 public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCase {
+    private static final Logger LOGGER = Logger
+            .getLogger(PluginsAreInvolvedWithDatabaseMigration.class);
     private static final String MIGRATIONDB = "openermigration";
     private PersistencePluginHelper mPersistencePluginHelper;
+    private PersistenceMigratorHelper mPersistenceMigratorHelper;
 
     /**
      * 
@@ -40,6 +40,8 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
     public void getPrerequisites() {
         mPersistencePluginHelper = new PersistencePluginHelper();
         mPersistencePluginHelper.validateTestDatabaseDirectory();
+        
+        mPersistenceMigratorHelper = new PersistenceMigratorHelper(mPersistencePluginHelper);
     }
 
     /**
@@ -47,39 +49,8 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
      */
     @After
     public void removeTestDatabases() {
-        mPersistencePluginHelper.deleteCreatedDatabases();
-    }
-    
-    private void createOldDatabase() throws PluginException {
-        // need a helper separate from the main one since it needs
-        // to have old plugins loaded, and the main one loads the
-        // new plugins
-        final PersistencePluginHelper persistencePluginHelper = new PersistencePluginHelper();
-        persistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/persistence/persistencemigrationoldplugin.properties");
-        persistencePluginHelper.createDatabase(MIGRATIONDB, "").getInstanceOf(MiniMiserDAOFactory.class).close();
-        
-        // Let the main helper delete the old database
-        mPersistencePluginHelper.addDatabaseToDelete(MIGRATIONDB);
-    }
-    
-    /**
-     * @throws PluginException never
-     */
-    @Test
-    public void oldDatabaseCanBeCreated() throws PluginException {
-        createOldDatabase();
-        
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/persistence/persistencemigrationoldplugin.properties");
-        final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
-        try {
-            final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
-            final VersionDao versionDao = miniMiserDAOFactory.getVersionDao();
-            final ApplicationPlugin appPlugin = mPersistencePluginHelper.getApplicationPlugin();
-            final Version version = versionDao.findVersion(appPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
-            Assert.assertEquals("1.0", version.getVersion());
-        } finally {
-            daoFactories.getInstanceOf(MiniMiserDAOFactory.class).close();
-        }
+        LOGGER.info("tidying up");
+        mPersistencePluginHelper.tidyTestDatabasesDirectory();
     }
     
     /**
@@ -87,11 +58,13 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
      */
     @Test
     public void migrationCanBePreventedByUser() throws PluginException {
-        createOldDatabase();
+        // setup
+        mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
+
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
         mPersistencePluginHelper.addDatabaseOpenObserver(obs);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/persistence/persistencemigrationnewplugin.properties");
-        final OpenerAdapter openerAdapter = EasyMock.createMock(OpenerAdapter.class);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
         openerAdapter.startOpening();
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
@@ -102,8 +75,10 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
         openerAdapter.stopOpening();
         EasyMock.replay(openerAdapter);
 
+        // run
         mPersistencePluginHelper.openDatabase(MIGRATIONDB, openerAdapter);
         
+        // test
         obs.assertDatabaseNotOpen();
         EasyMock.verify(openerAdapter);
     }

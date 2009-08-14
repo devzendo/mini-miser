@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.updatechecker.ChangeLogSectionParser.Section;
+import uk.me.gumbley.minimiser.version.ComparableVersion;
 
 
 /**

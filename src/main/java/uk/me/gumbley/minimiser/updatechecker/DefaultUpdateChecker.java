@@ -15,6 +15,7 @@ import uk.me.gumbley.minimiser.prefs.CoreBooleanFlags;
 import uk.me.gumbley.minimiser.prefs.Prefs;
 import uk.me.gumbley.minimiser.util.Today;
 import uk.me.gumbley.minimiser.util.WorkerPool;
+import uk.me.gumbley.minimiser.version.ComparableVersion;
 
 /**
  * Performs update checks asynchronously, honouring the 'update check allowed'

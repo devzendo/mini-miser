@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import uk.me.gumbley.minimiser.version.ComparableVersion;
+
 /**
  * Parses a change log into Sections, and allows for a range of
  * them to be obtainned.

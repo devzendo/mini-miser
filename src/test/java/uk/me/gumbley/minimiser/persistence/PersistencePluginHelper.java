@@ -1,9 +1,7 @@
 package uk.me.gumbley.minimiser.persistence;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -11,6 +9,8 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.config.UnittestingConfig;
+import uk.me.gumbley.minimiser.migrator.DefaultMigrator;
+import uk.me.gumbley.minimiser.migrator.Migrator;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.DefaultOpenerImpl;
 import uk.me.gumbley.minimiser.opener.Opener;
@@ -40,8 +40,9 @@ public final class PersistencePluginHelper {
     private final AccessFactory mAccessFactory;
     private final Opener mOpener;
     private final File mTestDatabaseDirectory;
-    private final HashSet<String> mCreatedDatabaseNames;
     private final boolean mSuppressEmptinessCheck;
+    private final Migrator mMigrator;
+    private final PersistencePluginHelperTidier mTidier;
 
     /**
      * Create a helper that will check that the test database
@@ -63,8 +64,24 @@ public final class PersistencePluginHelper {
         mPluginRegistry = new DefaultPluginRegistry();
         mPluginManager = new DefaultPluginManager(mPluginRegistry);
         mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginManager);
-        mOpener = new DefaultOpenerImpl(mAccessFactory);
-        mCreatedDatabaseNames = new HashSet<String>();
+        mMigrator = new DefaultMigrator(mPluginManager);
+        mOpener = new DefaultOpenerImpl(mAccessFactory, mMigrator);
+        mTidier = new PersistencePluginHelperTidier(mTestDatabaseDirectory);
+    }
+    
+    /**
+     * Add a database to the set that are to be deleted by
+     * deleteCreatedDatabases. For instance if you're using two
+     * instances of the helper, one to create a database with an
+     * old schema, using an "old" plugin, and one to verify
+     * migration to a new schema, using a "new plugin".
+     * @param dbName the name of the database to add to the
+     * deletion set.
+     * @param miniMiserDAOFactory a MiniMiserDAOFactory used to
+     * close the database if open, prior to deletion
+     */
+    public void addDatabaseToDelete(final String dbName, final MiniMiserDAOFactory miniMiserDAOFactory) {
+        mTidier.addDatabaseToDelete(dbName, miniMiserDAOFactory);
     }
     
     /**
@@ -77,7 +94,7 @@ public final class PersistencePluginHelper {
      * deletion set.
      */
     public void addDatabaseToDelete(final String dbName) {
-        mCreatedDatabaseNames.add(dbName);
+        mTidier.addDatabaseToDelete(dbName);
     }
     
     /**
@@ -165,10 +182,13 @@ public final class PersistencePluginHelper {
      * objects can be obtained.
      */
     public InstanceSet<DAOFactory> createDatabase(final String dbName, final String dbPassword, final Observer<PersistenceObservableEvent> observer) {
+        // in case the open fails, we still need to delete the database on exit
+        mTidier.addDatabaseToDelete(dbName);
+
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         LOGGER.info(String.format("Creating database dbName = %s, dbDirPlusDbName = %s, dbPassword = '%s'", dbName, dbDirPlusDbName, dbPassword));
         final InstanceSet<DAOFactory> daoFactorySet = mAccessFactory.createDatabase(dbDirPlusDbName, dbPassword, observer, null);
-        mCreatedDatabaseNames.add(dbName);
+        mTidier.addDatabaseToDelete(dbName, daoFactorySet.getInstanceOf(MiniMiserDAOFactory.class));
         return daoFactorySet;
     }
     
@@ -182,10 +202,13 @@ public final class PersistencePluginHelper {
      * objects can be obtained.
      */
     public InstanceSet<DAOFactory> openDatabase(final String dbName, final String dbPassword) {
+        // in case the open fails, we still need to delete the database on exit
+        mTidier.addDatabaseToDelete(dbName);
+
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         LOGGER.info(String.format("Opening database dbName = %s, dbDirPlusDbName = %s, dbPassword = '%s'", dbName, dbDirPlusDbName, dbPassword));
         final InstanceSet<DAOFactory> daoFactorySet = mAccessFactory.openDatabase(dbDirPlusDbName, dbPassword);
-        mCreatedDatabaseNames.add(dbName);
+        mTidier.addDatabaseToDelete(dbName, daoFactorySet.getInstanceOf(MiniMiserDAOFactory.class));
         return daoFactorySet;
     }
 
@@ -199,10 +222,13 @@ public final class PersistencePluginHelper {
      * objects can be obtained.
      */
     public InstanceSet<DAOFactory> openDatabase(final String dbName, final OpenerAdapter openerAdapter) {
+        // in case the open fails, we still need to delete the database on exit
+        mTidier.addDatabaseToDelete(dbName);
+
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
         LOGGER.info(String.format("Opening database dbName = %s, dbDirPlusDbName = %s", dbName, dbDirPlusDbName));
         final InstanceSet<DAOFactory> daoFactorySet = mOpener.openDatabase(dbName, dbDirPlusDbName, openerAdapter); 
-        mCreatedDatabaseNames.add(dbName);
+        mTidier.addDatabaseToDelete(dbName, daoFactorySet.getInstanceOf(MiniMiserDAOFactory.class));
         return daoFactorySet;
     }
     
@@ -242,43 +268,8 @@ public final class PersistencePluginHelper {
      * Typically run in an @After block, tidy up after the
      * databases have been created. 
      */
-    public void deleteCreatedDatabases() {
-        LOGGER.info("Deleting files for databases " + mCreatedDatabaseNames);
-        for (final String dbName : mCreatedDatabaseNames) {
-            int count = 0;
-            boolean allGone = true;
-            LOGGER.info(String.format("Deleting database '%s' files", dbName));
-            if (mTestDatabaseDirectory != null && mTestDatabaseDirectory.exists()
-                    && mTestDatabaseDirectory.isDirectory()) {
-                final FileFilter filter = new FileFilter() {
-                    public boolean accept(final File pathname) {
-                        LOGGER.debug(String.format("Considering %s", pathname.getAbsolutePath()));
-                        return pathname.isFile() && pathname.getName().startsWith(dbName);
-                    }
-                };
-                final File[] dbFiles = mTestDatabaseDirectory.listFiles(filter);
-                count = dbFiles.length;
-                LOGGER.debug("count is " + count);
-                for (File file : dbFiles) {
-                    LOGGER.debug(String.format("Deleting %s", file.getAbsoluteFile()));
-                    final boolean gone = file.delete();
-                    allGone &= gone;
-                    if (!gone) {
-                        LOGGER.warn(String.format("Could not delete %s", file.getAbsolutePath()));
-                    }
-                }
-            }
-            if (count == 0) {
-                final String err = "No files to delete, when some were expected";
-                LOGGER.warn(err);
-                throw new IllegalStateException(err);
-            }
-            if (!allGone) {
-                final String err = "Some files failed to delete";
-                LOGGER.warn(err);
-                throw new IllegalStateException(err);
-            }
-        }
+    public void tidyTestDatabasesDirectory() {
+        mTidier.tidy();
     }
 
     /**

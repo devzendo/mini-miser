@@ -23,6 +23,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 public final class TestMigrator extends LoggingTestCase {
     private static final String MIGRATIONDB = "migrator";
     private PersistencePluginHelper mPersistencePluginHelper;
+    private PersistenceMigratorHelper mPersistenceMigratorHelper;
     private Migrator mMigrator;
 
     /**
@@ -33,6 +34,8 @@ public final class TestMigrator extends LoggingTestCase {
         mPersistencePluginHelper = new PersistencePluginHelper();
         mPersistencePluginHelper.validateTestDatabaseDirectory();
         
+        mPersistenceMigratorHelper = new PersistenceMigratorHelper(mPersistencePluginHelper);
+        
         mMigrator = new DefaultMigrator(mPersistencePluginHelper.getPluginManager());
     }
 
@@ -41,36 +44,91 @@ public final class TestMigrator extends LoggingTestCase {
      */
     @After
     public void removeTestDatabases() {
-        mPersistencePluginHelper.deleteCreatedDatabases();
+        mPersistencePluginHelper.tidyTestDatabasesDirectory();
     }
     
-    private void createOldDatabase() throws PluginException {
-        // need a helper separate from the main one since it needs
-        // to have old plugins loaded, and the main one loads the
-        // new plugins
-        final PersistencePluginHelper persistencePluginHelper = new PersistencePluginHelper();
-        persistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/persistence/persistencemigrationoldplugin.properties");
-        persistencePluginHelper.createDatabase(MIGRATIONDB, "").getInstanceOf(MiniMiserDAOFactory.class).close();
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void oldDatabaseIsDetectedAsNeedingMigration() throws PluginException {
+        // setup
+        mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
+        Assert.assertNotNull(daoFactories);
         
-        // Let the main helper delete the old database
-        mPersistencePluginHelper.addDatabaseToDelete(MIGRATIONDB);
+        // preliminary test - can the schema versions be retrieved from the database?
+        final PluginSchemaVersions databaseSchemaVersions = ((DefaultMigrator) mMigrator).getDatabaseSchemaVersions(daoFactories);
+        Assert.assertEquals("DatabaseMigrationAppPlugin:1.0", databaseSchemaVersions.toString());
+        // preliminary test - can the plugin schema versions be retrieved?
+        final PluginSchemaVersions pluginSchemaVersions = ((DefaultMigrator) mMigrator).getPluginSchemaVersions();
+        Assert.assertEquals("DatabaseMigrationAppPlugin:2.0", pluginSchemaVersions.toString());
+        
+        try {
+            // test
+            Assert.assertEquals(Migrator.MigrationVersion.OLD, mMigrator.requiresMigration(daoFactories));
+            
+        } finally {
+            // teardown
+            daoFactories.getInstanceOf(MiniMiserDAOFactory.class).close();
+        }
     }
 
     /**
      * @throws PluginException never
      */
     @Test
-    public void oldDatabaseIsDetectedAsNeedingMigration() throws PluginException {
-        createOldDatabase();
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/persistence/persistencemigrationoldplugin.properties");
+    public void currentDatabaseIsDetectedAsNotNeedingMigration() throws PluginException {
+        // setup
+        mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
         final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
         Assert.assertNotNull(daoFactories);
         
+        // preliminary test - can the schema versions be retrieved from the database?
+        final PluginSchemaVersions databaseSchemaVersions = ((DefaultMigrator) mMigrator).getDatabaseSchemaVersions(daoFactories);
+        Assert.assertEquals("DatabaseMigrationAppPlugin:1.0", databaseSchemaVersions.toString());
+        // preliminary test - can the plugin schema versions be retrieved?
+        final PluginSchemaVersions pluginSchemaVersions = ((DefaultMigrator) mMigrator).getPluginSchemaVersions();
+        Assert.assertEquals("DatabaseMigrationAppPlugin:1.0", pluginSchemaVersions.toString());
+
         try {
-            Assert.assertTrue(mMigrator.requiresMigration(daoFactories));
+            // test
+            Assert.assertEquals(Migrator.MigrationVersion.CURRENT, mMigrator.requiresMigration(daoFactories));
             
         } finally {
+            // teardown
             daoFactories.getInstanceOf(MiniMiserDAOFactory.class).close();
         }
     }
+
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void futureDatabaseCannotBeMigrated() throws PluginException {
+        // setup
+        mPersistenceMigratorHelper.createNewDatabase(MIGRATIONDB);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
+        final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
+        Assert.assertNotNull(daoFactories);
+        
+        // preliminary test - can the schema versions be retrieved from the database?
+        final PluginSchemaVersions databaseSchemaVersions = ((DefaultMigrator) mMigrator).getDatabaseSchemaVersions(daoFactories);
+        Assert.assertEquals("DatabaseMigrationAppPlugin:2.0", databaseSchemaVersions.toString());
+        // preliminary test - can the plugin schema versions be retrieved?
+        final PluginSchemaVersions pluginSchemaVersions = ((DefaultMigrator) mMigrator).getPluginSchemaVersions();
+        Assert.assertEquals("DatabaseMigrationAppPlugin:1.0", pluginSchemaVersions.toString());
+
+        try {
+            // test
+            Assert.assertEquals(Migrator.MigrationVersion.FUTURE, mMigrator.requiresMigration(daoFactories));
+            
+        } finally {
+            // teardown
+            daoFactories.getInstanceOf(MiniMiserDAOFactory.class).close();
+        }
+    }
+
 }

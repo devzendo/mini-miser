@@ -1,24 +1,33 @@
 /**
  * 
  */
-package uk.me.gumbley.minimiser.persistence;
+package uk.me.gumbley.minimiser.migrator;
 
 import java.util.List;
 
 import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
+import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigration;
+import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigrationFacade;
 
 /**
+ * Works with version 2.0 of the schema.
+ *  
  * @author matt
  *
  */
-public final class DatabaseMigrationOldAppPlugin extends AbstractPlugin implements
-        ApplicationPlugin {
+public final class DatabaseMigrationNewAppPlugin extends AbstractPlugin implements
+        ApplicationPlugin, DatabaseMigration {
+    private final DatabaseMigrationFacade mDatabaseMigrationFacade;
 
+    private boolean mMigrateCalled;
+    
     /**
      * instantiate all the facades
      */
-    public DatabaseMigrationOldAppPlugin() {
+    public DatabaseMigrationNewAppPlugin() {
+        mDatabaseMigrationFacade = new DatabaseMigrationFacade() {
+        };
     }
     
     /**
@@ -88,19 +97,34 @@ public final class DatabaseMigrationOldAppPlugin extends AbstractPlugin implemen
      * {@inheritDoc}
      */
     public String getSchemaVersion() {
-        return "1.0"; // the old schema
+        return "2.0"; // the new schema
     }
 
     /**
      * {@inheritDoc}
      */
     public String getVersion() {
-        return "1.0";
+        return "1.0"; // ideally this should increase as well, but
+        // migration is only concerned with schema versions 
     }
 
     /**
      * {@inheritDoc}
      */
     public void shutdown() {
+    }
+
+    /**
+     * @return true iff the migration methods have been called
+     */
+    public boolean allMigrationMethodsCalled() {
+        return mMigrateCalled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public DatabaseMigrationFacade getDatabaseMigrationFacade() {
+        return mDatabaseMigrationFacade;
     }
 }

@@ -1,4 +1,4 @@
-package uk.me.gumbley.minimiser.updatechecker;
+package uk.me.gumbley.minimiser.version;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,29 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
      * @param v the version string
      */
     public ComparableVersion(final String v) {
+        version = getSimplyValidatedTrimmedVersion(v);
+        final Matcher versionMatcher = Pattern.compile(ANCHORED_VERSION_REGEX).matcher(version);
+        if (!versionMatcher.matches()) {
+            throw new IllegalArgumentException("Version '" + version + "' is not a valid version");
+        }
+        versionNumbers = versionMatcher.group(1);
+        final String hyphen = versionMatcher.group(2) == null ? "" : versionMatcher.group(2);
+        classifier = versionMatcher.group(3) == null ? "" : versionMatcher.group(3);
+        if (classifier.indexOf(".") != -1) {
+            // the classifier regex should be non-whitespace but not dots
+            throw new IllegalArgumentException("Version '" + version + "' does not have a valid classifier '" + classifier + "'");
+        }
+        if (hyphen.length() != 0 && classifier.length() == 0) {
+            throw new IllegalArgumentException("Version '" + version + "' does not have a classifier following a hyphen");
+        }
+        final String[] vNumbers = versionNumbers.split("\\.");
+        versionNumberList = new ArrayList<Integer>(vNumbers.length);
+        for (String vNumber : vNumbers) {
+            versionNumberList.add(Integer.parseInt(vNumber));
+        }
+    }
+
+    private String getSimplyValidatedTrimmedVersion(final String v) {
         if (v == null) {
             throw new IllegalArgumentException("Null version not allowed");
         }
@@ -37,26 +60,8 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
         if (trimmed.length() == 0) {
             throw new IllegalArgumentException("Empty version not allowed");
         }
-        final Matcher versionMatcher = Pattern.compile(ANCHORED_VERSION_REGEX).matcher(trimmed);
-        if (!versionMatcher.matches()) {
-            throw new IllegalArgumentException("Version '" + trimmed + "' is not a valid version");
-        }
-        versionNumbers = versionMatcher.group(1);
-        final String hyphen = versionMatcher.group(2) == null ? "" : versionMatcher.group(2);
-        classifier = versionMatcher.group(3) == null ? "" : versionMatcher.group(3);
-        if (classifier.indexOf(".") != -1) {
-            // the classifier regex should be non-whitespace but not dots
-            throw new IllegalArgumentException("Version '" + trimmed + "' does not have a valid classifier '" + classifier + "'");
-        }
-        if (hyphen.length() != 0 && classifier.length() == 0) {
-            throw new IllegalArgumentException("Version '" + trimmed + "' does not have a classifier following a hyphen");
-        }
-        version = trimmed;
-        final String[] vNumbers = versionNumbers.split("\\.");
-        versionNumberList = new ArrayList<Integer>(vNumbers.length);
-        for (String vNumber : vNumbers) {
-            versionNumberList.add(Integer.parseInt(vNumber));
-        }
+
+        return trimmed;
     }
 
     /**
@@ -193,6 +198,7 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         if (classifier.length() == 0) {
             return "v" + versionNumbers;

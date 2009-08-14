@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import uk.me.gumbley.minimiser.updatechecker.ChangeLogSectionParser.Section;
+import uk.me.gumbley.minimiser.version.ComparableVersion;
 
 /**
  * Transforms change log details into HTML for display.

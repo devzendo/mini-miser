@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import uk.me.gumbley.minimiser.version.ComparableVersion;
+
 /**
  * Transforms a change log file by taking the relevant sections - any changes
  * between latest version and the version you're running, and translates them

@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
+import uk.me.gumbley.minimiser.migrator.Migrator;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
@@ -162,7 +163,15 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
     @Before
     public void getPrerequisites() {
         accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
-        opener = new DefaultOpenerImpl(accessFactory);
+        final Migrator alwaysCurrentMigrator = new Migrator() {
+
+            public MigrationVersion requiresMigration(
+                    final InstanceSet<DAOFactory> daoFactories) {
+                return MigrationVersion.CURRENT;
+            }
+            
+        };
+        opener = new DefaultOpenerImpl(accessFactory, alwaysCurrentMigrator);
         progressRecorder = new ProgressRecorder();
     }
 

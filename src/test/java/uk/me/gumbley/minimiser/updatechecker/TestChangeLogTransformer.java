@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.version.ComparableVersion;
 
 
 /**

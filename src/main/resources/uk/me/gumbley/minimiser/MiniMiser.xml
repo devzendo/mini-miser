@@ -26,6 +26,11 @@
 
 	<bean id="opener" class="uk.me.gumbley.minimiser.opener.DefaultOpenerImpl" >
 		<constructor-arg ref="accessFactory" />
+		<constructor-arg ref="migrator" />
+	</bean>
+
+	<bean id="migrator" class="uk.me.gumbley.minimiser.migrator.DefaultMigrator" >
+		<constructor-arg ref="pluginManager" />
 	</bean>
 	
 	<bean id="openerAdapterFactory" class="uk.me.gumbley.minimiser.opener.DefaultOpenerAdapterFactoryImpl" >

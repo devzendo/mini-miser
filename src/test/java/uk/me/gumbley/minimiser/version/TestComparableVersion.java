@@ -1,8 +1,9 @@
-package uk.me.gumbley.minimiser.updatechecker;
+package uk.me.gumbley.minimiser.version;
 
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+
 
 
 /**

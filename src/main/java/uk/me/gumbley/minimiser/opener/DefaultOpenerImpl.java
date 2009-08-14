@@ -6,6 +6,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
+import uk.me.gumbley.minimiser.migrator.Migrator;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
@@ -25,17 +26,24 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 public final class DefaultOpenerImpl implements Opener {
     private static final Logger LOGGER = Logger.getLogger(DefaultOpenerImpl.class);
     
-    private final AccessFactory access;
-    private final ObserverList<DatabaseOpenEvent> observerList;
-
+    private final AccessFactory mAccess;
+    private final Migrator mMigrator;
+    private final ObserverList<DatabaseOpenEvent> mObserverList;
 
     /**
      * Construct the Opener.
-     * @param accessFactory the access factory used for accessing databases
+     * @param accessFactory the mAccess factory used for accessing
+     * databases
+     * @param migrator the migrator for performing migrations
+     * upon open, if these are required
+     * 
      */
-    public DefaultOpenerImpl(final AccessFactory accessFactory) {
-        this.access = accessFactory;
-        observerList = new ObserverList<DatabaseOpenEvent>();
+    public DefaultOpenerImpl(
+            final AccessFactory accessFactory,
+            final Migrator migrator) {
+        this.mAccess = accessFactory;
+        mMigrator = migrator;
+        mObserverList = new ObserverList<DatabaseOpenEvent>();
     }
     
     /**
@@ -43,7 +51,7 @@ public final class DefaultOpenerImpl implements Opener {
      */
     
     public void addDatabaseOpenObserver(final Observer<DatabaseOpenEvent> observer) {
-        observerList.addObserver(observer);
+        mObserverList.addObserver(observer);
     }
 
     /**
@@ -65,7 +73,7 @@ public final class DefaultOpenerImpl implements Opener {
         while (true) {
             try {
                 openerAdapter.reportProgress(ProgressStage.OPENING, tryingToOpenMessage);
-                final InstanceSet<DAOFactory> daoFactories = access.openDatabase(pathToDatabase, dbPassword);
+                final InstanceSet<DAOFactory> daoFactories = mAccess.openDatabase(pathToDatabase, dbPassword);
                 final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
                 LOGGER.info("Opened OK");
         
@@ -101,7 +109,7 @@ public final class DefaultOpenerImpl implements Opener {
                     databaseDescriptor.setDAOFactory(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
                 }
                 
-                observerList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
+                mObserverList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
 
                 return daoFactories;
                 
@@ -125,7 +133,7 @@ public final class DefaultOpenerImpl implements Opener {
                 return null;
                 
             } catch (final DataAccessException dae) {
-                LOGGER.warn("Data access exception opening database: " + dae.getMessage(), dae);
+                LOGGER.warn("Data mAccess exception opening database: " + dae.getMessage(), dae);
                 openerAdapter.reportProgress(ProgressStage.OPEN_FAILED, "Open of '" + dbName + "' failed");
                 openerAdapter.seriousProblemOccurred(dae);
                 openerAdapter.stopOpening();

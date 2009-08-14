@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
+import uk.me.gumbley.minimiser.migrator.DefaultMigrator;
+import uk.me.gumbley.minimiser.migrator.Migrator;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
@@ -25,7 +27,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 /**
  * The Opener should add all DAOFactories (from miniMiser and the
  * plugins) to the DatabaseDescriptor.
- * 
+ * TODO rewrite this to use the PersistencePluginHelper
  * @author matt
  *
  */
@@ -36,6 +38,7 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
     private AccessFactory mAccessFactory;
     private String mDbDirPlusDbName;
     private Opener mOpener;
+    private Migrator mMigrator;
     
     /**
      * @throws PluginException never
@@ -53,7 +56,8 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
         mAccessFactory = getAccessFactory();
         Assert.assertNotNull(mAccessFactory);
         mDbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
-        mOpener = new DefaultOpenerImpl(mAccessFactory);
+        mMigrator = new DefaultMigrator(mPluginManager);
+        mOpener = new DefaultOpenerImpl(mAccessFactory, mMigrator);
     }
     
     private final class NullOpenerAdapter implements OpenerAdapter {

@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import uk.me.gumbley.minimiser.version.ComparableVersion;
+
 /**
  * A ChangeLogTransformer that gives back its input verbatim, for tests.
  * @author matt
