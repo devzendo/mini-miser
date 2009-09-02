@@ -44,7 +44,7 @@ public final class TestWizardPageInitialisingLifecycle {
         Assert.assertEquals("", prefs.getWizardPanelSize());
         
         mWizardPageInitialisingLifecycle.startup();
-        ThreadUtils.waitNoInterruption(500);
+        ThreadUtils.waitNoInterruption(1000);
 
         Assert.assertTrue(prefs.getWizardPanelSize().length() > 0);
     }
