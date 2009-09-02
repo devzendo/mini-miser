@@ -3,6 +3,7 @@
  */
 package uk.me.gumbley.minimiser.opener;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
@@ -14,6 +15,8 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
  *
  */
 public final class DatabaseOpenObserver implements Observer<DatabaseOpenEvent> {
+    private static final Logger LOGGER = Logger
+            .getLogger(DatabaseOpenObserver.class);
     private boolean databaseOpen = false;
     private DatabaseOpenEvent databaseOpenEvent = null;
     
@@ -35,6 +38,7 @@ public final class DatabaseOpenObserver implements Observer<DatabaseOpenEvent> {
      * {@inheritDoc}
      */
     public void eventOccurred(final DatabaseOpenEvent observableEvent) {
+        LOGGER.info("The database is open");
         databaseOpen = true;
         databaseOpenEvent = observableEvent;
     }
