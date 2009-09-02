@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.persistence;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -31,6 +33,7 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
             .getLogger(PluginsAreInvolvedWithDatabaseMigration.class);
     private static final String MIGRATIONDB = "openermigration";
     private PersistencePluginHelper mPersistencePluginHelper;
+    private PersistencePluginOpenerHelper mPersistencePluginOpenerHelper;
     private PersistenceMigratorHelper mPersistenceMigratorHelper;
 
     /**
@@ -40,7 +43,8 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
     public void getPrerequisites() {
         mPersistencePluginHelper = new PersistencePluginHelper();
         mPersistencePluginHelper.validateTestDatabaseDirectory();
-        
+
+        mPersistencePluginOpenerHelper = new PersistencePluginOpenerHelper(mPersistencePluginHelper);
         mPersistenceMigratorHelper = new PersistenceMigratorHelper(mPersistencePluginHelper);
     }
 
@@ -62,9 +66,9 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
         mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
 
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
-        mPersistencePluginHelper.addDatabaseOpenObserver(obs);
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
         mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
-        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        final OpenerAdapter openerAdapter = EasyMock.createStrictMock(OpenerAdapter.class);
         openerAdapter.startOpening();
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
@@ -76,11 +80,19 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
         EasyMock.replay(openerAdapter);
 
         // run
-        mPersistencePluginHelper.openDatabase(MIGRATIONDB, openerAdapter);
+        LOGGER.info("test is opening the database, with migration to be rejected by the user");
+        mPersistencePluginOpenerHelper.openDatabase(MIGRATIONDB, openerAdapter);
         
         // test
         obs.assertDatabaseNotOpen();
         EasyMock.verify(openerAdapter);
+        // Although it looks closed, it had been opened before
+        // check for migration. Since we rejected, it must be
+        // closed. Since we don't get back a database object, 
+        // we have to do a low-level check like this...
+        final File lockFile = new File(mPersistencePluginHelper.getAbsoluteDatabaseDirectory(MIGRATIONDB) + ".lock.db");
+        LOGGER.info("lockfile: " + lockFile.getAbsolutePath());
+        Assert.assertFalse(lockFile.exists());
     }
     
     /**

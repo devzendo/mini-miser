@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.migrator.Migrator;
+import uk.me.gumbley.minimiser.migrator.Migrator.MigrationVersion;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
@@ -61,7 +62,8 @@ public final class DefaultOpenerImpl implements Opener {
     public InstanceSet<DAOFactory> openDatabase(
             final String dbName,
             final String pathToDatabase,
-            final OpenerAdapter openerAdapter) {
+            final OpenerAdapter originalOpenerAdapter) {
+        final OpenerAdapter openerAdapter = new LoggingDecoratorOpenerAdapter(originalOpenerAdapter);
         openerAdapter.startOpening();
         LOGGER.info("Opening database '" + dbName + "' from path '" + pathToDatabase + "'");
         openerAdapter.reportProgress(ProgressStage.STARTING, "Starting to open '" + dbName + "'");
@@ -76,25 +78,11 @@ public final class DefaultOpenerImpl implements Opener {
                 final InstanceSet<DAOFactory> daoFactories = mAccess.openDatabase(pathToDatabase, dbPassword);
                 final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
                 LOGGER.info("Opened OK");
-        
-                /*if (migrationNeeded(daoFactories)) {
-                    if (migrationRejected(daoFactories)) {
-                        LOGGER.warn("Migration of " + dbName + " was rejected; not opening");
-                        try {
-                            LOGGER.info("Closing due to migration rejection");
-                            // since we return null, so the
-                            // MiniMiserDAOFactory isn't passed out,
-                            // closure can't be verified in a test
-                            miniMiserDAOFactory.close();
-                        } finally {
-                            openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
-                            openerAdapter.stopOpening();
-                            return null;
-                        }
-                    }
-                    migrate(daoFactories);
-                    updateVersions(daoFactories);
-                }*/
+                
+                if (!processMigrationOk(dbName, openerAdapter, daoFactories)) {
+                    LOGGER.warn("Migration rejection or failure terminated open");
+                    return null;
+                }
                 
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened '" + dbName + "' OK");
                 openerAdapter.stopOpening();
@@ -133,7 +121,7 @@ public final class DefaultOpenerImpl implements Opener {
                 return null;
                 
             } catch (final DataAccessException dae) {
-                LOGGER.warn("Data mAccess exception opening database: " + dae.getMessage(), dae);
+                LOGGER.warn("Data access exception opening database: " + dae.getMessage(), dae);
                 openerAdapter.reportProgress(ProgressStage.OPEN_FAILED, "Open of '" + dbName + "' failed");
                 openerAdapter.seriousProblemOccurred(dae);
                 openerAdapter.stopOpening();
@@ -142,9 +130,71 @@ public final class DefaultOpenerImpl implements Opener {
         }
     }
 
-    private boolean migrationRejected(
-            InstanceSet<DAOFactory> daoFactories) {
-        // TODO Auto-generated method stub
-        return false;
+    private boolean processMigrationOk(
+            final String dbName,
+            final OpenerAdapter openerAdapter,
+            final InstanceSet<DAOFactory> daoFactories) {
+        final MigrationVersion migrationVersion = mMigrator.requiresMigration(daoFactories);
+        switch (migrationVersion) {
+            case OLD:
+                LOGGER.info("Migration is required; prompting...");
+                openerAdapter.reportProgress(ProgressStage.MIGRATION_REQUIRED, "This database needs updating");
+                final boolean migrationAccepted = openerAdapter.requestMigration();
+                LOGGER.info("Request for migration was " + (migrationAccepted ? "accepted" : "denied"));
+                if (migrationAccepted) {
+                    return true;
+                } else {
+                    migrationRejected(
+                        dbName, openerAdapter,
+                        daoFactories);
+                    return false;
+                }
+            case CURRENT:
+                return true;
+            case FUTURE:
+                return false;
+            default:
+                throw new IllegalStateException("Migrator returned unknown MigrationVersion: " + migrationVersion);    
+        }
+        /*if (migrationNeeded(daoFactories)) {
+            if (migrationRejected(daoFactories)) {
+                LOGGER.warn("Migration of " + dbName + " was rejected; not opening");
+                try {
+                    LOGGER.info("Closing due to migration rejection");
+                    // since we return null, so the
+                    // MiniMiserDAOFactory isn't passed out,
+                    // closure can't be verified in a test
+                    miniMiserDAOFactory.close();
+                } finally {
+                    openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
+                    openerAdapter.stopOpening();
+                    return null;
+                }
+            }
+            migrate(daoFactories);
+            updateVersions(daoFactories);
+        }*/
+    }
+
+    private void migrationRejected(
+            final String dbName,
+            final OpenerAdapter openerAdapter,
+            final InstanceSet<DAOFactory> daoFactories) {
+        final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
+
+        try {
+            LOGGER.info("Closing due to migration rejection");
+            // since we return null, so the
+            // MiniMiserDAOFactory isn't passed out,
+            // closure can't be directly
+            // verified in a test, so we test
+            // by looking for an absence of a
+            // lock file
+           miniMiserDAOFactory.close();
+        } catch (final DataAccessException dae) {
+            LOGGER.warn("Data access exception closing database after migration rejection: " + dae.getMessage(), dae);
+        }
+        openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
+        openerAdapter.stopOpening();
     }
 }
