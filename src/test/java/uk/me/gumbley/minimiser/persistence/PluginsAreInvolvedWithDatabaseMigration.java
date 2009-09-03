@@ -15,6 +15,7 @@ import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
 /**
@@ -63,12 +64,14 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
     @Test
     public void migrationCanBePreventedByUser() throws PluginException {
         // setup
-        mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
+        final String dbName = MIGRATIONDB + "prevent";
+        mPersistenceMigratorHelper.createOldDatabase(dbName);
 
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
         mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
         mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
-        final OpenerAdapter openerAdapter = EasyMock.createStrictMock(OpenerAdapter.class);
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
         openerAdapter.startOpening();
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
@@ -81,16 +84,20 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
 
         // run
         LOGGER.info("test is opening the database, with migration to be rejected by the user");
-        mPersistencePluginOpenerHelper.openDatabase(MIGRATIONDB, openerAdapter);
+        mPersistencePluginOpenerHelper.openDatabase(dbName, openerAdapter);
         
         // test
         obs.assertDatabaseNotOpen();
         EasyMock.verify(openerAdapter);
+        checkForClosureViaLockFileMissing(dbName);
+    }
+
+    private void checkForClosureViaLockFileMissing(final String dbName) {
         // Although it looks closed, it had been opened before
         // check for migration. Since we rejected, it must be
         // closed. Since we don't get back a database object, 
         // we have to do a low-level check like this...
-        final File lockFile = new File(mPersistencePluginHelper.getAbsoluteDatabaseDirectory(MIGRATIONDB) + ".lock.db");
+        final File lockFile = new File(mPersistencePluginHelper.getAbsoluteDatabaseDirectory(dbName) + ".lock.db");
         LOGGER.info("lockfile: " + lockFile.getAbsolutePath());
         Assert.assertFalse(lockFile.exists());
     }
@@ -99,16 +106,99 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
      * @throws PluginException never
      */
     @Test
-    public void migrationAcceptedAndUpgradesViaPluginWithLatestSchemaVersionStored() throws PluginException {
-        Assert.fail("unfinished");
+    public void migrationAccepted() throws PluginException {
+        // setup
+        final String dbName = MIGRATIONDB + "accepted";
+        mPersistenceMigratorHelper.createOldDatabase(dbName);
+
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_REQUIRED), EasyMock.isA(String.class));
+        openerAdapter.requestMigration();
+        EasyMock.expectLastCall().andReturn(true);
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATED), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENED), EasyMock.isA(String.class));
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
+
+        // run
+        LOGGER.info("test is opening the database, with migration to complete");
+        final InstanceSet<DAOFactory> openDatabase = mPersistencePluginOpenerHelper.openDatabase(dbName, openerAdapter);
+        
+        try {
+            // test
+            obs.assertDatabaseOpen();
+            EasyMock.verify(openerAdapter);
+            Assert.assertNotNull(openDatabase);
+        } finally {
+            try {
+                openDatabase.getInstanceOf(MiniMiserDAOFactory.class).close();
+            } catch (final Exception e) {
+                LOGGER.warn("Could not close database: " + e.getMessage(), e);
+            }
+        }
     }
-    
+
     /**
-     * 
+     * @throws PluginException never
      */
     @Test
-    public void cannotOpenADatabaseNewerThanThisSchema() {
-        Assert.fail("unfinished");        
+    public void migrationUpgradesViaPlugin() throws PluginException {
+        Assert.fail("unfinished");
+    }
+
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void migrationStoresLatestSchemaVersion() throws PluginException {
+        Assert.fail("unfinished");
+    }
+
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void migrationFailureRollsBackTransaction() throws PluginException {
+        Assert.fail("unfinished");
+    }
+
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void cannotOpenADatabaseNewerThanThisSchema() throws PluginException {
+        // setup
+        final String dbName = MIGRATIONDB + "future";
+        mPersistenceMigratorHelper.createNewDatabase(dbName);
+
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_NOT_POSSIBLE), EasyMock.isA(String.class));
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
+
+        // run
+        LOGGER.info("test is opening the database, with migration not possible");
+        mPersistencePluginOpenerHelper.openDatabase(dbName, openerAdapter);
+        
+        // test
+        obs.assertDatabaseNotOpen();
+        EasyMock.verify(openerAdapter);
+        checkForClosureViaLockFileMissing(dbName);
     }
     
     /**

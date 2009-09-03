@@ -49,7 +49,7 @@ public interface OpenerAdapter {
          * @return the maximum value of a ProgressStage 
          */
         public int getMaximumValue() {
-            return 4;
+            return 6;
         }
         
         /**
@@ -115,28 +115,43 @@ public interface OpenerAdapter {
         /**
          * Sent during migration if the user allowed it. 
          */
-        public static final ProgressStage MIGRATING = new ProgressStage(3, "MIGRATING"); 
+        public static final ProgressStage MIGRATING = new ProgressStage(4, "MIGRATING"); 
+        /**
+         * Sent after successful migration 
+         */
+        public static final ProgressStage MIGRATED = new ProgressStage(5, "MIGRATED"); 
 
+        // End states ---------------------------------------------
+        
         /**
          * Sent upon successful open. 
          */
-        public static final ProgressStage OPENED = new ProgressStage(4, "OPENED");
+        public static final ProgressStage OPENED = new ProgressStage(6, "OPENED");
         /**
          * The user cancelled the password entry on an encrypted database. 
          */
-        public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(4, "PASSWORD_CANCELLED");
+        public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(6, "PASSWORD_CANCELLED");
         /**
          * The user rejected the migration request on an old database. 
          */
-        public static final ProgressStage MIGRATION_REJECTED = new ProgressStage(4, "MIGRATION_REJECTED");
+        public static final ProgressStage MIGRATION_REJECTED = new ProgressStage(6, "MIGRATION_REJECTED");
+        /**
+         * The migration cannot be done as this database is at a
+         * more recent version than the plugins support.
+         */
+        public static final ProgressStage MIGRATION_NOT_POSSIBLE = new ProgressStage(6, "MIGRATION_NOT_POSSIBLE");
+        /**
+         * The migration failed and its effects have been rolled back 
+         */
+        public static final ProgressStage MIGRATION_FAILED = new ProgressStage(6, "MIGRATION_FAILED");
         /**
          * The database is not present. 
          */
-        public static final ProgressStage NOT_PRESENT = new ProgressStage(4, "NOT_PRESENT");
+        public static final ProgressStage NOT_PRESENT = new ProgressStage(6, "NOT_PRESENT");
         /**
          * Failed to open for a serious reason 
          */
-        public static final ProgressStage OPEN_FAILED = new ProgressStage(4, "OPEN_FAILED");
+        public static final ProgressStage OPEN_FAILED = new ProgressStage(6, "OPEN_FAILED");
     };
 
     /**

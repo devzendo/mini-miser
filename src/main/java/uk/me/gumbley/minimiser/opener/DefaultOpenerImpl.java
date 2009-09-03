@@ -80,7 +80,12 @@ public final class DefaultOpenerImpl implements Opener {
                 LOGGER.info("Opened OK");
                 
                 if (!processMigrationOk(dbName, openerAdapter, daoFactories)) {
+                    openerAdapter.stopOpening();
                     LOGGER.warn("Migration rejection or failure terminated open");
+//                    final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
+
+                    closeAfterMigrationTermination(miniMiserDAOFactory);
+
                     return null;
                 }
                 
@@ -142,48 +147,38 @@ public final class DefaultOpenerImpl implements Opener {
                 final boolean migrationAccepted = openerAdapter.requestMigration();
                 LOGGER.info("Request for migration was " + (migrationAccepted ? "accepted" : "denied"));
                 if (migrationAccepted) {
+                    // TODO: start transaction
+                    migrate(openerAdapter, daoFactories);
+                    // TODO: update versions
+                    // TODO: commit / rollback transaction
                     return true;
                 } else {
-                    migrationRejected(
-                        dbName, openerAdapter,
-                        daoFactories);
+                    openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
                     return false;
                 }
             case CURRENT:
+                LOGGER.info("No migration required");
                 return true;
             case FUTURE:
+                LOGGER.warn("Migration is not possible since this database is newer than the plugins");
+                openerAdapter.reportProgress(ProgressStage.MIGRATION_NOT_POSSIBLE, "This database was created by more recent software");
                 return false;
             default:
-                throw new IllegalStateException("Migrator returned unknown MigrationVersion: " + migrationVersion);    
+                throw new IllegalStateException("Migrator returned unknown MigrationVersion: " + migrationVersion);
+            
         }
-        /*if (migrationNeeded(daoFactories)) {
-            if (migrationRejected(daoFactories)) {
-                LOGGER.warn("Migration of " + dbName + " was rejected; not opening");
-                try {
-                    LOGGER.info("Closing due to migration rejection");
-                    // since we return null, so the
-                    // MiniMiserDAOFactory isn't passed out,
-                    // closure can't be verified in a test
-                    miniMiserDAOFactory.close();
-                } finally {
-                    openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
-                    openerAdapter.stopOpening();
-                    return null;
-                }
-            }
-            migrate(daoFactories);
-            updateVersions(daoFactories);
-        }*/
     }
 
-    private void migrationRejected(
-            final String dbName,
-            final OpenerAdapter openerAdapter,
-            final InstanceSet<DAOFactory> daoFactories) {
-        final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
+    private void migrate(final OpenerAdapter openerAdapter, final InstanceSet<DAOFactory> daoFactories) {
+        openerAdapter.reportProgress(ProgressStage.MIGRATING, "Updating database");
+        // TODO: a great big honking load of work here!
+        openerAdapter.reportProgress(ProgressStage.MIGRATED, "Database updated");
+    }
 
+    private void closeAfterMigrationTermination(
+            final MiniMiserDAOFactory miniMiserDAOFactory) {
         try {
-            LOGGER.info("Closing due to migration rejection");
+            LOGGER.info("Closing due to migration rejection/failure");
             // since we return null, so the
             // MiniMiserDAOFactory isn't passed out,
             // closure can't be directly
@@ -194,7 +189,5 @@ public final class DefaultOpenerImpl implements Opener {
         } catch (final DataAccessException dae) {
             LOGGER.warn("Data access exception closing database after migration rejection: " + dae.getMessage(), dae);
         }
-        openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
-        openerAdapter.stopOpening();
     }
 }
