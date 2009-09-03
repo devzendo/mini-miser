@@ -1,26 +1,37 @@
 MiniMiser roadmap
 =================
 Overall project goals:
-  * Write an open source personal finance tracking / reconciliation program to
-    replace a commercial product running on Windows XP that is now no longer
-    supported by its manufacturer.
-  * The program must be able to import data from this commercial program with
-    no loss of information. Other common imports would be useful.
-  * The UI must be well thought out and follow respected UI design guidelines
-    (i.e. what would Apple do?)
-  * It must be possible to optionally encrypt data stored by the program using
-    a strong, respected algorithm.
+  * Write an open source personal finance tracking / reconciliation
+    program to replace a commercial product running on Windows XP
+    that is now no longer supported by its manufacturer.
+  * The program must be able to import data from this commercial
+    program with no loss of information. Other common imports would
+    be useful.
+    
+  (These were the original goals of the project - the framework
+   has grown out of this, with the above application being
+   sidelined until the framework is mature enough to support it)
+    
+  * The UI must be well thought out and follow respected UI design
+    guidelines (i.e. what would Apple do?)
+  * It must be possible to optionally encrypt data stored by the
+    program using a strong, respected algorithm.
+    
 Technical & personal project goals:
   * Develop a desktop app with an excellent UI in Swing.
   * Written using Test-Driven Design & Development (except GUI).
   * Use the Spring Framework.
-  * Support Windows, Ubuntu Linux and Mac OS X. Provide installers for Windows,
-    an attractive folder like Firefox's on Mac OS X, and a .deb for Ubuntu.
+  * Support Windows, Ubuntu Linux and Mac OS X. Provide installers
+    for Windows, an attractive folder like Firefox's on Mac OS X,
+    and a .deb for Ubuntu.
     Provide an update site for Ubuntu.
-  * As well as bulding a damn fine desktop app, build an underlying extensible
-    framework/platform that can be built upon / extended by others.
+  * As well as building a damn fine desktop app, build an
+    underlying extensible framework/platform that can be built
+    upon / extended by others.
+  * Provide a Maven 2 repository for framework users.
   * Document it as you would expect for a professional application.
-  * Build infrastructure to support a community / cottage industry of users.
+  * Build infrastructure to support a community / cottage industry
+    of users.
   * Build quality. (May need some definition!)
 
 Prehistory
@@ -31,35 +42,44 @@ Version 0.1 - Build the Foundations
   * Technical goals:
     * Start new Maven-based product.
     * Get building under CI server / repository management.
-    * Build basic application framework to support menu & main app panes.
+    * Build basic application framework to support menu & main app
+      panes.
     * Build data access layer foundation.
-    * Create project website / source code repository / blog / wiki / mailing
-      lists / bug reporting / update site.
-  * Functionality - build foundations of data access and UI without supporting
-    "proper" financial / account data structures yet:
+    * Create project website / source code repository / blog / wiki
+      / mailing lists / bug reporting / update site.
+  * Functionality - build foundations of data access and UI without
+    supporting "proper" financial / account data structures yet:
     * Create new databases, optionally encrypted, via a wizard.
-    * Open existing databases via a wizard, entering password for encrypted
-      databases.
+    * Open existing databases via a wizard, entering password for
+      encrypted databases.
     * Close open databases.
-    * Provide a "recent databases" list from which recently-opened databases can
-      be opened. Order this list according to recency.
+    * Provide a "recent databases" list from which recently-opened
+      databases can be opened. Order this list according to
+      recency.
     * Allow multiple databases to be open simultaneously.
     * Switch between multiple open databases.
-    * Remember which databases were open when exiting and re-open them on
-      startup. Remember which was current.
-    * Provide multiple tabs (views) per databases, to display various views
-      into the database.
+    * Remember which databases were open when exiting and re-open
+      them on startup. Remember which was current.
+    * Provide multiple tabs (views) per databases, to display
+      various views into the database.
     * Allow multiple view tabs to be open simultaneously.
     * Allow switching between view tabs.
-    * Remember which view tabs were open when exiting and re-open them on
-      startup. Remember which tab was current.
+    * Remember which view tabs were open when exiting and re-open
+      them on startup. Remember which tab was current.
     * About dialog / credits / GPL license
     * Prefs dialog / advanced tab / SQL debug tab
     * SQL debug tab for issuing statements.
     * Update available checker.
     * Basic Plugin facilities.
+    * Databases are version controlled such that all plugins can
+      upgrade their data upon encountering an old database on
+      startup.
     * Bug reporting dialog.
-
+  * My employer states that it has no issues with me developing
+    the framework in my own time, provided I do no contracted work
+    on it for any of its competitors, and that all IPR in the
+    framework is held by me - 03/09/2009.
+    
 Version 0.2 - Drive the data structure definition
 
 TBC...
