@@ -7,6 +7,7 @@ import java.sql.Statement;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess.ResultType;
@@ -42,8 +43,8 @@ public final class TestSQLAccess extends DummyAppPluginManagerPersistenceUnittes
      * 
      */
     @Test
-    public void selectReturnsData() {
-        final String dbName = "selectreturnsdata";
+    public void selectReturnsDataViaJdbc() {
+        final String dbName = "selectreturnsdataviajdbc";
         final String dbPassword = "";
         
         doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, dbPassword, new RunOnMiniMiserDatabase() {
@@ -68,6 +69,28 @@ public final class TestSQLAccess extends DummyAppPluginManagerPersistenceUnittes
                         LOGGER.warn("Could not close statement", e1);
                     }
                 }
+            }
+            
+        });
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void selectReturnsDataViaJdbcTemplate() {
+        final String dbName = "selectreturnsdataviajdbctemplate";
+        final String dbPassword = "";
+        
+        doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, dbPassword, new RunOnMiniMiserDatabase() {
+            
+            public void runOnMiniMiserDatabase(final MiniMiserDAOFactory mmData) {
+                final SQLAccess sqlAccess = mmData.getSQLAccess();
+                final SimpleJdbcTemplate template = sqlAccess.getSimpleJdbcTemplate();
+                final int count = template.queryForInt(
+                    "select count(*) from Versions");
+                LOGGER.info("There are " + count + " entries in Versions");
+                Assert.assertTrue(count == 4);
             }
             
         });

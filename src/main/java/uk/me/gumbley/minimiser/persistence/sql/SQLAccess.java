@@ -2,9 +2,11 @@ package uk.me.gumbley.minimiser.persistence.sql;
 
 import java.sql.Statement;
 
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+
 /**
  * The SQLAccess interface provides low-level direct SQL access to the
- * database, ofr migration, and validating/parsing SQL statements.
+ * database, for migration, and validating/parsing SQL statements.
  *  
  * @author matt
  *
@@ -46,4 +48,11 @@ public interface SQLAccess {
      * @return the Statement
      */
     Statement createStatement();
+
+    /**
+     * Obtain the Spring SimpleJdbcTemplate to make easier use of
+     * JDBC.
+     * @return the SimpleJdbcTemplate
+     */
+    SimpleJdbcTemplate getSimpleJdbcTemplate();
 }

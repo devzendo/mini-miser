@@ -19,6 +19,7 @@ import org.h2.command.dml.Update;
 import org.h2.engine.Session;
 import org.h2.engine.SessionInterface;
 import org.h2.jdbc.JdbcConnection;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import uk.me.gumbley.minimiser.persistence.sql.BadSQLException;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
@@ -35,12 +36,15 @@ public final class H2SQLAccess implements SQLAccess {
     private final Map<Class<?>, ResultType> preparedToResultTypeMap;
     private Parser parser;
     private Connection connection;
+    private final SimpleJdbcTemplate mSimpleJdbcTemplate;
     
     /**
      * Construct using a datasource
      * @param dataSource the datasource
+     * @param simpleJdbcTemplate the simple JDBC template
      */
-    public H2SQLAccess(final DataSource dataSource) {
+    public H2SQLAccess(final DataSource dataSource, final SimpleJdbcTemplate simpleJdbcTemplate) {
+        mSimpleJdbcTemplate = simpleJdbcTemplate;
         preparedToResultTypeMap = initialisePreparedToResultTypeMap();
         try {
             connection = dataSource.getConnection();
@@ -105,5 +109,12 @@ public final class H2SQLAccess implements SQLAccess {
             LOGGER.warn(warning, e);
             throw new SQLAccessException(warning);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public SimpleJdbcTemplate getSimpleJdbcTemplate() {
+        return mSimpleJdbcTemplate;
     }
 }
