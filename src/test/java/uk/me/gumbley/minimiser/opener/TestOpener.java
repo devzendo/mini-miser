@@ -169,6 +169,10 @@ public final class TestOpener extends DummyAppPluginManagerPersistenceUnittestCa
                     final InstanceSet<DAOFactory> daoFactories) {
                 return MigrationVersion.CURRENT;
             }
+
+            public void migrate(final InstanceSet<DAOFactory> daoFactories)
+                    throws DataAccessException {
+            }
             
         };
         opener = new DefaultOpenerImpl(accessFactory, alwaysCurrentMigrator);

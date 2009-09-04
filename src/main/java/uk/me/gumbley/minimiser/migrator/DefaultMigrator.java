@@ -3,6 +3,9 @@ package uk.me.gumbley.minimiser.migrator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
@@ -10,6 +13,8 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
+import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigration;
+import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigrationFacade;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -19,6 +24,8 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  *
  */
 public final class DefaultMigrator implements Migrator {
+    private static final Logger LOGGER = Logger
+            .getLogger(DefaultMigrator.class);
 
     private final PluginManager mPluginManager;
 
@@ -106,5 +113,25 @@ public final class DefaultMigrator implements Migrator {
             psv.addPluginSchemaVersion(plugin.getName(), plugin.getSchemaVersion());
         }
         return psv;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void migrate(final InstanceSet<DAOFactory> daoFactories)
+            throws DataAccessException {
+        final MiniMiserDAOFactory miniMiserDaoFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
+        final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
+        final List<DatabaseMigration> databaseMigrationPlugins = mPluginManager.getPluginsImplementingFacade(DatabaseMigration.class);
+        for (final DatabaseMigration databaseMigration : databaseMigrationPlugins) {
+            final String pluginName = ((Plugin)databaseMigration).getName();
+            final DatabaseMigrationFacade databaseMigrationFacade = databaseMigration.getDatabaseMigrationFacade();
+            if (databaseMigrationFacade != null) {
+                final Version schemaVersion = versionDao.findVersion(pluginName, VersionableEntity.SCHEMA_VERSION);
+                final String schemaVersionString = schemaVersion.getVersion();
+                LOGGER.debug("Plugin " + databaseMigration.getClass().getName() + " '" + pluginName + "' migrating database from version " + schemaVersionString);
+                databaseMigrationFacade.migrateSchema(schemaVersionString);
+            }
+        }
     }
 }

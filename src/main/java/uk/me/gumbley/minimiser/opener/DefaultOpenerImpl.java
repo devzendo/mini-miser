@@ -171,6 +171,7 @@ public final class DefaultOpenerImpl implements Opener {
 
     private void migrate(final OpenerAdapter openerAdapter, final InstanceSet<DAOFactory> daoFactories) {
         openerAdapter.reportProgress(ProgressStage.MIGRATING, "Updating database");
+        mMigrator.migrate(daoFactories);
         // TODO: a great big honking load of work here!
         openerAdapter.reportProgress(ProgressStage.MIGRATED, "Database updated");
     }

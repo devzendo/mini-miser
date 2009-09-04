@@ -131,4 +131,28 @@ public final class TestMigrator extends LoggingTestCase {
         }
     }
 
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void oldDatabaseIsMigrated() throws PluginException {
+        // setup
+        mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
+        Assert.assertNotNull(daoFactories);
+        
+        try {
+            mMigrator.migrate(daoFactories);
+            // test that migration has occurred
+            final DatabaseMigrationNewAppPlugin applicationPlugin = (DatabaseMigrationNewAppPlugin) mPersistencePluginHelper.getApplicationPlugin();
+            Assert.assertTrue(applicationPlugin.allMigrationMethodsCalled());
+            // test that the versions have been updated
+            Assert.assertEquals(Migrator.MigrationVersion.CURRENT, mMigrator.requiresMigration(daoFactories));
+            
+        } finally {
+            // teardown
+            daoFactories.getInstanceOf(MiniMiserDAOFactory.class).close();
+        }
+    }
 }

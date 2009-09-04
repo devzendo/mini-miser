@@ -1,5 +1,7 @@
 package uk.me.gumbley.minimiser.migrator;
 
+import org.springframework.dao.DataAccessException;
+
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
@@ -37,8 +39,18 @@ public interface Migrator {
      * Does the opened database require migration?
      * 
      * @param daoFactories
-     *        the DAO Factories
+     *        the DAO factories
      * @return true iff it requires migration
      */
-    MigrationVersion requiresMigration(final InstanceSet<DAOFactory> daoFactories);
+    MigrationVersion requiresMigration(InstanceSet<DAOFactory> daoFactories);
+
+    /**
+     * Migrate the database to the latest version and update the
+     * database schema version numbers. If the exception
+     * is thrown, the whole migration is rolled back.
+     * 
+     * @param daoFactories the DAO factories
+     * @throws DataAccessException on migration failure
+     */
+    void migrate(InstanceSet<DAOFactory> daoFactories) throws DataAccessException;
 }

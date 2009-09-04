@@ -117,7 +117,7 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
         synchronized (this) {
             checkClosed("getSQLAccess");
             if (sqlAccess == null) {
-                sqlAccess = new H2SQLAccess(dataSource);
+                sqlAccess = new H2SQLAccess(dataSource, jdbcTemplate);
             }
             return sqlAccess;
         }
