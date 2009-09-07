@@ -36,6 +36,7 @@ public final class H2SQLAccess implements SQLAccess {
     private final Map<Class<?>, ResultType> preparedToResultTypeMap;
     private Parser parser;
     private Connection connection;
+    private final DataSource mDataSource;
     private final SimpleJdbcTemplate mSimpleJdbcTemplate;
     
     /**
@@ -44,6 +45,7 @@ public final class H2SQLAccess implements SQLAccess {
      * @param simpleJdbcTemplate the simple JDBC template
      */
     public H2SQLAccess(final DataSource dataSource, final SimpleJdbcTemplate simpleJdbcTemplate) {
+        mDataSource = dataSource;
         mSimpleJdbcTemplate = simpleJdbcTemplate;
         preparedToResultTypeMap = initialisePreparedToResultTypeMap();
         try {
@@ -116,5 +118,12 @@ public final class H2SQLAccess implements SQLAccess {
      */
     public SimpleJdbcTemplate getSimpleJdbcTemplate() {
         return mSimpleJdbcTemplate;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public DataSource getDataSource() {
+        return mDataSource;
     }
 }

@@ -2,6 +2,8 @@ package uk.me.gumbley.minimiser.persistence.sql;
 
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 /**
@@ -42,6 +44,12 @@ public interface SQLAccess {
      * @return the ResultType.
      */
     ResultType parse(String sql);
+    
+    /**
+     * Obtain the DataSource, for low-level access. 
+     * @return the DataSource
+     */
+    DataSource getDataSource();
 
     /**
      * Create a JDBC Statement.
@@ -55,4 +63,5 @@ public interface SQLAccess {
      * @return the SimpleJdbcTemplate
      */
     SimpleJdbcTemplate getSimpleJdbcTemplate();
+
 }

@@ -104,9 +104,6 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 dbURL, userName, dbPassword + " userpwd", suppressClose); 
             LOGGER.debug("DataSource is " + dataSource);
 
-            // TODO Spring lossage: I'd use a SimpleJdbcTemplate here, but it
-            // doesn't support getDataSource() so we can't close programmatically.
-            // See http://forum.springframework.org/archive/index.php/t-9704.html
             observer.eventOccurred(new PersistenceObservableEvent("Opening database"));
             LOGGER.debug("Obtaining SimpleJdbcTemplate");
             jdbcTemplate = new SimpleJdbcTemplate(dataSource);
@@ -263,8 +260,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
             if (newDatabaseCreationFacade != null) {
                 LOGGER.debug("Plugin " + newDatabaseCreation.getClass().getName() + " creating database");
-                newDatabaseCreationFacade.createDatabase(dbDetails.getJdbcTemplate(),
-                    dbDetails.getDataSource(), observer, pluginProperties);
+                newDatabaseCreationFacade.createDatabase(dbDetails.getDataSource(),
+                    dbDetails.getJdbcTemplate(), observer, pluginProperties);
             }
         }
     }

@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -91,6 +93,31 @@ public final class TestSQLAccess extends DummyAppPluginManagerPersistenceUnittes
                     "select count(*) from Versions");
                 LOGGER.info("There are " + count + " entries in Versions");
                 Assert.assertTrue(count == 4);
+            }
+            
+        });
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void dataSourceAvailable() {
+        final String dbName = "datasourceavailable";
+        final String dbPassword = "";
+        
+        doSimpleCreateDatabaseBoilerPlate(getAccessFactory(), dbName, dbPassword, new RunOnMiniMiserDatabase() {
+            
+            public void runOnMiniMiserDatabase(final MiniMiserDAOFactory mmData) {
+                final SQLAccess sqlAccess = mmData.getSQLAccess();
+                final DataSource dataSource = sqlAccess.getDataSource();
+                try {
+                    Assert.assertFalse(dataSource.getConnection().isClosed());
+                } catch (final SQLException e) {
+                    final String warning = "Caught unexpected exception when detecting that the database was not closed:" + e.getMessage();
+                    LOGGER.warn(warning, e);
+                    Assert.fail(warning);
+                }
             }
             
         });
