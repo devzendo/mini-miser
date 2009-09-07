@@ -5,8 +5,11 @@ package uk.me.gumbley.minimiser.migrator;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
@@ -69,12 +72,23 @@ public final class DatabaseMigrationNewAppPlugin extends AbstractPlugin implemen
     public DatabaseMigrationNewAppPlugin() {
         mDatabaseMigrationFacade = new DatabaseMigrationFacade() {
 
-            public void migrateSchema(final String version)
+            public void migrateSchema(
+                    final DataSource dataSource,
+                    final SimpleJdbcTemplate simpleJdbcTemplate,
+                    final String version)
                     throws DataAccessException {
                 LOGGER.info("Migrating from version '" + version + "'");
                 mMigrateCalled = true;
                 mPreMigrationSchemaVersion = version;
-                // TODO migrate me!
+                
+                simpleJdbcTemplate.getJdbcOperations().execute(
+                    "CREATE TABLE SampleObjects("
+                    + "name VARCHAR(40), "
+                    + "quantity NUMBER"
+                    + ")");
+                final String insertSql = "INSERT INTO SampleObjects (name, quantity) values (?, ?)";
+                simpleJdbcTemplate.update(insertSql, new Object[] {"First", 60});
+                simpleJdbcTemplate.update(insertSql, new Object[] {"Second", 10});
             }
         };
     }
@@ -153,8 +167,9 @@ public final class DatabaseMigrationNewAppPlugin extends AbstractPlugin implemen
      * {@inheritDoc}
      */
     public String getVersion() {
-        return "1.0"; // ideally this should increase as well, but
-        // migration is only concerned with schema versions 
+        return "1.1"; // note that this is stored also, and tested
+        // for increase on upgrade, although it's only for info
+        // - nothing's done with it, unlike the schema version
     }
 
     /**

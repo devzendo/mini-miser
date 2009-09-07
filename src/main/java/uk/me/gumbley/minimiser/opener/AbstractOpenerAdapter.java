@@ -74,7 +74,7 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
                         + "Upgrading cannot be undone.\n\n"
                         + "Choose Yes to upgrade the database, or\n"
                         + "No to leave the database alone and not open it",
-                        "Confirm database upgrade",
+                        "Upgrade database?",
                         JOptionPane.YES_NO_OPTION);
                     return opt == 0;
                 }

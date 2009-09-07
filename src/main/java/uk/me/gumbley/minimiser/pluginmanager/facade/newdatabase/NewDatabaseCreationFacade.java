@@ -2,6 +2,8 @@ package uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase;
 
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
@@ -38,11 +40,10 @@ public interface NewDatabaseCreationFacade {
      * Given user input from the File|New wizard, and access to the
      * database, create any resources necessary, informing the
      * user of progress via the observer as necessary.
-     * 
-     * @param jdbcTemplate the Spring JDBC Template access to the
-     * database
      * @param dataSource the data source for other connection to
      * the database
+     * @param jdbcTemplate the Spring JDBC Template access to the
+     * database
      * @param observer an observer that should be notified of
      * creation events.
      * @param pluginProperties a map of name=value-object pairs
@@ -51,8 +52,8 @@ public interface NewDatabaseCreationFacade {
      * implement NewDatabaseCreation to use as input data whilst
      * creating or populating the database.
      */
-    void createDatabase(SimpleJdbcTemplate jdbcTemplate,
-            SingleConnectionDataSource dataSource,
+    void createDatabase(DataSource dataSource,
+            SimpleJdbcTemplate jdbcTemplate,
             Observer<PersistenceObservableEvent> observer,
             Map<String, Object> pluginProperties);
     

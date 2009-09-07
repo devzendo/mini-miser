@@ -6,6 +6,8 @@ package uk.me.gumbley.minimiser.persistence;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
@@ -52,8 +54,8 @@ public final class DatabaseCreationAppPlugin extends AbstractPlugin implements
             }
 
             public void createDatabase(
+                    final DataSource dataSource,
                     final SimpleJdbcTemplate jdbcTemplate,
-                    final SingleConnectionDataSource dataSource,
                     final Observer<PersistenceObservableEvent> observer,
                     final Map<String, Object> pluginProperties) {
                 mCreateDatabaseCalled  = true;

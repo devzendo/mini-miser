@@ -1,6 +1,9 @@
 package uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase;
 
+import javax.sql.DataSource;
+
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 /**
  * Facade that allows plugins to upgrade their databases to the
@@ -17,9 +20,17 @@ public interface DatabaseMigrationFacade {
      * table, after migration. If the exception is thrown, the
      * entire migration will be rolled back, and the open
      * terminated.
-     * @param version this plugin's current database schema
-     * version
+     * 
+     * @param dataSource the DataSource, for low-level access to
+     * the database
+     * @param simpleJdbcTemplate the Spring SimpleJdbcTemplate, for
+     * easier access to the database atop JDBC
+     * @param currentSchemaVersion this plugin's current database
+     * schema version
      * @throws DataAccessException on migration failure
      */
-    void migrateSchema(String version) throws DataAccessException;
+    void migrateSchema(
+            DataSource dataSource,
+            SimpleJdbcTemplate simpleJdbcTemplate,
+            String currentSchemaVersion) throws DataAccessException;
 }

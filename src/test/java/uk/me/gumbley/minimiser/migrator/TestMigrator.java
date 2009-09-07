@@ -144,7 +144,11 @@ public final class TestMigrator extends LoggingTestCase {
         
         try {
             mMigrator.migrate(daoFactories);
+            
             // test that migration has occurred
+            mPersistenceMigratorHelper.checkForUpgradedData(daoFactories);
+            mPersistenceMigratorHelper.checkForUpgradedVersions(daoFactories);
+
             final DatabaseMigrationNewAppPlugin applicationPlugin = (DatabaseMigrationNewAppPlugin) mPersistencePluginHelper.getApplicationPlugin();
             Assert.assertTrue(applicationPlugin.allMigrationMethodsCalled());
             // test that the versions have been updated

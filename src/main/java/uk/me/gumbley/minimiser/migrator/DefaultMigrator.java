@@ -3,8 +3,11 @@ package uk.me.gumbley.minimiser.migrator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
@@ -122,16 +125,56 @@ public final class DefaultMigrator implements Migrator {
             throws DataAccessException {
         final MiniMiserDAOFactory miniMiserDaoFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
         final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
-        final List<DatabaseMigration> databaseMigrationPlugins = mPluginManager.getPluginsImplementingFacade(DatabaseMigration.class);
-        for (final DatabaseMigration databaseMigration : databaseMigrationPlugins) {
-            final String pluginName = ((Plugin)databaseMigration).getName();
+        final DataSource dataSource = miniMiserDaoFactory.getSQLAccess().getDataSource();
+        final SimpleJdbcTemplate simpleJdbcTemplate = miniMiserDaoFactory.getSQLAccess().getSimpleJdbcTemplate();
+        migrateFacades(versionDao, dataSource, simpleJdbcTemplate);
+        updateCurrentSchemaVersions(versionDao);
+        updateCurrentVersions(versionDao);
+    }
+
+    private void migrateFacades(
+            final VersionDao versionDao,
+            final DataSource dataSource,
+            final SimpleJdbcTemplate simpleJdbcTemplate) {
+        for (final DatabaseMigration databaseMigration : mPluginManager.getPluginsImplementingFacade(DatabaseMigration.class)) {
+            final String pluginName = ((Plugin) databaseMigration).getName();
             final DatabaseMigrationFacade databaseMigrationFacade = databaseMigration.getDatabaseMigrationFacade();
             if (databaseMigrationFacade != null) {
                 final Version schemaVersion = versionDao.findVersion(pluginName, VersionableEntity.SCHEMA_VERSION);
                 final String schemaVersionString = schemaVersion.getVersion();
-                LOGGER.debug("Plugin " + databaseMigration.getClass().getName() + " '" + pluginName + "' migrating database from version " + schemaVersionString);
-                databaseMigrationFacade.migrateSchema(schemaVersionString);
+                LOGGER.info(
+                    "Plugin " + databaseMigration.getClass().getName() + " '"
+                    + pluginName + "' migrating database from version "
+                    + schemaVersionString);
+                databaseMigrationFacade.migrateSchema(dataSource, simpleJdbcTemplate, schemaVersionString);
+                LOGGER.info(
+                    "Plugin " + databaseMigration.getClass().getName() + " '"
+                    + pluginName + "' migrated database from version "
+                    + schemaVersionString);
             }
         }
     }
+
+    private void updateCurrentSchemaVersions(final VersionDao versionDao) {
+        for (final Plugin plugin : mPluginManager.getPlugins()) {
+            final String pluginName = plugin.getName();
+            final String pluginSchemaVersion = plugin.getSchemaVersion();
+            LOGGER.info("Plugin " + plugin.getClass().getName() + " '"
+                + pluginName + "' schema version is now "
+                + pluginSchemaVersion);
+            versionDao.persistVersion(new Version(pluginName, VersionableEntity.SCHEMA_VERSION, pluginSchemaVersion));
+        }
+    }
+
+    private void updateCurrentVersions(final VersionDao versionDao) {
+        for (final Plugin plugin : mPluginManager.getPlugins()) {
+            final String pluginName = plugin.getName();
+            final String pluginVersion = plugin.getVersion();
+            LOGGER.info("Plugin " + plugin.getClass().getName() + " '"
+                + pluginName + "' plugin version is now "
+                + pluginVersion);
+            versionDao.persistVersion(new Version(pluginName, VersionableEntity.APPLICATION_VERSION, pluginVersion));
+        }
+    }
+
 }
