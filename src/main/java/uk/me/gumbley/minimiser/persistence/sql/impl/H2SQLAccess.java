@@ -11,10 +11,13 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.h2.command.Parser;
 import org.h2.command.Prepared;
+import org.h2.command.dml.Call;
 import org.h2.command.dml.Delete;
+import org.h2.command.dml.ExplainPlan;
 import org.h2.command.dml.Insert;
 import org.h2.command.dml.Select;
 import org.h2.command.dml.Set;
+import org.h2.command.dml.TransactionCommand;
 import org.h2.command.dml.Update;
 import org.h2.engine.Session;
 import org.h2.engine.SessionInterface;
@@ -67,10 +70,13 @@ public final class H2SQLAccess implements SQLAccess {
     private Map<Class<?>, ResultType> initialisePreparedToResultTypeMap() {
         final Map<Class<?>, ResultType> map = new HashMap<Class<?>, ResultType>();
         map.put(Select.class, ResultType.ResultSet);
-        map.put(Delete.class, ResultType.Count);
-        map.put(Insert.class, ResultType.Count);
-        map.put(Update.class, ResultType.Count);
+        map.put(Delete.class, ResultType.RowCount);
+        map.put(Insert.class, ResultType.RowCount);
+        map.put(Update.class, ResultType.RowCount);
+        map.put(Call.class, ResultType.Number);
+        map.put(ExplainPlan.class, ResultType.ResultSet);
         map.put(Set.class, ResultType.SuccessFailure);
+        map.put(TransactionCommand.class, ResultType.SuccessFailure);
         
         return map;
     }

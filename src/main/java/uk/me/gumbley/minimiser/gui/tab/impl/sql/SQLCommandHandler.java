@@ -7,7 +7,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.console.output.OutputConsole;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
@@ -30,7 +32,7 @@ final class SQLCommandHandler implements CommandHandler {
     private final OutputConsole outputConsole;
     private final DatabaseDescriptor databaseDescriptor;
     private SQLAccess sqlAccess;
-    private TableDisplay[] tableDisplays;
+    private final TableDisplay[] tableDisplays;
 
     /**
      * @param console the output console
@@ -60,7 +62,8 @@ final class SQLCommandHandler implements CommandHandler {
                 final SQLAccess.ResultType type = sqlAccess.parse(command);
                 LOGGER.info("The ResultType from parse is " + type);
                 switch (type) {
-                    case Count: return handleCount(command);
+                    case Number: return handleNumber(command);
+                    case RowCount: return handleRowCount(command);
                     case SuccessFailure: return handleSuccessFailure(command);
                     case ResultSet: return handleResultSet(command);
                     default:
@@ -95,7 +98,7 @@ final class SQLCommandHandler implements CommandHandler {
      *
      */
     private abstract class StatementTemplate {
-        private Statement statement;
+        private final Statement statement;
         public StatementTemplate() {
             statement = sqlAccess.createStatement();
         }
@@ -166,13 +169,25 @@ final class SQLCommandHandler implements CommandHandler {
         } .execute();
     }
 
-    private boolean handleCount(final String command) {
+    private boolean handleRowCount(final String command) {
         return new StatementTemplate() {
 
             @Override
             public boolean performExecution() throws SQLException {
                 final int count = getStatement().executeUpdate(command);
                 outputConsole.info(count + " " + StringUtils.pluralise("row", count) + " updated");
+                return true;
+            }
+        } .execute();
+    }
+
+    private boolean handleNumber(final String command) {
+        return new StatementTemplate() {
+
+            @Override
+            public boolean performExecution() throws SQLException {
+                final int count = getStatement().executeUpdate(command);
+                outputConsole.info("Value: " + count);
                 return true;
             }
         } .execute();

@@ -33,7 +33,11 @@ public interface SQLAccess {
         /**
          * A count of the number of records changed is returned.
          */
-        Count
+        RowCount,
+        /**
+         * A numeric result
+         */
+        Number
     }
     
     /**
