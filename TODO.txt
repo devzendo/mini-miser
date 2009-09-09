@@ -17,6 +17,10 @@ BUGS:
   button thread activates cycling the colors, but there's (correctly) no
   button present (since the viewer is active). However, the viewer does not
   refresh to show that there are now more messages.
+* Start the app with a single database open, then exit so that the
+  database will be re-opened on startup. Upgrade the app plugin's
+  schema, run the app, see the request to migrate, but refuse it.
+  The database is not opened, but you don't see the intro page. 
 
 CURRENT TASKS:
 * New database - wizards/schema-work from plugins.
@@ -45,7 +49,9 @@ CURRENT TASKS:
     DatabaseDescriptor
 * Open database - migration framework for plugins. Is
   MiniMiserDAOFactory SQLAccess used for it? 
-
+* Failure to open the database due to migration failure should
+  be reported as a method on OpenerAdapter rather than just a
+  ProgressState
 * add the real swing update progress adapter
 
 * sql table view would benefit from the stripe list renderer
