@@ -147,11 +147,19 @@ public final class DefaultOpenerImpl implements Opener {
                 final boolean migrationAccepted = openerAdapter.requestMigration();
                 LOGGER.info("Request for migration was " + (migrationAccepted ? "accepted" : "denied"));
                 if (migrationAccepted) {
-                    // TODO: start transaction
-                    migrate(openerAdapter, daoFactories);
-                    // TODO: update versions
-                    // TODO: commit / rollback transaction
-                    return true;
+                    try {
+                        // TODO: start transaction
+                        openerAdapter.reportProgress(ProgressStage.MIGRATING, "Updating database");
+                        mMigrator.migrate(daoFactories);
+                        openerAdapter.reportProgress(ProgressStage.MIGRATED, "Database updated");
+                        // TODO: commit transaction
+                        return true;
+                    } catch (final DataAccessException dae) {
+                        LOGGER.warn("Migration failed: " + dae.getMessage(), dae);
+                        // TODO roll back transaction
+                        openerAdapter.reportProgress(ProgressStage.MIGRATION_FAILED, "Update failed");
+                        return false;
+                    }
                 } else {
                     openerAdapter.reportProgress(ProgressStage.MIGRATION_REJECTED, "Migration of '" + dbName + "' rejected");
                     return false;
@@ -167,13 +175,6 @@ public final class DefaultOpenerImpl implements Opener {
                 throw new IllegalStateException("Migrator returned unknown MigrationVersion: " + migrationVersion);
             
         }
-    }
-
-    private void migrate(final OpenerAdapter openerAdapter, final InstanceSet<DAOFactory> daoFactories) {
-        openerAdapter.reportProgress(ProgressStage.MIGRATING, "Updating database");
-        mMigrator.migrate(daoFactories);
-        // TODO: a great big honking load of work here!
-        openerAdapter.reportProgress(ProgressStage.MIGRATED, "Database updated");
     }
 
     private void closeAfterMigrationTermination(

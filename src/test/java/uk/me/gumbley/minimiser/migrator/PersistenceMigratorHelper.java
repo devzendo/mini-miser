@@ -8,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import uk.me.gumbley.minimiser.migrator.DatabaseMigrationNewAppPlugin.SampleObject;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
@@ -87,7 +86,23 @@ public final class PersistenceMigratorHelper {
         final Version applicationVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
         Assert.assertEquals(applicationPlugin.getVersion(), applicationVersion.getVersion());
     }
-    
+
+    /**
+     * Check that the Versions have not been updated
+     * @param openDatabase the database connection
+     */
+    public void checkForNoUpgradedVersions(final InstanceSet<DAOFactory> openDatabase) {
+        final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
+        final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
+        final ApplicationPlugin applicationPlugin = mPersistencePluginHelper.getApplicationPlugin();
+
+        final Version applicationSchemaVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
+        Assert.assertEquals("1.0", applicationSchemaVersion.getVersion());
+
+        final Version applicationVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        Assert.assertEquals("1.0", applicationVersion.getVersion());
+    }
+
     /**
      * Find one of the new SampleObjects created during migration
      * @param jdbcTemplate the template for database connection
@@ -95,16 +110,16 @@ public final class PersistenceMigratorHelper {
      * @return the SampleObject
      * @throws DataAccessException on error
      */
-    public DatabaseMigrationNewAppPlugin.SampleObject findSampleObject(
+    public SampleObject findSampleObject(
             final SimpleJdbcTemplate jdbcTemplate,
             final String name) throws DataAccessException {
         final String sql = "select name, quantity from SampleObjects where name = ?";
-        ParameterizedRowMapper<DatabaseMigrationNewAppPlugin.SampleObject> mapper =
-            new ParameterizedRowMapper<DatabaseMigrationNewAppPlugin.SampleObject>() {
+        ParameterizedRowMapper<SampleObject> mapper =
+            new ParameterizedRowMapper<SampleObject>() {
             
             // notice the return type with respect to Java 5 covariant return types
-            public DatabaseMigrationNewAppPlugin.SampleObject mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-                return new DatabaseMigrationNewAppPlugin.SampleObject(rs.getString("name"), rs.getInt("quantity"));
+            public SampleObject mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+                return new SampleObject(rs.getString("name"), rs.getInt("quantity"));
             }
         };
         return jdbcTemplate.queryForObject(sql, mapper, name);
@@ -131,4 +146,19 @@ public final class PersistenceMigratorHelper {
         Assert.assertEquals(10, secondSampleObject.getQuantity());
     }
 
+    /**
+     * Check that there is no sample object data
+     * @param openDatabase the open database
+     */
+    public void checkForNoUpgradedData(final InstanceSet<DAOFactory> openDatabase) {
+        final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
+        final SQLAccess sqlAccess = miniMiserDaoFactory.getSQLAccess();
+        final SimpleJdbcTemplate simpleJdbcTemplate = sqlAccess.getSimpleJdbcTemplate();
+        
+        final SampleObject firstSampleObject = findSampleObject(simpleJdbcTemplate, "First");
+        Assert.assertNull(firstSampleObject);
+
+        final SampleObject secondSampleObject = findSampleObject(simpleJdbcTemplate, "Second");
+        Assert.assertNull(secondSampleObject);
+    }
 }

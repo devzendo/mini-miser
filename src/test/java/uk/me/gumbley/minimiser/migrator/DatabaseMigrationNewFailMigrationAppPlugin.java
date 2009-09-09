@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
@@ -17,15 +18,16 @@ import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigr
 import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigrationFacade;
 
 /**
- * Works with version 2.0 of the schema.
+ * Works with version 2.0 of the schema, but fails to migrate.
+ * Used to test the transaction handling of migration.
  *  
  * @author matt
  *
  */
-public final class DatabaseMigrationNewAppPlugin extends AbstractPlugin implements
+public final class DatabaseMigrationNewFailMigrationAppPlugin extends AbstractPlugin implements
         ApplicationPlugin, DatabaseMigration {
     private static final Logger LOGGER = Logger
-            .getLogger(DatabaseMigrationNewAppPlugin.class);
+            .getLogger(DatabaseMigrationNewFailMigrationAppPlugin.class);
     private final DatabaseMigrationFacade mDatabaseMigrationFacade;
 
     private boolean mMigrateCalled;
@@ -34,7 +36,7 @@ public final class DatabaseMigrationNewAppPlugin extends AbstractPlugin implemen
     /**
      * instantiate all the facades
      */
-    public DatabaseMigrationNewAppPlugin() {
+    public DatabaseMigrationNewFailMigrationAppPlugin() {
         mDatabaseMigrationFacade = new DatabaseMigrationFacade() {
 
             public void migrateSchema(
@@ -54,6 +56,8 @@ public final class DatabaseMigrationNewAppPlugin extends AbstractPlugin implemen
                 final String insertSql = "INSERT INTO SampleObjects (name, quantity) values (?, ?)";
                 simpleJdbcTemplate.update(insertSql, new Object[] {"First", 60});
                 simpleJdbcTemplate.update(insertSql, new Object[] {"Second", 10});
+                LOGGER.info("Throwing to simulate failure");
+                throw new DataIntegrityViolationException("A simulated migration failure");
             }
         };
     }

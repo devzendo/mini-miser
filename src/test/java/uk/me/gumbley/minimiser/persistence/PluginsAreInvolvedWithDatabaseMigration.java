@@ -197,6 +197,49 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
      */
     @Test
     public void migrationFailureRollsBackTransaction() throws PluginException {
-        Assert.fail("unfinished");
+        // setup
+        final String dbName = MIGRATIONDB + "rollback";
+        mPersistenceMigratorHelper.createOldDatabase(dbName);
+
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewfailmigrationplugin.properties");
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_REQUIRED), EasyMock.isA(String.class));
+        openerAdapter.requestMigration();
+        EasyMock.expectLastCall().andReturn(true);
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_FAILED), EasyMock.isA(String.class));
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
+
+        // run
+        LOGGER.info("test is opening the database, with migration to complete with failure");
+        final InstanceSet<DAOFactory> openDatabase = mPersistencePluginOpenerHelper.openDatabase(dbName, openerAdapter);
+        Assert.assertNull(openDatabase);
+
+        // now re-open without the opener... to test.
+        final InstanceSet<DAOFactory> reopenedDatabase = mPersistencePluginHelper.openDatabase(dbName, "");
+        
+        try {
+            // test
+            mPersistenceMigratorHelper.checkForNoUpgradedData(reopenedDatabase);
+            mPersistenceMigratorHelper.checkForNoUpgradedVersions(reopenedDatabase);
+            obs.assertDatabaseNotOpen();
+            EasyMock.verify(openerAdapter);
+            final DatabaseMigrationNewAppPlugin appPlugin = (DatabaseMigrationNewAppPlugin) mPersistencePluginHelper.getApplicationPlugin();
+            Assert.assertTrue(appPlugin.allMigrationMethodsCalled());
+            Assert.assertEquals("1.0", appPlugin.getPreMigrationSchemaVersion());
+        } finally {
+            try {
+                reopenedDatabase.getInstanceOf(MiniMiserDAOFactory.class).close();
+            } catch (final Exception e) {
+                LOGGER.warn("Could not close database: " + e.getMessage(), e);
+            }
+        }
     }
 }
