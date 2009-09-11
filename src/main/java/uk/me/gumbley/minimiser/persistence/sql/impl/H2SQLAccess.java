@@ -23,6 +23,8 @@ import org.h2.engine.Session;
 import org.h2.engine.SessionInterface;
 import org.h2.jdbc.JdbcConnection;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import uk.me.gumbley.minimiser.persistence.sql.BadSQLException;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
@@ -41,6 +43,7 @@ public final class H2SQLAccess implements SQLAccess {
     private Connection connection;
     private final DataSource mDataSource;
     private final SimpleJdbcTemplate mSimpleJdbcTemplate;
+    private final DataSourceTransactionManager mTransactionManager;
     
     /**
      * Construct using a datasource
@@ -50,6 +53,7 @@ public final class H2SQLAccess implements SQLAccess {
     public H2SQLAccess(final DataSource dataSource, final SimpleJdbcTemplate simpleJdbcTemplate) {
         mDataSource = dataSource;
         mSimpleJdbcTemplate = simpleJdbcTemplate;
+        mTransactionManager = new DataSourceTransactionManager(dataSource);
         preparedToResultTypeMap = initialisePreparedToResultTypeMap();
         try {
             connection = dataSource.getConnection();
@@ -131,5 +135,12 @@ public final class H2SQLAccess implements SQLAccess {
      */
     public DataSource getDataSource() {
         return mDataSource;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public TransactionTemplate createTransactionTemplate() {
+        return new TransactionTemplate(mTransactionManager);
     }
 }

@@ -5,6 +5,7 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * The SQLAccess interface provides low-level direct SQL access to the
@@ -68,4 +69,10 @@ public interface SQLAccess {
      */
     SimpleJdbcTemplate getSimpleJdbcTemplate();
 
+    /**
+     * Create a new Transactiontemplate with which work can be
+     * done, then committed or rolled back.
+     * @return the TransactionTemplate
+     */
+    TransactionTemplate createTransactionTemplate();
 }
