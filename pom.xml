@@ -93,7 +93,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.0.79</version> <!-- started the project using 1.0.69 -->
+      <version>1.1.118</version> <!-- started the project using 1.0.69, then 1.0.79 -->
     </dependency>
 
     <dependency>
