@@ -14,7 +14,6 @@ import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.util.InstanceSet;
@@ -124,17 +123,28 @@ public final class PersistenceMigratorHelper {
         };
         return jdbcTemplate.queryForObject(sql, mapper, name);
     }
-
+    
+   /**
+    * {@inheritDoc}
+    */
+   public boolean sampleObjectExists(final SimpleJdbcTemplate jdbcTemplate,
+           final String name) throws DataAccessException {
+       final int count = jdbcTemplate.queryForInt(
+           "select count(0) from SampleObjects where name = ?",
+           new Object[]{name});
+       return count == 1;
+   }
+   
     /**
      * Check that the data created during migration actually
      * exists.
      * @param openDatabase the database connection
      */
     public void checkForUpgradedData(final InstanceSet<DAOFactory> openDatabase) {
-        final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
-        final SQLAccess sqlAccess = miniMiserDaoFactory.getSQLAccess();
-        final SimpleJdbcTemplate simpleJdbcTemplate = sqlAccess.getSimpleJdbcTemplate();
-        
+        final SimpleJdbcTemplate simpleJdbcTemplate = openDatabase.
+            getInstanceOf(MiniMiserDAOFactory.class).
+            getSQLAccess().getSimpleJdbcTemplate();
+    
         final SampleObject firstSampleObject = findSampleObject(simpleJdbcTemplate, "First");
         Assert.assertNotNull(firstSampleObject);
         Assert.assertEquals("First", firstSampleObject.getName());
@@ -151,14 +161,12 @@ public final class PersistenceMigratorHelper {
      * @param openDatabase the open database
      */
     public void checkForNoUpgradedData(final InstanceSet<DAOFactory> openDatabase) {
-        final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
-        final SQLAccess sqlAccess = miniMiserDaoFactory.getSQLAccess();
-        final SimpleJdbcTemplate simpleJdbcTemplate = sqlAccess.getSimpleJdbcTemplate();
+        final SimpleJdbcTemplate simpleJdbcTemplate = openDatabase.
+            getInstanceOf(MiniMiserDAOFactory.class).
+            getSQLAccess().getSimpleJdbcTemplate();
         
-        final SampleObject firstSampleObject = findSampleObject(simpleJdbcTemplate, "First");
-        Assert.assertNull(firstSampleObject);
+        Assert.assertFalse(sampleObjectExists(simpleJdbcTemplate, "First"));
 
-        final SampleObject secondSampleObject = findSampleObject(simpleJdbcTemplate, "Second");
-        Assert.assertNull(secondSampleObject);
+        Assert.assertFalse(sampleObjectExists(simpleJdbcTemplate, "Second"));
     }
 }

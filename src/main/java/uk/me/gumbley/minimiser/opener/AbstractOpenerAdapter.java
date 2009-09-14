@@ -89,6 +89,32 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
     /**
      * {@inheritDoc}
      */
+    public final void migrationNotPossible() {
+        LOGGER.warn("Could not migrate database '" + dbName + "'");
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                JOptionPane.showMessageDialog(parentFrame,
+                    "Could not open database '" + dbName + "'.\n"
+                    + "It was created by a more recent version of\n"
+                    + "the software. You must upgrade your software\n"
+                    + "in order to open this database.", 
+                    "Could not open database '" + dbName + "'",
+                    JOptionPane.OK_OPTION);
+            }
+        });
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public final void migrationFailed(final DataAccessException exception) {
+        LOGGER.warn("Migration failed with data access exception: " + exception.getMessage(), exception);
+        ProblemDialogHelper.reportProblem("trying to upgrade database '" + dbName + "'.", exception);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public final void startOpening() {
         cursorManager.hourglassViaEventThread(this.getClass().getSimpleName());
     }

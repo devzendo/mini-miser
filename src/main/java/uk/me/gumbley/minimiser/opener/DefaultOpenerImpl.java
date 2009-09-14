@@ -3,6 +3,9 @@ package uk.me.gumbley.minimiser.opener;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
@@ -82,10 +85,7 @@ public final class DefaultOpenerImpl implements Opener {
                 if (!processMigrationOk(dbName, openerAdapter, daoFactories)) {
                     openerAdapter.stopOpening();
                     LOGGER.warn("Migration rejection or failure terminated open");
-//                    final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
-
                     closeAfterMigrationTermination(miniMiserDAOFactory);
-
                     return null;
                 }
                 
@@ -147,17 +147,30 @@ public final class DefaultOpenerImpl implements Opener {
                 final boolean migrationAccepted = openerAdapter.requestMigration();
                 LOGGER.info("Request for migration was " + (migrationAccepted ? "accepted" : "denied"));
                 if (migrationAccepted) {
+                    final TransactionTemplate transaction =
+                        daoFactories.getInstanceOf(MiniMiserDAOFactory.class).
+                        getSQLAccess().createTransactionTemplate();
                     try {
-                        // TODO: start transaction
-                        openerAdapter.reportProgress(ProgressStage.MIGRATING, "Updating database");
-                        mMigrator.migrate(daoFactories);
-                        openerAdapter.reportProgress(ProgressStage.MIGRATED, "Database updated");
-                        // TODO: commit transaction
+                        transaction.execute(new TransactionCallback() {
+                            public Object doInTransaction(final TransactionStatus ts) {
+                                try {
+                                    openerAdapter.reportProgress(ProgressStage.MIGRATING, "Updating database");
+                                    mMigrator.migrate(daoFactories);
+                                    openerAdapter.reportProgress(ProgressStage.MIGRATED, "Database updated");
+                                    // Template now commits transaction
+                                    return null;
+                                } catch (final DataAccessException dae) {
+                                    LOGGER.warn("Migration failed: " + dae.getMessage(), dae);
+                                    openerAdapter.reportProgress(ProgressStage.MIGRATION_FAILED, "Update failed");
+                                    openerAdapter.migrationFailed(dae);
+                                    throw dae;
+                                    // Template now rolls back transaction
+                                }
+                            }
+                        });
                         return true;
                     } catch (final DataAccessException dae) {
-                        LOGGER.warn("Migration failed: " + dae.getMessage(), dae);
-                        // TODO roll back transaction
-                        openerAdapter.reportProgress(ProgressStage.MIGRATION_FAILED, "Update failed");
+                        // The exception has already been logged.
                         return false;
                     }
                 } else {
@@ -170,6 +183,7 @@ public final class DefaultOpenerImpl implements Opener {
             case FUTURE:
                 LOGGER.warn("Migration is not possible since this database is newer than the plugins");
                 openerAdapter.reportProgress(ProgressStage.MIGRATION_NOT_POSSIBLE, "This database was created by more recent software");
+                openerAdapter.migrationNotPossible();
                 return false;
             default:
                 throw new IllegalStateException("Migrator returned unknown MigrationVersion: " + migrationVersion);

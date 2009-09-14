@@ -75,6 +75,10 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
             throw new IllegalStateException("Wasn't expecting to have a password requested");
         }
 
+        public void migrationFailed(final DataAccessException exception) {
+            throw new IllegalStateException("Wasn't expecting a migration failure: " + exception.getMessage());
+        }
+
         public void seriousProblemOccurred(final DataAccessException exception) {
             throw new IllegalStateException("Wasn't expecting a problem: " + exception.getMessage());
         }
@@ -87,6 +91,9 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
 
         public boolean requestMigration() {
             throw new IllegalStateException("Wasn't expecting to have migration requested");
+        }
+
+        public void migrationNotPossible() {
         }
     }
     

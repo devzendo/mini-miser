@@ -137,11 +137,18 @@ public interface OpenerAdapter {
         public static final ProgressStage MIGRATION_REJECTED = new ProgressStage(6, "MIGRATION_REJECTED");
         /**
          * The migration cannot be done as this database is at a
-         * more recent version than the plugins support.
+         * more recent version than the plugins support. After
+         * receiving this ProgressStage, you will recieve a
+         * migrationNotPossible() call.
          */
         public static final ProgressStage MIGRATION_NOT_POSSIBLE = new ProgressStage(6, "MIGRATION_NOT_POSSIBLE");
         /**
-         * The migration failed and its effects have been rolled back 
+         * The migration failed and its effects have been rolled
+         * back (as far is as practical, given H2's auto-commit
+         * of DML when DDL is executed - ignoring the context
+         * of any outstanding transaction. After receiving this
+         * ProgressStage, you will receive a migrationFailed()
+         * call.
          */
         public static final ProgressStage MIGRATION_FAILED = new ProgressStage(6, "MIGRATION_FAILED");
         /**
@@ -182,6 +189,24 @@ public interface OpenerAdapter {
      * reject.
      */
     boolean requestMigration();
+
+    /**
+     * Report to the user the migration cannot be done as this
+     * database is at a more recent version than the plugins
+     * support.
+     * TODO possibly add the versions of the plugins that are
+     * present in the database?
+     */
+    void migrationNotPossible();
+
+    /**
+     * The migration failed and its effects have been rolled
+     * back (as far is as practical, given H2's auto-commit
+     * of DML when DDL is executed - ignoring the context
+     * of any outstanding transaction. 
+     * @param exception the data access exception that has occurred.
+     */
+    void migrationFailed(DataAccessException exception);
 
     /**
      * Report to the user that the database could not be found.

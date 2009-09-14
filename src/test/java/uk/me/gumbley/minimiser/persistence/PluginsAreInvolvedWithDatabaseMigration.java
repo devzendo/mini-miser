@@ -8,9 +8,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.dao.DataAccessException;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.migrator.DatabaseMigrationNewAppPlugin;
+import uk.me.gumbley.minimiser.migrator.DatabaseMigrationNewFailMigrationAppPlugin;
 import uk.me.gumbley.minimiser.migrator.PersistenceMigratorHelper;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
@@ -171,6 +173,7 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_NOT_POSSIBLE), EasyMock.isA(String.class));
+        openerAdapter.migrationNotPossible();
         openerAdapter.stopOpening();
         EasyMock.replay(openerAdapter);
     
@@ -214,6 +217,7 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
         EasyMock.expectLastCall().andReturn(true);
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATING), EasyMock.isA(String.class));
         openerAdapter.reportProgress(EasyMock.eq(ProgressStage.MIGRATION_FAILED), EasyMock.isA(String.class));
+        openerAdapter.migrationFailed(EasyMock.isA(DataAccessException.class));
         openerAdapter.stopOpening();
         EasyMock.replay(openerAdapter);
 
@@ -222,7 +226,12 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
         final InstanceSet<DAOFactory> openDatabase = mPersistencePluginOpenerHelper.openDatabase(dbName, openerAdapter);
         Assert.assertNull(openDatabase);
 
-        // now re-open without the opener... to test.
+        // Now re-open without the opener so we can test that the
+        // upgrade has been rolled back. We have to re-open since
+        // the database would have been closed as part of the
+        // failed upgrade, and we don't have openDatabase above.
+        // We open without the opener, as we don't want to trigger
+        // a migration again.
         final InstanceSet<DAOFactory> reopenedDatabase = mPersistencePluginHelper.openDatabase(dbName, "");
         
         try {
@@ -231,7 +240,9 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
             mPersistenceMigratorHelper.checkForNoUpgradedVersions(reopenedDatabase);
             obs.assertDatabaseNotOpen();
             EasyMock.verify(openerAdapter);
-            final DatabaseMigrationNewAppPlugin appPlugin = (DatabaseMigrationNewAppPlugin) mPersistencePluginHelper.getApplicationPlugin();
+            final DatabaseMigrationNewFailMigrationAppPlugin appPlugin =
+                (DatabaseMigrationNewFailMigrationAppPlugin) mPersistencePluginHelper.
+                getApplicationPlugin();
             Assert.assertTrue(appPlugin.allMigrationMethodsCalled());
             Assert.assertEquals("1.0", appPlugin.getPreMigrationSchemaVersion());
         } finally {

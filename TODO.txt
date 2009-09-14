@@ -23,6 +23,7 @@ BUGS:
   The database is not opened, but you don't see the intro page. 
 
 CURRENT TASKS:
+* Update H2 documentation that's checked in to 1.1.118
 * New database - wizards/schema-work from plugins.
   * need to define a DAOFactory marker interface
   * MiniMiserDatabase should implement DAOFactory
