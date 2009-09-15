@@ -15,6 +15,7 @@ import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.Beautifier;
 import uk.me.gumbley.minimiser.gui.MainFrame;
+import uk.me.gumbley.minimiser.gui.SqlConsoleFrame;
 import uk.me.gumbley.minimiser.pluginmanager.AppDetailsPropertiesLoader;
 import uk.me.gumbley.minimiser.prefs.PrefsFactory;
 import uk.me.gumbley.minimiser.prefs.PrefsLocation;
@@ -75,6 +76,21 @@ public final class MiniMiser {
     }
 
     /**
+     * The main class can either display...
+     *
+     */
+    enum Operation {
+        /**
+         * The main application window
+         */
+        MainWindow,
+        /**
+         * The standalone SQL diagnostic console
+         */
+        SqlConsole
+    };
+    
+    /**
      * @param args the command line args
      */
     public static void main(final String[] args) {
@@ -113,11 +129,20 @@ public final class MiniMiser {
                     Beautifier.makeBeautiful();
 
                     // Process command line
+                    Operation op = Operation.MainWindow;
                     for (int i = 0; i < finalArgList.size(); i++) {
-                        LOGGER.debug("arg " + i + " = '" + finalArgList.get(i) + "'");
+                        final String arg = finalArgList.get(i);
+                        LOGGER.debug("arg " + i + " = '" + arg + "'");
+                        if (arg.equals("-sqlconsole")) {
+                            op = Operation.SqlConsole;
+                        }
                     }
 
-                    new MainFrame(springLoader, finalArgList);
+                    if (op == Operation.MainWindow) {
+                        new MainFrame(springLoader, finalArgList);
+                    } else if (op == Operation.SqlConsole) {
+                        new SqlConsoleFrame(springLoader, finalArgList);
+                    }
                 } catch (final AppException e) {
                     LOGGER.fatal(e.getMessage());
                     System.exit(1);
