@@ -107,6 +107,9 @@ public final class TestTransactionHandling extends LoggingTestCase {
     /**
      * Unfortunately, H2 does not deal nicely DDL inside a
      * transaction - it'll not allow it to be rolled back.
+     * <p>
+     * This will change though:
+     * http://markmail.org/message/3yd3jxfgia7lzpq5?q=h2+transaction+ddl+list:com%2Egooglegroups%2Eh2-database+from:%22Thomas+Mueller%22
      */
     @Test
     public void ddlInATransactionCausesCommit() {
