@@ -109,9 +109,12 @@ public final class DefaultChangeLogTransformer implements ChangeLogTransformer {
      * @return a HTML representation of it.
      */
     private String transformedInformationText(final String informationText) {
+        return transformInformationTextLines(informationText.split("[\\r\\n]+"));
+    }
+
+    private String transformInformationTextLines(final String[] informationLines) {
         final StringBuilder sb = new StringBuilder();
         boolean inList = false;
-        final String[] informationLines = informationText.split("[\\r\\n]+");
         for (int i = 0; i < informationLines.length; i++) {
             String line = informationLines[i];
             LOGGER.debug("Input line '" + line + "'");
