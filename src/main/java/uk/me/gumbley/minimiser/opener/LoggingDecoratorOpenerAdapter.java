@@ -61,6 +61,9 @@ public final class LoggingDecoratorOpenerAdapter implements OpenerAdapter {
         mOpenerAdapter.migrationNotPossible();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void migrationFailed(final DataAccessException exception) {
         LOGGER.warn("Migration failure: " + exception.getMessage());
         mOpenerAdapter.migrationFailed(exception);
