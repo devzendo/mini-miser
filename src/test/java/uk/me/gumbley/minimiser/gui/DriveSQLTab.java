@@ -14,14 +14,15 @@ import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.commoncode.logging.Logging;
 import uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTab;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
+import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
 import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
+import uk.me.gumbley.minimiser.util.InstancePair;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
 /**
@@ -60,9 +61,14 @@ public final class DriveSQLTab {
                 final PluginManager dummyPluginManager = new DummyAppPluginManager();
                 final AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl(dummyPluginManager);
                 final String dbPath = "/home/matt/Desktop/crap/clear-test-1/clear-test-1";
-                final MiniMiserDAOFactory miniMiserDatabase = accessFactory.openDatabase(dbPath, "").getInstanceOf(MiniMiserDAOFactory.class);
+                final InstanceSet<DAOFactory> daoFactories = accessFactory.openDatabase(dbPath, "");
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("clear-test-1", dbPath);
-                databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDatabase);
+                // Add the MiniMiserDAOFactory and other plugins'
+                // DAOFactories to the DatabaseDescriptor
+                for (InstancePair<DAOFactory> daoFactoryPair : daoFactories.asList()) {
+                    databaseDescriptor.setDAOFactory(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
+                }
+                
                 LOGGER.info("Database open");
                 
                 final PluginRegistry pluginRegistry = new DummyAppPluginRegistry();

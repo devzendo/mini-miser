@@ -46,7 +46,7 @@ public final class MinimiserPlugin extends AbstractPlugin implements Plugin {
      * {@inheritDoc}
      */
     public String getSchemaVersion() {
-        return CurrentSchemaVersion.CURRENT_SCHEMA_VERSION;
+        return CurrentSchemaVersion.getCurrentSchemaVersion();
     }
 
     /**

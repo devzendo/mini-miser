@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.console.output.OutputConsole;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.sql.BadSQLException;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
@@ -43,7 +42,7 @@ final class SQLCommandHandler implements CommandHandler {
         this.outputConsole = console;
         this.tableDisplays = displays;
         this.databaseDescriptor = database;
-        final MiniMiserDAOFactory miniMiserDatabase = (MiniMiserDAOFactory) databaseDescriptor.getAttribute(AttributeIdentifier.Database);
+        final MiniMiserDAOFactory miniMiserDatabase = databaseDescriptor.getDAOFactory(MiniMiserDAOFactory.class);
         try {
             sqlAccess = miniMiserDatabase.getSQLAccess();
         } catch (final SQLAccessException sqle) {

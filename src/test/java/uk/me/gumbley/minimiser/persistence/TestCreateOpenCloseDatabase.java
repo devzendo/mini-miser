@@ -12,7 +12,6 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.closer.Closer;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
@@ -398,7 +397,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
                     openDatabase(dbDirPlusDbName, dbPassword).
                     getInstanceOf(MiniMiserDAOFactory.class);
                 final DatabaseDescriptor dd = new DatabaseDescriptor(dbName, dbDirPlusDbName);
-                dd.setAttribute(AttributeIdentifier.Database, openedDatabase);
+                dd.setDAOFactory(MiniMiserDAOFactory.class, openedDatabase);
 
                 Closer.close(dd);
                 Assert.assertTrue(openedDatabase.isClosed());

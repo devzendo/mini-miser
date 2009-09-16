@@ -8,7 +8,6 @@ import org.junit.Test;
 import uk.me.gumbley.minimiser.lifecycle.LifecycleManager;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
@@ -73,8 +72,8 @@ public final class TestDatabaseCloser extends DummyAppPluginManagerPersistenceUn
     
                         final DatabaseDescriptor miniMiserDatabaseDescriptor =
                             new DatabaseDescriptor(detail.getName(), dbDirPlusDbName);
-                        miniMiserDatabaseDescriptor.setAttribute(AttributeIdentifier.Database, openDatabases[i]);
-
+                        miniMiserDatabaseDescriptor.setDAOFactory(MiniMiserDAOFactory.class, openDatabases[i]);
+                        
                         Assert.assertFalse(openDatabases[i].isClosed());
                         
                         openDatabaseList.addOpenedDatabase(miniMiserDatabaseDescriptor);

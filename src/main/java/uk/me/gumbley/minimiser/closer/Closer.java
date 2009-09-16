@@ -5,7 +5,6 @@ import org.springframework.dao.DataAccessException;
 
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemDialogHelper;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 
 /**
@@ -31,9 +30,9 @@ public final class Closer {
         final String databaseName = descriptor.getDatabaseName();
         LOGGER.info("Closing database '" + databaseName + "'");
         try {
-            final MiniMiserDAOFactory database = (MiniMiserDAOFactory) descriptor.getAttribute(AttributeIdentifier.Database);
+            final MiniMiserDAOFactory database = descriptor.getDAOFactory(MiniMiserDAOFactory.class);
             if (database == null) {
-                LOGGER.warn("No database stored in database descriptor for database name '" + databaseName + "'");
+                LOGGER.warn("No DAO Factory stored in database descriptor for database name '" + databaseName + "'");
                 return false;
             }
             database.close();

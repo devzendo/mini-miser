@@ -59,7 +59,7 @@ public final class TestPluginManagerAndInternalPlugin extends SpringLoaderUnitte
                 Assert.assertFalse(StringUtils.isBlank(pluginDescriptor.getName()));
                 Assert.assertFalse(StringUtils.isBlank(pluginDescriptor.getVersion()));
                 
-                Assert.assertEquals(CurrentSchemaVersion.CURRENT_SCHEMA_VERSION, pluginDescriptor.getSchemaVersion());
+                Assert.assertEquals(CurrentSchemaVersion.getCurrentSchemaVersion(), pluginDescriptor.getSchemaVersion());
             }
         }
         Assert.assertTrue(foundInternalPlugin);

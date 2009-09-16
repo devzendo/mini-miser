@@ -13,7 +13,6 @@ import uk.me.gumbley.minimiser.migrator.Migrator;
 import uk.me.gumbley.minimiser.migrator.Migrator.MigrationVersion;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
@@ -93,8 +92,6 @@ public final class DefaultOpenerImpl implements Opener {
                 openerAdapter.stopOpening();
                 
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, pathToDatabase);
-                // TODO: remove this legacy approach to getting the MiniMiserDAOFactory
-                databaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDAOFactory);
 
                 // Add the MiniMiserDAOFactory and other plugins'
                 // DAOFactories to the DatabaseDescriptor

@@ -41,7 +41,7 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     @Test
     public void attributesAreNullInitially() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        Assert.assertNull(dd.getAttribute(AttributeIdentifier.Database));
+        Assert.assertNull(dd.getAttribute(AttributeIdentifier.TabbedPane));
     }
     
     /**
@@ -70,9 +70,9 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     @Test
     public void attributesCanBeCleared() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        dd.setAttribute(AttributeIdentifier.Database, "foo");
-        dd.clearAttribute(AttributeIdentifier.Database);
-        Assert.assertNull(dd.getAttribute(AttributeIdentifier.Database));
+        dd.setAttribute(AttributeIdentifier.TabbedPane, "foo");
+        dd.clearAttribute(AttributeIdentifier.TabbedPane);
+        Assert.assertNull(dd.getAttribute(AttributeIdentifier.TabbedPane));
     }
     
     /**

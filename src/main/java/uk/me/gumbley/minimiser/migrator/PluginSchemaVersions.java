@@ -99,7 +99,7 @@ public final class PluginSchemaVersions implements Comparable<PluginSchemaVersio
      */
     @Override
     public int hashCode() {
-        // TODO: check this - not sure
+        // TODO: check this - not sure about hashCodes for collections
         // pick 2 hard-coded, odd, >0 ints as args
         final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(1, 31);
         final Set<Entry<String, ComparableVersion>> entrySet = mPluginNameToSchemaVersion.entrySet();

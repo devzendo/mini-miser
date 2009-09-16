@@ -10,9 +10,16 @@ package uk.me.gumbley.minimiser.persistence.domain;
  * @author matt
  *
  */
-public interface CurrentSchemaVersion {
+public abstract class CurrentSchemaVersion {
+    private static String gCurrentSchemaVersion = "1";
+    private CurrentSchemaVersion() {
+        // no instances
+    }
+    
     /**
-     * The current schema version.
+     * @return The current schema version.
      */
-    String CURRENT_SCHEMA_VERSION = "1";
+    public static String getCurrentSchemaVersion() {
+        return gCurrentSchemaVersion;
+    }
 }

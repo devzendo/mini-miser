@@ -14,11 +14,10 @@ import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.gui.CursorManager;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
-import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
+import uk.me.gumbley.minimiser.util.InstancePair;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -91,12 +90,16 @@ public final class FileNewResult extends DeferredWizardResult {
             };
             try {
                 final InstanceSet<DAOFactory> daoFactories = access.createDatabase(dbFullPath, dbPassword, observer, pluginProperties);
-                final MiniMiserDAOFactory database = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
                 progress.setProgress("Updating GUI", stepNo.incrementAndGet(), maxSteps);
         
                 LOGGER.info("Database created; adding to open database list");
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, dbFullPath);
-                databaseDescriptor.setAttribute(AttributeIdentifier.Database, database);
+
+                // Add the MiniMiserDAOFactory and other plugins'
+                // DAOFactories to the DatabaseDescriptor
+                for (InstancePair<DAOFactory> daoFactoryPair : daoFactories.asList()) {
+                    databaseDescriptor.setDAOFactory(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
+                }
                 databaseList.addOpenedDatabase(databaseDescriptor);
     
                 cursorMan.normalViaEventThread(this.getClass().getSimpleName());

@@ -37,7 +37,7 @@ public final class DatabaseDescriptor {
         /**
          * The database facade
          */
-        Database,
+        //Database,
         
         /**
          * The tabbed pane of views

@@ -23,7 +23,6 @@ import uk.me.gumbley.commoncode.gui.SwingWorker;
 import uk.me.gumbley.commoncode.resource.ResourceLoader;
 import uk.me.gumbley.minimiser.gui.tab.impl.sql.SQLTabPanel;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
-import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
@@ -189,7 +188,6 @@ public final class SqlConsoleFrame {
             final MiniMiserDAOFactory miniMiserDaoFactory = 
                 mOpenDatabase.getInstanceOf(MiniMiserDAOFactory.class);
             mDatabaseDescriptor.setDAOFactory(MiniMiserDAOFactory.class, miniMiserDaoFactory);
-            mDatabaseDescriptor.setAttribute(AttributeIdentifier.Database, miniMiserDaoFactory);
         } catch (final RuntimeException dae) {
             throw new AppException("Could not open database at '" + dbPath + "': " + dae.getMessage(), dae);
         }
