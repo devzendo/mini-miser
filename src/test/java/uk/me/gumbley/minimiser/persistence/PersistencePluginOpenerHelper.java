@@ -26,11 +26,23 @@ public final class PersistencePluginOpenerHelper {
     private final Opener mOpener;
 
     /**
+     * Create the opener helper with the standard migrator
      * @param helper the main persistence plugin helper
      */
     public PersistencePluginOpenerHelper(final PersistencePluginHelper helper) {
         mPersistencePluginHelper = helper;
         mMigrator = new DefaultMigrator(helper.getPluginManager());
+        mOpener = new DefaultOpenerImpl(helper.getAccessFactory(), mMigrator);
+    }
+
+    /**
+     * Create the opener helper with a custom migrator
+     * @param helper the main persistence plugin helper
+     * @param migrator a custom migrator
+     */
+    public PersistencePluginOpenerHelper(final PersistencePluginHelper helper, final Migrator migrator) {
+        mPersistencePluginHelper = helper;
+        mMigrator = migrator;
         mOpener = new DefaultOpenerImpl(helper.getAccessFactory(), mMigrator);
     }
 
