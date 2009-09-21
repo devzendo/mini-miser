@@ -1,11 +1,14 @@
 package uk.me.gumbley.minimiser.opener;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.dao.DataAccessException;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
@@ -13,6 +16,7 @@ import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginOpenerHelper;
+import uk.me.gumbley.minimiser.util.FileUnittestHelper;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -175,57 +179,128 @@ public final class TestOpenerWorkflow extends LoggingTestCase {
         EasyMock.verify(openerAdapter);
     }
 
-    /* replace this...
-@Test(timeout = 8000)
-    public void progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen() {
-        LOGGER.info(">>> progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen");
+    /**
+     * 
+     */
+    @Test(timeout = 8000)
+    public void progressNotificationsAndCorrectPasswordEnteredSecondTimeOnEncryptedOpen() {
+        // setup
         final String dbName = "progressencabandon";
-        final String dbPassword = "Squeamish Ossifrage";
-        doCreateDatabaseBoilerplate(accessFactory, dbName, dbPassword, new RunOnCreatedDb() {
-            public void runOnCreatedDb(final String dbName, final String dbPassword, final String dbDirPlusDbName) {
-                
-                final OpenerAdapter openerAdapter = new AbstractTestOpenerAdapter(progressRecorder) {
-                    public String requestPassword() {
-                        return "";
-                    }
-                };
+        final String[] dbPasswordAttempts = new String[] {"Squeamish Ossifrage", "Tantric Obstacles"};
+        mPersistencePluginHelper.createDatabase(dbName, dbPasswordAttempts[0]).getInstanceOf(MiniMiserDAOFactory.class).close();
+        
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
 
-                final DatabaseOpenObserver obs = new DatabaseOpenObserver();
-                opener.addDatabaseOpenObserver(obs);
-                                
-                // Note that the password isn't passed into the opener, since
-                // it's prompted for (and provided by the OpenerAdapter). It's
-                // used by createDatabaseWithPluggableBehaviourBeforeDeletion
-                // since we may be creating an encrypted database for tests.
-                final InstanceSet<DAOFactory> database = opener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
-                try {
-                    progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.STARTING);
-                    
-                    progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.OPENING);
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.eq("Opening database '" + dbName + "'"));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.PASSWORD_REQUIRED), EasyMock.eq("Password required for '" + dbName + "'"));
+        openerAdapter.requestPassword();
+        EasyMock.expectLastCall().andReturn(dbPasswordAttempts[1]);
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.eq("Trying to open database '" + dbName + "'"));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.PASSWORD_REQUIRED), EasyMock.eq("Password required for '" + dbName + "'"));
+        openerAdapter.requestPassword();
+        EasyMock.expectLastCall().andReturn(dbPasswordAttempts[0]);
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.eq("Trying to open database '" + dbName + "'"));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENED), EasyMock.isA(String.class));
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
 
-                    Assert.assertEquals(1, progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).size());
-                    // First time round, expect this.
-                    Assert.assertEquals("Opening database 'progressencabandon'",
-                        progressRecorder.getDescriptions(OpenerAdapter.ProgressStage.OPENING).get(0));
-                    // We shouldn't get a "Trying to open database"
-                    
-                    progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.PASSWORD_REQUIRED);
-
-                    progressRecorder.assertProgressWasReceived(OpenerAdapter.ProgressStage.PASSWORD_CANCELLED);
-
-                    Assert.assertNull(database);
-                    
-                    progressRecorder.assertNotFoundNotReceived();
-                    progressRecorder.assertSeriousProblemNotReceived();
-
-                    obs.assertDatabaseNotOpen();
-                } finally {
-                    if (database != null) {
-                        database.getInstanceOf(MiniMiserDAOFactory.class).close();
-                    }
-                }
+        // run
+        // Note that the password isn't passed into the opener, since
+        // it's prompted for (and provided by the OpenerAdapter). It's
+        // used by createDatabaseWithPluggableBehaviourBeforeDeletion
+        // since we may be creating an encrypted database for tests.
+        LOGGER.info("test is opening " + dbName);
+        final InstanceSet<DAOFactory> database = mPersistencePluginOpenerHelper.openDatabase(dbName, openerAdapter);
+        LOGGER.info("db open");
+        try { 
+            // test
+            Assert.assertNotNull(database);
+            obs.assertDatabaseOpen();
+            EasyMock.verify(openerAdapter);
+        } finally {
+            if (database != null) {
+                database.getInstanceOf(MiniMiserDAOFactory.class).close();
             }
-        });
-        LOGGER.info("<<< progressNotificationsAndPasswordEntryAbandonedOnEncryptedOpen");
-    } */
+        }
+    }
+
+    /**
+     * 
+     */
+    @Test(timeout = 8000)
+    public void progressNotificationsExceptionOnOpenOfNonExistant() {
+        // setup
+        final String dbName = "wah";
+        
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
+
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.eq("Opening database '" + dbName + "'"));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.NOT_PRESENT), EasyMock.isA(String.class));
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
+
+        // run
+        // Note that the password isn't passed into the opener, since
+        // it's prompted for (and provided by the OpenerAdapter). It's
+        // used by createDatabaseWithPluggableBehaviourBeforeDeletion
+        // since we may be creating an encrypted database for tests.
+        LOGGER.info("test is opening " + dbName);
+        final InstanceSet<DAOFactory> database = mPersistencePluginOpenerHelper.openNonExistantDatabase(dbName, openerAdapter);
+        LOGGER.info("db open");
+        // test
+        Assert.assertNull(database);
+        obs.assertDatabaseNotOpen();
+        EasyMock.verify(openerAdapter);
+    }
+    
+    /**
+     * 
+     */
+    @Test(timeout = 8000)
+    public void progressNotificationsExceptionOnOpenOfCorrupt() {
+        // setup
+        final String dbName = "corrupt";
+        mPersistencePluginHelper.createDatabase(dbName, "").getInstanceOf(MiniMiserDAOFactory.class).close();
+        // Corrupt the database
+        final File dbFile = new File(mPersistencePluginHelper.getAbsoluteDatabaseDirectory(dbName) + ".data.db");
+        LOGGER.info("data file is " + dbFile.getAbsolutePath());
+        Assert.assertTrue(dbFile.exists());
+        FileUnittestHelper.corruptFile(dbFile);
+        
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
+
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.eq("Opening database '" + dbName + "'"));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPEN_FAILED), EasyMock.isA(String.class));
+        openerAdapter.seriousProblemOccurred(EasyMock.isA(DataAccessException.class));
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
+
+        // run
+        // Note that the password isn't passed into the opener, since
+        // it's prompted for (and provided by the OpenerAdapter). It's
+        // used by createDatabaseWithPluggableBehaviourBeforeDeletion
+        // since we may be creating an encrypted database for tests.
+        LOGGER.info("test is opening " + dbName);
+        final InstanceSet<DAOFactory> database = mPersistencePluginOpenerHelper.openNonExistantDatabase(dbName, openerAdapter);
+        LOGGER.info("db open");
+        // test
+        Assert.assertNull(database);
+        obs.assertDatabaseNotOpen();
+        EasyMock.verify(openerAdapter);
+    }
 }

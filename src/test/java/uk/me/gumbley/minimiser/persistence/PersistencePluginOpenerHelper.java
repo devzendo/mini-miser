@@ -52,7 +52,7 @@ public final class PersistencePluginOpenerHelper {
      * Typically called from a @Before method.
      * @param dbName the name of the database
      * @param openerAdapter the OpenerAdapter.
-     * @return an InstabceSet<DAOFactory> via which data access
+     * @return an InstanceSet<DAOFactory> via which data access
      * objects can be obtained.
      */
     public InstanceSet<DAOFactory> openDatabase(final String dbName, final OpenerAdapter openerAdapter) {
@@ -67,7 +67,23 @@ public final class PersistencePluginOpenerHelper {
         }
         return daoFactorySet;
     }
-    
+
+    /**
+     * Attempt to open a database that does not exist, and so
+     * does not need to be tidied up, given its name, with
+     * an OpenerAdapter to handle the opening workflow.
+     * Typically called from a @Before method.
+     * @param dbName the name of the database
+     * @param openerAdapter the OpenerAdapter.
+     * @return an InstanceSet<DAOFactory> via which data access
+     * objects can be obtained.
+     */
+    public InstanceSet<DAOFactory> openNonExistantDatabase(final String dbName, final OpenerAdapter openerAdapter) {
+        final String dbDirPlusDbName = mPersistencePluginHelper.getAbsoluteDatabaseDirectory(dbName);
+        LOGGER.info(String.format("Opening nonexistant database dbName = %s, dbDirPlusDbName = %s", dbName, dbDirPlusDbName));
+        return mOpener.openDatabase(dbName, dbDirPlusDbName, openerAdapter);
+    }
+
     /**
      * For opening databases using the opener, a DatabaseOpenObserver
      * can be attached. 
