@@ -21,6 +21,7 @@ import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreation;
@@ -45,6 +46,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         "CREATE TABLE Versions("
                 + "plugin VARCHAR(40),"
                 + "entity VARCHAR(40),"
+                + "isapplication BOOLEAN,"
                 + "version VARCHAR(40)"
                 + ")",
         "CREATE SEQUENCE Sequence START WITH 1 INCREMENT BY 1",
@@ -276,12 +278,21 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         // create a JdbcTemplate from a programatically created
         // DataSource.
         final VersionDao versionDao = new JdbcTemplateVersionDao(dbDetails.getJdbcTemplate());
+        final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
             observer.eventOccurred(new PersistenceObservableEvent("Populating table 1 of 1 for " + plugin.getName() + " plugin"));
             final String pluginName = plugin.getName();
-            final Version schemaVersion = new Version(pluginName, VersionableEntity.SCHEMA_VERSION, plugin.getSchemaVersion());
+            final Version schemaVersion = new Version(
+                pluginName,
+                VersionableEntity.SCHEMA_VERSION,
+                plugin == appPlugin,
+                plugin.getSchemaVersion());
             versionDao.persistVersion(schemaVersion);
-            final Version appVersion = new Version(pluginName, VersionableEntity.APPLICATION_VERSION, plugin.getVersion());
+            final Version appVersion = new Version(
+                pluginName,
+                VersionableEntity.APPLICATION_VERSION,
+                plugin == appPlugin,
+                plugin.getVersion());
             versionDao.persistVersion(appVersion);
         }
         // Now let the plugins loose

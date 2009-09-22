@@ -14,6 +14,7 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigration;
@@ -156,24 +157,35 @@ public final class DefaultMigrator implements Migrator {
     }
 
     private void updateCurrentSchemaVersions(final VersionDao versionDao) {
+        final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
             final String pluginName = plugin.getName();
             final String pluginSchemaVersion = plugin.getSchemaVersion();
             LOGGER.info("Plugin " + plugin.getClass().getName() + " '"
                 + pluginName + "' schema version is now "
                 + pluginSchemaVersion);
-            versionDao.persistVersion(new Version(pluginName, VersionableEntity.SCHEMA_VERSION, pluginSchemaVersion));
+            versionDao.persistVersion(
+                new Version(
+                    pluginName,
+                    VersionableEntity.SCHEMA_VERSION,
+                    plugin == appPlugin,
+                    pluginSchemaVersion));
         }
     }
 
     private void updateCurrentVersions(final VersionDao versionDao) {
+        final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
             final String pluginName = plugin.getName();
             final String pluginVersion = plugin.getVersion();
             LOGGER.info("Plugin " + plugin.getClass().getName() + " '"
                 + pluginName + "' plugin version is now "
                 + pluginVersion);
-            versionDao.persistVersion(new Version(pluginName, VersionableEntity.APPLICATION_VERSION, pluginVersion));
+            versionDao.persistVersion(
+                new Version(pluginName,
+                    VersionableEntity.APPLICATION_VERSION,
+                    plugin == appPlugin,
+                    pluginVersion));
         }
     }
 

@@ -63,7 +63,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         LOGGER.info("Starting transaction template");
         final Boolean existsInTransaction = (Boolean) mTransactionTemplate.execute(new TransactionCallback() {
             public Boolean doInTransaction(final TransactionStatus ts) {
-                final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, "1.0");
+                final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
                 mVersionDao.persistVersion(version);
                 return mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
             }
@@ -87,7 +87,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         try {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
-                    final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, "1.0");
+                    final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
                     mVersionDao.persistVersion(version);
                     existsInTransaction[0] = mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
                     throw new DataIntegrityViolationException("A simulated access failure");
@@ -120,7 +120,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         try {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
-                    final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, "1.0");
+                    final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
                     mVersionDao.persistVersion(version);
                     existsInTransaction[0] = mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
                     // if I do some DDL then force a rollback, the above DML will commit

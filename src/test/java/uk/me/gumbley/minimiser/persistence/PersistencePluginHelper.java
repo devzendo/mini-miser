@@ -13,6 +13,7 @@ import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
 import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
@@ -38,23 +39,41 @@ public final class PersistencePluginHelper {
 
     /**
      * Create a helper that will check that the test database
-     * directory is empty.
+     * directory is empty, and use the real plugin manager.
      */
     public PersistencePluginHelper() {
-        this(false);
+        this(false, false);
     }
     
     /**
      * Create a helper that may or may not check that the test
-     * database directory is empty
+     * database directory is empty, but uses the real plugin
+     * manager.
      * @param suppressEmptinessCheck true to suppress the empty
      * check, false to check it
      */
     public PersistencePluginHelper(final boolean suppressEmptinessCheck) {
+        this(suppressEmptinessCheck, false);
+    }
+    
+    /**
+     * Create a helper that may or may not check that the test
+     * database directory is empty, and may use the real or dummy
+     * plugin manager
+     * @param suppressEmptinessCheck true to suppress the empty
+     * check, false to check it
+     * @param useDummyPluginManager true to use the dummy plugin
+     * manager, false to use the proper one, with the ability to
+     * load specific plugins
+     */
+    public PersistencePluginHelper(final boolean suppressEmptinessCheck,
+            final boolean useDummyPluginManager) {
         mSuppressEmptinessCheck = suppressEmptinessCheck;
         mTestDatabaseDirectory = new UnittestingConfig().getTestDatabaseDirectory();
         mPluginRegistry = new DefaultPluginRegistry();
-        mPluginManager = new DefaultPluginManager(mPluginRegistry);
+        mPluginManager = useDummyPluginManager ?
+                new DummyAppPluginManager() : 
+                new DefaultPluginManager(mPluginRegistry);
         mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginManager);
         mTidier = new PersistencePluginHelperTidier(mTestDatabaseDirectory);
     }

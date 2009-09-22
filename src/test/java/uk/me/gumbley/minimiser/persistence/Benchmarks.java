@@ -42,7 +42,7 @@ public final class Benchmarks extends DummyAppPluginManagerPersistenceUnittestCa
             final VersionDao versionDao = mmData.getVersionDao();
             // populate
             for (int i = 0; i < 1000; i++) {
-                final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), String.format("Version%d", i));
+                final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), false, String.format("Version%d", i));
                 versionDao.persistVersion(v);
             }
             // Reload using select by entity
@@ -112,7 +112,7 @@ public final class Benchmarks extends DummyAppPluginManagerPersistenceUnittestCa
                 final int rows = 100000;
                 // populate
                 for (int i = 0; i < rows; i++) {
-                    final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), String.format("Version%d", i));
+                    final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), false, String.format("Version%d", i));
                     versionDao.persistVersion(v);
                 }
                 // Reload using select by entity

@@ -30,7 +30,7 @@ public final class JdbcTemplateVersionDao implements VersionDao {
      * {@inheritDoc}
      */
     public Version findVersion(final String pluginName, final String entity) throws DataAccessException {
-        final String sql = "select plugin, entity, version from Versions where plugin = ? and entity = ?";
+        final String sql = "select plugin, entity, isapplication, version from Versions where plugin = ? and entity = ?";
         ParameterizedRowMapper<Version> mapper = new ParameterizedRowMapper<Version>() {
             
             // notice the return type with respect to Java 5 covariant return types
@@ -38,6 +38,7 @@ public final class JdbcTemplateVersionDao implements VersionDao {
                 final Version version = new Version();
                 version.setPluginName(rs.getString("plugin"));
                 version.setEntity(rs.getString("entity"));
+                version.setIsApplication(rs.getBoolean("isapplication"));
                 version.setVersion(rs.getString("version"));
                 return version;
             }
@@ -54,8 +55,8 @@ public final class JdbcTemplateVersionDao implements VersionDao {
             new Object[]{version.getPluginName(), version.getEntity()});
         if (count == 0) {
             jdbcTemplate.update(
-                "insert into Versions (plugin, entity, version) values (?, ?, ?)",
-                new Object[] {version.getPluginName(), version.getEntity(), version.getVersion()});
+                "insert into Versions (plugin, entity, isapplication, version) values (?, ?, ?, ?)",
+                new Object[] {version.getPluginName(), version.getEntity(), version.isApplication(), version.getVersion()});
         } else {
             jdbcTemplate.update(
                 "update Versions set version = ? where plugin = ? and entity = ?",
