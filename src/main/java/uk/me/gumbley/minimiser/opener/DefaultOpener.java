@@ -26,8 +26,8 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  * @author matt
  *
  */
-public final class DefaultOpenerImpl implements Opener {
-    private static final Logger LOGGER = Logger.getLogger(DefaultOpenerImpl.class);
+public final class DefaultOpener implements Opener {
+    private static final Logger LOGGER = Logger.getLogger(DefaultOpener.class);
     
     private final AccessFactory mAccess;
     private final Migrator mMigrator;
@@ -41,7 +41,7 @@ public final class DefaultOpenerImpl implements Opener {
      * upon open, if these are required
      * 
      */
-    public DefaultOpenerImpl(
+    public DefaultOpener(
             final AccessFactory accessFactory,
             final Migrator migrator) {
         this.mAccess = accessFactory;

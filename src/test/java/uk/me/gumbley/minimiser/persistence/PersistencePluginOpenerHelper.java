@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import uk.me.gumbley.minimiser.migrator.DefaultMigrator;
 import uk.me.gumbley.minimiser.migrator.Migrator;
 import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
-import uk.me.gumbley.minimiser.opener.DefaultOpenerImpl;
+import uk.me.gumbley.minimiser.opener.DefaultOpener;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.util.InstanceSet;
@@ -32,7 +32,7 @@ public final class PersistencePluginOpenerHelper {
     public PersistencePluginOpenerHelper(final PersistencePluginHelper helper) {
         mPersistencePluginHelper = helper;
         mMigrator = new DefaultMigrator(helper.getPluginManager());
-        mOpener = new DefaultOpenerImpl(helper.getAccessFactory(), mMigrator);
+        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator);
     }
 
     /**
@@ -43,7 +43,7 @@ public final class PersistencePluginOpenerHelper {
     public PersistencePluginOpenerHelper(final PersistencePluginHelper helper, final Migrator migrator) {
         mPersistencePluginHelper = helper;
         mMigrator = migrator;
-        mOpener = new DefaultOpenerImpl(helper.getAccessFactory(), mMigrator);
+        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator);
     }
 
     /**
