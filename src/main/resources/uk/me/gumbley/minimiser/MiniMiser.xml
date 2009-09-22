@@ -57,7 +57,7 @@
         <constructor-arg ref="delayedExecutor" />
     </bean>
 
-	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManagerImpl" >
+	<bean id="tabPaneManager" class="uk.me.gumbley.minimiser.gui.tabpanemanager.DefaultTabPaneManager" >
         <constructor-arg ref="springLoader" />
 	</bean>
 

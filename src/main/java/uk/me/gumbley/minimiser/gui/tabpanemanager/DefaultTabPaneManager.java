@@ -16,9 +16,9 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * @author matt
  *
  */
-public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
+public final class DefaultTabPaneManager extends AbstractTabPaneManager {
     private static final Logger LOGGER = Logger
-            .getLogger(DefaultTabPaneManagerImpl.class);
+            .getLogger(DefaultTabPaneManager.class);
     private static final String BLANK_PANEL_NAME = "*special*blank*panel*";
     private static final String INTRO_PANEL_NAME = "*special*intro*panel*";
     
@@ -40,7 +40,7 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
      * loaded, so the background graphic can be obtained.
      * 
      */
-    public DefaultTabPaneManagerImpl(final SpringLoader springLoader) {
+    public DefaultTabPaneManager(final SpringLoader springLoader) {
         super();
         mSpringLoader = springLoader;
         mIntroPanel = null;
@@ -107,7 +107,7 @@ public final class DefaultTabPaneManagerImpl extends AbstractTabPaneManager {
         
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
-                synchronized (DefaultTabPaneManagerImpl.this) {
+                synchronized (DefaultTabPaneManager.this) {
                     if (mIntroPanel == null) {
                         mIntroPanel = mSpringLoader.getBean("introPanel", IntroPanel.class);
                         mMainPanel.add(mIntroPanel, INTRO_PANEL_NAME);
