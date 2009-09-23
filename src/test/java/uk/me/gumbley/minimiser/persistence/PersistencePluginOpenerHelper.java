@@ -32,7 +32,7 @@ public final class PersistencePluginOpenerHelper {
     public PersistencePluginOpenerHelper(final PersistencePluginHelper helper) {
         mPersistencePluginHelper = helper;
         mMigrator = new DefaultMigrator(helper.getPluginManager());
-        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator);
+        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator, helper.getPluginManager());
     }
 
     /**
@@ -43,7 +43,7 @@ public final class PersistencePluginOpenerHelper {
     public PersistencePluginOpenerHelper(final PersistencePluginHelper helper, final Migrator migrator) {
         mPersistencePluginHelper = helper;
         mMigrator = migrator;
-        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator);
+        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator, helper.getPluginManager());
     }
 
     /**

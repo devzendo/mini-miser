@@ -64,6 +64,14 @@ public final class LoggingDecoratorOpenerAdapter implements OpenerAdapter {
     /**
      * {@inheritDoc}
      */
+    public void createdByOtherApplication() {
+        LOGGER.warn("Could not open database created by another application");
+        mOpenerAdapter.createdByOtherApplication();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void migrationFailed(final DataAccessException exception) {
         LOGGER.warn("Migration failure: " + exception.getMessage());
         mOpenerAdapter.migrationFailed(exception);

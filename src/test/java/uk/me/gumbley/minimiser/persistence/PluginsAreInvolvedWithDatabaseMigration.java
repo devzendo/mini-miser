@@ -190,9 +190,36 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
     /**
      * 
      */
+    /**
+     * @throws PluginException on error - never
+     */
     @Test
-    public void cannotOpenADatabaseCreatedBySomeOtherApplication() {
-        Assert.fail("cannot write this test until the application plugin is explicitly denoted in the versions table");        
+    public void cannotOpenADatabaseCreatedBySomeOtherApplication() throws PluginException {
+        // setup
+        final String dbName = MIGRATIONDB + "otherapp";
+        mPersistenceMigratorHelper.createOtherApplicationDatabase(dbName);
+
+        final DatabaseOpenObserver obs = new DatabaseOpenObserver();
+        mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
+        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
+        final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
+        EasyMock.checkOrder(openerAdapter, true);
+        openerAdapter.startOpening();
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.STARTING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OPENING), EasyMock.isA(String.class));
+        openerAdapter.reportProgress(EasyMock.eq(ProgressStage.OTHER_APPLICATION_DATABASE), EasyMock.isA(String.class));
+        openerAdapter.createdByOtherApplication();
+        openerAdapter.stopOpening();
+        EasyMock.replay(openerAdapter);
+    
+        // run
+        LOGGER.info("test is opening the database created by another app");
+        mPersistencePluginOpenerHelper.openDatabase(dbName, openerAdapter);
+        
+        // test
+        obs.assertDatabaseNotOpen();
+        EasyMock.verify(openerAdapter);
+        checkForClosureViaLockFileMissing(dbName);
     }
 
     /**

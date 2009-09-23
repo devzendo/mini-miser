@@ -143,6 +143,16 @@ public interface OpenerAdapter {
          */
         public static final ProgressStage MIGRATION_NOT_POSSIBLE = new ProgressStage(6, "MIGRATION_NOT_POSSIBLE");
         /**
+         * The migration cannot be done as this database was
+         * created by some other application (the application
+         * plugin declared in the database does not match the
+         * runtime application plugin). After
+         * receiving this ProgressStage, you will recieve a
+         * createdByOtherApplication() call.
+         */
+        public static final ProgressStage OTHER_APPLICATION_DATABASE = new ProgressStage(6, "OTHER_APPLICATION_DATABASE");
+
+        /**
          * The migration failed and its effects have been rolled
          * back (as far is as practical, given H2's auto-commit
          * of DML when DDL is executed - ignoring the context
@@ -208,6 +218,12 @@ public interface OpenerAdapter {
      */
     void migrationFailed(DataAccessException exception);
 
+    /**
+     * The open failed as this database was created by some other
+     * application.
+     */
+    void createdByOtherApplication();
+    
     /**
      * Report to the user that the database could not be found.
      * @param exception the not found exception that has occurred

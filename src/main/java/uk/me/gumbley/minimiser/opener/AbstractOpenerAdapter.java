@@ -107,6 +107,22 @@ public abstract class AbstractOpenerAdapter implements OpenerAdapter {
     /**
      * {@inheritDoc}
      */
+    public final void createdByOtherApplication() {
+        LOGGER.warn("Could not open database '" + dbName + "' created by another application");
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                JOptionPane.showMessageDialog(parentFrame,
+                    "Could not open database '" + dbName + "'.\n"
+                    + "It was created by another application.", 
+                    "Could not open database '" + dbName + "'",
+                    JOptionPane.OK_OPTION);
+            }
+        });
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public final void migrationFailed(final DataAccessException exception) {
         LOGGER.warn("Migration failed with data access exception: " + exception.getMessage(), exception);
         ProblemDialogHelper.reportProblem("trying to upgrade database '" + dbName + "'.", exception);

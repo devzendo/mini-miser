@@ -17,6 +17,11 @@ import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
+import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.domain.Version;
+import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
+import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
+import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.util.InstancePair;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
@@ -29,23 +34,28 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 public final class DefaultOpener implements Opener {
     private static final Logger LOGGER = Logger.getLogger(DefaultOpener.class);
     
-    private final AccessFactory mAccess;
+    private final AccessFactory mAccessFactory;
     private final Migrator mMigrator;
+    private final PluginManager mPluginManager;
     private final ObserverList<DatabaseOpenEvent> mObserverList;
 
     /**
      * Construct the Opener.
-     * @param accessFactory the mAccess factory used for accessing
+     * @param accessFactory the mAccessFactory factory used for accessing
      * databases
      * @param migrator the migrator for performing migrations
      * upon open, if these are required
+     * @param pluginManager the plugin manager for obtaining
+     * the current application plugin
      * 
      */
     public DefaultOpener(
             final AccessFactory accessFactory,
-            final Migrator migrator) {
-        this.mAccess = accessFactory;
+            final Migrator migrator,
+            final PluginManager pluginManager) {
+        mAccessFactory = accessFactory;
         mMigrator = migrator;
+        mPluginManager = pluginManager;
         mObserverList = new ObserverList<DatabaseOpenEvent>();
     }
     
@@ -60,7 +70,6 @@ public final class DefaultOpener implements Opener {
     /**
      * {@inheritDoc}
      */
-    
     public InstanceSet<DAOFactory> openDatabase(
             final String dbName,
             final String pathToDatabase,
@@ -77,29 +86,31 @@ public final class DefaultOpener implements Opener {
         while (true) {
             try {
                 openerAdapter.reportProgress(ProgressStage.OPENING, tryingToOpenMessage);
-                final InstanceSet<DAOFactory> daoFactories = mAccess.openDatabase(pathToDatabase, dbPassword);
+                final InstanceSet<DAOFactory> daoFactories = mAccessFactory.openDatabase(pathToDatabase, dbPassword);
                 final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
-                LOGGER.info("Opened OK");
+                LOGGER.info("Database opened - checking plugin details");
                 
-                if (!processMigrationOk(dbName, openerAdapter, daoFactories)) {
+                // Did the app given in the current plugins create this database?
+                if (isCreatedByOtherApplication(dbName, openerAdapter, miniMiserDAOFactory.getVersionDao())) {
                     openerAdapter.stopOpening();
-                    LOGGER.warn("Migration rejection or failure terminated open");
-                    closeAfterMigrationTermination(miniMiserDAOFactory);
+                    LOGGER.warn("Detection of other application's database terminated open");
+                    closeSinceOpenCannotProceed(miniMiserDAOFactory);
                     return null;
                 }
                 
+                // If migration's needed, do it... did it go OK?
+                if (!processMigrationOk(dbName, openerAdapter, daoFactories)) {
+                    openerAdapter.stopOpening();
+                    LOGGER.warn("Migration rejection or failure terminated open");
+                    closeSinceOpenCannotProceed(miniMiserDAOFactory);
+                    return null;
+                }
+                
+                // Everything went OK.
                 openerAdapter.reportProgress(ProgressStage.OPENED, "Opened '" + dbName + "' OK");
                 openerAdapter.stopOpening();
                 
-                final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, pathToDatabase);
-
-                // Add the MiniMiserDAOFactory and other plugins'
-                // DAOFactories to the DatabaseDescriptor
-                for (final InstancePair<DAOFactory> daoFactoryPair : daoFactories.asList()) {
-                    databaseDescriptor.setDAOFactory(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
-                }
-                
-                mObserverList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
+                emitDatabaseDescriptor(dbName, pathToDatabase, daoFactories);
 
                 return daoFactories;
                 
@@ -114,6 +125,7 @@ public final class DefaultOpener implements Opener {
                     return null;
                 }
                 
+                // Change the progress message, second time round...
                 tryingToOpenMessage = "Trying to open database '" + dbName + "'";
             } catch (final DataAccessResourceFailureException darfe) {
                 LOGGER.warn("Could not open database: " + darfe.getMessage());
@@ -130,6 +142,45 @@ public final class DefaultOpener implements Opener {
                 return null;
             }
         }
+    }
+
+    private void emitDatabaseDescriptor(
+            final String dbName,
+            final String pathToDatabase,
+            final InstanceSet<DAOFactory> daoFactories) {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(dbName, pathToDatabase);
+
+        // Add the MiniMiserDAOFactory and other plugins'
+        // DAOFactories to the DatabaseDescriptor
+        for (final InstancePair<DAOFactory> daoFactoryPair : daoFactories.asList()) {
+            databaseDescriptor.setDAOFactory(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
+        }
+        
+        mObserverList.eventOccurred(new DatabaseOpenEvent(databaseDescriptor));
+    }
+
+    private boolean isCreatedByOtherApplication(
+            final String dbName,
+            final OpenerAdapter openerAdapter,
+            final VersionDao versionDao) {
+        LOGGER.debug("the plugin manager is a " + mPluginManager);
+        final ApplicationPlugin applicationPlugin = mPluginManager.getApplicationPlugin();
+        LOGGER.debug(" the app plugin is " + applicationPlugin);
+        LOGGER.info("Checking that the '" + dbName + "' database was created by the '" + applicationPlugin.getName() + "' application");
+        if (versionDao.exists(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION)) {
+            final Version storedApplicationVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+            if (storedApplicationVersion.isApplication()) {
+                LOGGER.info("Yes: there is an application plugin version stored for '" + applicationPlugin.getName() + "'");
+                return false;
+            } else {
+                LOGGER.warn("No: there is a plugin version stored for '" + applicationPlugin.getName() + "' but it is not an application");
+            }
+        } else {
+            LOGGER.warn("No: there is no version stored for the '" + applicationPlugin.getName() + "' plugin");
+        }
+        openerAdapter.reportProgress(ProgressStage.OTHER_APPLICATION_DATABASE, "Not created by this application");
+        openerAdapter.createdByOtherApplication();
+        return true;
     }
 
     private boolean processMigrationOk(
@@ -188,10 +239,9 @@ public final class DefaultOpener implements Opener {
         }
     }
 
-    private void closeAfterMigrationTermination(
+    private void closeSinceOpenCannotProceed(
             final MiniMiserDAOFactory miniMiserDAOFactory) {
         try {
-            LOGGER.info("Closing due to migration rejection/failure");
             // since we return null, so the
             // MiniMiserDAOFactory isn't passed out,
             // closure can't be directly
@@ -200,7 +250,7 @@ public final class DefaultOpener implements Opener {
             // lock file
            miniMiserDAOFactory.close();
         } catch (final DataAccessException dae) {
-            LOGGER.warn("Data access exception closing database after migration rejection: " + dae.getMessage(), dae);
+            LOGGER.warn("Data access exception closing database after detecting open cannot proceed: " + dae.getMessage(), dae);
         }
     }
 }

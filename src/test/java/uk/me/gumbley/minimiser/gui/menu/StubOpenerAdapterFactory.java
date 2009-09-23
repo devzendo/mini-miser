@@ -33,6 +33,9 @@ public final class StubOpenerAdapterFactory implements OpenerAdapterFactory {
             public void migrationNotPossible() {
             }
 
+            public void createdByOtherApplication() {
+            }
+
             public void migrationFailed(final DataAccessException exception) {
             }
 

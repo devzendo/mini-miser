@@ -56,6 +56,16 @@ public final class PersistenceMigratorHelper {
         createDatabase(dbName, "new");
     }
     
+
+    /**
+     * Create a schema for some other application than the usual one.
+     * @param dbName the name of the database
+     * @throws PluginException on error
+     */
+    public void createOtherApplicationDatabase(final String dbName) throws PluginException {
+        createDatabase(dbName, "otherapp");
+    }
+
     private void createDatabase(final String dbName, final String pluginSubName) throws PluginException {
         // need a helper separate from the main one since it needs
         // to have old plugins loaded, and the main one loads the

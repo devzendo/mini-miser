@@ -102,11 +102,28 @@ public final class TestVersionDao extends LoggingTestCase {
     }
     
     /**
-     * TODO you can insert a Version, but only update the version
+     * You can insert a Version, but only update the version
      * field, not the isApplication field.
      */
     @Test
     public void pluginsCannotChangeTheirApplicationStatus() {
-        Assert.fail("unwritten test");
+        final String dbName = "noapplicationstatuschange";
+        final VersionDao versionDao = mPersistencePluginHelper.
+            createDatabase(dbName, "").
+            getInstanceOf(MiniMiserDAOFactory.class).
+            getVersionDao();
+        final Plugin appPlugin = getAppPlugin();
+        final Version appVersion = versionDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        Assert.assertTrue(appVersion.isApplication());
+        Assert.assertEquals("1.0.0", appVersion.getVersion());
+        appVersion.setIsApplication(false);
+        appVersion.setVersion("1.0.1");
+        Assert.assertFalse(appVersion.isApplication()); // the bean takes the change...
+        Assert.assertEquals("1.0.1", appVersion.getVersion());
+        versionDao.persistVersion(appVersion);
+
+        final Version newAppVersion = versionDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        Assert.assertTrue(newAppVersion.isApplication()); // but the change in application status cannot be persisted
+        Assert.assertEquals("1.0.1", newAppVersion.getVersion()); // version can be updated though
     }
 }
