@@ -163,9 +163,15 @@ public final class DefaultOpener implements Opener {
             final String dbName,
             final OpenerAdapter openerAdapter,
             final VersionDao versionDao) {
-        LOGGER.debug("the plugin manager is a " + mPluginManager);
         final ApplicationPlugin applicationPlugin = mPluginManager.getApplicationPlugin();
+        if (applicationPlugin == null) {
+            LOGGER.warn("There is no application plugin defined - cannot check which application created this database");
+            openerAdapter.reportProgress(ProgressStage.NO_APPLICATION_PLUGIN, "No application plugin available");
+            openerAdapter.noApplicationPluginAvailable();
+            return true;
+        }
         LOGGER.debug(" the app plugin is " + applicationPlugin);
+        LOGGER.debug("therer are " + mPluginManager.getPlugins().size() + " plugins");
         LOGGER.info("Checking that the '" + dbName + "' database was created by the '" + applicationPlugin.getName() + "' application");
         if (versionDao.exists(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION)) {
             final Version storedApplicationVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
@@ -174,6 +180,7 @@ public final class DefaultOpener implements Opener {
                 return false;
             } else {
                 LOGGER.warn("No: there is a plugin version stored for '" + applicationPlugin.getName() + "' but it is not an application");
+                // TODO test that this should give a response
             }
         } else {
             LOGGER.warn("No: there is no version stored for the '" + applicationPlugin.getName() + "' plugin");

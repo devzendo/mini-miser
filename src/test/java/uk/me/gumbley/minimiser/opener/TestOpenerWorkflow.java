@@ -22,7 +22,10 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 /**
  * Tests the simpler cases of Opener workflow. e.g. opening, password entry,
  * etc. Note that migration is not covered here, see
- * PluginsAreInvolvedWithDatabaseMigration
+ * PluginsAreInvolvedWithDatabaseMigration, also, this uses dummy
+ * plugins - see TestOpenerWorkflowWithNoPlugins for the case
+ * where an open is attempted when no application plugin is
+ * loaded.
  * 
  * @author matt
  * 
@@ -38,7 +41,7 @@ public final class TestOpenerWorkflow extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() {
-        mPersistencePluginHelper = new PersistencePluginHelper();
+        mPersistencePluginHelper = new PersistencePluginHelper(false, true);
         mPersistencePluginHelper.validateTestDatabaseDirectory();
         mPersistencePluginOpenerHelper = new PersistencePluginOpenerHelper(
                 mPersistencePluginHelper, new AlwaysCurrentMigrator());

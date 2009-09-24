@@ -57,7 +57,7 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
         Assert.assertNotNull(mAccessFactory);
         mDbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
         mMigrator = new DefaultMigrator(mPluginManager);
-        mOpener = new DefaultOpener(mAccessFactory, mMigrator, null);
+        mOpener = new DefaultOpener(mAccessFactory, mMigrator, mPluginManager);
     }
     
     private final class NullOpenerAdapter implements OpenerAdapter {
@@ -97,6 +97,9 @@ public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends D
         }
 
         public void createdByOtherApplication() {
+        }
+
+        public void noApplicationPluginAvailable() {
         }
     }
     

@@ -72,6 +72,14 @@ public final class LoggingDecoratorOpenerAdapter implements OpenerAdapter {
     /**
      * {@inheritDoc}
      */
+    public void noApplicationPluginAvailable() {
+        LOGGER.warn("No application plugin available; cannot check which application created this database");
+        mOpenerAdapter.noApplicationPluginAvailable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void migrationFailed(final DataAccessException exception) {
         LOGGER.warn("Migration failure: " + exception.getMessage());
         mOpenerAdapter.migrationFailed(exception);

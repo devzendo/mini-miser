@@ -47,17 +47,6 @@ public final class PersistencePluginHelper {
     
     /**
      * Create a helper that may or may not check that the test
-     * database directory is empty, but uses the real plugin
-     * manager.
-     * @param suppressEmptinessCheck true to suppress the empty
-     * check, false to check it
-     */
-    public PersistencePluginHelper(final boolean suppressEmptinessCheck) {
-        this(suppressEmptinessCheck, false);
-    }
-    
-    /**
-     * Create a helper that may or may not check that the test
      * database directory is empty, and may use the real or dummy
      * plugin manager
      * @param suppressEmptinessCheck true to suppress the empty

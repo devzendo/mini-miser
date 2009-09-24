@@ -188,9 +188,6 @@ public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCa
     }
 
     /**
-     * 
-     */
-    /**
      * @throws PluginException on error - never
      */
     @Test

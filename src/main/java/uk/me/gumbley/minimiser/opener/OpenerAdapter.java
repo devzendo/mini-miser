@@ -27,6 +27,10 @@ public interface OpenerAdapter {
      * @author matt
      *
      */
+    /**
+     * @author matt
+     *
+     */
     public final class ProgressStage {
         private final int enumValue;
         private final String name;
@@ -98,6 +102,7 @@ public interface OpenerAdapter {
          * immediate feedback.
          */
         public static final ProgressStage STARTING = new ProgressStage(0, "STARTING");
+        
         /**
          * Sent immediately prior to opening the database. 
          */
@@ -112,10 +117,12 @@ public interface OpenerAdapter {
          * Sent if the database requires migration and the user should be prompted by the adapter. 
          */
         public static final ProgressStage MIGRATION_REQUIRED = new ProgressStage(3, "MIGRATION_REQUIRED"); 
+        
         /**
          * Sent during migration if the user allowed it. 
          */
         public static final ProgressStage MIGRATING = new ProgressStage(4, "MIGRATING"); 
+        
         /**
          * Sent after successful migration 
          */
@@ -127,31 +134,44 @@ public interface OpenerAdapter {
          * Sent upon successful open. 
          */
         public static final ProgressStage OPENED = new ProgressStage(6, "OPENED");
+
         /**
          * The user cancelled the password entry on an encrypted database. 
          */
         public static final ProgressStage PASSWORD_CANCELLED = new ProgressStage(6, "PASSWORD_CANCELLED");
+        
         /**
          * The user rejected the migration request on an old database. 
          */
         public static final ProgressStage MIGRATION_REJECTED = new ProgressStage(6, "MIGRATION_REJECTED");
+
         /**
          * The migration cannot be done as this database is at a
          * more recent version than the plugins support. After
-         * receiving this ProgressStage, you will recieve a
+         * receiving this ProgressStage, you will receive a
          * migrationNotPossible() call.
          */
         public static final ProgressStage MIGRATION_NOT_POSSIBLE = new ProgressStage(6, "MIGRATION_NOT_POSSIBLE");
+
         /**
          * The migration cannot be done as this database was
          * created by some other application (the application
          * plugin declared in the database does not match the
          * runtime application plugin). After
-         * receiving this ProgressStage, you will recieve a
+         * receiving this ProgressStage, you will receive a
          * createdByOtherApplication() call.
          */
         public static final ProgressStage OTHER_APPLICATION_DATABASE = new ProgressStage(6, "OTHER_APPLICATION_DATABASE");
 
+        /**
+         * The open cannot be done since there is no application
+         * plugin available, so the opener cannot check whether
+         * this database was created by that application. After
+         * receiving this ProgressStage, you will receive a
+         * noApplicationPluginAvailable call.
+         */
+        public static final ProgressStage NO_APPLICATION_PLUGIN = new ProgressStage(6, "NO_APPLICATION_PLUGIN");
+        
         /**
          * The migration failed and its effects have been rolled
          * back (as far is as practical, given H2's auto-commit
@@ -161,10 +181,12 @@ public interface OpenerAdapter {
          * call.
          */
         public static final ProgressStage MIGRATION_FAILED = new ProgressStage(6, "MIGRATION_FAILED");
+
         /**
          * The database is not present. 
          */
         public static final ProgressStage NOT_PRESENT = new ProgressStage(6, "NOT_PRESENT");
+        
         /**
          * Failed to open for a serious reason 
          */
@@ -223,6 +245,13 @@ public interface OpenerAdapter {
      * application.
      */
     void createdByOtherApplication();
+    
+    /**
+     * The open failed since the check for creation by the current
+     * application could not be done since there is no application
+     * plugin loaded.
+     */
+    void noApplicationPluginAvailable();
     
     /**
      * Report to the user that the database could not be found.
