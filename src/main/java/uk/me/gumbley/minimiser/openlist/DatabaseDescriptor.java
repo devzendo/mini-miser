@@ -35,11 +35,6 @@ public final class DatabaseDescriptor {
         Path,
         
         /**
-         * The database facade
-         */
-        //Database,
-        
-        /**
          * The tabbed pane of views
          */
         TabbedPane,
