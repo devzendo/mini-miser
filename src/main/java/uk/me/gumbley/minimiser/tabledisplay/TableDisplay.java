@@ -3,8 +3,10 @@ package uk.me.gumbley.minimiser.tabledisplay;
 import java.util.List;
 
 /**
- * A tabular display that shows the column names of query results, and each
- * line of the results.
+ * A tabular display that shows the column names of query results,
+ * and each line of the results. Also computes the maximum width
+ * needed to display each column of the table, given the widths of
+ * the headings and cells in each column.
  * 
  * @author matt
  *

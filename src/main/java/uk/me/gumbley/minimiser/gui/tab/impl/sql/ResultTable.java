@@ -8,6 +8,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
+import com.nadeausoftware.ZebraJTable;
+
+
 /**
  * Encapsulates the JTable used to display ResultSets via a TableDisplay.
  * 
@@ -16,13 +19,16 @@ import javax.swing.table.AbstractTableModel;
 public final class ResultTable {
     private final ResultTableModel dataModel;
     private final JScrollPane scrollPane;
+    private final JTable mTable;
     
     /**
      * Construct the ResultTable
      */
+    @SuppressWarnings("serial")
     public ResultTable() {
-        dataModel = new ResultTableModel(); 
-        scrollPane = new JScrollPane(new JTable(dataModel));
+        dataModel = new ResultTableModel();
+        mTable = new ZebraJTable(dataModel);
+        scrollPane = new JScrollPane(mTable);
     }
     
     @SuppressWarnings("serial")

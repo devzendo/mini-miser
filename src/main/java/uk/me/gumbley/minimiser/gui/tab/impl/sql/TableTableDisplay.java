@@ -1,14 +1,15 @@
 package uk.me.gumbley.minimiser.gui.tab.impl.sql;
 
 import java.util.List;
+
 import uk.me.gumbley.commoncode.gui.GUIUtils;
 import uk.me.gumbley.minimiser.tabledisplay.TableDisplay;
 
 /**
- * A TableDisplay that uses a ResultTable's JTable to render the result data.
- * Effectively an Adapter[GoF] between TableDisplay and ResultTable, and
- * also ensures Swing thread safety by making all calls to te ResultTable
- * on the EDT. 
+ * A TableDisplay that uses a ResultTable's JTable to render the
+ * result data. Effectively an Adapter[GoF] between TableDisplay
+ * and ResultTable, and also ensures Swing thread safety by making
+ * all calls to the ResultTable on the EDT. 
  * 
  * @author matt
  *
