@@ -24,7 +24,6 @@ public final class ResultTable {
     /**
      * Construct the ResultTable
      */
-    @SuppressWarnings("serial")
     public ResultTable() {
         dataModel = new ResultTableModel();
         mTable = new ZebraJTable(dataModel);
