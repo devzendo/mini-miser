@@ -24,7 +24,6 @@ BUGS:
   The database is not opened, but you don't see the intro page. 
 
 CURRENT TASKS:
-* sql table view would benefit from the stripe list renderer
   
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * The message viewer looks pants on the Mac - use the form
