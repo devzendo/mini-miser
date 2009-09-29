@@ -20,7 +20,8 @@ http://www.opensource.org/licenses/bsd-license.php
   jgoodies forms 1.0.7
   jgoodies looks 2.1.2
   jgoodies binding 1.4.0
-  
+  ZebraJTable from Dr. David R. Nadeau
+    
 Common Development and Distribution License 1.0
 http://www.opensource.org/licenses/cddl1.php
   wizard 0.998.1
