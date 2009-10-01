@@ -45,7 +45,7 @@ public final class TestPluginManagerAndInternalPlugin extends SpringLoaderUnitte
         // the normal internal plugin without an application
         // plugin is forbidden - so for this test, add in a dummy
         // app.
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/internalplugin.properties");
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/internalplugin.properties");
         
         final List<PluginDescriptor> pluginDescriptors = mPluginRegistry.getPluginDescriptors();
         Assert.assertEquals(2, pluginDescriptors.size());

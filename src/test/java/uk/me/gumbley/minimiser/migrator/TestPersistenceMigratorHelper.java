@@ -11,7 +11,7 @@ import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 

@@ -17,10 +17,10 @@ import uk.me.gumbley.minimiser.persistence.DatabaseOpeningAppPlugin;
 import uk.me.gumbley.minimiser.persistence.DatabaseOpeningDAOFactory;
 import uk.me.gumbley.minimiser.persistence.DefaultPluginManagerPersistenceUnittestCase;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
-import uk.me.gumbley.minimiser.pluginmanager.Plugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
+import uk.me.gumbley.minimiser.plugin.facade.opendatabase.DatabaseOpening;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
-import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpening;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 

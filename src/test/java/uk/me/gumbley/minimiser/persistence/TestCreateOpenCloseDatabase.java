@@ -14,7 +14,7 @@ import uk.me.gumbley.minimiser.closer.Closer;
 import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.pluginmanager.Plugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 

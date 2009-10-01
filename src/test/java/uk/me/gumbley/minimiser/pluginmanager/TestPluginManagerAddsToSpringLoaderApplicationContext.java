@@ -6,6 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.me.gumbley.minimiser.plugin.AppPlugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
+import uk.me.gumbley.minimiser.plugin.SpringContractPlugin;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
 import uk.me.gumbley.minimiser.springloader.SpringLoadedBean;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
@@ -37,7 +40,7 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
      */
     @Test
     public void pluginsExtendSpringLoaderAppContexts() throws PluginException {
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
         
@@ -54,7 +57,7 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
      */
     @Test
     public void pluginsAreGivenSpringLoader() throws PluginException {
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
         
@@ -69,7 +72,7 @@ public final class TestPluginManagerAddsToSpringLoaderApplicationContext extends
      */
     @Test
     public void pluginsNameAndVersionNotRequestedUntilSpringInitialised() throws PluginException {
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/springcontractplugin.properties");
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/springcontractplugin.properties");
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(1, plugins.size());
         

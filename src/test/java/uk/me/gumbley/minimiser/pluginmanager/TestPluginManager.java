@@ -11,6 +11,11 @@ import org.junit.Test;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
+import uk.me.gumbley.minimiser.plugin.facade.FacadeA;
+import uk.me.gumbley.minimiser.plugin.facade.FacadeB;
+import uk.me.gumbley.minimiser.plugin.facade.FacadeNeverImplemented;
 
 
 /**
@@ -35,7 +40,7 @@ public final class TestPluginManager extends LoggingTestCase {
      */
     @Test
     public void loadGoodPlugin() throws PluginException {
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
         final Map<String, Plugin> pluginMap = pluginsToMap(plugins);
@@ -75,7 +80,7 @@ public final class TestPluginManager extends LoggingTestCase {
         EasyMock.replay(obs);
 
         mDefaultPluginManager.addPluginEventObserver(obs);
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         
         EasyMock.verify(obs);
     }
@@ -88,7 +93,7 @@ public final class TestPluginManager extends LoggingTestCase {
         Assert.assertEquals(PluginRegistry.UNKNOWN_APPLICATION, mPluginRegistry.getApplicationName());
         Assert.assertEquals(PluginRegistry.UNKNOWN_VERSION, mPluginRegistry.getApplicationVersion());
 
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         
         Assert.assertEquals("Application", mPluginRegistry.getApplicationName());
         Assert.assertEquals("1.0.0", mPluginRegistry.getApplicationVersion());
@@ -100,7 +105,7 @@ public final class TestPluginManager extends LoggingTestCase {
     @Test(expected = PluginException.class)
     public void thereMustBeAnApplicationPlugin() throws PluginException {
         final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
-        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/noappplugin.properties");
+        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/noappplugin.properties");
     }
     
     /**
@@ -109,7 +114,7 @@ public final class TestPluginManager extends LoggingTestCase {
     @Test(expected = PluginException.class)
     public void thereMustBeOnlyOneApplicationPlugin() throws PluginException {
         final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
-        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/twoappplugin.properties");
+        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/twoappplugin.properties");
     }
     
     // TODO should provide some tests to show that mycila
@@ -121,15 +126,15 @@ public final class TestPluginManager extends LoggingTestCase {
     @Test(expected = PluginException.class)
     public void nonexistantPluginPropertiesMustThrow() throws PluginException {
         final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
-        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/doesnotexist.properties");
+        defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/doesnotexist.properties");
     }
 
     /**
      * @throws PluginException never
      */
     @Test
-    public void plugnFacadesCanBeObtained() throws PluginException {
-        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/pluginswithfacades.properties");
+    public void pluginFacadesCanBeObtained() throws PluginException {
+        mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/pluginswithfacades.properties");
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         
         Assert.assertEquals(4, plugins.size());

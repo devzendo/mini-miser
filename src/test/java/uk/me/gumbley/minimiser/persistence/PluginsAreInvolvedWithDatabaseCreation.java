@@ -10,10 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.pluginmanager.Plugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
+import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseCreation;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
-import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreation;
 
 
 /**

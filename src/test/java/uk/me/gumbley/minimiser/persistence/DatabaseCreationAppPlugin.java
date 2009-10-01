@@ -12,10 +12,10 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreation;
-import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseCreationFacade;
+import uk.me.gumbley.minimiser.plugin.AbstractPlugin;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseCreation;
+import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseCreationFacade;
 
 /**
  * @author matt

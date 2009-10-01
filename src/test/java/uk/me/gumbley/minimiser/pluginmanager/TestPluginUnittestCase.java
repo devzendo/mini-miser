@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser.pluginmanager;
 import org.junit.Assert;
 import org.junit.Test;
 
+import uk.me.gumbley.minimiser.plugin.AppPlugin;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.springloader.SpringLoadedBean;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
@@ -11,7 +13,7 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * @author matt
  *
  */
-@PluginUnderTest("uk.me.gumbley.minimiser.pluginmanager.AppPlugin")
+@PluginUnderTest("uk.me.gumbley.minimiser.plugin.AppPlugin")
 public final class TestPluginUnittestCase extends PluginUnittestCase {
     /**
      * 

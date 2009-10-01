@@ -8,10 +8,10 @@ import java.util.List;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpening;
-import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpeningFacade;
+import uk.me.gumbley.minimiser.plugin.AbstractPlugin;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.facade.opendatabase.DatabaseOpening;
+import uk.me.gumbley.minimiser.plugin.facade.opendatabase.DatabaseOpeningFacade;
 import uk.me.gumbley.minimiser.util.InstancePair;
 
 /**

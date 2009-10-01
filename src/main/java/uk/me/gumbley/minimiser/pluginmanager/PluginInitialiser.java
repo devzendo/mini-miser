@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**

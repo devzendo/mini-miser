@@ -18,10 +18,10 @@ import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardInt
 import uk.me.gumbley.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardSecurityOptionPage;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 import uk.me.gumbley.minimiser.persistence.AccessFactory;
+import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseWizardPages;
+import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseWizardPagesFacade;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
-import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseWizardPages;
-import uk.me.gumbley.minimiser.pluginmanager.facade.newdatabase.NewDatabaseWizardPagesFacade;
 
 /**
  * Triggers the start of the wizard from the File/New menu.

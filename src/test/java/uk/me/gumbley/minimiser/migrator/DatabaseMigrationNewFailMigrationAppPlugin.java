@@ -12,10 +12,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigration;
-import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigrationFacade;
+import uk.me.gumbley.minimiser.plugin.AbstractPlugin;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.facade.migratedatabase.DatabaseMigration;
+import uk.me.gumbley.minimiser.plugin.facade.migratedatabase.DatabaseMigrationFacade;
 
 /**
  * Works with version 2.0 of the schema, but fails to migrate.

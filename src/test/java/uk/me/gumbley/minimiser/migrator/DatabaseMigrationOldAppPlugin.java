@@ -5,8 +5,8 @@ package uk.me.gumbley.minimiser.migrator;
 
 import java.util.List;
 
-import uk.me.gumbley.minimiser.pluginmanager.AbstractPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.AbstractPlugin;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 
 /**
  * Works with version 1.0 of the schema.

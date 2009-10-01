@@ -10,6 +10,8 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import uk.me.gumbley.commoncode.string.StringUtils;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.springloader.SpringLoaderUnittestCase;
 
 

@@ -6,10 +6,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.minimiser.pluginmanager.Plugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
+import uk.me.gumbley.minimiser.plugin.facade.opendatabase.DatabaseOpening;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
-import uk.me.gumbley.minimiser.pluginmanager.facade.opendatabase.DatabaseOpening;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 

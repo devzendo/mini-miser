@@ -5,6 +5,8 @@ import java.util.List;
 
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.springloader.SpringLoader;
 
 /**

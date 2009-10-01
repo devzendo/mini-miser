@@ -8,11 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
-import uk.me.gumbley.minimiser.pluginmanager.AppPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.BadShutdownPlugin;
+import uk.me.gumbley.minimiser.plugin.AppPlugin;
+import uk.me.gumbley.minimiser.plugin.BadShutdownPlugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
-import uk.me.gumbley.minimiser.pluginmanager.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 import uk.me.gumbley.minimiser.springloader.ApplicationContext;
@@ -46,7 +46,7 @@ public final class TestPluginManagerLifecycle extends SpringLoaderUnittestCase {
         EasyMock.replay(problemReporter);
         
         lifecycle = new PluginManagerLifecycle(pluginManager,
-            "uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties",
+            "uk/me/gumbley/minimiser/plugin/goodplugin.properties",
             problemReporter);
         lifecycle.startup();
         final List<Plugin> plugins = pluginManager.getPlugins();
@@ -91,7 +91,7 @@ public final class TestPluginManagerLifecycle extends SpringLoaderUnittestCase {
         EasyMock.replay(problemReporter);
         
         lifecycle = new PluginManagerLifecycle(pluginManager,
-            "uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties",
+            "uk/me/gumbley/minimiser/plugin/goodplugin.properties",
             problemReporter);
         lifecycle.startup();
         

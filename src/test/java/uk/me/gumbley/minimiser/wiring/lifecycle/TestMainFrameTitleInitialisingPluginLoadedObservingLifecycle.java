@@ -34,7 +34,7 @@ public final class TestMainFrameTitleInitialisingPluginLoadedObservingLifecycle 
         Assert.assertNull(mainFrameTitle.getApplicationName()); // not yet, mungo!
         lifecycle.startup();
         
-        pluginManager.loadPlugins("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        pluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         
         Assert.assertEquals("Application", mainFrameTitle.getApplicationName());
     }

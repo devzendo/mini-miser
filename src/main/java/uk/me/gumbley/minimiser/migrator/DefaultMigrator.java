@@ -14,11 +14,11 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
-import uk.me.gumbley.minimiser.pluginmanager.ApplicationPlugin;
-import uk.me.gumbley.minimiser.pluginmanager.Plugin;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
+import uk.me.gumbley.minimiser.plugin.facade.migratedatabase.DatabaseMigration;
+import uk.me.gumbley.minimiser.plugin.facade.migratedatabase.DatabaseMigrationFacade;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
-import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigration;
-import uk.me.gumbley.minimiser.pluginmanager.facade.migratedatabase.DatabaseMigrationFacade;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**

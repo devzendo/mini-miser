@@ -24,7 +24,6 @@
 		<config>src/test/resources/uk/me/gumbley/minimiser/opentablist/TabEventListenerTestCase.xml</config>
 		<config>src/test/resources/uk/me/gumbley/minimiser/persistence/DefaultPluginManagerTestCase.xml</config>
 		<config>src/test/resources/uk/me/gumbley/minimiser/persistence/DummyAppPluginManagerTestCase.xml</config>
-		<config>src/test/resources/uk/me/gumbley/minimiser/pluginmanager/InternalPluginAppContext.xml</config>
 		<config>src/test/resources/uk/me/gumbley/minimiser/pluginmanager/MainAppContext.xml</config>
 		<config>src/test/resources/uk/me/gumbley/minimiser/pluginmanager/PluginAppContext.xml</config>
 		<config>src/test/resources/uk/me/gumbley/minimiser/springbeanlistloader/ThingySpringBeanListLoaderTestCase.xml</config>

@@ -3,6 +3,8 @@ package uk.me.gumbley.minimiser.pluginmanager;
 import org.junit.Assert;
 import org.junit.Test;
 
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
+
 
 /**
  * Tests the correct behaviour of the PluginUnittestCase,
@@ -30,7 +32,7 @@ public final class TestPluginUnittestCaseBaseClass  {
     }
 
 
-    @PluginUnderTest("uk.me.gumbley.minimiser.pluginmanager.AppPlugin")
+    @PluginUnderTest("uk.me.gumbley.minimiser.plugin.AppPlugin")
     private static final class PluginDeclaredSubclass extends
     PluginUnittestCase {
     }

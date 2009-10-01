@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import uk.me.gumbley.minimiser.gui.dialog.problem.ProblemReporter;
 import uk.me.gumbley.minimiser.lifecycle.Lifecycle;
-import uk.me.gumbley.minimiser.pluginmanager.Plugin;
+import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
 
 /**
