@@ -22,7 +22,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  * @author matt
  *
  */
-public final class PluginsAreInvolvedWithDatabaseOpening extends DefaultPluginManagerPersistenceUnittestCase {
+public final class TestPluginsAreInvolvedWithDatabaseOpening extends DefaultPluginManagerPersistenceUnittestCase {
     private static final String PLUGINDBNAME = "pluginopeningdb";
     private PluginManager mPluginManager;
     private DatabaseOpeningAppPlugin mDatabaseOpeningAppPlugin;

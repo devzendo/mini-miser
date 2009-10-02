@@ -22,7 +22,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 /**
  * Tests the simpler cases of Opener workflow. e.g. opening, password entry,
  * etc. Note that migration is not covered here, see
- * PluginsAreInvolvedWithDatabaseMigration, also, this uses dummy
+ * TestPluginsAreInvolvedWithDatabaseMigration, also, this uses dummy
  * plugins - see TestOpenerWorkflowWithNoPlugins for the case
  * where an open is attempted when no application plugin is
  * loaded.

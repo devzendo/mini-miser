@@ -24,9 +24,9 @@ import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
  * @author matt
  *
  */
-public final class PluginsAreInvolvedWithDatabaseCreation extends DefaultPluginManagerPersistenceUnittestCase {
+public final class TestPluginsAreInvolvedWithDatabaseCreation extends DefaultPluginManagerPersistenceUnittestCase {
     private static final Logger LOGGER = Logger
-            .getLogger(PluginsAreInvolvedWithDatabaseCreation.class);
+            .getLogger(TestPluginsAreInvolvedWithDatabaseCreation.class);
     private static final String PLUGINDBNAME = "plugincreationdb";
     private PluginManager mPluginManager;
     private DatabaseCreationAppPlugin mDatabaseCreationAppPlugin;

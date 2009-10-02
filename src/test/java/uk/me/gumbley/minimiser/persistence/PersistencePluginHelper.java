@@ -211,6 +211,18 @@ public final class PersistencePluginHelper {
     }
 
     /**
+     * Load the plugins using the resource path to the standard
+     * plugins.properties that lists plugins to be loaded.
+     * Typically called from a @Before method.
+     * @return a list of loaded plugins
+     * @throws PluginException on plugin load or initialisation
+     * problems
+     */
+    public List<Plugin> loadStandardPlugins() throws PluginException {
+        return loadPlugins("META-INF/minimiser/plugins.properties");
+    }
+    
+    /**
      * Load the plugins given a resource path to a properties file
      * that lists the plugins to be loaded. Typically called from
      * a @Before method.

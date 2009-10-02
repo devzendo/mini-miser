@@ -32,9 +32,9 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  * @author matt
  *
  */
-public final class PluginsAreInvolvedWithDatabaseMigration extends LoggingTestCase {
+public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTestCase {
     private static final Logger LOGGER = Logger
-            .getLogger(PluginsAreInvolvedWithDatabaseMigration.class);
+            .getLogger(TestPluginsAreInvolvedWithDatabaseMigration.class);
     private static final String MIGRATIONDB = "openermigration";
     private PersistencePluginHelper mPersistencePluginHelper;
     private PersistencePluginOpenerHelper mPersistencePluginOpenerHelper;
