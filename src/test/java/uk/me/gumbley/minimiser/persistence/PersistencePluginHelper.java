@@ -62,7 +62,7 @@ public final class PersistencePluginHelper {
         mPluginRegistry = new DefaultPluginRegistry();
         mPluginManager = useDummyPluginManager ?
                 new DummyAppPluginManager() : 
-                new DefaultPluginManager(mPluginRegistry);
+                new DefaultPluginManager(null, mPluginRegistry);
         mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginManager);
         mTidier = new PersistencePluginHelperTidier(mTestDatabaseDirectory);
     }

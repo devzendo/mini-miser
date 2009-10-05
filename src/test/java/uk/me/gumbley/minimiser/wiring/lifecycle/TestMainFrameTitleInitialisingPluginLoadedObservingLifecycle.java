@@ -23,7 +23,7 @@ public final class TestMainFrameTitleInitialisingPluginLoadedObservingLifecycle 
     @Test
     public void loadingPluginsChangesTheTitle() throws PluginException {
         final DefaultPluginRegistry pluginRegistry = new DefaultPluginRegistry();
-        final DefaultPluginManager pluginManager = new DefaultPluginManager(pluginRegistry);
+        final DefaultPluginManager pluginManager = new DefaultPluginManager(null, pluginRegistry);
         
         final StubMainFrameTitle mainFrameTitle = new StubMainFrameTitle();
         Assert.assertNull(mainFrameTitle.getApplicationName());

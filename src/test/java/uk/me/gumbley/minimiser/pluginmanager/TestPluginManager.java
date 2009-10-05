@@ -32,7 +32,7 @@ public final class TestPluginManager extends LoggingTestCase {
     @Before
     public void getPrerequisites() {
         mPluginRegistry = new DefaultPluginRegistry();
-        mDefaultPluginManager = new DefaultPluginManager(mPluginRegistry);
+        mDefaultPluginManager = new DefaultPluginManager(null, mPluginRegistry);
     }
     
     /**
@@ -104,7 +104,7 @@ public final class TestPluginManager extends LoggingTestCase {
      */
     @Test(expected = PluginException.class)
     public void thereMustBeAnApplicationPlugin() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(null, mPluginRegistry);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/noappplugin.properties");
     }
     
@@ -113,7 +113,7 @@ public final class TestPluginManager extends LoggingTestCase {
      */
     @Test(expected = PluginException.class)
     public void thereMustBeOnlyOneApplicationPlugin() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(null, mPluginRegistry);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/twoappplugin.properties");
     }
     
@@ -125,7 +125,7 @@ public final class TestPluginManager extends LoggingTestCase {
      */
     @Test(expected = PluginException.class)
     public void nonexistantPluginPropertiesMustThrow() throws PluginException {
-        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(mPluginRegistry);
+        final DefaultPluginManager defaultPluginManager = new DefaultPluginManager(null, mPluginRegistry);
         defaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/doesnotexist.properties");
     }
 
