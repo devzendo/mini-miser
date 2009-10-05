@@ -31,7 +31,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  * @author matt
  *
  */
-public final class PluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends DefaultPluginManagerPersistenceUnittestCase {
+public final class TestPluginsAddDAOFactoriesToDatabaseDescriptorViaOpener extends DefaultPluginManagerPersistenceUnittestCase {
     private static final String PLUGINDBNAME = "openerplugindaofactorydb";
     private PluginManager mPluginManager;
     private DatabaseOpeningAppPlugin mDatabaseOpeningAppPlugin;

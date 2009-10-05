@@ -10,15 +10,15 @@ import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 
 /**
- * Benchmarks
+ * TestPersistenceBenchmarks
  * 
  * @author matt
  *
  */
-public final class Benchmarks extends DummyAppPluginManagerPersistenceUnittestCase {
+public final class TestPersistenceBenchmarks extends DummyAppPluginManagerPersistenceUnittestCase {
     private static final String PLUGIN_NAME = "MyPlugin";
     private static final Logger LOGGER = Logger
-            .getLogger(Benchmarks.class);
+            .getLogger(TestPersistenceBenchmarks.class);
 
     /**
      * When updating, we need to know whether a row exists so we can do an
