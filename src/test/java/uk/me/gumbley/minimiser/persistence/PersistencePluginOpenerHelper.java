@@ -8,6 +8,7 @@ import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.DefaultOpener;
 import uk.me.gumbley.minimiser.opener.Opener;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -27,23 +28,30 @@ public final class PersistencePluginOpenerHelper {
 
     /**
      * Create the opener helper with the standard migrator
-     * @param helper the main persistence plugin helper
+     * @param pluginHelper the main plugin helper
+     * @param persistencePluginHelper the main persistence plugin helper
      */
-    public PersistencePluginOpenerHelper(final PersistencePluginHelper helper) {
-        mPersistencePluginHelper = helper;
-        mMigrator = new DefaultMigrator(helper.getPluginManager());
-        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator, helper.getPluginManager());
+    public PersistencePluginOpenerHelper(
+            final PluginHelper pluginHelper,
+            final PersistencePluginHelper persistencePluginHelper) {
+        mPersistencePluginHelper = persistencePluginHelper;
+        mMigrator = new DefaultMigrator(pluginHelper.getPluginManager());
+        mOpener = new DefaultOpener(persistencePluginHelper.getAccessFactory(), mMigrator, pluginHelper.getPluginManager());
     }
 
     /**
      * Create the opener helper with a custom migrator
-     * @param helper the main persistence plugin helper
+     * @param pluginHelper the main plugin helper
+     * @param persistencePluginHelper the main persistence plugin helper
      * @param migrator a custom migrator
      */
-    public PersistencePluginOpenerHelper(final PersistencePluginHelper helper, final Migrator migrator) {
-        mPersistencePluginHelper = helper;
+    public PersistencePluginOpenerHelper(
+            final PluginHelper pluginHelper,
+            final PersistencePluginHelper persistencePluginHelper,
+            final Migrator migrator) {
+        mPersistencePluginHelper = persistencePluginHelper;
         mMigrator = migrator;
-        mOpener = new DefaultOpener(helper.getAccessFactory(), mMigrator, helper.getPluginManager());
+        mOpener = new DefaultOpener(persistencePluginHelper.getAccessFactory(), mMigrator, pluginHelper.getPluginManager());
     }
 
     /**

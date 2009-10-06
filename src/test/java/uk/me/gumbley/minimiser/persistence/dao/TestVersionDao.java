@@ -15,6 +15,7 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.plugin.Plugin;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
 
 
 /**
@@ -26,6 +27,7 @@ import uk.me.gumbley.minimiser.plugin.Plugin;
 public final class TestVersionDao extends LoggingTestCase {
     private static final Logger LOGGER = Logger.getLogger(TestVersionDao.class);
     
+    private PluginHelper mPluginHelper;
     private PersistencePluginHelper mPersistencePluginHelper;
     
     /**
@@ -33,7 +35,8 @@ public final class TestVersionDao extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() {
-        mPersistencePluginHelper = new PersistencePluginHelper(false, true);
+        mPluginHelper = new PluginHelper(true);
+        mPersistencePluginHelper = new PersistencePluginHelper(false, mPluginHelper);
         mPersistencePluginHelper.validateTestDatabaseDirectory();
     }
     
@@ -46,7 +49,7 @@ public final class TestVersionDao extends LoggingTestCase {
     }
 
     private Plugin getNormalPlugin() {
-        final List<Plugin> plugins = mPersistencePluginHelper.getPluginManager().getPlugins();
+        final List<Plugin> plugins = mPluginHelper.getPluginManager().getPlugins();
         for (Plugin plugin : plugins) {
             if (!(plugin instanceof ApplicationPlugin)) {
                 return plugin;
@@ -56,7 +59,7 @@ public final class TestVersionDao extends LoggingTestCase {
     }
     
     private Plugin getAppPlugin() {
-        return mPersistencePluginHelper.getPluginManager().getApplicationPlugin();
+        return mPluginHelper.getPluginManager().getApplicationPlugin();
     }
 
     private void checkVersionForPlugin(

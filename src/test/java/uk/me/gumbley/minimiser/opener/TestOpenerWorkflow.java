@@ -16,6 +16,7 @@ import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginOpenerHelper;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
 import uk.me.gumbley.minimiser.util.FileUnittestHelper;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
@@ -33,6 +34,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 public final class TestOpenerWorkflow extends LoggingTestCase {
     private static final Logger LOGGER = Logger
             .getLogger(TestOpenerWorkflow.class);
+    private PluginHelper mPluginHelper;
     private PersistencePluginHelper mPersistencePluginHelper;
     private PersistencePluginOpenerHelper mPersistencePluginOpenerHelper;
 
@@ -41,10 +43,13 @@ public final class TestOpenerWorkflow extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() {
-        mPersistencePluginHelper = new PersistencePluginHelper(false, true);
+        mPluginHelper = new PluginHelper(true);
+        mPersistencePluginHelper = new PersistencePluginHelper(false, mPluginHelper);
         mPersistencePluginHelper.validateTestDatabaseDirectory();
         mPersistencePluginOpenerHelper = new PersistencePluginOpenerHelper(
-                mPersistencePluginHelper, new AlwaysCurrentMigrator());
+            mPluginHelper,
+            mPersistencePluginHelper,
+            new AlwaysCurrentMigrator());
     }
 
     /**

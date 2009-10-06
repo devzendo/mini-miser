@@ -10,14 +10,7 @@ import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.config.UnittestingConfig;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
-import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
-import uk.me.gumbley.minimiser.plugin.Plugin;
-import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
-import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
-import uk.me.gumbley.minimiser.pluginmanager.DummyAppPluginManager;
-import uk.me.gumbley.minimiser.pluginmanager.PluginException;
-import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
-import uk.me.gumbley.minimiser.pluginmanager.PluginRegistry;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -30,19 +23,18 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 public final class PersistencePluginHelper {
     private static final Logger LOGGER = Logger
             .getLogger(PersistencePluginHelper.class);
-    private final PluginRegistry mPluginRegistry;
-    private final PluginManager mPluginManager;
     private final AccessFactory mAccessFactory;
     private final File mTestDatabaseDirectory;
     private final boolean mSuppressEmptinessCheck;
     private final PersistencePluginHelperTidier mTidier;
+    private final PluginHelper mPluginHelper;
 
     /**
      * Create a helper that will check that the test database
      * directory is empty, and use the real plugin manager.
      */
     public PersistencePluginHelper() {
-        this(false, false);
+        this(false, new PluginHelper(false));
     }
     
     /**
@@ -51,19 +43,16 @@ public final class PersistencePluginHelper {
      * plugin manager
      * @param suppressEmptinessCheck true to suppress the empty
      * check, false to check it
-     * @param useDummyPluginManager true to use the dummy plugin
-     * manager, false to use the proper one, with the ability to
-     * load specific plugins
+     * @param pluginHelper the PluginHelper, whose PluginManager
+     * will be used by the access factory when creating / opening
+     * databases
      */
     public PersistencePluginHelper(final boolean suppressEmptinessCheck,
-            final boolean useDummyPluginManager) {
+            final PluginHelper pluginHelper) {
         mSuppressEmptinessCheck = suppressEmptinessCheck;
+        mPluginHelper = pluginHelper;
         mTestDatabaseDirectory = new UnittestingConfig().getTestDatabaseDirectory();
-        mPluginRegistry = new DefaultPluginRegistry();
-        mPluginManager = useDummyPluginManager ?
-                new DummyAppPluginManager() : 
-                new DefaultPluginManager(null, mPluginRegistry);
-        mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginManager);
+        mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginHelper.getPluginManager());
         mTidier = new PersistencePluginHelperTidier(mTestDatabaseDirectory);
     }
     
@@ -209,50 +198,6 @@ public final class PersistencePluginHelper {
         mTidier.addDatabaseToDelete(dbName, daoFactorySet.getInstanceOf(MiniMiserDAOFactory.class));
         return daoFactorySet;
     }
-
-    /**
-     * Load the plugins using the resource path to the standard
-     * plugins.properties that lists plugins to be loaded.
-     * Typically called from a @Before method.
-     * @return a list of loaded plugins
-     * @throws PluginException on plugin load or initialisation
-     * problems
-     */
-    public List<Plugin> loadStandardPlugins() throws PluginException {
-        return loadPlugins("META-INF/minimiser/plugins.properties");
-    }
-    
-    /**
-     * Load the plugins given a resource path to a properties file
-     * that lists the plugins to be loaded. Typically called from
-     * a @Before method.
-     * @param propertiesResourcePath the path to the properties
-     * file
-     * @return a list of loaded plugins
-     * @throws PluginException on plugin load or initialisation
-     * problems
-     */
-    public List<Plugin> loadPlugins(final String propertiesResourcePath) throws PluginException {
-        mPluginManager.loadPlugins(propertiesResourcePath);
-        return mPluginManager.getPlugins();
-    }
-    
-    /**
-     * Obtain the application plugin.
-     * @return the application plugin, if loaded
-     */
-    public ApplicationPlugin getApplicationPlugin() {
-        return mPluginManager.getApplicationPlugin();
-    }
-    
-    /**
-     * @param <F> the type of facade-implementor to return 
-     * @param facadeType the type of the facade-implementor to return
-     * @return a list of plugins implementing the given type
-     */
-    public <F> List<F> getPluginsImplementingFacade(final Class<F> facadeType) {
-        return mPluginManager.getPluginsImplementingFacade(facadeType);
-    }
     
     /**
      * Typically run in an @After block, tidy up after the
@@ -260,14 +205,6 @@ public final class PersistencePluginHelper {
      */
     public void tidyTestDatabasesDirectory() {
         mTidier.tidy();
-    }
-
-    /**
-     * Obtain the plugin manager
-     * @return the plugin manager
-     */
-    public PluginManager getPluginManager() {
-        return mPluginManager;
     }
 
     /**

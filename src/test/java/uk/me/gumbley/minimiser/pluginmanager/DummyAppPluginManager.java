@@ -152,15 +152,6 @@ public final class DummyAppPluginManager implements PluginManager {
 
     /**
      * {@inheritDoc}
-     * @deprecated
-     */
-    @Deprecated
-    public String getUpdateSiteBaseURL() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
      */
     public void loadPlugins(final String propertiesResourcePath)
             throws PluginException {

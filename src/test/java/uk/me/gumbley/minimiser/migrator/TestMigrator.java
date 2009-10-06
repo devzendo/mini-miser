@@ -10,6 +10,7 @@ import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
@@ -22,6 +23,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  */
 public final class TestMigrator extends LoggingTestCase {
     private static final String MIGRATIONDB = "migrator";
+    private PluginHelper mPluginHelper;
     private PersistencePluginHelper mPersistencePluginHelper;
     private PersistenceMigratorHelper mPersistenceMigratorHelper;
     private Migrator mMigrator;
@@ -31,12 +33,13 @@ public final class TestMigrator extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() {
-        mPersistencePluginHelper = new PersistencePluginHelper();
+        mPluginHelper = new PluginHelper(false);
+        mPersistencePluginHelper = new PersistencePluginHelper(false, mPluginHelper);
         mPersistencePluginHelper.validateTestDatabaseDirectory();
         
-        mPersistenceMigratorHelper = new PersistenceMigratorHelper(mPersistencePluginHelper);
+        mPersistenceMigratorHelper = new PersistenceMigratorHelper(mPluginHelper, mPersistencePluginHelper);
         
-        mMigrator = new DefaultMigrator(mPersistencePluginHelper.getPluginManager());
+        mMigrator = new DefaultMigrator(mPluginHelper.getPluginManager());
     }
 
     /**
@@ -54,7 +57,7 @@ public final class TestMigrator extends LoggingTestCase {
     public void oldDatabaseIsDetectedAsNeedingMigration() throws PluginException {
         // setup
         mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
         final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
         Assert.assertNotNull(daoFactories);
         
@@ -82,7 +85,7 @@ public final class TestMigrator extends LoggingTestCase {
     public void currentDatabaseIsDetectedAsNotNeedingMigration() throws PluginException {
         // setup
         mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
         final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
         Assert.assertNotNull(daoFactories);
         
@@ -110,7 +113,7 @@ public final class TestMigrator extends LoggingTestCase {
     public void futureDatabaseCannotBeMigrated() throws PluginException {
         // setup
         mPersistenceMigratorHelper.createNewDatabase(MIGRATIONDB);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
         final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
         Assert.assertNotNull(daoFactories);
         
@@ -138,7 +141,7 @@ public final class TestMigrator extends LoggingTestCase {
     public void oldDatabaseIsMigrated() throws PluginException {
         // setup
         mPersistenceMigratorHelper.createOldDatabase(MIGRATIONDB);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
         final InstanceSet<DAOFactory> daoFactories = mPersistencePluginHelper.openDatabase(MIGRATIONDB, "");
         Assert.assertNotNull(daoFactories);
         
@@ -149,7 +152,7 @@ public final class TestMigrator extends LoggingTestCase {
             mPersistenceMigratorHelper.checkForUpgradedData(daoFactories);
             mPersistenceMigratorHelper.checkForUpgradedVersions(daoFactories);
 
-            final DatabaseMigrationNewAppPlugin applicationPlugin = (DatabaseMigrationNewAppPlugin) mPersistencePluginHelper.getApplicationPlugin();
+            final DatabaseMigrationNewAppPlugin applicationPlugin = (DatabaseMigrationNewAppPlugin) mPluginHelper.getApplicationPlugin();
             Assert.assertTrue(applicationPlugin.allMigrationMethodsCalled());
             // test that the versions have been updated
             Assert.assertEquals(Migrator.MigrationVersion.CURRENT, mMigrator.requiresMigration(daoFactories));

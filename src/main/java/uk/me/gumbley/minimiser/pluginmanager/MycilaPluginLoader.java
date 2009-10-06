@@ -1,9 +1,6 @@
 package uk.me.gumbley.minimiser.pluginmanager;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -20,29 +17,10 @@ import com.mycila.plugin.api.PluginBinding;
  * @author matt
  *
  */
-public final class MycilaPluginLoader implements PluginLoader {
+public final class MycilaPluginLoader extends AbstractPluginLoader implements PluginLoader {
     private static final Logger LOGGER = Logger
             .getLogger(MycilaPluginLoader.class);
     
-    /**
-     * {@inheritDoc}
-     */
-    public void displayPluginDescriptorResources(final String propertiesResourcePath) {
-        LOGGER.debug("List of plugin descriptor resources: " + propertiesResourcePath);
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            final Enumeration<URL> resources =
-                contextClassLoader.getResources(propertiesResourcePath);
-            while (resources.hasMoreElements()) {
-                final URL resource = resources.nextElement();
-                LOGGER.debug("Plugin descriptor resource is " + resource);
-            }
-            LOGGER.debug("End of plugin descriptor list");
-        } catch (final IOException e) {
-            LOGGER.warn("Could not obtain list of plugin descriptor resources for " + propertiesResourcePath, e);
-        }
-    }
-
     /**
      * {@inheritDoc}
      */

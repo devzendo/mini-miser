@@ -18,6 +18,7 @@ import uk.me.gumbley.minimiser.opener.DatabaseOpenObserver;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
@@ -36,6 +37,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
     private static final Logger LOGGER = Logger
             .getLogger(TestPluginsAreInvolvedWithDatabaseMigration.class);
     private static final String MIGRATIONDB = "openermigration";
+    private PluginHelper mPluginHelper;
     private PersistencePluginHelper mPersistencePluginHelper;
     private PersistencePluginOpenerHelper mPersistencePluginOpenerHelper;
     private PersistenceMigratorHelper mPersistenceMigratorHelper;
@@ -45,11 +47,11 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
      */
     @Before
     public void getPrerequisites() {
+        mPluginHelper = new PluginHelper(false);
         mPersistencePluginHelper = new PersistencePluginHelper();
         mPersistencePluginHelper.validateTestDatabaseDirectory();
-
-        mPersistencePluginOpenerHelper = new PersistencePluginOpenerHelper(mPersistencePluginHelper);
-        mPersistenceMigratorHelper = new PersistenceMigratorHelper(mPersistencePluginHelper);
+        mPersistencePluginOpenerHelper = new PersistencePluginOpenerHelper(mPluginHelper, mPersistencePluginHelper);
+        mPersistenceMigratorHelper = new PersistenceMigratorHelper(mPluginHelper, mPersistencePluginHelper);
     }
 
     /**
@@ -82,7 +84,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
 
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
         mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
         final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
         EasyMock.checkOrder(openerAdapter, true);
         openerAdapter.startOpening();
@@ -116,7 +118,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
 
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
         mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewplugin.properties");
         final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
         EasyMock.checkOrder(openerAdapter, true);
         openerAdapter.startOpening();
@@ -143,7 +145,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
             obs.assertDatabaseOpen();
             EasyMock.verify(openerAdapter);
             Assert.assertNotNull(openDatabase);
-            final DatabaseMigrationNewAppPlugin appPlugin = (DatabaseMigrationNewAppPlugin) mPersistencePluginHelper.getApplicationPlugin();
+            final DatabaseMigrationNewAppPlugin appPlugin = (DatabaseMigrationNewAppPlugin) mPluginHelper.getApplicationPlugin();
             Assert.assertTrue(appPlugin.allMigrationMethodsCalled());
             Assert.assertEquals("1.0", appPlugin.getPreMigrationSchemaVersion());
         } finally {
@@ -166,7 +168,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
     
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
         mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
         final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
         EasyMock.checkOrder(openerAdapter, true);
         openerAdapter.startOpening();
@@ -198,7 +200,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
 
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
         mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationoldplugin.properties");
         final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
         EasyMock.checkOrder(openerAdapter, true);
         openerAdapter.startOpening();
@@ -230,7 +232,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
 
         final DatabaseOpenObserver obs = new DatabaseOpenObserver();
         mPersistencePluginOpenerHelper.addDatabaseOpenObserver(obs);
-        mPersistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewfailmigrationplugin.properties");
+        mPluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigrationnewfailmigrationplugin.properties");
         final OpenerAdapter openerAdapter = EasyMock.createNiceMock(OpenerAdapter.class);
         EasyMock.checkOrder(openerAdapter, true);
         openerAdapter.startOpening();
@@ -265,7 +267,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
             obs.assertDatabaseNotOpen();
             EasyMock.verify(openerAdapter);
             final DatabaseMigrationNewFailMigrationAppPlugin appPlugin =
-                (DatabaseMigrationNewFailMigrationAppPlugin) mPersistencePluginHelper.
+                (DatabaseMigrationNewFailMigrationAppPlugin) mPluginHelper.
                 getApplicationPlugin();
             Assert.assertTrue(appPlugin.allMigrationMethodsCalled());
             Assert.assertEquals("1.0", appPlugin.getPreMigrationSchemaVersion());

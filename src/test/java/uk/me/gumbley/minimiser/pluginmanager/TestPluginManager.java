@@ -1,6 +1,5 @@
 package uk.me.gumbley.minimiser.pluginmanager;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,7 @@ public final class TestPluginManager extends LoggingTestCase {
         mDefaultPluginManager.loadPlugins("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         Assert.assertEquals(2, plugins.size());
-        final Map<String, Plugin> pluginMap = pluginsToMap(plugins);
+        final Map<String, Plugin> pluginMap = PluginHelper.pluginsToMap(plugins);
         final ApplicationPlugin appPlugin = (ApplicationPlugin) pluginMap.get("Application");
         Assert.assertNotNull(appPlugin);
         final Plugin normalPlugin = pluginMap.get("Normal");
@@ -138,7 +137,7 @@ public final class TestPluginManager extends LoggingTestCase {
         final List<Plugin> plugins = mDefaultPluginManager.getPlugins();
         
         Assert.assertEquals(4, plugins.size());
-        final Map<String, Plugin> pluginMap = pluginsToMap(plugins);
+        final Map<String, Plugin> pluginMap = PluginHelper.pluginsToMap(plugins);
         Assert.assertNotNull(pluginMap.get("AppFacadeAPlugin"));
         Assert.assertNotNull(pluginMap.get("NormalFacadeAPlugin"));
         Assert.assertNotNull(pluginMap.get("NormalFacadeBPlugin"));
@@ -158,13 +157,5 @@ public final class TestPluginManager extends LoggingTestCase {
 
         final List<FacadeNeverImplemented> facadeNeverImplementeds = mDefaultPluginManager.getPluginsImplementingFacade(FacadeNeverImplemented.class);
         Assert.assertEquals(0, facadeNeverImplementeds.size());
-    }
-
-    private Map<String, Plugin> pluginsToMap(final List<Plugin> plugins) {
-        final Map<String, Plugin> pluginMap = new HashMap<String, Plugin>();
-        for (Plugin plugin : plugins) {
-            pluginMap.put(plugin.getName(), plugin);
-        }
-        return pluginMap;
     }
 }

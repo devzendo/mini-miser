@@ -15,14 +15,6 @@ import uk.me.gumbley.minimiser.plugin.Plugin;
  *
  */
 public interface PluginManager {
-    /**
-     * TODO move into Plugin
-     * Where is the update site for this app?
-     * @return the Base URL of the update site for this app. 
-     * @deprecated
-     */
-    @Deprecated
-    String getUpdateSiteBaseURL();
     
     /**
      * Load the plugins, given a resource path to the plugin

@@ -41,19 +41,9 @@ public final class DefaultPluginManager implements PluginManager {
         mPluginRegistry = pluginRegistry;
         mObserverList = new ObserverList<PluginEvent>();
         mPluginInitialiser = new PluginInitialiser(springLoader, pluginRegistry);
-        mPluginLoader = new MycilaPluginLoader();
+        mPluginLoader = new DefaultPluginLoader();
     }
     
-    /**
-     * {@inheritDoc}
-     * @deprecated
-     */
-    @Deprecated
-    public String getUpdateSiteBaseURL() {
-        // TODO Auto-generated method stub
-        return "http://localhost:9876";
-    }
-
     /**
      * {@inheritDoc}
      */

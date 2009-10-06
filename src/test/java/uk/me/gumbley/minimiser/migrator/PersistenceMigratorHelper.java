@@ -16,6 +16,7 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -26,15 +27,20 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  *
  */
 public final class PersistenceMigratorHelper {
+    private final PluginHelper mPluginHelper;
     private final PersistencePluginHelper mPersistencePluginHelper;
     
     /**
      * Create the migrator helper, using the persistence plugin
      * helper.
+     * @param pluginHelper the plugin helper
      * @param persistencePluginHelper the persistence plugin
      * helper
      */
-    public PersistenceMigratorHelper(final PersistencePluginHelper persistencePluginHelper) {
+    public PersistenceMigratorHelper(
+            final PluginHelper pluginHelper,
+            final PersistencePluginHelper persistencePluginHelper) {
+        mPluginHelper = pluginHelper;
         mPersistencePluginHelper = persistencePluginHelper;
     }
 
@@ -67,11 +73,12 @@ public final class PersistenceMigratorHelper {
     }
 
     private void createDatabase(final String dbName, final String pluginSubName) throws PluginException {
-        // need a helper separate from the main one since it needs
-        // to have old plugins loaded, and the main one loads the
-        // new plugins
-        final PersistencePluginHelper persistencePluginHelper = new PersistencePluginHelper();
-        persistencePluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigration" + pluginSubName + "plugin.properties");
+        // Need separate helpers from the main ones since they
+        // need to have old plugins loaded, and the main one loads
+        // the new plugins
+        final PluginHelper pluginHelper = new PluginHelper(false);
+        final PersistencePluginHelper persistencePluginHelper = new PersistencePluginHelper(false, pluginHelper);
+        pluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigration" + pluginSubName + "plugin.properties");
         final MiniMiserDAOFactory miniMiserDAOFactory = persistencePluginHelper.createDatabase(dbName, "").getInstanceOf(MiniMiserDAOFactory.class);
         miniMiserDAOFactory.close();
         
@@ -87,7 +94,7 @@ public final class PersistenceMigratorHelper {
     public void checkForUpgradedVersions(final InstanceSet<DAOFactory> openDatabase) {
         final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
         final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
-        final ApplicationPlugin applicationPlugin = mPersistencePluginHelper.getApplicationPlugin();
+        final ApplicationPlugin applicationPlugin = mPluginHelper.getApplicationPlugin();
         
         final Version applicationSchemaVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
         Assert.assertEquals(applicationPlugin.getSchemaVersion(), applicationSchemaVersion.getVersion());
@@ -103,7 +110,7 @@ public final class PersistenceMigratorHelper {
     public void checkForNoUpgradedVersions(final InstanceSet<DAOFactory> openDatabase) {
         final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
         final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
-        final ApplicationPlugin applicationPlugin = mPersistencePluginHelper.getApplicationPlugin();
+        final ApplicationPlugin applicationPlugin = mPluginHelper.getApplicationPlugin();
 
         final Version applicationSchemaVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
         Assert.assertEquals("1.0", applicationSchemaVersion.getVersion());
