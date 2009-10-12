@@ -1,6 +1,7 @@
 package uk.me.gumbley.minimiser.pluginmanager;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -12,7 +13,11 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.jruby.exceptions.RaiseException;
+import org.springframework.scripting.jruby.JRubyScriptUtils;
 
+import uk.me.gumbley.commoncode.resource.ResourceLoader;
+import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.plugin.Plugin;
 
 /**
@@ -25,6 +30,10 @@ import uk.me.gumbley.minimiser.plugin.Plugin;
 public final class DefaultPluginLoader extends AbstractPluginLoader implements PluginLoader {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultPluginLoader.class);
+    private static final Class<?>[] PLUGIN_CLASSES = new Class[] {
+        Plugin.class, ApplicationPlugin.class
+    };
+    
     /**
      * {@inheritDoc}
      */
@@ -60,14 +69,59 @@ public final class DefaultPluginLoader extends AbstractPluginLoader implements P
         return plugins;
     }
 
-    @SuppressWarnings("unchecked")
     private Plugin loadPlugin(final String pluginClassName) throws IOException {
+        if (pluginClassName == null || pluginClassName.trim().length() == 0) {
+            throw new IOException("Cannot load a Plugin from null or empty class name");
+        }
+        if (pluginClassName.endsWith(".rb")) {
+            return instantiateJRubyPlugin(pluginClassName);
+        }
+        // or groovy, etc., - whatever's supported by Spring, ideally
+        return instantiateJavaPlugin(pluginClassName);
+    }
+
+    private Plugin instantiateJRubyPlugin(final String pluginScriptName) throws IOException {
+        LOGGER.debug("Loading plugin from Ruby script " + pluginScriptName);
+        try {
+            final String scriptResourcePath = translatePackagesToDirectories(pluginScriptName); 
+            LOGGER.debug("Loading script from resource '" + scriptResourcePath + "'");
+            final String scriptText = ResourceLoader.readResource(scriptResourcePath);
+            if (scriptText == null || scriptText.length() == 0) {
+                final String warning = "Cannot load plugin from empty / null script '" + pluginScriptName + "'";
+                LOGGER.warn(warning);
+                throw new IOException(warning);
+            }
+            final Plugin plugin = (Plugin) JRubyScriptUtils.createJRubyObject(scriptText, PLUGIN_CLASSES);
+            return plugin;
+        } catch (final RaiseException re) {
+            final String warning = "Cannot load script '"
+                + pluginScriptName + "': "
+                + re.getClass().getSimpleName() + ": "
+                + re.getException().toString();
+            LOGGER.warn(warning);
+            LOGGER.debug(warning, re);
+            throw new IOException(warning);
+        } catch (final Exception e) {
+            final String warning = "Cannot load script '" + pluginScriptName + "': " + e.getClass().getSimpleName() + ": " + e.getMessage();
+            LOGGER.warn(warning);
+            LOGGER.debug(warning, e);
+            throw new IOException(warning);
+        }
+    }
+
+    private String translatePackagesToDirectories(final String pluginScriptName) {
+        return pluginScriptName.replaceAll("\\.(?!rb$)", File.separator);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Plugin instantiateJavaPlugin(final String pluginClassName)
+            throws IOException {
         LOGGER.debug("Loading plugin from class " + pluginClassName);
         try {
             final Class<Plugin> klass = (Class<Plugin>) Class.forName(pluginClassName);
             return klass.newInstance();
         } catch (final Exception e) {
-            final String warning = "Cannot load class '" + pluginClassName + ": " + e.getMessage();
+            final String warning = "Cannot load class '" + pluginClassName + ": " + e.getClass().getSimpleName() + ": " + e.getMessage();
             LOGGER.warn(warning);
             throw new IOException(warning);
         }
