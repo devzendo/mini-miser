@@ -17,6 +17,7 @@ import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelperFactory;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -76,7 +77,7 @@ public final class PersistenceMigratorHelper {
         // Need separate helpers from the main ones since they
         // need to have old plugins loaded, and the main one loads
         // the new plugins
-        final PluginHelper pluginHelper = new PluginHelper(false);
+        final PluginHelper pluginHelper = PluginHelperFactory.createPluginHelper();
         final PersistencePluginHelper persistencePluginHelper = new PersistencePluginHelper(false, pluginHelper);
         pluginHelper.loadPlugins("uk/me/gumbley/minimiser/migrator/persistencemigration" + pluginSubName + "plugin.properties");
         final MiniMiserDAOFactory miniMiserDAOFactory = persistencePluginHelper.createDatabase(dbName, "").getInstanceOf(MiniMiserDAOFactory.class);

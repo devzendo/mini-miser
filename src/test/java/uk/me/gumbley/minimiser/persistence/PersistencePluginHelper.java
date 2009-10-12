@@ -11,6 +11,7 @@ import uk.me.gumbley.commoncode.string.StringUtils;
 import uk.me.gumbley.minimiser.config.UnittestingConfig;
 import uk.me.gumbley.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
 import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelperFactory;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -34,7 +35,7 @@ public final class PersistencePluginHelper {
      * directory is empty, and use the real plugin manager.
      */
     public PersistencePluginHelper() {
-        this(false, new PluginHelper(false));
+        this(false, PluginHelperFactory.createPluginHelper());
     }
     
     /**

@@ -16,6 +16,7 @@ import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelperFactory;
 
 
 /**
@@ -35,7 +36,7 @@ public final class TestVersionDao extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() {
-        mPluginHelper = new PluginHelper(true);
+        mPluginHelper = PluginHelperFactory.createPluginHelperWithDummyPluginManager();
         mPersistencePluginHelper = new PersistencePluginHelper(false, mPluginHelper);
         mPersistencePluginHelper.validateTestDatabaseDirectory();
     }

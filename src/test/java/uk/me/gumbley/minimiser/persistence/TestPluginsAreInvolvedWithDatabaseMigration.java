@@ -19,6 +19,7 @@ import uk.me.gumbley.minimiser.opener.OpenerAdapter;
 import uk.me.gumbley.minimiser.opener.OpenerAdapter.ProgressStage;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelperFactory;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
@@ -47,7 +48,7 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
      */
     @Before
     public void getPrerequisites() {
-        mPluginHelper = new PluginHelper(false);
+        mPluginHelper = PluginHelperFactory.createPluginHelper();
         mPersistencePluginHelper = new PersistencePluginHelper();
         mPersistencePluginHelper.validateTestDatabaseDirectory();
         mPersistencePluginOpenerHelper = new PersistencePluginOpenerHelper(mPluginHelper, mPersistencePluginHelper);

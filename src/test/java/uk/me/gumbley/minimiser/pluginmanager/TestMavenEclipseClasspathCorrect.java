@@ -21,7 +21,7 @@ public final class TestMavenEclipseClasspathCorrect {
     public void shouldOnlySeeResourcesOnceInEnumeration() throws IOException {   
     final Enumeration<URL> urls =
         Thread.currentThread().getContextClassLoader().
-        getResources("uk/me/gumbley/minimiser/pluginmanager/goodplugin.properties");
+        getResources("uk/me/gumbley/minimiser/plugin/goodplugin.properties");
         int urlsize = 0;
         while (urls.hasMoreElements()) {
             urls.nextElement();

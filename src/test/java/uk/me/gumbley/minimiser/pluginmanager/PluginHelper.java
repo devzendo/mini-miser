@@ -14,19 +14,15 @@ import uk.me.gumbley.minimiser.plugin.Plugin;
  *
  */
 public final class PluginHelper {
-    private final PluginRegistry mPluginRegistry;
     private final PluginManager mPluginManager;
 
     /**
-     * @param useDummyPluginManager true to use the dummy plugin
-     * manager, false to use the proper one, with the ability to
-     * load specific plugins
+     * Package-private constructor; use the PluginHelperFactory
+     * to instantiate one.
+     * @param pluginManager the PluginManager to use
      */
-    public PluginHelper(final boolean useDummyPluginManager) {
-        mPluginRegistry = new DefaultPluginRegistry();
-        mPluginManager = useDummyPluginManager ?
-                new DummyAppPluginManager() : 
-                new DefaultPluginManager(null, mPluginRegistry);
+    PluginHelper(final PluginManager pluginManager) {
+        mPluginManager = pluginManager;
 
     }
 

@@ -14,6 +14,7 @@ import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginOpenerHelper;
 import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelperFactory;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
@@ -35,7 +36,7 @@ public final class TestOpenerWorkflowWithNoPlugins extends LoggingTestCase {
      */
     @Before
     public void getPrerequisites() {
-        mPluginHelper = new PluginHelper(false);
+        mPluginHelper = PluginHelperFactory.createPluginHelper();
         mPersistencePluginHelper = new PersistencePluginHelper(false, mPluginHelper);
         // Note: NO PLUGINS WILL BE LOADED IN THIS TEST
         mPersistencePluginHelper.validateTestDatabaseDirectory();

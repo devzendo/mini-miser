@@ -14,6 +14,7 @@ import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginHelper;
+import uk.me.gumbley.minimiser.pluginmanager.PluginHelperFactory;
 import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
@@ -34,7 +35,7 @@ public final class TestPersistenceMigratorHelper {
      */
     @Before
     public void getPrerequisites() {
-        mPluginHelper = new PluginHelper(false);
+        mPluginHelper = PluginHelperFactory.createPluginHelper();
         mPersistencePluginHelper = new PersistencePluginHelper(false, mPluginHelper);
         mPersistencePluginHelper.validateTestDatabaseDirectory();
         
