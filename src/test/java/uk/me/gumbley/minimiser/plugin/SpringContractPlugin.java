@@ -14,13 +14,13 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  *
  */
 public final class SpringContractPlugin implements ApplicationPlugin {
-    private boolean mGotSpringLoader;
-    private boolean mAppContextsAdded;
     private SpringLoader mSpringLoader;
+    private boolean mGotSpringLoader = false;
+    private boolean mAppContextsAdded = false;
     private boolean mFirstGetName = true;
-    private boolean mGetNameCalledOK;
+    private boolean mGetNameCalledOK = false;
     private boolean mFirstGetVersion = true;
-    private boolean mGetVersionCalledOK;
+    private boolean mGetVersionCalledOK = false;
 
     /**
      * {@inheritDoc}
