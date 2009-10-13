@@ -12,13 +12,13 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
  * the framework also makes several lifecycle method calls into
  * the plugin, in order:
  * <ul>
- * <li> getName() and getVersion() are called</li>
  * <li> getApplicationContexts() allows the plugin to register
  *      any custom XML application context files provided as
  *      resources</li>
  * <li> ...all plugins' application contexts are then loaded...</li>
  * <li> setSpringLoader() is called after all plugins' application
  *      contexts have been bound to the SpringLoader.</li>
+ * <li> getName() and getVersion() are called</li>
  * </ul>
  * <p/>
  * The following calls are then made to obtain metadata about the
