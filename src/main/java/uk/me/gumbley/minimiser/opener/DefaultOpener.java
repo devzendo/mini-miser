@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.persistence.AccessFactory;
 import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
@@ -162,7 +162,7 @@ public final class DefaultOpener implements Opener {
     private boolean isCreatedByOtherApplication(
             final String dbName,
             final OpenerAdapter openerAdapter,
-            final VersionDao versionDao) {
+            final VersionsDao versionsDao) {
         final ApplicationPlugin applicationPlugin = mPluginManager.getApplicationPlugin();
         if (applicationPlugin == null) {
             LOGGER.warn("There is no application plugin defined - cannot check which application created this database");
@@ -173,8 +173,8 @@ public final class DefaultOpener implements Opener {
         LOGGER.debug(" the app plugin is " + applicationPlugin);
         LOGGER.debug("therer are " + mPluginManager.getPlugins().size() + " plugins");
         LOGGER.info("Checking that the '" + dbName + "' database was created by the '" + applicationPlugin.getName() + "' application");
-        if (versionDao.exists(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION)) {
-            final Version storedApplicationVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        if (versionsDao.exists(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION)) {
+            final Version storedApplicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
             if (storedApplicationVersion.isApplication()) {
                 LOGGER.info("Yes: there is an application plugin version stored for '" + applicationPlugin.getName() + "'");
                 return false;

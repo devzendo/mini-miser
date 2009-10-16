@@ -13,7 +13,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
@@ -33,7 +33,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
     private TransactionTemplate mTransactionTemplate;
     private MiniMiserDAOFactory mMiniMiserDaoFactory;
     private SQLAccess mSqlAccess;
-    private VersionDao mVersionDao;
+    private VersionsDao mVersionsDao;
     private SimpleJdbcTemplate mSimpleJdbcTemplate;
 
     /**
@@ -64,14 +64,14 @@ public final class TestTransactionHandling extends LoggingTestCase {
         final Boolean existsInTransaction = (Boolean) mTransactionTemplate.execute(new TransactionCallback() {
             public Boolean doInTransaction(final TransactionStatus ts) {
                 final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
-                mVersionDao.persistVersion(version);
-                return mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
+                mVersionsDao.persistVersion(version);
+                return mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
             }
         });
         // test
         LOGGER.info("End of transaction template");
         Assert.assertTrue(existsInTransaction);
-        Assert.assertTrue(mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
+        Assert.assertTrue(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
     }
 
     /**
@@ -88,8 +88,8 @@ public final class TestTransactionHandling extends LoggingTestCase {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
                     final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
-                    mVersionDao.persistVersion(version);
-                    existsInTransaction[0] = mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
+                    mVersionsDao.persistVersion(version);
+                    existsInTransaction[0] = mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
                     throw new DataIntegrityViolationException("A simulated access failure");
                 }
             });
@@ -100,7 +100,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         LOGGER.info("End of transaction template");
         Assert.assertTrue(correctlyCaught);
         Assert.assertTrue(existsInTransaction[0]);
-        Assert.assertFalse(mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
+        Assert.assertFalse(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
     }
 
 
@@ -121,8 +121,8 @@ public final class TestTransactionHandling extends LoggingTestCase {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
                     final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
-                    mVersionDao.persistVersion(version);
-                    existsInTransaction[0] = mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
+                    mVersionsDao.persistVersion(version);
+                    existsInTransaction[0] = mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
                     // if I do some DDL then force a rollback, the above DML will commit
                     mSimpleJdbcTemplate.update("CREATE TABLE TEST(ID INT PRIMARY KEY, NAME VARCHAR(255))");
                     mSimpleJdbcTemplate.update("INSERT INTO TEST (ID, NAME) VALUES(?, ?)", 69, "testobject");
@@ -137,7 +137,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         LOGGER.info("End of transaction template");
         Assert.assertTrue(existsInTransaction[0]);
         // Unfortunately, the DML for the Versions table will have been committed.
-        Assert.assertTrue(mVersionDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
+        Assert.assertTrue(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
         // But the DML for the TEST table will have been rolled back
         // The TEST table will exist, however.
         final int count = mSimpleJdbcTemplate.queryForInt("SELECT COUNT(*) FROM TEST WHERE NAME = ?", "testobject");
@@ -148,7 +148,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
             final String dbName) {
         final InstanceSet<DAOFactory> database = mPersistencePluginHelper.createDatabase(dbName, "");
         mMiniMiserDaoFactory = database.getInstanceOf(MiniMiserDAOFactory.class);
-        mVersionDao = mMiniMiserDaoFactory.getVersionDao();
+        mVersionsDao = mMiniMiserDaoFactory.getVersionDao();
         mSqlAccess = mMiniMiserDaoFactory.getSQLAccess();
         mSimpleJdbcTemplate = mSqlAccess.getSimpleJdbcTemplate();
         mTransactionTemplate = mSqlAccess.createTransactionTemplate();

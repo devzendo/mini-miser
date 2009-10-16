@@ -9,7 +9,7 @@
 		<constructor-arg ref="pluginManager" />
 	</bean>
 	
-	<!-- <bean id="versionDao" class="uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao" />
+	<!-- <bean id="versionDao" class="uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionsDao" />
 	should inject the JdbcTemplate if we had a factory bean? -->
 	
 </beans>

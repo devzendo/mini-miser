@@ -7,22 +7,22 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 
 /**
- * A VersionDao using SimpleJdbcTemplate
+ * A VersionsDao using SimpleJdbcTemplate
  * 
  * @author matt
  *
  */
-public final class JdbcTemplateVersionDao implements VersionDao {
+public final class JdbcTemplateVersionsDao implements VersionsDao {
     private final SimpleJdbcTemplate jdbcTemplate;
 
     /**
      * @param template the template used for access
      */
-    public JdbcTemplateVersionDao(final SimpleJdbcTemplate template) {
+    public JdbcTemplateVersionsDao(final SimpleJdbcTemplate template) {
         this.jdbcTemplate = template;
     }
     

@@ -1,7 +1,7 @@
 package uk.me.gumbley.minimiser.persistence;
 
 import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 
 /**
@@ -15,7 +15,7 @@ public interface MiniMiserDAOFactory extends DAOFactory {
      * VersionDAO added in V1 of the schema.
      * @return the DAO for accessing the Versions table
      */
-    VersionDao getVersionDao();
+    VersionsDao getVersionDao();
 
     /**
      * SequenceDao added in V1 of the schema. 

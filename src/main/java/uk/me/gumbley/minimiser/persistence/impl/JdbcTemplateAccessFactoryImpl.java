@@ -17,8 +17,8 @@ import uk.me.gumbley.minimiser.persistence.BadPasswordException;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistenceObservableEvent;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
-import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
+import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
@@ -277,7 +277,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         // TODO get this from Spring when we have a factory bean that can
         // create a JdbcTemplate from a programatically created
         // DataSource.
-        final VersionDao versionDao = new JdbcTemplateVersionDao(dbDetails.getJdbcTemplate());
+        final VersionsDao versionsDao = new JdbcTemplateVersionsDao(dbDetails.getJdbcTemplate());
         final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
             observer.eventOccurred(new PersistenceObservableEvent("Populating table 1 of 1 for " + plugin.getName() + " plugin"));
@@ -287,13 +287,13 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 VersionableEntity.SCHEMA_VERSION,
                 plugin == appPlugin,
                 plugin.getSchemaVersion());
-            versionDao.persistVersion(schemaVersion);
+            versionsDao.persistVersion(schemaVersion);
             final Version appVersion = new Version(
                 pluginName,
                 VersionableEntity.APPLICATION_VERSION,
                 plugin == appPlugin,
                 plugin.getVersion());
-            versionDao.persistVersion(appVersion);
+            versionsDao.persistVersion(appVersion);
         }
         // Now let the plugins loose
         final List<NewDatabaseCreation> newDatabaseCreationPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseCreation.class);

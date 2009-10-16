@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
@@ -84,12 +84,12 @@ public final class DefaultMigrator implements Migrator {
     PluginSchemaVersions getDatabaseSchemaVersions(
             final InstanceSet<DAOFactory> daoFactories) {
         final PluginSchemaVersions psv = new PluginSchemaVersions();
-        final VersionDao versionDao = daoFactories
+        final VersionsDao versionsDao = daoFactories
             .getInstanceOf(MiniMiserDAOFactory.class)
             .getVersionDao();
         final List<String> pluginNames = getPluginNames();
         for (final String pluginName : pluginNames) {
-            final Version schemaVersion = versionDao.findVersion(pluginName, VersionableEntity.SCHEMA_VERSION);
+            final Version schemaVersion = versionsDao.findVersion(pluginName, VersionableEntity.SCHEMA_VERSION);
             psv.addPluginSchemaVersion(pluginName, schemaVersion.getVersion());
         }
         return psv;
@@ -125,23 +125,23 @@ public final class DefaultMigrator implements Migrator {
     public void migrate(final InstanceSet<DAOFactory> daoFactories)
             throws DataAccessException {
         final MiniMiserDAOFactory miniMiserDaoFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
-        final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
+        final VersionsDao versionsDao = miniMiserDaoFactory.getVersionDao();
         final DataSource dataSource = miniMiserDaoFactory.getSQLAccess().getDataSource();
         final SimpleJdbcTemplate simpleJdbcTemplate = miniMiserDaoFactory.getSQLAccess().getSimpleJdbcTemplate();
-        migrateFacades(versionDao, dataSource, simpleJdbcTemplate);
-        updateCurrentSchemaVersions(versionDao);
-        updateCurrentVersions(versionDao);
+        migrateFacades(versionsDao, dataSource, simpleJdbcTemplate);
+        updateCurrentSchemaVersions(versionsDao);
+        updateCurrentVersions(versionsDao);
     }
 
     private void migrateFacades(
-            final VersionDao versionDao,
+            final VersionsDao versionsDao,
             final DataSource dataSource,
             final SimpleJdbcTemplate simpleJdbcTemplate) {
         for (final DatabaseMigration databaseMigration : mPluginManager.getPluginsImplementingFacade(DatabaseMigration.class)) {
             final String pluginName = ((Plugin) databaseMigration).getName();
             final DatabaseMigrationFacade databaseMigrationFacade = databaseMigration.getDatabaseMigrationFacade();
             if (databaseMigrationFacade != null) {
-                final Version schemaVersion = versionDao.findVersion(pluginName, VersionableEntity.SCHEMA_VERSION);
+                final Version schemaVersion = versionsDao.findVersion(pluginName, VersionableEntity.SCHEMA_VERSION);
                 final String schemaVersionString = schemaVersion.getVersion();
                 LOGGER.info(
                     "Plugin " + databaseMigration.getClass().getName() + " '"
@@ -156,7 +156,7 @@ public final class DefaultMigrator implements Migrator {
         }
     }
 
-    private void updateCurrentSchemaVersions(final VersionDao versionDao) {
+    private void updateCurrentSchemaVersions(final VersionsDao versionsDao) {
         final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
             final String pluginName = plugin.getName();
@@ -164,7 +164,7 @@ public final class DefaultMigrator implements Migrator {
             LOGGER.info("Plugin " + plugin.getClass().getName() + " '"
                 + pluginName + "' schema version is now "
                 + pluginSchemaVersion);
-            versionDao.persistVersion(
+            versionsDao.persistVersion(
                 new Version(
                     pluginName,
                     VersionableEntity.SCHEMA_VERSION,
@@ -173,7 +173,7 @@ public final class DefaultMigrator implements Migrator {
         }
     }
 
-    private void updateCurrentVersions(final VersionDao versionDao) {
+    private void updateCurrentVersions(final VersionsDao versionsDao) {
         final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
             final String pluginName = plugin.getName();
@@ -181,7 +181,7 @@ public final class DefaultMigrator implements Migrator {
             LOGGER.info("Plugin " + plugin.getClass().getName() + " '"
                 + pluginName + "' plugin version is now "
                 + pluginVersion);
-            versionDao.persistVersion(
+            versionsDao.persistVersion(
                 new Version(pluginName,
                     VersionableEntity.APPLICATION_VERSION,
                     plugin == appPlugin,

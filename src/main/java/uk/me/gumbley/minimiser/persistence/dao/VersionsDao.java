@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
  * @author matt
  *
  */
-public interface VersionDao {
+public interface VersionsDao {
     /**
      * Find a Version for a given entity
      * @param pluginName the name of a plugin that should be

@@ -65,10 +65,10 @@ public final class TestVersionDao extends LoggingTestCase {
 
     private void checkVersionForPlugin(
             final Plugin plugin,
-            final VersionDao versionDao,
+            final VersionsDao versionsDao,
             final boolean isApplication) {
         
-        final Version dbVersion = versionDao.findVersion(plugin.getName(), VersionableEntity.SCHEMA_VERSION);
+        final Version dbVersion = versionsDao.findVersion(plugin.getName(), VersionableEntity.SCHEMA_VERSION);
         LOGGER.info(String.format("... schema version returned from db should not be null - it is %s", dbVersion));
         Assert.assertNotNull(dbVersion);
         Assert.assertEquals(plugin.getName(), dbVersion.getPluginName());
@@ -76,7 +76,7 @@ public final class TestVersionDao extends LoggingTestCase {
         Assert.assertEquals(plugin.getSchemaVersion(), dbVersion.getVersion());
         Assert.assertEquals(isApplication, dbVersion.isApplication());
         //
-        final Version appVersion = versionDao.findVersion(plugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version appVersion = versionsDao.findVersion(plugin.getName(), VersionableEntity.APPLICATION_VERSION);
         LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
         Assert.assertNotNull(dbVersion);
         Assert.assertEquals(plugin.getName(), appVersion.getPluginName());
@@ -91,18 +91,18 @@ public final class TestVersionDao extends LoggingTestCase {
     @Test
     public void checkVersionPopulation() { 
         final String dbName = "checkversionpopulation";
-        final VersionDao versionDao = mPersistencePluginHelper.
+        final VersionsDao versionsDao = mPersistencePluginHelper.
             createDatabase(dbName, "").
             getInstanceOf(MiniMiserDAOFactory.class).
             getVersionDao();
 
         final Plugin appPlugin = getAppPlugin();
         Assert.assertNotNull(appPlugin);
-        checkVersionForPlugin(appPlugin, versionDao, true);
+        checkVersionForPlugin(appPlugin, versionsDao, true);
         
         final Plugin normalPlugin = getNormalPlugin();
         Assert.assertNotNull(normalPlugin);
-        checkVersionForPlugin(normalPlugin, versionDao, false);
+        checkVersionForPlugin(normalPlugin, versionsDao, false);
     }
     
     /**
@@ -112,21 +112,21 @@ public final class TestVersionDao extends LoggingTestCase {
     @Test
     public void pluginsCannotChangeTheirApplicationStatus() {
         final String dbName = "noapplicationstatuschange";
-        final VersionDao versionDao = mPersistencePluginHelper.
+        final VersionsDao versionsDao = mPersistencePluginHelper.
             createDatabase(dbName, "").
             getInstanceOf(MiniMiserDAOFactory.class).
             getVersionDao();
         final Plugin appPlugin = getAppPlugin();
-        final Version appVersion = versionDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version appVersion = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
         Assert.assertTrue(appVersion.isApplication());
         Assert.assertEquals("1.0.0", appVersion.getVersion());
         appVersion.setIsApplication(false);
         appVersion.setVersion("1.0.1");
         Assert.assertFalse(appVersion.isApplication()); // the bean takes the change...
         Assert.assertEquals("1.0.1", appVersion.getVersion());
-        versionDao.persistVersion(appVersion);
+        versionsDao.persistVersion(appVersion);
 
-        final Version newAppVersion = versionDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version newAppVersion = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
         Assert.assertTrue(newAppVersion.isApplication()); // but the change in application status cannot be persisted
         Assert.assertEquals("1.0.1", newAppVersion.getVersion()); // version can be updated though
     }

@@ -6,7 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.me.gumbley.commoncode.string.StringUtils;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 
 /**
@@ -39,17 +39,17 @@ public final class TestPersistenceBenchmarks extends DummyAppPluginManagerPersis
             createDatabase(dbDirPlusDbName, "").
             getInstanceOf(MiniMiserDAOFactory.class); 
         try {
-            final VersionDao versionDao = mmData.getVersionDao();
+            final VersionsDao versionsDao = mmData.getVersionDao();
             // populate
             for (int i = 0; i < 1000; i++) {
                 final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), false, String.format("Version%d", i));
-                versionDao.persistVersion(v);
+                versionsDao.persistVersion(v);
             }
             // Reload using select by entity
             final long selectEntityStart = System.currentTimeMillis();
             for (int i = 999; i >= 0; i--) {
                 final String entityPK = String.format("Benchmark%d", i);
-                final Version v = versionDao.findVersion(PLUGIN_NAME, entityPK);
+                final Version v = versionsDao.findVersion(PLUGIN_NAME, entityPK);
                 Assert.assertNotNull(v);
                 //Assert.assertEquals(String.format("Version%d", i), v.getVersion());
                 //Assert.assertEquals(entityPK, v.getEntity());
@@ -61,7 +61,7 @@ public final class TestPersistenceBenchmarks extends DummyAppPluginManagerPersis
             final long countEntityStart = System.currentTimeMillis();
             for (int i = 0; i < 1000; i++) {
                 final String entityPK = String.format("Benchmark%d", i);
-                final boolean exists = versionDao.exists(PLUGIN_NAME, entityPK);
+                final boolean exists = versionsDao.exists(PLUGIN_NAME, entityPK);
                 Assert.assertTrue(exists);
             }
             final long countEntityStop = System.currentTimeMillis();
@@ -108,17 +108,17 @@ public final class TestPersistenceBenchmarks extends DummyAppPluginManagerPersis
                 createDatabase(dbDirPlusDbName, encrypted ? "secret squirrel" : "").
                 getInstanceOf(MiniMiserDAOFactory.class);
             try {
-                final VersionDao versionDao = mmData.getVersionDao();
+                final VersionsDao versionsDao = mmData.getVersionDao();
                 final int rows = 100000;
                 // populate
                 for (int i = 0; i < rows; i++) {
                     final Version v = new Version(PLUGIN_NAME, String.format("Benchmark%d", i), false, String.format("Version%d", i));
-                    versionDao.persistVersion(v);
+                    versionsDao.persistVersion(v);
                 }
                 // Reload using select by entity
                 for (int i = rows - 1; i >= 0; i--) {
                     final String entityPK = String.format("Benchmark%d", i);
-                    final Version v = versionDao.findVersion(PLUGIN_NAME, entityPK);
+                    final Version v = versionsDao.findVersion(PLUGIN_NAME, entityPK);
                     Assert.assertNotNull(v);
                     //Assert.assertEquals(String.format("Version%d", i), v.getVersion());
                     //Assert.assertEquals(entityPK, v.getEntity());

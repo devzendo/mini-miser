@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
@@ -94,13 +94,13 @@ public final class PersistenceMigratorHelper {
      */
     public void checkForUpgradedVersions(final InstanceSet<DAOFactory> openDatabase) {
         final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
-        final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
+        final VersionsDao versionsDao = miniMiserDaoFactory.getVersionDao();
         final ApplicationPlugin applicationPlugin = mPluginHelper.getApplicationPlugin();
         
-        final Version applicationSchemaVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
+        final Version applicationSchemaVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
         Assert.assertEquals(applicationPlugin.getSchemaVersion(), applicationSchemaVersion.getVersion());
 
-        final Version applicationVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version applicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
         Assert.assertEquals(applicationPlugin.getVersion(), applicationVersion.getVersion());
     }
 
@@ -110,13 +110,13 @@ public final class PersistenceMigratorHelper {
      */
     public void checkForNoUpgradedVersions(final InstanceSet<DAOFactory> openDatabase) {
         final MiniMiserDAOFactory miniMiserDaoFactory = openDatabase.getInstanceOf(MiniMiserDAOFactory.class);
-        final VersionDao versionDao = miniMiserDaoFactory.getVersionDao();
+        final VersionsDao versionsDao = miniMiserDaoFactory.getVersionDao();
         final ApplicationPlugin applicationPlugin = mPluginHelper.getApplicationPlugin();
 
-        final Version applicationSchemaVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
+        final Version applicationSchemaVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
         Assert.assertEquals("1.0", applicationSchemaVersion.getVersion());
 
-        final Version applicationVersion = versionDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version applicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
         Assert.assertEquals("1.0", applicationVersion.getVersion());
     }
 

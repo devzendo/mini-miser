@@ -7,7 +7,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 
 /**
  * Performs migrations - upgrades from an old schema to a new one on open
- * databases, and updates the versions of all plugins via the VersionDao. All
+ * databases, and updates the versions of all plugins via the VersionsDao. All
  * done within a transaction, which is rolled back upon failure.
  * 
  * @author matt

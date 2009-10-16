@@ -14,7 +14,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import uk.me.gumbley.minimiser.logging.LoggingTestCase;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
@@ -30,7 +30,7 @@ public final class TestAutoCommit extends LoggingTestCase {
     private PersistencePluginHelper mPersistencePluginHelper;
     private SimpleJdbcTemplate mSimpleJdbcTemplate;
     private TransactionTemplate mTransactionTemplate;
-    private VersionDao mVersionDao;
+    private VersionsDao mVersionsDao;
     private static final String TESTPLUGIN = "testplugin";
 
     /**
@@ -88,7 +88,7 @@ public final class TestAutoCommit extends LoggingTestCase {
                 autoCommitActive[0] = isAutoCommitEnabled(mSimpleJdbcTemplate);
                 // create something for the transaction to be useful for
                 final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
-                mVersionDao.persistVersion(version);
+                mVersionsDao.persistVersion(version);
                 autoCommitActive[1] = isAutoCommitEnabled(mSimpleJdbcTemplate);
                 return null;
             }
@@ -111,7 +111,7 @@ public final class TestAutoCommit extends LoggingTestCase {
             public Object doInTransaction(final TransactionStatus ts) {
                 // create something for the transaction to be useful for
                 final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
-                mVersionDao.persistVersion(version);
+                mVersionsDao.persistVersion(version);
                 return null;
             }
         });
@@ -134,7 +134,7 @@ public final class TestAutoCommit extends LoggingTestCase {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
                     final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
-                    mVersionDao.persistVersion(version);
+                    mVersionsDao.persistVersion(version);
                     throw new DataIntegrityViolationException("A simulated access failure");
                 }
             });
@@ -163,6 +163,6 @@ public final class TestAutoCommit extends LoggingTestCase {
         final SQLAccess sqlAccess = miniMiserDaoFactory.getSQLAccess();
         mSimpleJdbcTemplate = sqlAccess.getSimpleJdbcTemplate();
         mTransactionTemplate = sqlAccess.createTransactionTemplate();
-        mVersionDao = miniMiserDaoFactory.getVersionDao();
+        mVersionsDao = miniMiserDaoFactory.getVersionDao();
     }
 }

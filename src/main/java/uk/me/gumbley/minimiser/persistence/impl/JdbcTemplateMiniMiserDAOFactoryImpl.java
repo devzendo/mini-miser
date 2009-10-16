@@ -11,9 +11,9 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.dao.SequenceDao;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateSequenceDao;
-import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.impl.JdbcTemplateVersionsDao;
 import uk.me.gumbley.minimiser.persistence.sql.SQLAccess;
 import uk.me.gumbley.minimiser.persistence.sql.impl.H2SQLAccess;
 
@@ -31,7 +31,7 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
     private final String dbPath;
     private final SimpleJdbcTemplate jdbcTemplate;
     private volatile boolean isClosed = true;
-    private final VersionDao versionDao;
+    private final VersionsDao versionsDao;
     private final SequenceDao sequenceDao;
     private final DataSource dataSource;
     private SQLAccess sqlAccess;
@@ -48,7 +48,7 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
         this.jdbcTemplate = template;
         this.dataSource = source;
         isClosed = false;
-        versionDao = new JdbcTemplateVersionDao(jdbcTemplate);
+        versionsDao = new JdbcTemplateVersionsDao(jdbcTemplate);
         sequenceDao = new JdbcTemplateSequenceDao(jdbcTemplate);
     }
 
@@ -74,9 +74,9 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
     /**
      * {@inheritDoc}
      */
-    public VersionDao getVersionDao() {
+    public VersionsDao getVersionDao() {
         checkClosed("getVersionDao");
-        return versionDao;
+        return versionsDao;
     }
 
     /**

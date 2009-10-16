@@ -8,7 +8,7 @@ import org.junit.Test;
 import uk.me.gumbley.minimiser.persistence.DAOFactory;
 import uk.me.gumbley.minimiser.persistence.MiniMiserDAOFactory;
 import uk.me.gumbley.minimiser.persistence.PersistencePluginHelper;
-import uk.me.gumbley.minimiser.persistence.dao.VersionDao;
+import uk.me.gumbley.minimiser.persistence.dao.VersionsDao;
 import uk.me.gumbley.minimiser.persistence.domain.Version;
 import uk.me.gumbley.minimiser.persistence.domain.VersionableEntity;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
@@ -64,9 +64,9 @@ public final class TestPersistenceMigratorHelper {
         // test
         try {
             final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
-            final VersionDao versionDao = miniMiserDAOFactory.getVersionDao();
+            final VersionsDao versionsDao = miniMiserDAOFactory.getVersionDao();
             final ApplicationPlugin appPlugin = mPluginHelper.getApplicationPlugin();
-            final Version version = versionDao.findVersion(appPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
+            final Version version = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
             Assert.assertEquals("1.0", version.getVersion());
         } finally {
             // teardown
@@ -88,9 +88,9 @@ public final class TestPersistenceMigratorHelper {
         // test
         try {
             final MiniMiserDAOFactory miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
-            final VersionDao versionDao = miniMiserDAOFactory.getVersionDao();
+            final VersionsDao versionsDao = miniMiserDAOFactory.getVersionDao();
             final ApplicationPlugin appPlugin = mPluginHelper.getApplicationPlugin();
-            final Version version = versionDao.findVersion(appPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
+            final Version version = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
             Assert.assertEquals("2.0", version.getVersion());
         } finally {
             // teardown
