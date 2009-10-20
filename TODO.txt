@@ -24,6 +24,16 @@ BUGS:
   The database is not opened, but you don't see the intro page. 
 
 CURRENT TASKS:
+* Remove Mycila
+* Documentation
+  Tutorial:
+    Loading beans thru the SpringLoader and defining your own
+    application contexts
+  Reference:
+    Facades:
+* Add the wizard graphic to the application plugin
+* Move the application plugin's resources out to a facade?
+      
   
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
 * The message viewer looks pants on the Mac - use the form
