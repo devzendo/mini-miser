@@ -33,6 +33,8 @@ CURRENT TASKS:
     Facades:
 * Add the wizard graphic to the application plugin
 * Move the application plugin's resources out to a facade?
+* Allow one plugin to reference another plugin (e.g. app plugin
+  using versions or categories)      
       
   
 CURRENT OUTSTANDING BLOCKERS FOR RELEASE:
