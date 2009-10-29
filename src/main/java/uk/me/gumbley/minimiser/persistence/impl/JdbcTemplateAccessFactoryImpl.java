@@ -138,7 +138,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
         // but then doesn't pass the error on to me.
-        // Looks like a 90013 (DATABASE_HOT_FOUND_1) isn't mapped by the default
+        // Looks like a 90013 (DATABASE_NOT_FOUND_1) isn't mapped by the default
         // Spring sql-error-codes.xml.
         // So, I have to check myself. (Obviating one of the reasons I chose Spring!)
         try {
