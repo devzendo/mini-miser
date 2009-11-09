@@ -17,7 +17,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 /**
  * A helper class for building tests involving plugins and
  * persistence.
- * 
+ *
  * @author matt
  *
  */
@@ -37,7 +37,7 @@ public final class PersistencePluginHelper {
     public PersistencePluginHelper() {
         this(false, PluginHelperFactory.createPluginHelper());
     }
-    
+
     /**
      * Create a helper that may or may not check that the test
      * database directory is empty, and may use the real or dummy
@@ -56,7 +56,7 @@ public final class PersistencePluginHelper {
         mAccessFactory = new JdbcTemplateAccessFactoryImpl(mPluginHelper.getPluginManager());
         mTidier = new PersistencePluginHelperTidier(mTestDatabaseDirectory);
     }
-    
+
     /**
      * Add a database to the set that are to be deleted by
      * deleteCreatedDatabases. For instance if you're using two
@@ -71,7 +71,7 @@ public final class PersistencePluginHelper {
     public void addDatabaseToDelete(final String dbName, final MiniMiserDAOFactory miniMiserDAOFactory) {
         mTidier.addDatabaseToDelete(dbName, miniMiserDAOFactory);
     }
-    
+
     /**
      * Add a database to the set that are to be deleted by
      * deleteCreatedDatabases. For instance if you're using two
@@ -84,7 +84,7 @@ public final class PersistencePluginHelper {
     public void addDatabaseToDelete(final String dbName) {
         mTidier.addDatabaseToDelete(dbName);
     }
-    
+
     /**
      * Check for an empty test database directory
      */
@@ -105,7 +105,7 @@ public final class PersistencePluginHelper {
         if (mSuppressEmptinessCheck) {
             return;
         }
-        
+
         checkForEmptiness(mTestDatabaseDirectory);
     }
 
@@ -139,14 +139,14 @@ public final class PersistencePluginHelper {
         sb.append(dbname);
         return sb.toString();
     }
-    
+
     /**
      * Create a database given its name and optional password.
      * It is left open. Typically called from a @Before method.
      * @param dbName the name of the database
      * @param dbPassword the password, or empty string if not
      * encrypted.
-     * @return an InstabceSet<DAOFactory> via which data access
+     * @return an InstanceSet<DAOFactory> via which data access
      * objects can be obtained.
      */
     public InstanceSet<DAOFactory> createDatabase(final String dbName, final String dbPassword) {
@@ -157,7 +157,7 @@ public final class PersistencePluginHelper {
         };
         return createDatabase(dbName, dbPassword, ignoringObserver);
     }
-    
+
     /**
      * Create a database given its name and optional password.
      * It is left open. Typically called from a @Before method.
@@ -166,7 +166,7 @@ public final class PersistencePluginHelper {
      * encrypted.
      * @param observer an observer of persistence events that
      * will be notified of the progress of the creation.
-     * @return an InstabceSet<DAOFactory> via which data access
+     * @return an InstanceSet<DAOFactory> via which data access
      * objects can be obtained.
      */
     public InstanceSet<DAOFactory> createDatabase(final String dbName, final String dbPassword, final Observer<PersistenceObservableEvent> observer) {
@@ -179,7 +179,7 @@ public final class PersistencePluginHelper {
         mTidier.addDatabaseToDelete(dbName, daoFactorySet.getInstanceOf(MiniMiserDAOFactory.class));
         return daoFactorySet;
     }
-    
+
     /**
      * Open a database given its name and optional password.
      * Typically called from a @Before method.
@@ -199,10 +199,10 @@ public final class PersistencePluginHelper {
         mTidier.addDatabaseToDelete(dbName, daoFactorySet.getInstanceOf(MiniMiserDAOFactory.class));
         return daoFactorySet;
     }
-    
+
     /**
      * Typically run in an @After block, tidy up after the
-     * databases have been created. 
+     * databases have been created.
      */
     public void tidyTestDatabasesDirectory() {
         mTidier.tidy();

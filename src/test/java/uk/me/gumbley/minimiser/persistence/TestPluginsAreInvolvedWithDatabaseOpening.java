@@ -18,7 +18,7 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
  * to provide their DAOFactory to be added to the
  * InstanceSet<DAOFactory> that's bound to the DatabaseDescriptor
  * upon database opening.
- * 
+ *
  * @author matt
  *
  */
@@ -28,7 +28,7 @@ public final class TestPluginsAreInvolvedWithDatabaseOpening extends DefaultPlug
     private DatabaseOpeningAppPlugin mDatabaseOpeningAppPlugin;
     private AccessFactory mAccessFactory;
     private String mDbDirPlusDbName;
-    
+
     /**
      * @throws PluginException never
      */
@@ -46,17 +46,17 @@ public final class TestPluginsAreInvolvedWithDatabaseOpening extends DefaultPlug
         Assert.assertNotNull(mAccessFactory);
         mDbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
     public void pluginsCreateDAOFactory() {
         InstanceSet<DAOFactory> daoFactories = null;
         MiniMiserDAOFactory miniMiserDAOFactory = null;
         try {
-            createDatabase();
-            
+            createDatabaseThenClose();
+
             daoFactories = mAccessFactory.openDatabase(mDbDirPlusDbName, "");
             miniMiserDAOFactory = daoFactories.getInstanceOf(MiniMiserDAOFactory.class);
             Assert.assertNotNull(miniMiserDAOFactory);
@@ -75,7 +75,7 @@ public final class TestPluginsAreInvolvedWithDatabaseOpening extends DefaultPlug
         }
     }
 
-    private void createDatabase() {
-        mAccessFactory.createDatabase(mDbDirPlusDbName, "").getInstanceOf(MiniMiserDAOFactory.class).close();        
+    private void createDatabaseThenClose() {
+        mAccessFactory.createDatabase(mDbDirPlusDbName, "").getInstanceOf(MiniMiserDAOFactory.class).close();
     }
 }

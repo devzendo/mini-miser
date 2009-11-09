@@ -14,13 +14,14 @@ import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseCreation;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
 import uk.me.gumbley.minimiser.pluginmanager.PluginManager;
+import uk.me.gumbley.minimiser.util.InstanceSet;
 
 
 /**
  * Plugins that declare an interest will be given the File|New
  * wizard's results data, i.e. the user's input prior to
  * database creation.
- * 
+ *
  * @author matt
  *
  */
@@ -33,7 +34,7 @@ public final class TestPluginsAreInvolvedWithDatabaseCreation extends DefaultPlu
     private AccessFactory mAccessFactory;
     private PluginObserver mPluginObserver;
     private String mDbDirPlusDbName;
-    
+
     /**
      * @throws PluginException never
      */
@@ -52,7 +53,7 @@ public final class TestPluginsAreInvolvedWithDatabaseCreation extends DefaultPlu
         mPluginObserver = new PluginObserver();
         mDbDirPlusDbName = getAbsoluteDatabaseDirectory(PLUGINDBNAME);
     }
-    
+
     private class PluginObserver implements Observer<PersistenceObservableEvent> {
         private int seenPluginEvents = 0;
 
@@ -70,26 +71,27 @@ public final class TestPluginsAreInvolvedWithDatabaseCreation extends DefaultPlu
             return seenPluginEvents == 2;
         }
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
-    public void pluginsReceiveWizardResults() {
+    public void pluginsReceiveWizardResultsCreateAndOpenDatabase() {
         final Map<String, Object> pluginProperties = createPluginProperties();
-        MiniMiserDAOFactory database = null;
+        MiniMiserDAOFactory miniMiserDaoFactory = null;
         try {
-            database = 
-                mAccessFactory.
-                createDatabase(mDbDirPlusDbName, "", mPluginObserver, pluginProperties).
-                getInstanceOf(MiniMiserDAOFactory.class);
+            final InstanceSet<DAOFactory> databases = mAccessFactory.
+            createDatabase(mDbDirPlusDbName, "", mPluginObserver, pluginProperties);
+            miniMiserDaoFactory = databases.getInstanceOf(MiniMiserDAOFactory.class);
             Assert.assertTrue(mDatabaseCreationAppPlugin.correctPluginPropertiesPassed());
             Assert.assertTrue(mDatabaseCreationAppPlugin.allCreationMethodsCalled());
+            Assert.assertTrue(mDatabaseCreationAppPlugin.allOpeningMethodsCalled());
+            Assert.assertNotNull(databases.getInstanceOf(DatabaseOpeningDAOFactory.class));
             Assert.assertTrue(mPluginObserver.haveSeenPluginEvent());
         } finally {
             try {
-                if (database != null) {
-                    database.close();
+                if (miniMiserDaoFactory != null) {
+                    miniMiserDaoFactory.close();
                 }
             } finally {
                 deleteDatabaseFiles(PLUGINDBNAME);

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package uk.me.gumbley.minimiser.persistence;
 
@@ -16,24 +16,29 @@ import uk.me.gumbley.minimiser.plugin.AbstractPlugin;
 import uk.me.gumbley.minimiser.plugin.ApplicationPlugin;
 import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseCreation;
 import uk.me.gumbley.minimiser.plugin.facade.newdatabase.NewDatabaseCreationFacade;
+import uk.me.gumbley.minimiser.plugin.facade.opendatabase.DatabaseOpening;
+import uk.me.gumbley.minimiser.plugin.facade.opendatabase.DatabaseOpeningFacade;
+import uk.me.gumbley.minimiser.util.InstancePair;
 
 /**
  * @author matt
  *
  */
 public final class DatabaseCreationAppPlugin extends AbstractPlugin implements
-        ApplicationPlugin, NewDatabaseCreation {
+        ApplicationPlugin, NewDatabaseCreation, DatabaseOpening {
     private boolean mCreateDatabaseCalled = false;
+    private boolean mOpenDatabaseCalled = false;
     private boolean mPopulateDatabaseCalled = false;
     private boolean mPopulatePluginPropertiesOK = false;
     private boolean mCreatePluginPropertiesOK = false;
     private final NewDatabaseCreationFacade mNewDatabaseCreationFacade;
-    
+    private final DatabaseOpeningFacade mDatabaseOpeningFacade;
+
     /**
-     * Expected data from the dummy wizard data 
+     * Expected data from the dummy wizard data
      */
     public static final String WIZARDVALUE = "WIZARDVALUE";
-    
+
     /**
      * Expected data from the dummy wizard data
      */
@@ -77,8 +82,21 @@ public final class DatabaseCreationAppPlugin extends AbstractPlugin implements
                 observer.eventOccurred(new PersistenceObservableEvent("Populating DatabaseCreationAppPlugin data"));
             }
         };
+
+        mDatabaseOpeningFacade = new DatabaseOpeningFacade() {
+
+            public InstancePair<DAOFactory> createDAOFactory(
+                    final SimpleJdbcTemplate jdbcTemplate,
+                    final SingleConnectionDataSource dataSource) {
+                mOpenDatabaseCalled = true;
+                final DatabaseOpeningDAOFactory daoFactory = new DatabaseOpeningDAOFactory();
+                final InstancePair<DAOFactory> daoFactoryPair = new InstancePair<DAOFactory>(DatabaseOpeningDAOFactory.class, daoFactory);
+                return daoFactoryPair;
+            }
+
+        };
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -182,5 +200,19 @@ public final class DatabaseCreationAppPlugin extends AbstractPlugin implements
      */
     public boolean correctPluginPropertiesPassed() {
         return mCreatePluginPropertiesOK && mPopulatePluginPropertiesOK;
+    }
+
+    /**
+     * @return true iff the open method has been called
+     */
+    public boolean allOpeningMethodsCalled() {
+        return mOpenDatabaseCalled;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public DatabaseOpeningFacade getDatabaseOpeningFacade() {
+        return mDatabaseOpeningFacade;
     }
 }

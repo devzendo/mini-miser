@@ -50,17 +50,17 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 + "version VARCHAR(40)"
                 + ")",
         "CREATE SEQUENCE Sequence START WITH 1 INCREMENT BY 1",
-                
+
     };
     private static final int STATIC_CREATION_STEPS = 4;
-    
+
     private static final Observer<PersistenceObservableEvent> IGNORING_LISTENER = new Observer<PersistenceObservableEvent>() {
         public void eventOccurred(final PersistenceObservableEvent observableEvent) {
             // do nothing
         }
     };
     private final PluginManager mPluginManager;
-    
+
     /**
      * Construct a JDBC Template Access factory, given the
      * PluginManager so that the versions of any plugins can be
@@ -103,7 +103,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final String userName = "sa";
             final boolean suppressClose = false;
             dataSource = new SingleConnectionDataSource(driverClassName,
-                dbURL, userName, dbPassword + " userpwd", suppressClose); 
+                dbURL, userName, dbPassword + " userpwd", suppressClose);
             LOGGER.debug("DataSource is " + dataSource);
 
             observer.eventOccurred(new PersistenceObservableEvent("Opening database"));
@@ -128,7 +128,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             return dataSource;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -163,43 +163,49 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                             e.getErrorCode()), "", e);
             }
         }
-        
+
         final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
-        
+
         LOGGER.debug("Creating new JdbcTemplateMiniMiserDAOFactoryImpl");
-        final JdbcTemplateMiniMiserDAOFactoryImpl miniMiserDAOFactory = 
+        final JdbcTemplateMiniMiserDAOFactoryImpl miniMiserDAOFactory =
             new JdbcTemplateMiniMiserDAOFactoryImpl(
-                dbSetup.getDbURL(), dbSetup.getDbPath(), 
+                dbSetup.getDbURL(), dbSetup.getDbPath(),
                 dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
         daoFactories.addInstance(MiniMiserDAOFactory.class, miniMiserDAOFactory);
 
+        createDatabaseOpeningFacadeDAOFactories(dbSetup, daoFactories);
+
+        return daoFactories;
+    }
+
+    private void createDatabaseOpeningFacadeDAOFactories(
+            final DatabaseSetup dbSetup,
+            final InstanceSet<DAOFactory> daoFactories) {
         // Now let the plugins create their own DAOFactory objects.
         final List<DatabaseOpening> databaseOpeningPlugins = mPluginManager.getPluginsImplementingFacade(DatabaseOpening.class);
         for (final DatabaseOpening databaseOpeningPlugin : databaseOpeningPlugins) {
             final DatabaseOpeningFacade databaseOpeningFacade = databaseOpeningPlugin.getDatabaseOpeningFacade();
             if (databaseOpeningFacade == null) {
                 LOGGER.warn(
-                    "DatabaseOpening class " 
-                    + databaseOpeningPlugin.getClass().getName() 
+                    "DatabaseOpening class "
+                    + databaseOpeningPlugin.getClass().getName()
                     + " returned a null facade - ignoring");
             } else {
                 LOGGER.debug("Plugin " + databaseOpeningPlugin.getClass().getName() + " creating DAOFactory for database");
-                final InstancePair<DAOFactory> daoFactoryPair = 
+                final InstancePair<DAOFactory> daoFactoryPair =
                     databaseOpeningFacade.createDAOFactory(
                         dbSetup.getJdbcTemplate(),
                         dbSetup.getDataSource());
                 if (daoFactoryPair == null) {
                     LOGGER.warn(
-                        "DatabaseOpeningFacade class " 
-                        + databaseOpeningFacade.getClass().getName() 
+                        "DatabaseOpeningFacade class "
+                        + databaseOpeningFacade.getClass().getName()
                         + " returned a null DAOFactory - ignoring");
                 } else {
                     daoFactories.addInstance(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
                 }
             }
         }
-        
-        return daoFactories;
     }
 
     /**
@@ -243,13 +249,14 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         observer.eventOccurred(new PersistenceObservableEvent("Database creation complete"));
         final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
         daoFactories.addInstance(MiniMiserDAOFactory.class, templateImpl);
+        createDatabaseOpeningFacadeDAOFactories(dbSetup, daoFactories);
         return daoFactories;
     }
 
     // TODO move this to VersionsDao?
     private void createTables(
-            final DatabaseSetup dbDetails, 
-            final Observer<PersistenceObservableEvent> observer, 
+            final DatabaseSetup dbDetails,
+            final Observer<PersistenceObservableEvent> observer,
             final Map<String, Object> pluginProperties) {
         final SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
         for (int i = 0; i < CREATION_DDL_STRINGS.length; i++) {
@@ -267,7 +274,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             }
         }
     }
-    
+
     private void populateTables(
             final DatabaseSetup dbDetails,
             final Observer<PersistenceObservableEvent> observer,
@@ -330,8 +337,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
             if (newDatabaseCreationFacade == null) {
                 LOGGER.warn(
-                    "NewDatabaseCreation class " 
-                    + newDatabaseCreation.getClass().getName() 
+                    "NewDatabaseCreation class "
+                    + newDatabaseCreation.getClass().getName()
                     + " returned a null facade - ignoring");
             } else {
                 count += newDatabaseCreationFacade.getNumberOfDatabaseCreationSteps(pluginProperties);
