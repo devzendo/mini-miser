@@ -12,7 +12,7 @@ import uk.me.gumbley.minimiser.persistence.domain.Version;
 
 /**
  * A VersionsDao using SimpleJdbcTemplate
- * 
+ *
  * @author matt
  *
  */
@@ -25,14 +25,14 @@ public final class JdbcTemplateVersionsDao implements VersionsDao {
     public JdbcTemplateVersionsDao(final SimpleJdbcTemplate template) {
         this.jdbcTemplate = template;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public Version findVersion(final String pluginName, final String entity) throws DataAccessException {
-        final String sql = "select plugin, entity, isapplication, version from Versions where plugin = ? and entity = ?";
-        ParameterizedRowMapper<Version> mapper = new ParameterizedRowMapper<Version>() {
-            
+        final String sql = "SELECT plugin, entity, isapplication, version FROM Versions WHERE plugin = ? AND entity = ?";
+        final ParameterizedRowMapper<Version> mapper = new ParameterizedRowMapper<Version>() {
+
             // notice the return type with respect to Java 5 covariant return types
             public Version mapRow(final ResultSet rs, final int rowNum) throws SQLException {
                 final Version version = new Version();
@@ -51,15 +51,15 @@ public final class JdbcTemplateVersionsDao implements VersionsDao {
      */
     public void persistVersion(final Version version) throws DataAccessException {
         final int count = this.jdbcTemplate.queryForInt(
-            "select count(0) from Versions where plugin = ? and entity = ?",
+            "SELECT COUNT(0) FROM Versions WHERE plugin = ? AND entity = ?",
             new Object[]{version.getPluginName(), version.getEntity()});
         if (count == 0) {
             jdbcTemplate.update(
-                "insert into Versions (plugin, entity, isapplication, version) values (?, ?, ?, ?)",
+                "INSERT INTO Versions (plugin, entity, isapplication, version) VALUES (?, ?, ?, ?)",
                 new Object[] {version.getPluginName(), version.getEntity(), version.isApplication(), version.getVersion()});
         } else {
             jdbcTemplate.update(
-                "update Versions set version = ? where plugin = ? and entity = ?",
+                "UPDATE Versions SET version = ? WHERE plugin = ? AND entity = ?",
                 new Object[] {version.getVersion(), version.getPluginName(), version.getEntity()});
         }
     }
@@ -69,7 +69,7 @@ public final class JdbcTemplateVersionsDao implements VersionsDao {
      */
     public boolean exists(final String plugin, final String entity) throws DataAccessException {
         final int count = this.jdbcTemplate.queryForInt(
-            "select count(0) from Versions where plugin = ? and entity = ?",
+            "SELECT COUNT(0) FROM Versions WHERE plugin = ? AND entity = ?",
             new Object[]{plugin, entity});
         return count == 1;
     }
