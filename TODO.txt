@@ -24,11 +24,61 @@ BUGS:
   The database is not opened, but you don't see the intro page. 
 
 CURRENT TASKS:
+* Menu definition
+  * Should menus be supplied by Plugins or ApplicationPlugins?
+    ? ApplicationPlugins: easy - there's just one ApplicationMenu that's stored
+      in the OpenDatabaseList as an attribute.
+    ? Plugins: 
+      * All plugins could be MenuProviding - how is the final menu constructed from
+        each ApplicationMenu uber-bean? (and the internal MenuImpl menu structure)
+      * Does each plugin get its own instance of ApplicationMenu or is there one
+        that's shared and has to be accessed carefully so as to not tread on other
+        plugin's menu structure? (hopefully, the former)
+      * How are menu items and menus positioned - should they have a weight as in
+        Drupal? Lowest weight goes uppermost / leftmost. 
+      * There would be a map of Plugin->ApplicationMenu stored as an attribute of
+        the OpenDatabaseList.
+
+  * An ApplicationMenu uber-bean, MenuControlFacade and OpenDatabaseList is passed
+    into the application-provided MenuProviding(Facade)
+  * This bean is then initialised by the MenuProviding(Facade)
+    to add any application-specific menus, view tab identifiers, edit menu
+    items, file menu items (import/export?)
+  * Listeners can be added to the MenuControlFacade so that the menu code can
+    be made aware of events e.g. number of databases open (so that menu items
+    can be disabled if only one / zero databases are open).
+  * These listeners are really best placed against the OpenDatabaseList as that's
+    where knowledge of these events comes from.
+    ? Is the MenuControlFacade needed?
+  * The MenuControlFacade can be asked to rebuild the entire menu at any time
+    e.g. if you add an account, and the view menu is dynamically built from the
+    static set plus accounts, you'd want to load the account list in a worker
+    thread, then populate the view menu in the EDT and trigger a menu rebuild. 
+    ? Perhaps the rebuild could be triggered by a method on the ApplicationMenu
+      that delegates internally to Menu(Impl)? That violates SRP.
+    ? How would the app menu code gain access to the database?
+      The MenuProviding facade would be initialised after the database opening
+      facade? (No, just after the Plugins are loaded)
+      The MenuProviding facade could be given access to the OpenDatabaseList?
+      (This could be done by app authors using the SpringLoader, or by the
+      framework via a MenuProviding(Facade) method).
+      That's the only way it could be notified of database opening, closing and
+      switching, then get the current database and refresh the menu.
+      After receiving a DatabaseOpenEvent, it could read the DB, rebuild the
+      ApplicationMenu, and trigger a rebuild.
+       
+  * Other independent tasks to be complete before the main menu definition
+    work is done:
+    * Add an Edit menu with Undo / Redo, Cut / Copy / Paste - not sure how we'll
+      hook into this yet.
+    * Allow for extensible TabIdentifiers - the static set we have now, with
+      Categories removed, and allow for dynamic additions (e.g. each different
+      account). Allow each plugin to register view TabIdentifiers in the
+      ApplicationMenu
+    * Allow ActionListeners to be registered against these TabIdentifiers.
+      
 * Remove Mycila
 * Documentation
-  Tutorial:
-    Loading beans thru the SpringLoader and defining your own
-    application contexts
   Reference:
     Facades:
 * Add the wizard graphic to the application plugin
