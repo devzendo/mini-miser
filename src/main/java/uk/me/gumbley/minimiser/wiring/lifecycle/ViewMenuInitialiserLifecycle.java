@@ -7,8 +7,8 @@ import uk.me.gumbley.minimiser.prefs.Prefs;
 
 /**
  * A Lifecycle that reads the current hidden tab settings from
- * prefs, and initialises the view menu correctly on sartup.
- * 
+ * prefs, and initialises the view menu correctly on startup.
+ *
  * @author matt
  *
  */
@@ -25,7 +25,7 @@ public final class ViewMenuInitialiserLifecycle implements Lifecycle {
         prefs = p;
         menu = m;
     }
-    
+
     /**
      * {@inheritDoc}
      */
