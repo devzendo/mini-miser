@@ -2,6 +2,7 @@ package uk.me.gumbley.minimiser.wiring.lifecycle;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import uk.me.gumbley.minimiser.gui.menu.MenuMediatorUnittestCase;
 
 
@@ -13,13 +14,13 @@ import uk.me.gumbley.minimiser.gui.menu.MenuMediatorUnittestCase;
 public final class TestViewMenuInitialiserLifecycle extends MenuMediatorUnittestCase {
 
     /**
-     * 
+     *
      */
     @Test
     public void initialiseViewMenuCorrectly() {
         getPrefs().setTabHidden("SQL");
         getPrefs().clearTabHidden("Categories");
-        
+
         Assert.assertFalse(getStubMenu().isTabHidden("SQL"));
         Assert.assertFalse(getStubMenu().isTabHidden("Categories"));
         Assert.assertFalse(getStubMenu().isViewMenuBuilt());
