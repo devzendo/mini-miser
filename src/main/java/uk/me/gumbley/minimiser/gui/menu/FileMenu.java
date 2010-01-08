@@ -3,10 +3,13 @@ package uk.me.gumbley.minimiser.gui.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+
 import org.apache.log4j.Logger;
+
 import uk.me.gumbley.commoncode.patterns.observer.Observer;
 import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 import uk.me.gumbley.minimiser.gui.menu.Menu.MenuIdentifier;
@@ -18,20 +21,20 @@ import uk.me.gumbley.minimiser.recentlist.RecentFilesList;
  * The File Menu is rebuilt when the Open Recent -> list is changed. It has
  * the Close / Close All (and later, other) menu items disabled when there
  * is no database open.
- * 
+ *
  * @author matt
  *
  */
 public final class FileMenu extends AbstractRebuildableMenuGroup {
     private static final Logger LOGGER = Logger.getLogger(FileMenu.class);
-    private ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
-    private JMenu fileMenu;
+    private final ObserverList<DatabaseNameAndPathChoice> openRecentSubmenuChoiceObservers;
+    private final JMenu fileMenu;
     private final OpenDatabaseList openDatabaseList;
     private final RecentFilesList recentFilesList;
 
     /**
      * Construct the File Menu.
-     * 
+     *
      * @param wiring the menu wiring
      * @param databaseList the OpenDatabaseList
      * @param recentList the RecentFilesList
@@ -43,15 +46,13 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
         this.openDatabaseList = databaseList;
         this.recentFilesList = recentList;
         openRecentSubmenuChoiceObservers = new ObserverList<DatabaseNameAndPathChoice>();
-        
+
         fileMenu = new JMenu("File");
         fileMenu.setMnemonic('F');
-
 
         // And trigger the first build; initially we'll have no recent files
         // list.
         rebuildMenuGroup();
-        
         enableCloseAllMenuIfDatabasesOpen();
     }
 
@@ -81,7 +82,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
         createMenuItem(MenuIdentifier.FileExit, "Exit", 'x', fileMenu);
     }
 
-    
+
     // EDT
     private JMenu buildRecentList() {
         final JMenu submenu = new JMenu("Open recent");
@@ -106,7 +107,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
                                     Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
                                     LOGGER.info("Opening recent database '" + recentDbName + "'");
                                         openRecentSubmenuChoiceObservers.eventOccurred(
-                                            new DatabaseNameAndPathChoice(recentDbName, recentDbPath));        
+                                            new DatabaseNameAndPathChoice(recentDbName, recentDbPath));
                                 } catch (final Throwable t) {
                                     LOGGER.error("Recent opener thread caught unexpected " + t.getClass().getSimpleName(), t);
                                 } finally {
@@ -130,7 +131,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     public JMenu getJMenu() {
         return fileMenu;
     }
-    
+
     /**
      * Enable the close all menu item, if there are any open databases.
      */
@@ -141,7 +142,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     }
 
     /**
-     * Enable or disable the close menu item (and later, import/export items) 
+     * Enable or disable the close menu item (and later, import/export items)
      * @param enabled true to enable; false to disable
      */
     public void enableCloseMenu(final boolean enabled) {
