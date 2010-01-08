@@ -19,9 +19,9 @@ import uk.me.gumbley.minimiser.springloader.SpringLoader;
 /**
  * A Lifecycle that intiialises the menu and attaches it to the
  * main frame.
- * 
+ *
  * Non-TDD.
- * 
+ *
  * @author matt
  *
  */
@@ -51,15 +51,18 @@ public final class MenuInitialisingLifecycle implements Lifecycle {
     public void startup() {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
+                LOGGER.info("Starting up menu initialising lifecycle");
                 final JFrame mainFrame = mSpringLoader.getBean("mainFrame", JFrame.class);
                 mainFrame.setJMenuBar(createMenu());
+                LOGGER.info("End of startup for menu initialising lifecycle");
             }
         });
     }
-    
+
     private JMenuBar createMenu() {
         LOGGER.info("Getting the menu");
         final Menu menu = mSpringLoader.getBean("menu", Menu.class);
+        menu.initialise();
         final RecentFilesList recentList = mSpringLoader.getBean("recentFilesList", RecentFilesList.class);
         menu.refreshRecentList(recentList.getRecentDatabases());
         // TODO SMELL why not have it populated correctly at first?

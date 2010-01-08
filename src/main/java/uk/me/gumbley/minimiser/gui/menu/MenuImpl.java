@@ -22,39 +22,51 @@ public final class MenuImpl implements Menu {
     private final Object lock = new Object();
     private SpringLoader springLoader;
     private MenuWiring menuWiring;
-    
+
     private JMenuBar menuBar;
-    
+
     private FileMenu fileMenuGroup;
     private ViewMenu viewMenuGroup;
     private AbstractMenuGroup toolsMenuGroup;
     private WindowMenu windowMenuGroup;
     private HelpMenu helpMenuGroup;
 
-    
+
     /**
      * Create the Menu
      * @param loader the SpringLoader singleton
      * @param wiring the MenuWiring singleton
      */
     public MenuImpl(final SpringLoader loader, final MenuWiring wiring) {
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    LOGGER.info("Constructing");
+                    springLoader = loader;
+                    menuWiring = wiring;
+                }
+            }
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void initialise() {
         // This used to be done via
         // GUIUtils.runOnEventThread
         // but that causes the event thread to deadlock.
-        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+        GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
                 synchronized (lock) {
-                    springLoader = loader;
-                    menuWiring = wiring;
-                    
+                    LOGGER.info("Initialising the menu bar and groups");
                     // The menu bar
                     menuBar = new JMenuBar();
-                    
                     // The File menu - builds itself on construction
                     fileMenuGroup = springLoader.getBean("fileMenu", FileMenu.class);
                     menuBar.add(fileMenuGroup.getJMenu());
-                    
+
                     // The View menu
                     viewMenuGroup = springLoader.getBean("viewMenu", ViewMenu.class);
                     viewMenuGroup.rebuildMenuGroup();
@@ -67,11 +79,12 @@ public final class MenuImpl implements Menu {
                     // The Window menu
                     windowMenuGroup = springLoader.getBean("windowMenu", WindowMenu.class);
                     menuBar.add(windowMenuGroup.getJMenu());
-                    
+
                     // The help menu
                     helpMenuGroup = springLoader.getBean("helpMenu", HelpMenu.class);
                     helpMenuGroup.rebuildMenuGroup();
                     menuBar.add(helpMenuGroup.getJMenu());
+                    LOGGER.info("Menu bar and groups initialised");
                 }
             }
         });
@@ -89,7 +102,7 @@ public final class MenuImpl implements Menu {
             }
         });
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -156,6 +169,7 @@ public final class MenuImpl implements Menu {
      */
     public JMenuBar getMenuBar() {
         synchronized (lock) {
+            LOGGER.info("Obtaining the menu bar");
             return menuBar;
         }
     }

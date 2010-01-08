@@ -16,7 +16,7 @@ import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 /**
  * A Menu that tests can interrogate to test the correctness of the
  * MenuMediator.
- * 
+ *
  * @author matt
  *
  */
@@ -37,9 +37,10 @@ public final class StubMenu implements Menu {
     private final Map<String, Boolean> hiddenTabs;
     private boolean helpCheckForUpdatesEnabled;
     private String mHelpMenuApplicationName;
-    
+    private boolean isInitialised = false;
+
     /**
-     * 
+     *
      */
     public StubMenu() {
         databases = new ArrayList<String>();
@@ -54,7 +55,21 @@ public final class StubMenu implements Menu {
         hiddenTabs = new HashMap<String, Boolean>();
         mHelpMenuApplicationName = "";
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    public void initialise() {
+        isInitialised = true;
+    }
+
+    /**
+     * @return whether initialised
+     */
+    public boolean isInitialised() {
+        return isInitialised;
+    }
+
     /**
      * @return whether close is enabled
      */
@@ -156,7 +171,7 @@ public final class StubMenu implements Menu {
     DatabaseDescriptor[] getRecentDatabases() {
         return recentDatabases;
     }
-    
+
     /**
      * For unit tests, inject a request to open an entry from the recent list.
      * @param dbName the database name to open.
@@ -228,7 +243,7 @@ public final class StubMenu implements Menu {
     public void addViewChoiceObserver(final Observer<ViewMenuChoice> observer) {
         viewMenuChoiceObservers.addObserver(observer);
     }
-    
+
     /**
      * For unit tests, inject a choice of database to switch to, from the
      * window menu.
@@ -237,7 +252,7 @@ public final class StubMenu implements Menu {
     public void injectWindowMenuRequest(final DatabaseDescriptor database) {
         windowMenuSwitchObservers.eventOccurred(new DatabaseNameChoice(database.getDatabaseName()));
     }
-    
+
     /**
      * For unit tests, set the state of the Help|Check for Updates
      * menu item
@@ -246,7 +261,7 @@ public final class StubMenu implements Menu {
     public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
         helpCheckForUpdatesEnabled = newEnabled;
     }
-    
+
     /**
      * @return the enabledness of the Help|Check for Updates menu
      * item

@@ -12,7 +12,7 @@
 		<constructor-arg ref="menuWiring" />
 	</bean>
 
-	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilder">
+	<bean id="menuBuilder" class="uk.me.gumbley.minimiser.gui.menu.MenuBuilderImpl">
 		<constructor-arg ref="menuWiring" />
 		<constructor-arg ref="springLoader" />
 	</bean>
