@@ -41,9 +41,36 @@ CURRENT TASKS:
 
   * An ApplicationMenu uber-bean, MenuControlFacade and OpenDatabaseList is passed
     into the application-provided MenuProviding(Facade)
+  * This uber-bean is added to the OpenDatabaseList by a class in the
+    databaseEventListenerList when the database is opened - this is done early,
+    before the MenuProviding(Facade) receives it. See
+    TabPaneCreatingDatabaseEventListener for something similar.
   * This bean is then initialised by the MenuProviding(Facade)
     to add any application-specific menus, view tab identifiers, edit menu
     items, file menu items (import/export?)
+  * The code that initialises the MenuProviding(Facade) must call it after
+    the databaseEventListenerList has been registered as an ODL listener (so
+    that the blank ApplicationMenu is stored in the DatabaseDescriptor), and
+    before the DatabaseOpenerLifecycle opens all active DBs and switches to the
+    last active one.
+  * [NO, see below]: The MenuProvidingFacade's DatabaseOpenEvent listener will
+    change its ApplicationMenu and it must do this BEFORE the menus are rebuilt
+    by the MenuDatabaseEventObserver DatabaseOpenEvent Listener (otherwise, the
+    menu will be rebuilt before the MPF DOE listener can work out what to put
+    on the menu, and the MPD DOEL will have to trigger a menu rebuild itself
+    (which it might do anyway if it loads the account list in a worker thread
+    separately from the main synchronous DB load logic).
+    - The MenuDatabaseEventObserver is loaded by the MenuMediatorImpl as part
+      of its wiring list. (it's the first thing in the list).
+    - The MenuMediatorImpl wires the MenuDatabaseEventObserver to the ODL as
+      soon as it is constructed. (In its CTOR - grrr!)
+    - The MenuMediatorImpl is constructed by the MenuInitialisingLifecycle.
+    - So there's no way - the MenuDatabaseEventObserver DatabaseOpenEvent is
+      always triggered very early when a DB is opened.
+      - The ODL observer list when a DB is opened (e.g. recent file):
+        MenuDatabaseEventObserver, TabPaneCreatingDatabaseEventListener,
+        TabPaneManagerDatabaseEventListener
+        
   * Listeners can be added to the MenuControlFacade so that the menu code can
     be made aware of events e.g. number of databases open (so that menu items
     can be disabled if only one / zero databases are open).
