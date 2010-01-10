@@ -67,6 +67,7 @@ public final class OpenDatabaseList {
             LOGGER.warn("Cannot add null opened database");
             return;
         }
+        LOGGER.debug("ODL Observer list is: " + observerList);
         if (!databaseList.contains(descriptor)) {
             LOGGER.info("Adding opened database " + descriptor.getDatabaseName());
             databaseList.add(descriptor);
