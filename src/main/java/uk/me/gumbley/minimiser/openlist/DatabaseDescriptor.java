@@ -9,11 +9,11 @@ import uk.me.gumbley.minimiser.util.InstanceSet;
 /**
  * A bean that gives a database a name, optionally a path, and (in subclasses)
  * references to the persistence/domain layer.
- * 
+ *
  * Note that only name is used in the equality and hashCode methods. We key
  * off the name elsewhere for uniqueness (from a UI perspective, it might
  * encourage users to give their DBs unique, meaningful names... yeah, right!)
- * 
+ *
  * @author matt
  *
  */
@@ -21,10 +21,10 @@ public final class DatabaseDescriptor {
     private final String mDatabaseName;
     private final Map<AttributeIdentifier, Object> mAttributeMap;
     private final InstanceSet<DAOFactory> mDAOFactories;
-    
+
     /**
      * The attribute identifiers.
-     * 
+     *
      * @author matt
      *
      */
@@ -33,13 +33,18 @@ public final class DatabaseDescriptor {
          * The database path
          */
         Path,
-        
+
         /**
          * The tabbed pane of views
          */
         TabbedPane,
+
+        /**
+         * The application's menu structure
+         */
+        ApplicationMenu,
     }
-    
+
     /**
      * Create a new DatabaseDesriptor, given just a name, used primarily in
      * tests.
@@ -71,12 +76,12 @@ public final class DatabaseDescriptor {
 
     /**
      * Obtain the database path.
-     * @return the database path, which may be an empty string, but never null. 
+     * @return the database path, which may be an empty string, but never null.
      */
     public String getDatabasePath() {
         return (String) getAttribute(AttributeIdentifier.Path);
     }
-    
+
     /**
      * {@inheritDoc}
      */

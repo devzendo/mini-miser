@@ -41,7 +41,7 @@ CURRENT TASKS:
 
   * An ApplicationMenu uber-bean, MenuControlFacade and OpenDatabaseList is passed
     into the application-provided MenuProviding(Facade)
-  * This uber-bean is added to the OpenDatabaseList by a class in the
+  * DONE This uber-bean is added to the DatabaseDescriptor by a class in the
     databaseEventListenerList when the database is opened - this is done early,
     before the MenuProviding(Facade) receives it. See
     TabPaneCreatingDatabaseEventListener for something similar.

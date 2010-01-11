@@ -295,11 +295,14 @@
 	<bean id="databaseEventListenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
 		<property name="sourceList">
 			<list>
+				<value>applicationMenuCreatingDatabaseEventListener</value>
 				<value>tabPaneCreatingDatabaseEventListener</value>
 				<value>tabPaneManagerDatabaseEventListener</value>
 			</list>
 		</property>
 	</bean>
+
+	<bean id="applicationMenuCreatingDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.ApplicationMenuCreatingDatabaseEventListener" />
 
 	<bean id="tabPaneCreatingDatabaseEventListener" class="uk.me.gumbley.minimiser.wiring.databaseeventlistener.TabPaneCreatingDatabaseEventListener" >
 		<constructor-arg ref="tabListPrefs" />
