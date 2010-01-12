@@ -6,10 +6,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.me.gumbley.minimiser.gui.dialog.problem.StubProblemReporter;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.plugin.Plugin;
 import uk.me.gumbley.minimiser.plugin.facade.providemenu.MenuProviding;
-import uk.me.gumbley.minimiser.plugin.facade.providemenu.MenuProvidingFacade;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginManager;
 import uk.me.gumbley.minimiser.pluginmanager.DefaultPluginRegistry;
 import uk.me.gumbley.minimiser.pluginmanager.PluginException;
@@ -24,12 +26,14 @@ import uk.me.gumbley.minimiser.wiring.databaseeventlistener.ApplicationMenuCreat
  *
  */
 public final class TestMenuProvidingFacadeInitialiser {
+    private static final String DATABASE = "db";
     private SpringLoader mSpringLoader;
     private DefaultPluginRegistry mPluginRegistry;
     private DefaultPluginManager mPluginManager;
     private OpenDatabaseList mOpenDatabaseList;
     private StubMenu mMenu;
     private ApplicationMenu mGlobalApplicationMenu;
+    private StubProblemReporter mStubProblemReporter;
 
     /**
      * @throws PluginException never
@@ -48,6 +52,8 @@ public final class TestMenuProvidingFacadeInitialiser {
         mMenu = new StubMenu();
 
         mGlobalApplicationMenu = new ApplicationMenu();
+
+        mStubProblemReporter = new StubProblemReporter();
     }
 
     /**
@@ -57,29 +63,79 @@ public final class TestMenuProvidingFacadeInitialiser {
     public void pluginImplementingMenuProvidingIsCorrectlyLoaded() {
         final List<Plugin> plugins = mPluginManager.getPlugins();
         Assert.assertEquals(1, plugins.size());
-        final List<MenuProviding> menuProvidingPlugins = mPluginManager.getPluginsImplementingFacade(MenuProviding.class);
+        final List<MenuProviding> menuProvidingPlugins =
+            mPluginManager.getPluginsImplementingFacade(MenuProviding.class);
         Assert.assertEquals(1, menuProvidingPlugins.size());
     }
 
+    /**
+     *
+     */
     @Test
     public void menuProvidingPluginIsInitialisedCorrectly() {
-        final List<MenuProviding> menuProvidingPlugins = mPluginManager.getPluginsImplementingFacade(MenuProviding.class);
-        final MenuProviding menuProviding = menuProvidingPlugins.get(0);
-        final MenuProvidingFacade menuProvidingFacade = menuProviding.getMenuProvidingFacade();
-        final StubMenuProvidingFacade stubMenuProvidingFacade = (StubMenuProvidingFacade) menuProvidingFacade;
+        final List<MenuProviding> menuProvidingPlugins =
+            mPluginManager.getPluginsImplementingFacade(MenuProviding.class);
+        final StubMenuProvidingFacade stubMenuProvidingFacade =
+            (StubMenuProvidingFacade) menuProvidingPlugins.get(0).getMenuProvidingFacade();
 
         // Pass the ODL, Menu, global ApplicationMenu to the plugin
-        new MenuProvidingFacadeLoader(mPluginManager, mOpenDatabaseList, mMenu).initialise();
+        new MenuProvidingFacadeInitialiser(
+            mPluginManager, mOpenDatabaseList, mMenu,
+            mGlobalApplicationMenu, mStubProblemReporter).initialise();
 
+        // Did the plugin get them?
         Assert.assertSame(mGlobalApplicationMenu, stubMenuProvidingFacade.getGlobalApplicationMenu());
-        // TODO the OLD now has a listener
+        Assert.assertTrue(mGlobalApplicationMenu.getCustomMenus().size() > 0);
 
-        // WOZERE add a database
-        // get database descriptor
-        // it has a populated application menu
+        // The StubMenuProvidingFacade adds itself as a DatabaseEvent Observer, and
+        // populates the database-specific ApplicationMenu when a database is opened.
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
+        mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
 
+        // A blank ApplicationMenu will have been set by the
+        // ApplicationMenuCreatingDatabaseEventListener...
+        final ApplicationMenu databaseApplicationMenu =
+            (ApplicationMenu) databaseDescriptor.getAttribute(AttributeIdentifier.ApplicationMenu);
+        Assert.assertNotNull(databaseApplicationMenu);
+        // ...but the StubMenuProvidingFacade should have populated it.
+
+        Assert.assertTrue(databaseApplicationMenu.getCustomMenus().size() > 0);
     }
 
-    // TODO need tests that ensure that only the ApplicationPlugin can implement
+    /**
+     *
+     */
+    @Test
+    public void menuProvidingFacadeInitialiseIsCalledOnTheEventThread() {
+        final StubMenuProvidingFacade stubMenuProvidingFacade =
+            (StubMenuProvidingFacade) mPluginManager.getPluginsImplementingFacade(
+                MenuProviding.class).get(0).getMenuProvidingFacade();
+
+        // Pass the ODL, Menu, global ApplicationMenu to the plugin
+        new MenuProvidingFacadeInitialiser(
+            mPluginManager, mOpenDatabaseList, mMenu,
+            mGlobalApplicationMenu, mStubProblemReporter).initialise();
+
+        Assert.assertTrue(stubMenuProvidingFacade.initialisedOnEventThread());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void menuProvidingFacadeThatBlowsUpGetsProblemReported() {
+        final StubMenuProvidingFacade stubMenuProvidingFacade =
+            (StubMenuProvidingFacade) mPluginManager.getPluginsImplementingFacade(
+                MenuProviding.class).get(0).getMenuProvidingFacade();
+        stubMenuProvidingFacade.injectFailure(new ArrayIndexOutOfBoundsException("bad index into some array"));
+
+        // Pass the ODL, Menu, global ApplicationMenu to the plugin
+        new MenuProvidingFacadeInitialiser(
+            mPluginManager, mOpenDatabaseList, mMenu,
+            mGlobalApplicationMenu, mStubProblemReporter).initialise();
+
+        Assert.assertEquals("while initialising the application menu", mStubProblemReporter.getDoing());
+    }
+    // TODO do I need tests that ensure that only the ApplicationPlugin can implement
     // MenuProviding?
 }

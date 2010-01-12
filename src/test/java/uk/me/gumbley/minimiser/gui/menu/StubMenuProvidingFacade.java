@@ -1,6 +1,14 @@
 package uk.me.gumbley.minimiser.gui.menu;
 
+import javax.swing.JMenu;
+import javax.swing.SwingUtilities;
+
+import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor;
+import uk.me.gumbley.minimiser.openlist.DatabaseEvent;
+import uk.me.gumbley.minimiser.openlist.DatabaseOpenedEvent;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
+import uk.me.gumbley.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import uk.me.gumbley.minimiser.plugin.facade.providemenu.MenuProvidingFacade;
 
 /**
@@ -13,7 +21,8 @@ public final class StubMenuProvidingFacade implements MenuProvidingFacade {
 
     private ApplicationMenu mGlobalApplicationMenu;
     private OpenDatabaseList mOpenDatabaseList;
-    private Menu mMenu;
+    private boolean mInitialisedOnEventDispatchThread;
+    private RuntimeException mException;
 
     /**
      * {@inheritDoc}
@@ -22,10 +31,31 @@ public final class StubMenuProvidingFacade implements MenuProvidingFacade {
             final ApplicationMenu globalApplicationMenu,
             final OpenDatabaseList openDatabaseList,
             final Menu menu) {
-                mGlobalApplicationMenu = globalApplicationMenu;
-                mOpenDatabaseList = openDatabaseList;
-                mMenu = menu;
+        mGlobalApplicationMenu = globalApplicationMenu;
+        mOpenDatabaseList = openDatabaseList;
 
+        mInitialisedOnEventDispatchThread = SwingUtilities.isEventDispatchThread();
+
+        if (mException != null) {
+            throw mException;
+        }
+
+        final JMenu customMenu = new JMenu("Custom");
+        mGlobalApplicationMenu.addCustomMenu(customMenu);
+
+        mOpenDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
+
+            public void eventOccurred(final DatabaseEvent observableEvent) {
+                if (observableEvent instanceof DatabaseOpenedEvent) {
+                    final DatabaseOpenedEvent open = (DatabaseOpenedEvent) observableEvent;
+                    final DatabaseDescriptor databaseDescriptor = open.getDatabaseDescriptor();
+                    final ApplicationMenu applicationMenu = (ApplicationMenu) databaseDescriptor.getAttribute(AttributeIdentifier.ApplicationMenu);
+                    applicationMenu.addCustomMenu(new JMenu("DB Custom"));
+                }
+
+            }
+
+        });
     }
 
     /**
@@ -33,5 +63,19 @@ public final class StubMenuProvidingFacade implements MenuProvidingFacade {
      */
     public ApplicationMenu getGlobalApplicationMenu() {
         return mGlobalApplicationMenu;
+    }
+
+    /**
+     * @return true iff initialise was called on the Swing Event Thread
+     */
+    public boolean initialisedOnEventThread() {
+        return mInitialisedOnEventDispatchThread;
+    }
+
+    /**
+     * @param exception a failure to inject that should get displayed by the problem reporter
+     */
+    public void injectFailure(final RuntimeException exception) {
+        mException = exception;
     }
 }

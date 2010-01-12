@@ -25,27 +25,20 @@ BUGS:
 
 CURRENT TASKS:
 * Menu definition
-  * Should menus be supplied by Plugins or ApplicationPlugins?
-    ? ApplicationPlugins: easy - there's just one ApplicationMenu that's stored
-      in the OpenDatabaseList as an attribute.
-    ? Plugins: 
-      * All plugins could be MenuProviding - how is the final menu constructed from
-        each ApplicationMenu uber-bean? (and the internal MenuImpl menu structure)
-      * Does each plugin get its own instance of ApplicationMenu or is there one
-        that's shared and has to be accessed carefully so as to not tread on other
-        plugin's menu structure? (hopefully, the former)
-      * How are menu items and menus positioned - should they have a weight as in
-        Drupal? Lowest weight goes uppermost / leftmost. 
-      * There would be a map of Plugin->ApplicationMenu stored as an attribute of
-        the OpenDatabaseList.
+  * Menus can be supplied by any Plugins, not just ApplicationPlugins
+    - there's a global ApplicationMenu that has to be shared carefully between
+      all MenuProvidingFacades
+    - each open database can have its own ApplicationMenu
+    - the global and the current-database ApplicationMenus are merged to
+      present the final menu.
 
-  * An ApplicationMenu uber-bean, MenuControlFacade and OpenDatabaseList is passed
+  * DONE An ApplicationMenu uber-bean, MenuControlFacade and OpenDatabaseList is passed
     into the application-provided MenuProviding(Facade)
   * DONE This uber-bean is added to the DatabaseDescriptor by a class in the
     databaseEventListenerList when the database is opened - this is done early,
     before the MenuProviding(Facade) receives it. See
     TabPaneCreatingDatabaseEventListener for something similar.
-  * This bean is then initialised by the MenuProviding(Facade)
+  * DONE This bean is then initialised by the MenuProviding(Facade)
     to add any application-specific menus, view tab identifiers, edit menu
     items, file menu items (import/export?)
   * The code that initialises the MenuProviding(Facade) must call it after
@@ -71,10 +64,10 @@ CURRENT TASKS:
         MenuDatabaseEventObserver, TabPaneCreatingDatabaseEventListener,
         TabPaneManagerDatabaseEventListener
         
-  * Listeners can be added to the MenuControlFacade so that the menu code can
+  * DONE Listeners can be added to the MenuControlFacade so that the menu code can
     be made aware of events e.g. number of databases open (so that menu items
     can be disabled if only one / zero databases are open).
-  * These listeners are really best placed against the OpenDatabaseList as that's
+  * DONE These listeners are really best placed against the OpenDatabaseList as that's
     where knowledge of these events comes from.
     ? Is the MenuControlFacade needed?
   * The MenuControlFacade can be asked to rebuild the entire menu at any time

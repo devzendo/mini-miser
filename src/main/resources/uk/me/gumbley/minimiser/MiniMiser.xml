@@ -148,6 +148,7 @@
 				<value>periodicUpdateCheckerLifecycle</value>
 			    <value>upgradeEventListenerLifecycle</value>
 			    <value>databaseEventListenerLifecycle</value>
+			    <value>menuProvidingFacadeInitialiserLifecycle</value>
 				<value>databaseOpenerLifecycle</value>
 				<value>databaseCloserLifecycle</value>
 				<value>mainFrameGeometrySaverLifecycle</value>
@@ -239,6 +240,10 @@
 		<constructor-arg ref="databaseEventListenerManager" />
 	</bean>
 	
+	<bean id="menuProvidingFacadeInitialiserLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.MenuProvidingFacadeInitialiserLifecycle">
+		<constructor-arg ref="menuProvidingFacadeInitialiser" />
+	</bean>
+	
 	<bean id="databaseOpenerLifecycle" class="uk.me.gumbley.minimiser.wiring.lifecycle.DatabaseOpenerLifecycle">
 		<constructor-arg ref="opener" />	
 		<constructor-arg ref="openerAdapterFactory" />	
@@ -284,6 +289,16 @@
 	<bean id="messageQueueBorderGuardFactory" class="uk.me.gumbley.minimiser.messagequeue.MessageQueueBorderGuardFactory">
 		<constructor-arg ref="prefs" />
 	</bean>
+
+	<bean id="menuProvidingFacadeInitialiser" class="uk.me.gumbley.minimiser.gui.menu.MenuProvidingFacadeInitialiser">
+		<constructor-arg ref="pluginManager" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="globalApplicationMenu" />
+		<constructor-arg ref="problemReporter" />	
+	</bean>
+
+	<bean id="globalApplicationMenu" class="uk.me.gumbley.minimiser.gui.menu.ApplicationMenu" />
 
     <!-- - - database event listeners - - -->
 	<bean id="databaseEventListenerManager" class="uk.me.gumbley.minimiser.openlist.DatabaseEventListenerManager">
