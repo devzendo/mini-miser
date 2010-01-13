@@ -50,8 +50,9 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
         fileMenu = new JMenu("File");
         fileMenu.setMnemonic('F');
 
-        // And trigger the first build; initially we'll have no recent files
-        // list.
+        // Trigger the first build; initially we'll have no recent files list.
+        // Need to do an initial rebuild so the menu wiring is initially populated
+        // (enableCloseAllMenuIfDatabasesOpen needs this)
         rebuildMenuGroup();
         enableCloseAllMenuIfDatabasesOpen();
     }

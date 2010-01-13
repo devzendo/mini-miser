@@ -53,11 +53,7 @@ public final class MenuImpl implements Menu {
      * {@inheritDoc}
      */
     public void initialise() {
-        // This used to be done via
-        // GUIUtils.runOnEventThread
-        // but that causes the event thread to deadlock.
         GUIUtils.runOnEventThread(new Runnable() {
-
             public void run() {
                 synchronized (lock) {
                     LOGGER.info("Initialising the menu bar and groups");
@@ -65,31 +61,54 @@ public final class MenuImpl implements Menu {
                     menuBar = new JMenuBar();
                     // The File menu - builds itself on construction
                     fileMenuGroup = springLoader.getBean("fileMenu", FileMenu.class);
-                    menuBar.add(fileMenuGroup.getJMenu());
 
                     // The View menu
                     viewMenuGroup = springLoader.getBean("viewMenu", ViewMenu.class);
-                    viewMenuGroup.rebuildMenuGroup();
-                    menuBar.add(viewMenuGroup.getJMenu());
 
                     // The Tools menu
                     toolsMenuGroup = springLoader.getBean("toolsMenu", ToolsMenu.class);
-                    menuBar.add(toolsMenuGroup.getJMenu());
 
                     // The Window menu
                     windowMenuGroup = springLoader.getBean("windowMenu", WindowMenu.class);
-                    menuBar.add(windowMenuGroup.getJMenu());
 
                     // The help menu
                     helpMenuGroup = springLoader.getBean("helpMenu", HelpMenu.class);
-                    helpMenuGroup.rebuildMenuGroup();
-                    menuBar.add(helpMenuGroup.getJMenu());
                     LOGGER.info("Menu bar and groups initialised");
+
+                    rebuildEntireMenu();
                 }
             }
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void rebuildEntireMenu() {
+        GUIUtils.runOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    LOGGER.info("Rebuilding the menu bar and groups");
+                    menuBar.removeAll();
+
+                    fileMenuGroup.rebuildMenuGroup();
+                    menuBar.add(fileMenuGroup.getJMenu());
+
+                    viewMenuGroup.rebuildMenuGroup();
+                    menuBar.add(viewMenuGroup.getJMenu());
+
+                    menuBar.add(toolsMenuGroup.getJMenu());
+
+                    menuBar.add(windowMenuGroup.getJMenu());
+
+                    helpMenuGroup.rebuildMenuGroup();
+                    menuBar.add(helpMenuGroup.getJMenu());
+                    LOGGER.info("Menu bar and groups rebuilt");
+                }
+            }
+        });
+
+    }
     /**
      * {@inheritDoc}
      */
@@ -235,6 +254,20 @@ public final class MenuImpl implements Menu {
                 synchronized (lock) {
                     LOGGER.debug("Rebuilding view menu");
                     viewMenuGroup.rebuildMenuGroup();
+                }
+            }
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void rebuildFileMenu() {
+        GUIUtils.invokeLaterOnEventThread(new Runnable() {
+            public void run() {
+                synchronized (lock) {
+                    LOGGER.debug("Rebuilding file menu");
+                    fileMenuGroup.rebuildMenuGroup();
                 }
             }
         });

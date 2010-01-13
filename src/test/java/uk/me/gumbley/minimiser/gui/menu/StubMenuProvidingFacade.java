@@ -30,7 +30,7 @@ public final class StubMenuProvidingFacade implements MenuProvidingFacade {
     public void initialise(
             final ApplicationMenu globalApplicationMenu,
             final OpenDatabaseList openDatabaseList,
-            final Menu menu) {
+            final MenuFacade menuFacade) {
         mGlobalApplicationMenu = globalApplicationMenu;
         mOpenDatabaseList = openDatabaseList;
 

@@ -1,7 +1,7 @@
 package uk.me.gumbley.minimiser.plugin.facade.providemenu;
 
 import uk.me.gumbley.minimiser.gui.menu.ApplicationMenu;
-import uk.me.gumbley.minimiser.gui.menu.Menu;
+import uk.me.gumbley.minimiser.gui.menu.MenuFacade;
 import uk.me.gumbley.minimiser.openlist.OpenDatabaseList;
 
 /**
@@ -21,11 +21,11 @@ public interface MenuProvidingFacade {
      * specific
      * @param openDatabaseList the OpenDatabaseList to which the plugin can be added
      * as an Observer<DatabaseEvent>
-     * @param menu the Menu which can be rebuilt from system menu items, the global
+     * @param menuFacade the Menu which can be rebuilt from system menu items, the global
      * ApplicationMenu, and the current database-specific ApplicationMenu on demand.
      */
     void initialise(
             ApplicationMenu globalApplicationMenu,
             OpenDatabaseList openDatabaseList,
-            Menu menu);
+            MenuFacade menuFacade);
 }

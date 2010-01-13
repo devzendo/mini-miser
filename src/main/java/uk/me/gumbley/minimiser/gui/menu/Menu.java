@@ -162,6 +162,16 @@ public interface Menu {
     void setTabHidden(String tabName, boolean tabHidden);
 
     /**
+     * Rebuild the entire menu bar, and all menus.
+     */
+    void rebuildEntireMenu();
+
+    /**
+     * Rebuild the file menu.
+     */
+    void rebuildFileMenu();
+
+    /**
      * Rebuild the view menu based on the current hidden flags.
      */
     void rebuildViewMenu();

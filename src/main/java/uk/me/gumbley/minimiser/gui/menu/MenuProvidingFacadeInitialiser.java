@@ -69,6 +69,20 @@ public final class MenuProvidingFacadeInitialiser {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
+                    final MenuFacade menuFacade = new MenuFacade() {
+
+                        public void rebuildEntireMenu() {
+                            mMenu.rebuildEntireMenu();
+                        }
+
+                        public void rebuildFileMenu() {
+                            mMenu.rebuildFileMenu();
+                        }
+
+                        public void rebuildViewMenu() {
+                            mMenu.rebuildViewMenu();
+                        }
+                    };
                     LOGGER.info("Initialising MenuProviding facades on Event Thread");
                     final List<MenuProviding> pluginsImplementingFacade = mPluginManager.getPluginsImplementingFacade(MenuProviding.class);
                     for (final MenuProviding menuProviding : pluginsImplementingFacade) {
@@ -81,7 +95,7 @@ public final class MenuProvidingFacadeInitialiser {
                         } else {
                             LOGGER.info("Initialising " + menuProvidingFacade.getClass().getName());
                             try {
-                                menuProvidingFacade.initialise(mGlobalApplicationMenu, mOpenDatabaseList, mMenu);
+                                menuProvidingFacade.initialise(mGlobalApplicationMenu, mOpenDatabaseList, menuFacade);
                                 LOGGER.info("Initialised " + menuProvidingFacade.getClass().getName());
                             } catch (final RuntimeException re) {
                                 mProblemReporter.reportProblem("while initialising the application menu", re);

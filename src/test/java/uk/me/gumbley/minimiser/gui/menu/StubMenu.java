@@ -284,4 +284,18 @@ public final class StubMenu implements Menu {
     public void rebuildHelpMenu(final String applicationName) {
         mHelpMenuApplicationName = applicationName;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void rebuildEntireMenu() {
+        // TODO currently untested
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void rebuildFileMenu() {
+        // TODO currently untested
+    }
 }
