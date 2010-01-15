@@ -63,6 +63,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     @Override
     public void rebuildMenuGroup() {
         fileMenu.removeAll();
+        // TODO remove duplication of menu text
         createMenuItem(MenuIdentifier.FileNew, "New...", 'N', fileMenu);
         createMenuItem(MenuIdentifier.FileOpen, "Open...", 'O', fileMenu);
         fileMenu.add(buildRecentList());
