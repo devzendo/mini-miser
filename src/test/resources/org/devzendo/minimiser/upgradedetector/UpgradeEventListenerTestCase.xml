@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<bean id="listenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>stub</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="listenerManager" class="org.devzendo.minimiser.upgradedetector.UpgradeEventListenerManager">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="upgradeDetector" />
+		<constructor-arg ref="listenerList" />	
+	</bean>
+	
+	<bean id="stub" class="org.devzendo.minimiser.upgradedetector.StubRecordingUpgradeListener" />
+
+	<bean id="upgradeDetector" class="org.devzendo.minimiser.upgradedetector.UpgradeDetector">
+		<constructor-arg ref="prefs" />
+	</bean>
+	
+	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" />
+
+</beans>

@@ -1,0 +1,41 @@
+package org.devzendo.minimiser.wiring.lifecycle;
+
+import org.devzendo.minimiser.gui.StubMainFrameTitle;
+import org.devzendo.minimiser.pluginmanager.DefaultPluginManager;
+import org.devzendo.minimiser.pluginmanager.DefaultPluginRegistry;
+import org.devzendo.minimiser.pluginmanager.PluginException;
+import org.junit.Assert;
+import org.junit.Test;
+
+
+
+/**
+ * When the app plugin is loaded, does the title bar initialise?
+ *
+ * @author matt
+ *
+ */
+public final class TestMainFrameTitleInitialisingPluginLoadedObservingLifecycle {
+
+    /**
+     * @throws PluginException never
+     */
+    @Test
+    public void loadingPluginsChangesTheTitle() throws PluginException {
+        final DefaultPluginRegistry pluginRegistry = new DefaultPluginRegistry();
+        final DefaultPluginManager pluginManager = new DefaultPluginManager(null, pluginRegistry);
+
+        final StubMainFrameTitle mainFrameTitle = new StubMainFrameTitle();
+        Assert.assertNull(mainFrameTitle.getApplicationName());
+
+        final MainFrameTitleInitialisingPluginLoadedObservingLifecycle lifecycle =
+            new MainFrameTitleInitialisingPluginLoadedObservingLifecycle(
+                pluginManager, mainFrameTitle);
+        Assert.assertNull(mainFrameTitle.getApplicationName()); // not yet, mungo!
+        lifecycle.startup();
+
+        pluginManager.loadPlugins("org/devzendo/minimiser/plugin/goodplugin.properties");
+
+        Assert.assertEquals("Application", mainFrameTitle.getApplicationName());
+    }
+}

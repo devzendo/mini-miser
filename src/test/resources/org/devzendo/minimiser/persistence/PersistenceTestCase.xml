@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="testConfig" class="org.devzendo.minimiser.config.UnittestingConfig">
+	</bean>
+	
+	<bean id="accessFactory" class="org.devzendo.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" >
+		<constructor-arg ref="pluginManager" />
+	</bean>
+	
+	<!-- <bean id="versionDao" class="org.devzendo.minimiser.persistence.dao.impl.JdbcTemplateVersionsDao" />
+	should inject the JdbcTemplate if we had a factory bean? -->
+	
+</beans>

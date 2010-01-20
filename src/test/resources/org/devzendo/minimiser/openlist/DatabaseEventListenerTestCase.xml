@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<bean id="listenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>one</value>
+				<value>two</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="listenerManager" class="org.devzendo.minimiser.openlist.DatabaseEventListenerManager">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="listenerList" />	
+	</bean>
+
+	<bean id="one" class="org.devzendo.minimiser.util.NamedListener">
+		<constructor-arg ref="orderMonitor" />
+		<constructor-arg value="one" />
+	</bean>
+	
+	<bean id="two" class="org.devzendo.minimiser.util.NamedListener">
+		<constructor-arg ref="orderMonitor" />
+		<constructor-arg value="two" />
+	</bean>
+	
+	<bean id="orderMonitor" class="org.devzendo.minimiser.util.OrderMonitor" />
+
+	<bean id="openDatabaseList" class="org.devzendo.minimiser.openlist.OpenDatabaseList" lazy-init="true" />
+
+</beans>

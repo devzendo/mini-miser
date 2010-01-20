@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<!-- the close test -->
+	<bean id="closeLifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>databaseCloserLifecycle</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="closeLifecycleManager" class="org.devzendo.minimiser.lifecycle.DefaultLifecycleManagerImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="closeLifecycleList" />
+	</bean>
+
+	<bean id="databaseCloserLifecycle" class="org.devzendo.minimiser.wiring.lifecycle.DatabaseCloserLifecycle">
+		<constructor-arg ref="openDatabaseList" />	
+		<constructor-arg ref="prefs" />	
+	</bean>
+
+	<!-- the open test -->
+	<bean id="openLifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>databaseOpenerLifecycle</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="openLifecycleManager" class="org.devzendo.minimiser.lifecycle.DefaultLifecycleManagerImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="openLifecycleList" />
+	</bean>
+
+	<bean id="databaseOpenerLifecycle" class="org.devzendo.minimiser.wiring.lifecycle.DatabaseOpenerLifecycle">
+		<constructor-arg ref="opener" />	
+		<constructor-arg ref="openerAdapterFactory" />	
+		<constructor-arg ref="openDatabaseList" />	
+		<constructor-arg ref="prefs" />	
+	</bean>
+	
+	<!-- resources shared between tests -->
+	<bean id="openDatabaseList" class="org.devzendo.minimiser.openlist.OpenDatabaseList" />
+
+	<bean id="accessFactory" class="org.devzendo.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl" >
+		<constructor-arg ref="pluginManager" />
+	</bean>
+	
+	<bean id="prefs" class="org.devzendo.minimiser.wiring.lifecycle.StubOpenListPrefs" />
+
+	<bean id="opener" class="org.devzendo.minimiser.opener.DefaultOpener">
+		<constructor-arg ref="accessFactory" />
+		<constructor-arg ref="migrator" />
+		<constructor-arg ref="pluginManager" />
+	</bean>
+
+	<bean id="migrator" class="org.devzendo.minimiser.migrator.DefaultMigrator">
+		<constructor-arg ref="pluginManager" />
+	</bean>
+	
+	<bean id="openerAdapterFactory" class="org.devzendo.minimiser.gui.menu.StubOpenerAdapterFactory" />
+	
+</beans>

@@ -1,0 +1,20 @@
+package org.devzendo.minimiser.messagequeue;
+
+
+/**
+ * A message has been added or removed from the MessageQueue. This is the
+ * notification you receive when a message is added.
+ * 
+ * @author matt
+ *
+ */
+public final class MessageRemovedEvent extends MessageQueueDetailEvent {
+
+    /**
+     * Construct the event relating to a particular message
+     * @param msg the message relating to this event
+     */
+    public MessageRemovedEvent(final Message msg) {
+        super(msg);
+    }
+}

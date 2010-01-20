@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true" >
+
+	<bean id="menu" class="org.devzendo.minimiser.gui.menu.StubMenu" />
+	<bean id="openDatabaseList" class="org.devzendo.minimiser.openlist.OpenDatabaseList" />
+	<bean id="openTabList" class="org.devzendo.minimiser.opentablist.OpenTabList" />
+	<bean id="mainFrameTitle" class="org.devzendo.minimiser.gui.StubMainFrameTitle" />
+	<bean id="recentFilesList" class="org.devzendo.minimiser.gui.menu.StubRecentFilesList" />
+	<bean id="opener" class="org.devzendo.minimiser.gui.menu.StubOpener" />
+	<bean id="openerAdapterFactory" class="org.devzendo.minimiser.gui.menu.StubOpenerAdapterFactory" />
+	<bean id="tabFactory" class="org.devzendo.minimiser.gui.tabfactory.StubTabFactory">
+		<constructor-arg ref="openTabList" />
+	</bean>
+	<bean id="pluginManager" class="org.devzendo.minimiser.pluginmanager.DummyAppPluginManager" />
+
+	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" lazy-init="true" />
+	
+	<bean id="pluginRegistry" class="org.devzendo.minimiser.pluginmanager.DefaultPluginRegistry" />
+	
+	<bean id="menuMediator" class="org.devzendo.minimiser.gui.menu.MenuMediatorImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="menuWiringList" />
+	</bean>
+
+	<!-- menu wiring / adapters -->
+	<bean id="menuWiringList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+			    <value>menuDatabaseEventObserver</value>
+			    <value>menuDatabaseSwitchObserver</value>
+			    <value>menuOpenRecentObserver</value>
+			    <value>menuRecentListEventObserver</value>
+			    <value>menuDatabaseOpenEventObserver</value>
+			    <value>menuPrefsEventObserver</value>
+			    <value>menuViewChoiceObserver</value>
+			    <value>menuPluginLoadedObserver</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="menuDatabaseEventObserver" class="org.devzendo.minimiser.wiring.menu.MenuDatabaseEventObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="mainFrameTitle" />
+		<constructor-arg ref="recentFilesList" />
+	</bean>
+	
+	<bean id="menuDatabaseSwitchObserver" class="org.devzendo.minimiser.wiring.menu.MenuDatabaseSwitchObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="openDatabaseList" />
+	</bean>
+
+	<bean id="menuOpenRecentObserver" class="org.devzendo.minimiser.wiring.menu.MenuOpenRecentObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="openerAdapterFactory" />
+		<constructor-arg ref="opener" />
+	</bean>
+	
+	<bean id="menuRecentListEventObserver" class="org.devzendo.minimiser.wiring.menu.MenuRecentListEventObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="recentFilesList" />
+	</bean>
+
+	<bean id="menuDatabaseOpenEventObserver" class="org.devzendo.minimiser.wiring.menu.MenuDatabaseOpenEventObserver">
+		<constructor-arg ref="openDatabaseList" />
+		<constructor-arg ref="opener" />
+	</bean>
+	
+	<bean id="menuPrefsEventObserver" class="org.devzendo.minimiser.wiring.menu.MenuPrefsEventObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="prefs" />
+	</bean>
+
+	<bean id="menuViewChoiceObserver" class="org.devzendo.minimiser.wiring.menu.MenuViewChoiceObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="openTabList" />
+		<constructor-arg ref="tabFactory" />
+	</bean>
+	
+	<bean id="menuPluginLoadedObserver" class="org.devzendo.minimiser.wiring.menu.MenuPluginLoadedObserver">
+		<constructor-arg ref="menu" />
+		<constructor-arg ref="pluginManager" />
+		<constructor-arg ref="pluginRegistry" />
+	</bean>
+</beans>

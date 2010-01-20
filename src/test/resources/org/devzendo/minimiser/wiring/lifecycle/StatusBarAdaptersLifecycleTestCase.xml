@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<!-- lifecycle -->
+	<bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>statusBarAdapterLifecycle</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="lifecycleManager" class="org.devzendo.minimiser.lifecycle.DefaultLifecycleManagerImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="lifecycleList" />	
+	</bean>
+
+	<bean id="statusBarAdapterLifecycle" class="org.devzendo.minimiser.wiring.lifecycle.StatusBarAdapterLifecycle">
+		<constructor-arg ref="statusBarMessageQueueAdapter" />
+	</bean>
+
+	<bean id="statusBarMessageQueueAdapter" class="org.devzendo.minimiser.gui.StatusBarMessageQueueAdapter">
+		<constructor-arg ref="statusBar" />
+		<constructor-arg ref="messageQueue" />
+		<constructor-arg ref="messageQueueViewerFactory" />
+	</bean>
+
+	<bean id="statusBar" class="org.devzendo.minimiser.gui.HeadlessStatusBar">
+		<constructor-arg ref="delayedExecutor" />
+	</bean>
+
+	<bean id="messageQueueViewerFactory" class="org.devzendo.minimiser.gui.messagequeueviewer.HeadlessMessageQueueViewerFactory">
+		<constructor-arg ref="statusBar" />
+	</bean>
+	
+	<bean id="delayedExecutor" class="org.devzendo.minimiser.util.DelayedExecutor" />
+
+	<bean id="messageQueue" class="org.devzendo.minimiser.messagequeue.MessageQueue">
+		<constructor-arg ref="messageQueueBorderGuardFactory" />
+	</bean>
+
+	<bean id="messageQueueBorderGuardFactory" class="org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory">
+		<constructor-arg ref="prefs" />
+	</bean>
+	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" />
+
+</beans>

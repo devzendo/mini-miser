@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<!-- lifecycle -->
+	<bean id="lifecycleList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>upgradeEventListenerLifecycle</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="lifecycleManager" class="org.devzendo.minimiser.lifecycle.DefaultLifecycleManagerImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="lifecycleList" />	
+	</bean>
+
+	<bean id="upgradeEventListenerLifecycle" class="org.devzendo.minimiser.wiring.lifecycle.UpgradeEventListenerLifecycle">
+		<constructor-arg ref="listenerManager" />
+		<constructor-arg ref="pluginRegistry" />
+	</bean>
+
+	<bean id="pluginRegistry" class="org.devzendo.minimiser.pluginmanager.DummyAppPluginRegistry" />
+
+	<!-- listener manager -->	
+	<bean id="listenerList" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<value>stub</value>
+				<value>prefsInitialisingFreshInstallListener</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="stub" class="org.devzendo.minimiser.upgradedetector.StubRecordingUpgradeListener" />
+
+	<bean id="prefsInitialisingFreshInstallListener" class="org.devzendo.minimiser.upgradedetector.PrefsInitialisingFreshInstallListener">
+		<constructor-arg ref="prefs" />
+	</bean>
+
+	<bean id="upgradeDetector" class="org.devzendo.minimiser.upgradedetector.UpgradeDetector">
+		<constructor-arg ref="prefs" />
+	</bean>
+	
+	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" />
+
+	<bean id="listenerManager" class="org.devzendo.minimiser.upgradedetector.UpgradeEventListenerManager">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="upgradeDetector" />
+		<constructor-arg ref="listenerList" />	
+	</bean>
+
+</beans>

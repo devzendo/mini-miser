@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="databaseDescriptor" class="org.devzendo.minimiser.openlist.DatabaseDescriptorFactory" />
+	
+	<bean id="openTabList" class="org.devzendo.minimiser.opentablist.OpenTabList" />
+
+	<bean id="problemReporter" class="org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter" />
+
+	<bean id="tabFactory" class="org.devzendo.minimiser.gui.tabfactory.DefaultTabFactoryImpl">
+		<constructor-arg ref="springLoader" />
+		<constructor-arg ref="openTabList" />
+		<constructor-arg ref="problemReporter" />
+	</bean>
+
+	<bean id="tabOVERVIEW" scope="prototype" class="org.devzendo.minimiser.gui.tabfactory.StubRecordingTab" >
+		<constructor-arg ref="databaseDescriptor" />
+	</bean>
+	<bean id="tabSQL" scope="prototype" class="org.devzendo.minimiser.gui.tabfactory.StubRecordingTab" >
+		<constructor-arg ref="databaseDescriptor" />
+	</bean>
+	
+</beans>
