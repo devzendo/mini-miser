@@ -12,10 +12,10 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.concurrency.ThreadUtils;
+import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.minimiser.util.DelayedExecutor;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
-import uk.me.gumbley.commoncode.logging.Logging;
 
 
 /**

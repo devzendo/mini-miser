@@ -1,8 +1,8 @@
 package org.devzendo.minimiser.prefs;
 
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 import org.devzendo.minimiser.prefs.Prefs.PrefsSection;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * Prefs have changed, and this is the notification

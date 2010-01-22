@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.prefs;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.Observer;
 
 /**
  * A Prefs decorator that collects <b>some</b> changes to the prefs made by its

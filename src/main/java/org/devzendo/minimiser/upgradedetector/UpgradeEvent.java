@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.upgradedetector;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * A version change has been detected, either due to a fresh installation or

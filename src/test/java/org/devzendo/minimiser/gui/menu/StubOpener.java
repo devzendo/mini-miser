@@ -1,5 +1,7 @@
 package org.devzendo.minimiser.gui.menu;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 import org.devzendo.minimiser.opener.DatabaseOpenEvent;
 import org.devzendo.minimiser.opener.Opener;
 import org.devzendo.minimiser.opener.OpenerAdapter;
@@ -7,8 +9,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.devzendo.minimiser.util.InstanceSet;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * A stub opener that just issues a DatabaseOpenEvent immediately when

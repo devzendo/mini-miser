@@ -1,11 +1,11 @@
 package org.devzendo.minimiser.wiring.menu;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.DatabaseNameChoice;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between window menu changes and open database switching

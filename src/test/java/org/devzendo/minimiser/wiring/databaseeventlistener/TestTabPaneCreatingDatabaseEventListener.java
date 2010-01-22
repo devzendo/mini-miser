@@ -8,6 +8,8 @@ import java.util.concurrent.Callable;
 import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.gui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tabfactory.StubRecordingTab;
 import org.devzendo.minimiser.gui.tabfactory.StubTabFactory;
@@ -25,8 +27,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.gui.GUIValueObtainer;
 
 /**
  * Tests the adapter that adapts between DatabaseEvents and the

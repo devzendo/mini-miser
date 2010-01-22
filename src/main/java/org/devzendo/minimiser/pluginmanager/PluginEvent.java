@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.pluginmanager;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * Something has happened with the PluginManager, this is the

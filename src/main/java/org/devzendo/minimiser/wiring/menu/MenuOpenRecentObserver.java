@@ -1,6 +1,7 @@
 package org.devzendo.minimiser.wiring.menu;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.DatabaseNameAndPathChoice;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
@@ -10,7 +11,6 @@ import org.devzendo.minimiser.opener.OpenerAdapterFactory;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between recent list choices and the opening/switching mechanism.

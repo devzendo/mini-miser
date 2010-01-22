@@ -2,13 +2,13 @@ package org.devzendo.minimiser.wiring.databaseeventlistener;
 
 import javax.swing.SwingUtilities;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * When a database is opened, add an empty ApplicationMenu to its DatabaseDescriptor.

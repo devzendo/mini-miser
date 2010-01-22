@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.persistence.AccessFactory;
 import org.devzendo.minimiser.persistence.BadPasswordException;
 import org.devzendo.minimiser.persistence.DAOFactory;
@@ -28,8 +30,6 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * An AccessFactory that uses Spring's JdbcTemplate.

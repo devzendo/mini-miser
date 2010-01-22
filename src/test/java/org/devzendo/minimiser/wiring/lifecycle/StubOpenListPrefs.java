@@ -1,10 +1,10 @@
 package org.devzendo.minimiser.wiring.lifecycle;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.BooleanFlag;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Prefs that get/set the database list from memory.

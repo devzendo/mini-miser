@@ -12,10 +12,10 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.util.DelayedExecutor;
 import org.devzendo.minimiser.util.Sleeper;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * A StatusBar on the bottom of the Main Frame

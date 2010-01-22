@@ -1,6 +1,8 @@
 package org.devzendo.minimiser.opener;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 import org.devzendo.minimiser.migrator.Migrator;
 import org.devzendo.minimiser.migrator.Migrator.MigrationVersion;
 import org.devzendo.minimiser.opener.OpenerAdapter.ProgressStage;
@@ -22,8 +24,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * Default implementation of Opener.

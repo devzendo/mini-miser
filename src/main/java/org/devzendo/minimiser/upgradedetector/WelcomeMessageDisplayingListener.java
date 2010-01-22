@@ -1,10 +1,10 @@
 package org.devzendo.minimiser.upgradedetector;
 
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.dialog.welcome.WelcomeDialogHelper;
 import org.devzendo.minimiser.startupqueue.StartupQueue;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Shows the Welcome Dialog upon detection of a fresh installation.

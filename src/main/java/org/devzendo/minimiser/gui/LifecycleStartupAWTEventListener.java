@@ -7,10 +7,10 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.SwingWorker;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.gui.SwingWorker;
 
 /**
  * The LifecycleStartupAWTEventListener is attached as a listener

@@ -6,14 +6,14 @@ import java.util.concurrent.Callable;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.gui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.gui.dialog.passwordentry.PasswordEntryDialogHelper;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemDialogHelper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.gui.GUIValueObtainer;
 
 /**
  * Provides the common app-wide facilities of an OpenerAdapter:

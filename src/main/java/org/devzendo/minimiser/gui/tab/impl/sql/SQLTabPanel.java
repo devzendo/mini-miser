@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
+import org.devzendo.commoncode.gui.SwingWorker;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.gui.console.input.InputConsoleEvent;
 import org.devzendo.minimiser.gui.console.input.InputConsoleEventError;
@@ -17,8 +19,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.tabledisplay.TableDisplay;
 
-import uk.me.gumbley.commoncode.gui.SwingWorker;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * The SQL Tab's main panel. A developer-friendly (and moderately user-friendly,

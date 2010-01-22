@@ -8,9 +8,9 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.version.ComparableVersion;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * Stores a map of plugin names to schema versions, and allows

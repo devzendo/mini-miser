@@ -14,10 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.Border;
 
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.gui.wizard.MiniMiserWizardPage;
 import org.devzendo.minimiser.util.PasswordValidator;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * File New Wizard - security options

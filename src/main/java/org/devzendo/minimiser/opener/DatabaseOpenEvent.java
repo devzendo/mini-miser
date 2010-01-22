@@ -1,8 +1,8 @@
 package org.devzendo.minimiser.opener;
 
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * A database has been opened, this is the notification you receive from the 

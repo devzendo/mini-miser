@@ -8,6 +8,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.helpers.ViewMenuHelper;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tabfactory.TabFactory;
@@ -20,8 +22,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

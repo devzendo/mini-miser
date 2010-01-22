@@ -3,11 +3,11 @@ package org.devzendo.minimiser.gui.dialog.toolsoptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.BooleanFlag;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Prefs that store the hidden state of tabs in memory.

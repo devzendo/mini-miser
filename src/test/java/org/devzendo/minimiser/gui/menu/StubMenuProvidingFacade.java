@@ -3,6 +3,7 @@ package org.devzendo.minimiser.gui.menu;
 import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
@@ -10,7 +11,6 @@ import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProvidingFacade;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * A MenuProvidingFacade for tests.

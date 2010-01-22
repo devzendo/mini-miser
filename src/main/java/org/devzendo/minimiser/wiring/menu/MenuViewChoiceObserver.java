@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
 import org.devzendo.minimiser.gui.menu.ViewMenuChoice;
@@ -14,7 +15,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between view menu and tab opener to open/close tabs.

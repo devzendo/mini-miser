@@ -1,9 +1,9 @@
 package org.devzendo.minimiser.opener;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.devzendo.minimiser.util.InstanceSet;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * The Opener is responsible for opening databases, informing the user and

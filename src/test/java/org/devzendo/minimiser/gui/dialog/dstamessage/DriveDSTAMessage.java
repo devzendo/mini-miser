@@ -13,12 +13,12 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.minimiser.gui.Beautifier;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.logging.Logging;
 
 
 /**

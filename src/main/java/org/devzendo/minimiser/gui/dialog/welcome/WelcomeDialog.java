@@ -24,6 +24,8 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.SwingWorker;
+import org.devzendo.commoncode.resource.ResourceLoader;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.gui.dialog.snaildialog.AbstractSnailDialog;
 import org.devzendo.minimiser.pluginmanager.ApplicationPluginDescriptor;
@@ -31,8 +33,6 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.updatechecker.DefaultChangeLogTransformer;
 import org.devzendo.minimiser.updatechecker.ParseException;
 
-import uk.me.gumbley.commoncode.gui.SwingWorker;
-import uk.me.gumbley.commoncode.resource.ResourceLoader;
 
 /**
  * A dialog that shows a card layout as the main component, initially containing

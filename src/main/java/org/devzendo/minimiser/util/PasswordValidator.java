@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.util;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
+import org.devzendo.commoncode.string.StringUtils;
 
 /**
  * A simple password validator utility class.

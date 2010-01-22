@@ -6,8 +6,9 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
-import uk.me.gumbley.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.concurrency.ThreadUtils;
+import org.devzendo.commoncode.gui.GUIUtils;
+
 
 /**
  * An OutputConsole that uses a TextArea to logs its information.

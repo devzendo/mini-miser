@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.devzendo.minimiser.plugin.facade.newdatabase.NewDatabaseCreation;
 import org.devzendo.minimiser.pluginmanager.PluginException;
@@ -14,7 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.plugin.AbstractPlugin;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.facade.newdatabase.NewDatabaseCreation;
@@ -18,7 +19,6 @@ import org.devzendo.minimiser.util.InstancePair;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * @author matt

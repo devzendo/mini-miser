@@ -5,13 +5,13 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProviding;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProvidingFacade;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * Obtains all MenuProvidingFacade plugins from the PluginManager, and calls

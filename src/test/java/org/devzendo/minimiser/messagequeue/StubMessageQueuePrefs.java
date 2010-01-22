@@ -3,11 +3,11 @@ package org.devzendo.minimiser.messagequeue;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.BooleanFlag;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Prefs that get/set the "don't show this again" flags and

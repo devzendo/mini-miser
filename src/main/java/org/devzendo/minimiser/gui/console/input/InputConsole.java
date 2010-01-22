@@ -2,7 +2,8 @@ package org.devzendo.minimiser.gui.console.input;
 
 import java.util.List;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.Observer;
+
 
 /**
  * An InputConsole receives changes to a single line of input from the user,

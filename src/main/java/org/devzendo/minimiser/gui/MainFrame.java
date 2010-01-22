@@ -12,11 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.exception.AppException;
+import org.devzendo.commoncode.resource.ResourceLoader;
 import org.devzendo.minimiser.gui.tabpanemanager.TabPaneManager;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.exception.AppException;
-import uk.me.gumbley.commoncode.resource.ResourceLoader;
 
 /**
  * The MiniMiser main Frame - this is the main application start code.

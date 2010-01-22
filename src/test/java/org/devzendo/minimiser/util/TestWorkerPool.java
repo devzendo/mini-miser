@@ -5,11 +5,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 
 
 /**

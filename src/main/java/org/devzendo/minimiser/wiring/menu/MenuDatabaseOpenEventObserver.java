@@ -1,11 +1,11 @@
 package org.devzendo.minimiser.wiring.menu;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
 import org.devzendo.minimiser.opener.DatabaseOpenEvent;
 import org.devzendo.minimiser.opener.Opener;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between the Opener opening a database and it being added to the

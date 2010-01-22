@@ -1,5 +1,6 @@
 package org.devzendo.minimiser.wiring.menu;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.MainFrameTitle;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
@@ -11,7 +12,6 @@ import org.devzendo.minimiser.openlist.DatabaseSwitchedEvent;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between DatabaseEvents and Menu/Title/RecentFilesList updates.

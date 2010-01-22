@@ -8,11 +8,11 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * The Window menu rebuilds when databases are added, removed, or switched to.

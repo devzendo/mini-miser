@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.persistence;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * An event that occurs when databases are opened or created.

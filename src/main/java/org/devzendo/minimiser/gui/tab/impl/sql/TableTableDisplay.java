@@ -2,9 +2,9 @@ package org.devzendo.minimiser.gui.tab.impl.sql;
 
 import java.util.List;
 
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.tabledisplay.TableDisplay;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * A TableDisplay that uses a ResultTable's JTable to render the

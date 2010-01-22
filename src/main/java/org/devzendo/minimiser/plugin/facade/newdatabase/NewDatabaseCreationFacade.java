@@ -4,11 +4,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.persistence.PersistenceObservableEvent;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Facade provided to allow databases to be populated with

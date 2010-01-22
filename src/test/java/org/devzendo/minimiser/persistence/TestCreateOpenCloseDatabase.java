@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.closer.Closer;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.domain.Version;
@@ -15,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

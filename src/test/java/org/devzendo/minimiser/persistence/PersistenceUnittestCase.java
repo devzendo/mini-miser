@@ -10,6 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.os.OSTypeDetect;
+import org.devzendo.commoncode.os.OSTypeDetect.OSType;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.config.UnittestingConfig;
 import org.devzendo.minimiser.springloader.ApplicationContext;
 import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
@@ -18,9 +21,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
-import uk.me.gumbley.commoncode.os.OSTypeDetect;
-import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * All persistence test cases must have a test database directory that must be

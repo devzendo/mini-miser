@@ -3,8 +3,8 @@ package org.devzendo.minimiser.persistence;
 import java.io.File;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.string.StringUtils;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * Toolkit for validating that a directory might be

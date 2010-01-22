@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.minimiser.gui.tab.impl.sql.SQLTab;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.AccessFactory;
@@ -21,8 +23,6 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.util.InstancePair;
 import org.devzendo.minimiser.util.InstanceSet;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.logging.Logging;
 
 
 /**

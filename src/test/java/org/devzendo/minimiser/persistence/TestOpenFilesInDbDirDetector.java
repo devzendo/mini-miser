@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.os.OSTypeDetect;
+import org.devzendo.commoncode.os.OSTypeDetect.OSType;
 import org.devzendo.minimiser.util.OpenFilesDetector;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.os.OSTypeDetect;
-import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 
 
 /**

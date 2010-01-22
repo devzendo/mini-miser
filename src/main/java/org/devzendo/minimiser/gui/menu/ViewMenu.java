@@ -9,6 +9,8 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
@@ -16,8 +18,6 @@ import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.prefs.Prefs;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * The View menu is rebuildable on initialisation and when prefs' hidden tabs

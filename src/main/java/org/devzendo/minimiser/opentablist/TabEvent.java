@@ -1,8 +1,8 @@
 package org.devzendo.minimiser.opentablist;
 
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * Something has happened with the OpenTabList, this is the notification

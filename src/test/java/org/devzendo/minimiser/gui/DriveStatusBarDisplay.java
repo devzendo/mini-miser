@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import org.devzendo.minimiser.gui.messagequeueviewer.DefaultMessageQueueViewerFactory;
 import org.devzendo.minimiser.messagequeue.BooleanFlagSettingMessage;
@@ -28,8 +30,6 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.util.DelayedExecutor;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.logging.Logging;
 
 /**
  * @author matt

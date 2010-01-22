@@ -4,10 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * Triggered by the File Close All menu.

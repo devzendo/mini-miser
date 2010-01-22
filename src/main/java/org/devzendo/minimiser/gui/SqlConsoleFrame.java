@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.exception.AppException;
+import org.devzendo.commoncode.gui.SwingWorker;
+import org.devzendo.commoncode.resource.ResourceLoader;
 import org.devzendo.minimiser.gui.tab.impl.sql.SQLTabPanel;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.AccessFactory;
@@ -26,9 +29,6 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.springloader.SpringLoader;
 import org.devzendo.minimiser.util.InstanceSet;
 
-import uk.me.gumbley.commoncode.exception.AppException;
-import uk.me.gumbley.commoncode.gui.SwingWorker;
-import uk.me.gumbley.commoncode.resource.ResourceLoader;
 
 /**
  * A stand-alone console frame that opens a database without

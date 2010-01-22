@@ -3,6 +3,7 @@ package org.devzendo.minimiser.opentablist;
 import java.awt.Label;
 import java.util.List;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
@@ -11,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

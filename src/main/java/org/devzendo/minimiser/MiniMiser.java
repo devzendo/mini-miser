@@ -7,6 +7,11 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.exception.AppException;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.gui.ThreadCheckingRepaintManager;
+import org.devzendo.commoncode.logging.Logging;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.gui.Beautifier;
 import org.devzendo.minimiser.gui.MainFrame;
 import org.devzendo.minimiser.gui.SqlConsoleFrame;
@@ -16,11 +21,6 @@ import org.devzendo.minimiser.prefs.PrefsLocation;
 import org.devzendo.minimiser.springloader.SpringLoader;
 import org.devzendo.minimiser.springloader.SpringLoaderFactory;
 
-import uk.me.gumbley.commoncode.exception.AppException;
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.gui.ThreadCheckingRepaintManager;
-import uk.me.gumbley.commoncode.logging.Logging;
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * The start of the application, parsescommand line for logging, and constructs

@@ -1,6 +1,7 @@
 package org.devzendo.minimiser.upgradedetector;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.messagequeue.BooleanFlagSettingMessage;
 import org.devzendo.minimiser.messagequeue.Message;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
@@ -8,7 +9,6 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.prefs.Prefs;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * When updated/fresh install is detected, and the 'check updates allowed'

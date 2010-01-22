@@ -1,13 +1,13 @@
 package org.devzendo.minimiser.persistence;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.persistence.dao.VersionsDao;
 import org.devzendo.minimiser.persistence.domain.Version;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * TestPersistenceBenchmarks

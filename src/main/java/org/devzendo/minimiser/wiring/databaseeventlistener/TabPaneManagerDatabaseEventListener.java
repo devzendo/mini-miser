@@ -1,6 +1,7 @@
 package org.devzendo.minimiser.wiring.databaseeventlistener;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.tabpanemanager.TabPaneManager;
 import org.devzendo.minimiser.openlist.DatabaseClosedEvent;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
@@ -8,7 +9,6 @@ import org.devzendo.minimiser.openlist.DatabaseListEmptyEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
 import org.devzendo.minimiser.openlist.DatabaseSwitchedEvent;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between database events and the tab pane manager's card layout.

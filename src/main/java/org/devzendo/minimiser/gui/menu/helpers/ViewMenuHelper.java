@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.gui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
@@ -16,8 +18,6 @@ import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.prefs.Prefs;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.gui.GUIValueObtainer;
 
 /**
  * A helper that:

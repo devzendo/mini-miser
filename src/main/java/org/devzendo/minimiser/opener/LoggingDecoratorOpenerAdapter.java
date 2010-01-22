@@ -1,10 +1,10 @@
 package org.devzendo.minimiser.opener;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.string.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * An OpenerAdapter that decorates an existing OpenerAdapter,

@@ -10,11 +10,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * Maintains a list of open tabs, for each open database, and fires events

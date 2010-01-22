@@ -1,6 +1,7 @@
 package org.devzendo.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
@@ -9,7 +10,6 @@ import org.devzendo.minimiser.prefs.PrefsEvent;
 import org.devzendo.minimiser.updatechecker.UpdateChecker;
 import org.devzendo.minimiser.updatechecker.UpdateProgressAdapterFactory;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between the 'update allowed' prefs change events and the

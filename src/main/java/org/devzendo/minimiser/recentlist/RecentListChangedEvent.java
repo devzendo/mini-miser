@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.recentlist;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * The recent list has changed - something has been added that wasn't there

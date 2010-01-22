@@ -1,11 +1,11 @@
 package org.devzendo.minimiser.wiring.lifecycle;
 
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.prefs.Prefs;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * A Lifecycle that sets the initial state of the Help | Check for

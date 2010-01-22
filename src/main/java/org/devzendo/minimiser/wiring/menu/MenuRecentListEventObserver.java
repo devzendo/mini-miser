@@ -1,11 +1,11 @@
 package org.devzendo.minimiser.wiring.menu;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
 import org.devzendo.minimiser.recentlist.RecentListChangedEvent;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between recent list updates and the menu, to update the recent

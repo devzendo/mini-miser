@@ -3,6 +3,7 @@ package org.devzendo.minimiser.pluginmanager;
 import java.util.List;
 import java.util.Map;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
@@ -14,7 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

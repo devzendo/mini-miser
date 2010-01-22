@@ -8,10 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * A Lifecycle that initialises the close action listener

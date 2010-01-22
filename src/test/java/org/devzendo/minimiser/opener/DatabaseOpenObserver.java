@@ -4,9 +4,9 @@
 package org.devzendo.minimiser.opener;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.junit.Assert;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * An observer of database openings.

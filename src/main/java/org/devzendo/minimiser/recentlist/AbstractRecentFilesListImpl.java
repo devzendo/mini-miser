@@ -3,10 +3,10 @@ package org.devzendo.minimiser.recentlist;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * The core of the RecentFilesList implementation that handles the logic of

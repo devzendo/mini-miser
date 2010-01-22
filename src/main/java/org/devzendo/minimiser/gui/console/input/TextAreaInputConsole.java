@@ -12,9 +12,9 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * An InputConsole that uses a JTextArea to input data, with input map handlers

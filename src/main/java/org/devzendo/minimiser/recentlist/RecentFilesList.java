@@ -1,8 +1,8 @@
 package org.devzendo.minimiser.recentlist;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Maintains a short list of recently-opened files.

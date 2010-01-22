@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.prefs.Prefs;
@@ -14,7 +15,6 @@ import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

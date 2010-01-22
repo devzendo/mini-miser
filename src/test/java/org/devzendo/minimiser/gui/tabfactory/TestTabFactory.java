@@ -4,6 +4,7 @@ import java.awt.Label;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
@@ -18,7 +19,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

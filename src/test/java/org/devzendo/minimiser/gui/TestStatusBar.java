@@ -1,11 +1,11 @@
 package org.devzendo.minimiser.gui;
 
+import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.devzendo.minimiser.util.DelayedExecutor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 
 
 /**

@@ -23,13 +23,13 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 import org.apache.commons.lang.StringUtils;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.gui.SwingWorker;
+import org.devzendo.commoncode.resource.ResourceLoader;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.pluginmanager.ApplicationPluginDescriptor;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.gui.SwingWorker;
-import uk.me.gumbley.commoncode.resource.ResourceLoader;
 
 /**
  * A modal About... dialog.

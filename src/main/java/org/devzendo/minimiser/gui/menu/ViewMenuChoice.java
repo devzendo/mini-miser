@@ -1,9 +1,9 @@
 package org.devzendo.minimiser.gui.menu;
 
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * A choice of view tab from the View menu has been made.

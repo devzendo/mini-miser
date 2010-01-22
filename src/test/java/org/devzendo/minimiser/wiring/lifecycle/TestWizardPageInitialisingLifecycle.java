@@ -3,13 +3,13 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import java.io.File;
 import java.io.IOException;
 
+import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 
 
 /**

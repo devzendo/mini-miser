@@ -7,11 +7,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.SwingWorker;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.gui.SwingWorker;
 
 /**
  * Triggered when the main window is to close, this prompts for

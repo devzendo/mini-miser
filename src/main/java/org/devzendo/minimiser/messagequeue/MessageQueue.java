@@ -3,9 +3,9 @@ package org.devzendo.minimiser.messagequeue;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * The MessageQueue is used to hold non-persistent, asynchronously-delivered

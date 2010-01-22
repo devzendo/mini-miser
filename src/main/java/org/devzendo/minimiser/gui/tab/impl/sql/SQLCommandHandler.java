@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.gui.console.output.OutputConsole;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
@@ -17,7 +18,6 @@ import org.devzendo.minimiser.persistence.sql.SQLAccess;
 import org.devzendo.minimiser.persistence.sql.SQLAccessException;
 import org.devzendo.minimiser.tabledisplay.TableDisplay;
 
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * A CommandHandler for SQL commands.

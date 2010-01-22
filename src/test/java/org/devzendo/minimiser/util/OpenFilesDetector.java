@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.executor.IteratorExecutor;
+import org.devzendo.commoncode.os.OSTypeDetect;
+import org.devzendo.commoncode.os.OSTypeDetect.OSType;
 
-import uk.me.gumbley.commoncode.executor.IteratorExecutor;
-import uk.me.gumbley.commoncode.os.OSTypeDetect;
-import uk.me.gumbley.commoncode.os.OSTypeDetect.OSType;
 
 /**
  * Utility code to detect open files.

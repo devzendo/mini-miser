@@ -3,13 +3,13 @@ package org.devzendo.minimiser.gui.tabfactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * A Stub TabFactory that just loads StubRecordingTabs.

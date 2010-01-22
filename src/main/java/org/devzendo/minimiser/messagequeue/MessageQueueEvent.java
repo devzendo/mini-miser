@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.messagequeue;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * A message has been added or removed from the MessageQueue. This is the

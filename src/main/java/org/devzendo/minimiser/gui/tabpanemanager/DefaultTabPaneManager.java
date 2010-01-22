@@ -6,9 +6,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * Extends the core Tab Pane Manager functionality with GUI code.

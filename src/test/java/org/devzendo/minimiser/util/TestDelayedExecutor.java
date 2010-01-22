@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.concurrency.ThreadUtils;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.util.DelayedExecutor.Executable;
 import org.devzendo.minimiser.util.DelayedExecutor.ExecutableReplaced;
@@ -13,8 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

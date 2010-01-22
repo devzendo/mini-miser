@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.concurrency.ThreadUtils;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.opener.AbstractOpenerAdapter;
 import org.devzendo.minimiser.opener.Opener;
@@ -12,8 +14,6 @@ import org.devzendo.minimiser.opener.OpenerAdapter;
 import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * The worker for opening databases when the File|Open wizard has finished.

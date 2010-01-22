@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JTabbedPane;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
@@ -18,7 +19,6 @@ import org.devzendo.minimiser.pluginmanager.PluginException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Tests the linkage between the menu items enabling/disabling and

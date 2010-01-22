@@ -1,8 +1,8 @@
 package org.devzendo.minimiser.prefs;
 
-import uk.me.gumbley.commoncode.file.INIFile;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
+import org.devzendo.commoncode.file.INIFile;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 
 /**
  * Storage API for user preferences. Encapsulates the storage mechanism.

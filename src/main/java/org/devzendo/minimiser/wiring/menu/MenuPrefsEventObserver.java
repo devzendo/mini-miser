@@ -1,13 +1,13 @@
 package org.devzendo.minimiser.wiring.menu;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
 import org.devzendo.minimiser.gui.menu.helpers.ViewMenuHelper;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between the prefs change events and the menu updating the view

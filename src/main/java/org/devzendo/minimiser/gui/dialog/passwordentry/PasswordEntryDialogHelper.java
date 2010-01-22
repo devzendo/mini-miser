@@ -3,7 +3,8 @@ package org.devzendo.minimiser.gui.dialog.passwordentry;
 import java.awt.Frame;
 import java.util.concurrent.CountDownLatch;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.gui.GUIUtils;
+
 
 /**
  * Password Entry Dialog Helper that is called on some non-EDT thread to

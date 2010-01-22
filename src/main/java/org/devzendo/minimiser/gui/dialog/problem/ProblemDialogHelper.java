@@ -2,10 +2,10 @@ package org.devzendo.minimiser.gui.dialog.problem;
 
 import java.awt.Frame;
 
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * Toolkit for easily creating Problem Dialogs.

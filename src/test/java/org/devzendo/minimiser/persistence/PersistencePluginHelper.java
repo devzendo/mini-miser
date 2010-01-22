@@ -5,14 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.config.UnittestingConfig;
 import org.devzendo.minimiser.persistence.impl.JdbcTemplateAccessFactoryImpl;
 import org.devzendo.minimiser.pluginmanager.PluginHelper;
 import org.devzendo.minimiser.pluginmanager.PluginHelperFactory;
 import org.devzendo.minimiser.util.InstanceSet;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * A helper class for building tests involving plugins and

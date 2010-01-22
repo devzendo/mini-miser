@@ -3,12 +3,12 @@ package org.devzendo.minimiser.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.messagequeueviewer.MessageQueueViewerFactory;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueEvent;
 import org.devzendo.minimiser.messagequeue.MessageQueueModifiedEvent;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Adapts between the status bar and message queue. Specifically:

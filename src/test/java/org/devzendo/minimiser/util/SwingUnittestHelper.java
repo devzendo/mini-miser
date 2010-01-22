@@ -2,7 +2,8 @@ package org.devzendo.minimiser.util;
 
 import java.awt.EventQueue;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
+import org.devzendo.commoncode.concurrency.ThreadUtils;
+
 
 /**
  * Helper code for ensuring the Swing/AWT event queue is active

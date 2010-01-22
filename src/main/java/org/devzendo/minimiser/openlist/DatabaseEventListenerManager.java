@@ -3,10 +3,10 @@ package org.devzendo.minimiser.openlist;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Manages a list of listeners of DatabaseEvents.

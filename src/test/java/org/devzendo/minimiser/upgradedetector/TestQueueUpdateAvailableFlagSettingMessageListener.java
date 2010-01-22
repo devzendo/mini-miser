@@ -1,5 +1,6 @@
 package org.devzendo.minimiser.upgradedetector;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import org.devzendo.minimiser.messagequeue.MessageQueueEvent;
@@ -13,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

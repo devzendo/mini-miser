@@ -3,6 +3,7 @@ package org.devzendo.minimiser.prefs;
 import java.io.File;
 import java.io.IOException;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.prefs.Prefs.PrefsSection;
 import org.easymock.EasyMock;
@@ -10,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

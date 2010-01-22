@@ -5,11 +5,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuBar;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * The Swing Menu.

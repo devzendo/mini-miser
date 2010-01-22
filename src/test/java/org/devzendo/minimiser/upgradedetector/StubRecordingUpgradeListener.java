@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.upgradedetector;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.Observer;
 
 /**
  * Allows tests to check UpgradeEvents

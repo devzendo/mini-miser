@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.string.StringUtils;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
@@ -17,8 +19,6 @@ import org.netbeans.spi.wizard.DeferredWizardResult;
 import org.netbeans.spi.wizard.ResultProgressHandle;
 import org.springframework.dao.DataAccessException;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.string.StringUtils;
 
 /**
  * The worker for creating databases when the File|New wizard has finished.

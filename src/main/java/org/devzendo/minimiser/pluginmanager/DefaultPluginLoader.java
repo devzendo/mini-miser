@@ -13,12 +13,12 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.resource.ResourceLoader;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.jruby.exceptions.RaiseException;
 import org.springframework.scripting.jruby.JRubyScriptUtils;
 
-import uk.me.gumbley.commoncode.resource.ResourceLoader;
 
 /**
  * A PluginLoader that scans for named properties files, and

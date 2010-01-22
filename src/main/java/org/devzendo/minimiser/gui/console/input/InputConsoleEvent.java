@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.gui.console.input;
 
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 
 /**
  * A line of input has been entered, and here it is.

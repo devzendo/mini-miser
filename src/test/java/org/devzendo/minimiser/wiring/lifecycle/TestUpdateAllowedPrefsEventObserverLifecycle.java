@@ -3,6 +3,7 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import java.io.File;
 import java.io.IOException;
 
+import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.StubMenu;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
@@ -16,7 +17,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 
 
 /**

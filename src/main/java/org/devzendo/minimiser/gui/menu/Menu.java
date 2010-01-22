@@ -4,9 +4,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenuBar;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

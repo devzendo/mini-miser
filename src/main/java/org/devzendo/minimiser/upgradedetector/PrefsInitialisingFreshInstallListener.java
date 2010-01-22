@@ -1,9 +1,9 @@
 package org.devzendo.minimiser.upgradedetector;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsInitialiser;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * Performs initialisation of prefs, upon detection of a fresh installation.

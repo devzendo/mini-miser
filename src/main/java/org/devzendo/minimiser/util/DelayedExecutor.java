@@ -8,11 +8,11 @@ import java.util.TreeMap;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.concurrency.ThreadUtils;
+import org.devzendo.commoncode.patterns.observer.ObservableEvent;
+import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commoncode.patterns.observer.ObserverList;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
-import uk.me.gumbley.commoncode.patterns.observer.ObservableEvent;
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
-import uk.me.gumbley.commoncode.patterns.observer.ObserverList;
 
 /**
  * Allows Runnables to be enqueued and run after some specified delay.

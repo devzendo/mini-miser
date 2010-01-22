@@ -2,9 +2,9 @@ package org.devzendo.minimiser.persistence;
 
 import java.util.Map;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.util.InstanceSet;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 /**
  * This is the entry point into the persistence layer.

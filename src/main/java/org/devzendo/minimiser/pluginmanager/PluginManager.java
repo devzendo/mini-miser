@@ -2,10 +2,10 @@ package org.devzendo.minimiser.pluginmanager;
 
 import java.util.List;
 
+import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
 
-import uk.me.gumbley.commoncode.patterns.observer.Observer;
 
 
 /**

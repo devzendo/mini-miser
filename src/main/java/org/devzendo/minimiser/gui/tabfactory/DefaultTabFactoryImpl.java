@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
@@ -15,7 +16,6 @@ import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
-import uk.me.gumbley.commoncode.gui.GUIUtils;
 
 /**
  * The default implementation of the TabFactory.

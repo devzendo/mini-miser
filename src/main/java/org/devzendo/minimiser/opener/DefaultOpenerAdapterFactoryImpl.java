@@ -3,10 +3,10 @@ package org.devzendo.minimiser.opener;
 import java.awt.Frame;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.gui.MainFrameStatusBar;
 
-import uk.me.gumbley.commoncode.concurrency.ThreadUtils;
 
 /**
  * An OpenerAdapterfactory that creates OpenerAdapters that control the
