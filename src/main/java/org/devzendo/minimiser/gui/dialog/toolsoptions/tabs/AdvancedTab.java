@@ -16,14 +16,14 @@ import org.devzendo.minimiser.prefs.Prefs;
 
 /**
  * The Advanced Tools->Options tab holds settings suitable for gurus.
- * 
+ *
  * @author matt
  *
  */
 public final class AdvancedTab implements ToolsOptionsTab {
     private Prefs changeCollectingPrefs;
     private JPanel mainPanel;
-    private Object lock;
+    private final Object lock;
 
     /**
      * Create the Advanced Tab
@@ -36,14 +36,14 @@ public final class AdvancedTab implements ToolsOptionsTab {
             this.changeCollectingPrefs = collectingPrefs;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getName() {
         return "Advanced";
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -51,26 +51,26 @@ public final class AdvancedTab implements ToolsOptionsTab {
         mainPanel = new JPanel();
         mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 8, 8));
         final JPanel innerPanel = new JPanel(new GridLayout(4, 1, 16, 16));
-        
-        final JCheckBox sqlViewEnabled = new JCheckBox("SQL view enabled?"); 
+
+        final JCheckBox sqlViewEnabled = new JCheckBox("SQL view enabled?");
         synchronized (lock) {
-            sqlViewEnabled.setSelected(!changeCollectingPrefs.isTabHidden(TabIdentifier.SQL.toString()));
+            sqlViewEnabled.setSelected(!changeCollectingPrefs.isTabHidden(TabIdentifier.SQL.getTabName()));
         }
         sqlViewEnabled.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 final boolean enabled = sqlViewEnabled.isSelected();
                 synchronized (lock) {
                     if (enabled) {
-                        changeCollectingPrefs.clearTabHidden(TabIdentifier.SQL.toString());
+                        changeCollectingPrefs.clearTabHidden(TabIdentifier.SQL.getTabName());
                     } else {
-                        changeCollectingPrefs.setTabHidden(TabIdentifier.SQL.toString());
+                        changeCollectingPrefs.setTabHidden(TabIdentifier.SQL.getTabName());
                     }
                 }
             }
         });
-        
+
         innerPanel.add(sqlViewEnabled);
-        
+
 //        innerPanel.add(new JCheckBox("Does nothing 1"));
 //        innerPanel.add(new JCheckBox("Does nothing 1"));
 //        innerPanel.add(new JCheckBox("Does nothing 1"));
@@ -84,14 +84,14 @@ public final class AdvancedTab implements ToolsOptionsTab {
     public Component getComponent() {
         return mainPanel;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void disposeComponent() {
         // do nothing
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -1,73 +1,116 @@
 package org.devzendo.minimiser.gui.tab;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
 
 /**
  * Identifiers for the possible set of tabs that may be viewed.
- * 
+ *
  * Some tabs are permanent and are always shown, and cannot be closed.
- * 
+ *
+ * The framework provides some tabs, these are System tabs - plugins can
+ * contribute others.
+ *
  * Tabs are always shown on the View menu is a specific order, and are
- * shown in the tabbed panes in that same order.
- * 
+ * shown in the tabbed panes in that same order. System tabs are shown before
+ * non-System tabs.
+ *
  * You can't open the same tab twice.
- * 
- * Toolkit routines in this enum help to enforce these rules.
- * 
+ *
+ * Toolkit routines in TabIdentifierToolkit help to enforce these rules.
+ *
+ * Equality is based only on the tab name (as is the hash code).
+ *
+ * Comparison is based on the system flag, then display name, then mnemonic.
+ *
  * @author matt
  *
  */
-public enum TabIdentifier {
+public final class TabIdentifier implements Comparable<TabIdentifier> {
+    // TODO: move these to the SystemTabIdentifiers
     /**
      * The SQL debug/developer tab
      */
-    SQL("SQL", false, 'S'),
+    public static final TabIdentifier SQL = new TabIdentifier("SQL", "SQL", false, 'S', true);
 
     /**
-     * The overview tab 
+     * The overview tab
      */
-    OVERVIEW("Overview", true, 'O'),
-    
+    public static final TabIdentifier OVERVIEW = new TabIdentifier("OVERVIEW", "Overview", true, 'O', true);
+
     /**
-     * The Categories tab 
+     * The Categories tab
      */
-    CATEGORIES("Categories", false, 'C');
-    
-    private final String displayName;
-    private final boolean tabPermanent;
-    private final char mnemonic;
-    
-    private static List<TabIdentifier> permanentIds;
-    static {
-        permanentIds = new ArrayList<TabIdentifier>();
-        for (TabIdentifier tabId : TabIdentifier.values()) {
-            if (tabId.isTabPermanent()) {
-                permanentIds.add(tabId);
-            }
+    public static final TabIdentifier CATEGORIES = new TabIdentifier("CATEGORIES", "Categories", false, 'C', true);
+
+    private final String mName;
+    private final String mDisplayName;
+    private final boolean mTabPermanent;
+    private final char mMnemonic;
+    private final boolean mSystemTab;
+
+    /**
+     * TODO: SMELL: this is eeviiil.
+     * @param tabName a tab name
+     * @return the TabIdentifier for the given tabName
+     */
+    public static TabIdentifier valueOf(final String tabName) {
+        // use reflection?
+        if (tabName.equals("SQL")) {
+            return SQL;
+        } else if (tabName.equals("OVERVIEW")) {
+            return OVERVIEW;
+        } else if (tabName.equals("CATEGORIES")) {
+            return CATEGORIES;
         }
+        throw new IllegalArgumentException("Unknown tab name '" + tabName + "'");
+    }
+
+    /**
+     * @return all the TabIdentifiers
+     */
+    public static TabIdentifier[] values() {
+        return new TabIdentifier[] {SQL, OVERVIEW, CATEGORIES};
+    }
+
+    /**
+     * Construct a plugin TabIdentifier.
+     * @param name the unchanging name or key for this TabIdentifier that will be used to record hidden tabs.
+     * @param displayName the displayable name of this tab that could change for different languages
+     * @param permanent is this tab permanent? Can it be closed?
+     * @param mne the tab's mnemonic, for the menu
+     */
+    public TabIdentifier(final String name, final String displayName, final boolean permanent, final char mne) {
+        this(name, displayName, permanent, mne, false);
     }
 
     /**
      * Construct a TabIdentifier.
-     * @param name the displayable name of this tab
+     * @param name the unchanging name or key for this TabIdentifier that will be used to record hidden tabs.
+     * @param displayName the displayable name of this tab that could change for different languages
      * @param permanent is this tab permanent? Can it be closed?
      * @param mne the tab's mnemonic, for the menu
+     * @param system is this a System tab?
      */
-    TabIdentifier(final String name, final boolean permanent, final char mne) {
-        this.displayName = name;
-        this.tabPermanent = permanent;
-        this.mnemonic = mne;
+    TabIdentifier(final String name, final String displayName, final boolean permanent, final char mne, final boolean system) {
+        this.mName = name;
+        this.mDisplayName = displayName;
+        this.mTabPermanent = permanent;
+        this.mMnemonic = mne;
+        this.mSystemTab = system;
+    }
+
+    /**
+     * @return the tab name that can be used as a key in hidden tab storage, etc.
+     */
+    public String getTabName() {
+        return mName;
     }
 
     /**
      * @return the displayable name
      */
     public String getDisplayableName() {
-        return displayName;
+        return mDisplayName;
     }
 
     /**
@@ -75,145 +118,72 @@ public enum TabIdentifier {
      * @return true iff permanent
      */
     public boolean isTabPermanent() {
-        return tabPermanent;
+        return mTabPermanent;
     }
 
     /**
      * @return the tab mnemonic for the menu
      */
     public char getMnemonic() {
-        return mnemonic;
+        return mMnemonic;
     }
-    
+
     /**
-     * Translate a list of tab identifier names to a List<TabIdentifier>,
-     * omitting any that fail to translate. This does not discard duplicates or
-     * order according to TabIdentifier order.
-     * @param names the input names (tab identifiers, e.g. "OVERVIEW", not
-     * displayable names (e.g. "Overview") 
-     * @return the output TabIdentifiers, always a list, could be empty.
+     * @return true iff this is a System tab
      */
-    public static List<TabIdentifier> toTabIdentifiers(final String[] names) {
-        final ArrayList<TabIdentifier> arrayList = new ArrayList<TabIdentifier>();
-        if (names != null) {
-            for (final String name : names) {
-                final TabIdentifier tabId = toTabIdentifier(name);
-                if (tabId != null) {
-                    arrayList.add(tabId);
-                }
+    public boolean isSystemTab() {
+        return mSystemTab;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        return mName.equals(((TabIdentifier) obj).getTabName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return mName.hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int compareTo(final TabIdentifier o) {
+        if (o.isSystemTab() != this.isSystemTab()) {
+            if (o.isSystemTab()) {
+                return 1;
+            } else {
+                return -1;
             }
         }
-        return arrayList;
+        final int displayNameComparison = mDisplayName.compareTo(o.getDisplayableName());
+        if (displayNameComparison != 0) {
+            return displayNameComparison;
+        }
+        return new Character(mMnemonic).compareTo(new Character(o.getMnemonic()));
     }
 
     /**
-     * Given a name, return the TabIdentifier. Like valueOf, but returns null
-     * rather than throwing an IllegalArgumentException on lookup failure.
-     * @param tabName a tab name
-     * @return the TabIdentifier, or null if the name does not correspond to one.
+     * {@inheritDoc}
      */
-    public static TabIdentifier toTabIdentifier(final String tabName) {
-        if (tabName == null) {
-            return null;
-        }
-        try {
-            return TabIdentifier.valueOf(tabName);
-        } catch (final IllegalArgumentException iae) {
-            return null;
-        }
-    }
-
-    /**
-     * Given a display name, return the TabIdentifier. Like valueOf, but returns null
-     * rather than throwing an IllegalArgumentException on lookup failure.
-     * @param tabDisplayName a tab display name
-     * @return the TabIdentifier, or null if the display name does not correspond to one.
-     */
-    public static TabIdentifier toTabIdentifierFromDisplayName(final String tabDisplayName) {
-        if (tabDisplayName == null) {
-            return null;
-        }
-        for (TabIdentifier tabId : TabIdentifier.values()) {
-            if (tabId.getDisplayableName().equals(tabDisplayName)) {
-                return tabId;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Obtain a list of the permanent tab identifiers, in TabIdentifier order.
-     * @return the permanent TabIdentifiers.
-     */
-    public static List<TabIdentifier> getPermanentTabIdentifiers() {
-        return permanentIds;
-    }
-
-    /**
-     * Translate a list of tab identifiers to an array of display names.
-     * @param ids the TabIdentifiers 
-     * @return an array of String names, never null
-     */
-    public static String[] toDisplayNames(final List<TabIdentifier> ids) {
-        if (ids != null) {
-            final String[] names = new String[ids.size()];
-            for (int i = 0; i < ids.size(); i++) {
-                names[i] = ids.get(i).getDisplayableName();
-            }
-            return names;
-        }
-        return new String[0];
-    }
-
-    /**
-     * Translate a list of tab identifiers to an array of tab names.
-     * @param ids the TabIdentifiers 
-     * @return an array of String names, never null
-     */
-    public static String[] toTabNames(final List<TabIdentifier> ids) {
-        if (ids != null) {
-            final String[] names = new String[ids.size()];
-            for (int i = 0; i < ids.size(); i++) {
-                names[i] = ids.get(i).toString();
-            }
-            return names;
-        }
-        return new String[0];
-    }
-    
-    /**
-     * Sorts into TabIdentifier order and removes duplicates from a list of
-     * valid TabIdentifier names, discarding those that don't translate.
-     * @param names the names
-     * @return a List<TabIdentifier>.
-     */
-    public static List<TabIdentifier> sortAndDeDupe(final List<String> names) {
-        if (names == null) {
-            return Collections.emptyList();
-        }
-        return sort(new HashSet<TabIdentifier>(toTabIdentifiers(names.toArray(new String[0]))));
-    }
-
-    /**
-     * Sorts into TabIdentifier order and removes duplicates from a list of
-     * TabIdentifiers.
-     * @param tabIds the TabIdentifiers
-     * @return a List<TabIdentifier>.
-     */
-    public static List<TabIdentifier> sortAndDeDupeTabIdentifiers(final List<TabIdentifier> tabIds) {
-        if (tabIds == null) {
-            return Collections.emptyList();
-        }
-        return sort(new HashSet<TabIdentifier>(tabIds));
-    }
-
-    private static List<TabIdentifier> sort(final Set<TabIdentifier> uniques) {
-        final ArrayList<TabIdentifier> sortedDeDuped = new ArrayList<TabIdentifier>();
-        for (TabIdentifier tabId : values()) {
-            if (uniques.contains(tabId)) {
-                sortedDeDuped.add(tabId);
-            }
-        }
-        return sortedDeDuped;
+    @Override
+    public String toString() {
+        return String.format("TabIdentifier:%s: '%s' %s tab; %s; mnemonic '%c'",
+            mName, mDisplayName,
+            (mSystemTab ? "system" : "plugin"),
+            (mTabPermanent ? "permanent" : "impermanent"),
+            mMnemonic);
     }
 }

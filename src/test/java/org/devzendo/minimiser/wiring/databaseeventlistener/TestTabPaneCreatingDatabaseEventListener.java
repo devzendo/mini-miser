@@ -81,6 +81,9 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
     @Test
     public void openingDatabaseCausesTabsStoredInPrefsAndPermanentTabsToBeAddedToTheOpenTabList() throws Exception {
         // Add SQL into prefs - OVERVIEW is permanent, so we should see [SQL, OVERVIEW]
+        // Just test that OVERVIEW is still permanent first
+        Assert.assertTrue(TabIdentifier.OVERVIEW.isTabPermanent());
+
         final Prefs prefs = EasyMock.createMock(Prefs.class);
         EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {"SQL"});
         EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");
@@ -115,9 +118,9 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
         Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(2, tabsForDatabase.size());
-        Assert.assertEquals(TabIdentifier.SQL, tabsForDatabase.get(0).getTabIdentifier());
+        Assert.assertEquals(TabIdentifier.OVERVIEW, tabsForDatabase.get(0).getTabIdentifier());
         Assert.assertTrue(tabsForDatabase.get(0).getTab() instanceof StubRecordingTab);
-        Assert.assertEquals(TabIdentifier.OVERVIEW, tabsForDatabase.get(1).getTabIdentifier());
+        Assert.assertEquals(TabIdentifier.SQL, tabsForDatabase.get(1).getTabIdentifier());
         Assert.assertTrue(tabsForDatabase.get(1).getTab() instanceof StubRecordingTab);
 
         // And the StubRecordingTab's component should have been added to the
@@ -129,11 +132,11 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
                 final Component componentAt0 = tabbedPane.getComponentAt(0);
                 LOGGER.debug("component at 0 is a " + componentAt0);
                 component0IsLabel = componentAt0 instanceof Label;
-                tab0NameOk = TabIdentifier.SQL.getDisplayableName().equals(tabbedPane.getTitleAt(0));
+                tab0NameOk = TabIdentifier.OVERVIEW.getDisplayableName().equals(tabbedPane.getTitleAt(0));
                 final Component componentAt1 = tabbedPane.getComponentAt(1);
                 LOGGER.debug("component at 1 is a " + componentAt1);
                 component1IsLabel = componentAt1 instanceof Label;
-                tab1NameOk = TabIdentifier.OVERVIEW.getDisplayableName().equals(tabbedPane.getTitleAt(1));
+                tab1NameOk = TabIdentifier.SQL.getDisplayableName().equals(tabbedPane.getTitleAt(1));
             }
         });
         Assert.assertEquals(2, tabCount);
@@ -202,9 +205,11 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
 
         LOGGER.debug("Creating prefs");
         final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
-        EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {TabIdentifier.SQL.toString(), TabIdentifier.CATEGORIES.toString()});
+        EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(
+            new String[] {TabIdentifier.SQL.getTabName(), TabIdentifier.CATEGORIES.getTabName()});
         EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");
-        prefs.setOpenTabs(EasyMock.eq(DATABASE), EasyMock.aryEq(new String[] {TabIdentifier.SQL.toString(), TabIdentifier.CATEGORIES.toString()}));
+        prefs.setOpenTabs(EasyMock.eq(DATABASE), EasyMock.aryEq(
+            new String[] {TabIdentifier.SQL.getTabName(), TabIdentifier.CATEGORIES.getTabName()}));
         prefs.setActiveTab(EasyMock.eq(DATABASE), EasyMock.eq("SQL"));
         EasyMock.replay(prefs);
         LOGGER.debug("Prefs created");

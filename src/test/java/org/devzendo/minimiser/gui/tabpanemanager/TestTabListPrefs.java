@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.prefs.Prefs;
@@ -17,19 +18,19 @@ import org.junit.Test;
 
 /**
  * Test the higher-level tab list prefs storage and logic.
- * 
+ *
  * @author matt
  *
  */
 public final class TestTabListPrefs extends LoggingTestCase {
     private Prefs prefs;
     private File prefsFile;
-    
+
     private TabListPrefs tabListPrefs;
 
     /**
      * @throws IOException on prefs creation failure
-     * 
+     *
      */
     @Before
     public void getPrerequisites() throws IOException {
@@ -38,29 +39,29 @@ public final class TestTabListPrefs extends LoggingTestCase {
 
         tabListPrefs = new TabListPrefs(prefs);
     }
-    
+
     /**
-     * 
+     *
      */
     @After
     public void ditchPrefs() {
         prefsFile.deleteOnExit();
     }
-    
+
 
     /**
-     * 
+     *
      */
     @Test
     public void allPermanentTabsInOpenListAndInRightOrder() {
         final List<TabIdentifier> openTabs = tabListPrefs.getOpenTabs("database");
         Assert.assertNotNull(openTabs);
-        final List<TabIdentifier> permanentTabIdentifiers = TabIdentifier.getPermanentTabIdentifiers();
+        final List<TabIdentifier> permanentTabIdentifiers = SystemTabIdentifiers.getPermanentTabIdentifiers();
         Assert.assertEquals(permanentTabIdentifiers, openTabs);
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
     public void duplicateAndPermanentTabsNotStored() {
@@ -71,14 +72,14 @@ public final class TestTabListPrefs extends LoggingTestCase {
         badTabs.add(TabIdentifier.SQL);
         badTabs.add(TabIdentifier.SQL);
         tabListPrefs.setOpenTabs("database", badTabs);
-        
+
         final List<TabIdentifier> openTabs = tabListPrefs.getOpenTabs("database");
         Assert.assertNotNull(openTabs);
-        final List<TabIdentifier> permanentTabIdentifiers = TabIdentifier.getPermanentTabIdentifiers();
+        final List<TabIdentifier> permanentTabIdentifiers = SystemTabIdentifiers.getPermanentTabIdentifiers();
         Assert.assertTrue(openTabs.containsAll(permanentTabIdentifiers));
         Assert.assertTrue(openTabs.contains(TabIdentifier.SQL));
         Assert.assertEquals(permanentTabIdentifiers.size() + 1, openTabs.size());
-        
+
         // now check underneath the high level TabListPrefs - no permanent tabs
         // should be stored
         final String[] lowLevelOpenTabNames = prefs.getOpenTabs("database");
@@ -86,8 +87,8 @@ public final class TestTabListPrefs extends LoggingTestCase {
         for (final String tabName : lowLevelOpenTabNames) {
             final TabIdentifier nonPermanentTabId = TabIdentifier.valueOf(tabName);
             Assert.assertFalse(permanentTabIdentifiers.contains(nonPermanentTabId));
-            
-            if (tabName.equals(TabIdentifier.SQL.toString())) {
+
+            if (tabName.equals(TabIdentifier.SQL.getTabName())) {
                 sqlCount++;
             }
         }

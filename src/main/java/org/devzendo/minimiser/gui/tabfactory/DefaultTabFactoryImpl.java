@@ -19,18 +19,18 @@ import org.devzendo.minimiser.springloader.SpringLoader;
 
 /**
  * The default implementation of the TabFactory.
- * 
+ *
  * @author matt
  *
  */
 public final class DefaultTabFactoryImpl implements TabFactory {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultTabFactoryImpl.class);
-    
+
     private final SpringLoader springLoader;
     private final OpenTabList openTabList;
     private final ProblemReporter problemReporter;
-    
+
     // Used by the run-on-EDT code in callInitComponentOnSwingEventThread
     private final Object lock = new Object();
 
@@ -57,15 +57,15 @@ public final class DefaultTabFactoryImpl implements TabFactory {
     public DefaultTabFactoryImpl(final SpringLoader loader, final OpenTabList tabList) {
         this(loader, tabList, null);
     }
-    
+
     /**
      * Get the DatabaseDescriptorFactory
-     * @return the database descriptor factory 
+     * @return the database descriptor factory
      */
     private DatabaseDescriptorFactory getDatabaseDescriptorFactory() {
         return springLoader.getBean("&databaseDescriptor", DatabaseDescriptorFactory.class);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -77,16 +77,16 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         LOGGER.debug("Storing database descriptor " + databaseDescriptor + " in factory for tabs to use");
         final DatabaseDescriptorFactory databaseDescriptorFactory = getDatabaseDescriptorFactory();
         databaseDescriptorFactory.setDatabaseDescriptor(databaseDescriptor);
-        
+
         // Now load each tab
         final String databaseName = databaseDescriptor.getDatabaseName();
-        final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>(); 
-        for (TabIdentifier identifier : tabIdentifiers) {
+        final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>();
+        for (final TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
-                LOGGER.debug("Loading tab " + identifier);
+                LOGGER.debug("Loading tab " + identifier.getTabName());
                 final Tab loadedTab = loadTab(databaseDescriptor, identifier);
                 if (loadedTab == null) { // TODO need test for failure to load causes lack of addition to list
-                    LOGGER.warn("Could not load tab " + identifier);
+                    LOGGER.warn("Could not load tab " + identifier.getTabName());
                 } else {
                     tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));
                 }
@@ -94,22 +94,22 @@ public final class DefaultTabFactoryImpl implements TabFactory {
                 LOGGER.debug("Tab " + identifier + " already loaded; not reloading it");
             }
         }
-        
+
         // Clear database descriptor in factory
         LOGGER.debug("Clearing database descriptor from factory");
         databaseDescriptorFactory.clearDatabaseDescriptor();
-        
+
         return tabDescriptorList;
     }
 
     private Tab loadTab(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
         try {
-            LOGGER.info("Loading " + identifier + " tab");
-            final Tab tab = springLoader.getBean("tab" + identifier.toString(), Tab.class);
+            LOGGER.info("Loading " + identifier.getTabName() + " tab");
+            final Tab tab = springLoader.getBean("tab" + identifier.getTabName(), Tab.class);
             callInitComponentOnSwingEventThread(tab);
             return tab;
         } catch (final RuntimeException re) {
-            LOGGER.warn("Failed to load tab " + identifier + ": " + re.getMessage(), re);
+            LOGGER.warn("Failed to load tab " + identifier.getTabName() + ": " + re.getMessage(), re);
             problemReporter.reportProblem("while loading the " + identifier.getDisplayableName() + " tab", re);
             return null;
         }
@@ -120,12 +120,12 @@ public final class DefaultTabFactoryImpl implements TabFactory {
      */
     public void closeTabs(final DatabaseDescriptor databaseDescriptor, final List<TabDescriptor> tabsForDatabase) {
         assert !SwingUtilities.isEventDispatchThread();
-        
+
         if (tabsForDatabase == null || tabsForDatabase.size() == 0) {
             LOGGER.warn("Cannot close a null or empty list of tabs");
             return;
         }
-        
+
         for (final TabDescriptor tabDescriptor : tabsForDatabase) {
             final Tab tab = tabDescriptor.getTab();
             if (tab == null) {
@@ -143,7 +143,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
      * Call the initComponent method on the Swing Event Thread.
      * Precondition: this code is never executed on the EDT - there's an
      * assertion in the calling method for this.
-     * 
+     *
      * @param tab the tab to initialise
      */
     private void callInitComponentOnSwingEventThread(final Tab tab) {
@@ -162,9 +162,9 @@ public final class DefaultTabFactoryImpl implements TabFactory {
 
     /**
      * Call the disposeComponent method on the Swing Event Thread.
-     * Precondition: this code is never executed on the EDT - there's an 
+     * Precondition: this code is never executed on the EDT - there's an
      * assertion in the calling method for this.
-     * 
+     *
      * @param tab the tab to dispose whose component is to be disposed.
      */
     private void callDisposeComponentOnSwingEventThread(final Tab tab) {

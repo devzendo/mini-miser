@@ -23,21 +23,21 @@ import org.devzendo.minimiser.prefs.Prefs;
  * The View menu is rebuildable on initialisation and when prefs' hidden tabs
  * change, so that tabs that are hidden are removed, and that those that have
  * been enabled are shown.
- * 
+ *
  * @author matt
  *
  */
 public final class ViewMenu extends AbstractRebuildableMenuGroup {
     private static final Logger LOGGER = Logger.getLogger(ViewMenu.class);
-    private JMenu viewMenu;
+    private final JMenu viewMenu;
     private final OpenDatabaseList openDatabaseList;
     private final OpenTabList openTabList;
     private final Prefs prefs;
-    private ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
+    private final ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
 
     /**
      * Construct the view menu
-     * 
+     *
      * @param wiring the menu wiring
      * @param databaseList the Open Database List
      * @param tabList the Open Tab List
@@ -52,7 +52,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
         this.openTabList = tabList;
         this.prefs = preferences;
         viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
-        
+
         viewMenu = new JMenu("View");
         viewMenu.setMnemonic('V');
     }
@@ -74,11 +74,11 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(
                                         currentDatabase.getDatabaseName());
         LOGGER.debug("tab list tabs for this are " + tabsForDatabase);
-        
+
         final HashSet<TabDescriptor> tabDescriptorSet = new HashSet<TabDescriptor>(tabsForDatabase);
-        
+
         for (final TabIdentifier tabId : TabIdentifier.values()) {
-            final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.toString());
+            final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.getTabName());
             LOGGER.debug("View menu item " + tabId + " hidden:" + viewMenuItemHidden);
             if (!tabId.isTabPermanent() && !viewMenuItemHidden) {
                 final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(tabId.getDisplayableName());
@@ -116,7 +116,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     public JMenu getJMenu() {
         return viewMenu;
     }
-    
+
     /**
      * Add a recent menu observer
      * @param observer the observer

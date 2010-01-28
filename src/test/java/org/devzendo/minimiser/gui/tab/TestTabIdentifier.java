@@ -18,99 +18,186 @@ import org.junit.Test;
  */
 public final class TestTabIdentifier extends LoggingTestCase {
     /**
-     * 
+     *
+     */
+    @Test
+    public void verifyTabSystemflag() {
+        Assert.assertTrue(TabIdentifier.SQL.isSystemTab());
+        Assert.assertTrue(TabIdentifier.OVERVIEW.isSystemTab());
+        Assert.assertTrue(TabIdentifier.CATEGORIES.isSystemTab());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void systemTabsCompareEarlierThanPluginTabs() {
+        final TabIdentifier system = new TabIdentifier("FOO", "Foo", true, 'F', true);
+        final TabIdentifier plugin = new TabIdentifier("FOO", "Foo", true, 'F', false);
+        Assert.assertTrue(system.compareTo(plugin) == -1);
+        Assert.assertTrue(plugin.compareTo(system) == 1);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsDoNotCompareOnTabNames() {
+        final TabIdentifier one = new TabIdentifier("A", "Test", true, 'A', true);
+        final TabIdentifier two = new TabIdentifier("B", "Test", true, 'A', true);
+        Assert.assertTrue(one.compareTo(two) == 0);
+        Assert.assertTrue(two.compareTo(one) == 0);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void pluginTabsCompareAlphabeticallyOnDisplayNames() {
+        final TabIdentifier alpha = new TabIdentifier("A", "Alpha", true, 'F');
+        final TabIdentifier bravo = new TabIdentifier("A", "Bravo", true, 'F');
+        Assert.assertTrue(alpha.compareTo(bravo) == -1);
+        Assert.assertTrue(bravo.compareTo(alpha) == 1);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void systemTabsCompareAlphabeticallyOnDisplayNames() {
+        final TabIdentifier alpha = new TabIdentifier("X", "Alpha", true, 'F', true);
+        final TabIdentifier bravo = new TabIdentifier("X", "Bravo", true, 'F', true);
+        Assert.assertTrue(alpha.compareTo(bravo) == -1);
+        Assert.assertTrue(bravo.compareTo(alpha) == 1);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithEqualDisplayNamesCompareOnMnemonics() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Test", true, 'A', true);
+        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true);
+        Assert.assertTrue(one.compareTo(two) == -1);
+        Assert.assertTrue(two.compareTo(one) == 1);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithSameTabNamesAreEquivalent() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Bo!", false, 'Z', false);
+        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true);
+        Assert.assertEquals(one, two);
+        Assert.assertEquals(two, one);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithOnlyDifferentTabNamesAreDifferent() {
+        final TabIdentifier one = new TabIdentifier("TESTY", "Test", true, 'B', true);
+        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true);
+        Assert.assertFalse(one.equals(two));
+        Assert.assertFalse(two.equals(one));
+    }
+
+    /**
+     *
      */
     @Test
     public void verifyTabPermanence() {
         Assert.assertFalse(TabIdentifier.SQL.isTabPermanent());
         Assert.assertTrue(TabIdentifier.OVERVIEW.isTabPermanent());
-        
-        final List<TabIdentifier> permanentTabIdentifiers = TabIdentifier.getPermanentTabIdentifiers();
+
+        final List<TabIdentifier> permanentTabIdentifiers = SystemTabIdentifiers.getPermanentTabIdentifiers();
         Assert.assertEquals(1, permanentTabIdentifiers.size());
 
         Assert.assertEquals(TabIdentifier.OVERVIEW, permanentTabIdentifiers.get(0));
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
     public void verifyTabMnemonics() {
-        for (TabIdentifier tabId : TabIdentifier.values()) {
+        for (final TabIdentifier tabId : TabIdentifier.values()) {
             final char mnemonic = tabId.getMnemonic();
             Assert.assertTrue(Character.isLetterOrDigit(mnemonic));
         }
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
     public void translateNullArrayOfNames() {
-        final List<TabIdentifier> list = TabIdentifier.toTabIdentifiers(null);
+        final List<TabIdentifier> list = TabIdentifierToolkit.toTabIdentifiers(null);
         Assert.assertNotNull(list);
         Assert.assertEquals(0, list.size());
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
     public void translateEmptyArrayOfNames() {
-        final List<TabIdentifier> list = TabIdentifier.toTabIdentifiers(new String[0]);
+        final List<TabIdentifier> list = TabIdentifierToolkit.toTabIdentifiers(new String[0]);
         Assert.assertNotNull(list);
         Assert.assertEquals(0, list.size());
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
     public void translateName() {
-        Assert.assertNull(TabIdentifier.toTabIdentifier(null));
-        Assert.assertNull(TabIdentifier.toTabIdentifier(""));
-        Assert.assertNull(TabIdentifier.toTabIdentifier("wow!"));
-        
-        final TabIdentifier sqlId = TabIdentifier.toTabIdentifier("SQL");
+        Assert.assertNull(TabIdentifierToolkit.toTabIdentifier(null));
+        Assert.assertNull(TabIdentifierToolkit.toTabIdentifier(""));
+        Assert.assertNull(TabIdentifierToolkit.toTabIdentifier("wow!"));
+
+        final TabIdentifier sqlId = TabIdentifierToolkit.toTabIdentifier("SQL");
         Assert.assertNotNull(sqlId);
         Assert.assertSame(TabIdentifier.SQL, sqlId);
 
-        final TabIdentifier overviewId = TabIdentifier.toTabIdentifier("OVERVIEW");
+        final TabIdentifier overviewId = TabIdentifierToolkit.toTabIdentifier("OVERVIEW");
         Assert.assertNotNull(overviewId);
         Assert.assertSame(TabIdentifier.OVERVIEW, overviewId);
     }
-    
+
     /**
-     * 
+     *
      */
     @Test
     public void translateDisplayName() {
-        Assert.assertNull(TabIdentifier.toTabIdentifier(null));
-        Assert.assertNull(TabIdentifier.toTabIdentifier(""));
-        Assert.assertNull(TabIdentifier.toTabIdentifier("wow!"));
-        
-        final TabIdentifier sqlId = TabIdentifier.toTabIdentifierFromDisplayName("SQL");
+        Assert.assertNull(TabIdentifierToolkit.toTabIdentifier(null));
+        Assert.assertNull(TabIdentifierToolkit.toTabIdentifier(""));
+        Assert.assertNull(TabIdentifierToolkit.toTabIdentifier("wow!"));
+
+        final TabIdentifier sqlId = TabIdentifierToolkit.toTabIdentifierFromDisplayName("SQL");
         Assert.assertNotNull(sqlId);
         Assert.assertSame(TabIdentifier.SQL, sqlId);
 
-        final TabIdentifier overviewId = TabIdentifier.toTabIdentifierFromDisplayName("Overview");
+        final TabIdentifier overviewId = TabIdentifierToolkit.toTabIdentifierFromDisplayName("Overview");
         Assert.assertNotNull(overviewId);
         Assert.assertSame(TabIdentifier.OVERVIEW, overviewId);
 
-        final TabIdentifier categoriesId = TabIdentifier.toTabIdentifierFromDisplayName("Categories");
+        final TabIdentifier categoriesId = TabIdentifierToolkit.toTabIdentifierFromDisplayName("Categories");
         Assert.assertNotNull(categoriesId);
         Assert.assertSame(TabIdentifier.CATEGORIES, categoriesId);
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void translateIds() {
         final String[] in = new String[] {
                 "SQL", "styrofoam", "OVERVIEW"
         };
-        final List<TabIdentifier> out = TabIdentifier.toTabIdentifiers(in);
+        final List<TabIdentifier> out = TabIdentifierToolkit.toTabIdentifiers(in);
         Assert.assertNotNull(out);
         Assert.assertEquals(2, out.size());
         Assert.assertEquals(TabIdentifier.SQL, out.get(0));
@@ -118,14 +205,14 @@ public final class TestTabIdentifier extends LoggingTestCase {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void translateIdsNoSortNoDeDupe() {
         final String[] in = new String[] {
                 "OVERVIEW", "SQL", "Overview", "SQL", "OVERVIEW"
         };
-        final List<TabIdentifier> out = TabIdentifier.toTabIdentifiers(in);
+        final List<TabIdentifier> out = TabIdentifierToolkit.toTabIdentifiers(in);
         Assert.assertNotNull(out);
         Assert.assertEquals(4, out.size());
         Assert.assertEquals(TabIdentifier.OVERVIEW, out.get(0));
@@ -135,30 +222,30 @@ public final class TestTabIdentifier extends LoggingTestCase {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void dontBotherTranslatingNamesWithModifiedCase() {
-        Assert.assertNull(TabIdentifier.toTabIdentifier("Overview"));
+        Assert.assertNull(TabIdentifierToolkit.toTabIdentifier("Overview"));
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void sortAndDeDupeNames() {
-        final List<TabIdentifier> nothing = TabIdentifier.sortAndDeDupe(null);
+        final List<TabIdentifier> nothing = TabIdentifierToolkit.sortAndDeDupe(null);
         Assert.assertNotNull(nothing);
         Assert.assertEquals(0, nothing.size());
-        
-        final List<TabIdentifier> nothingMore = TabIdentifier.sortAndDeDupe(Collections.<String>emptyList());
+
+        final List<TabIdentifier> nothingMore = TabIdentifierToolkit.sortAndDeDupe(Collections.<String>emptyList());
         Assert.assertNotNull(nothingMore);
         Assert.assertEquals(0, nothingMore.size());
-        
+
         final String[] in = new String[] {
                 "OVERVIEW", "SQL", "Overview", "SQL", "OVERVIEW"
         };
-        final List<TabIdentifier> out = TabIdentifier.sortAndDeDupe(Arrays.asList(in));
+        final List<TabIdentifier> out = TabIdentifierToolkit.sortAndDeDupe(Arrays.asList(in));
         Assert.assertNotNull(out);
         Assert.assertEquals(2, out.size());
         Assert.assertSame(TabIdentifier.SQL, out.get(0));
@@ -166,22 +253,22 @@ public final class TestTabIdentifier extends LoggingTestCase {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void sortAndDeDupeTabIdentifiers() {
-        final List<TabIdentifier> nothing = TabIdentifier.sortAndDeDupeTabIdentifiers(null);
+        final List<TabIdentifier> nothing = TabIdentifierToolkit.sortAndDeDupeTabIdentifiers(null);
         Assert.assertNotNull(nothing);
         Assert.assertEquals(0, nothing.size());
-        
-        final List<TabIdentifier> nothingMore = TabIdentifier.sortAndDeDupeTabIdentifiers(Collections.<TabIdentifier>emptyList());
+
+        final List<TabIdentifier> nothingMore = TabIdentifierToolkit.sortAndDeDupeTabIdentifiers(Collections.<TabIdentifier>emptyList());
         Assert.assertNotNull(nothingMore);
         Assert.assertEquals(0, nothingMore.size());
-        
+
         final TabIdentifier[] in = new TabIdentifier[] {
                 TabIdentifier.OVERVIEW, TabIdentifier.SQL, TabIdentifier.SQL, TabIdentifier.OVERVIEW
         };
-        final List<TabIdentifier> out = TabIdentifier.sortAndDeDupeTabIdentifiers(Arrays.asList(in));
+        final List<TabIdentifier> out = TabIdentifierToolkit.sortAndDeDupeTabIdentifiers(Arrays.asList(in));
         Assert.assertNotNull(out);
         Assert.assertEquals(2, out.size());
         Assert.assertSame(TabIdentifier.SQL, out.get(0));
@@ -189,20 +276,20 @@ public final class TestTabIdentifier extends LoggingTestCase {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void translateToDisplayNames() {
-        Assert.assertNotNull(TabIdentifier.toDisplayNames(null));
-        Assert.assertEquals(0, TabIdentifier.toDisplayNames(null).length);
+        Assert.assertNotNull(TabIdentifierToolkit.toDisplayNames(null));
+        Assert.assertEquals(0, TabIdentifierToolkit.toDisplayNames(null).length);
 
-        Assert.assertNotNull(TabIdentifier.toDisplayNames(new ArrayList<TabIdentifier>()));
-        Assert.assertEquals(0, TabIdentifier.toDisplayNames(new ArrayList<TabIdentifier>()).length);
+        Assert.assertNotNull(TabIdentifierToolkit.toDisplayNames(new ArrayList<TabIdentifier>()));
+        Assert.assertEquals(0, TabIdentifierToolkit.toDisplayNames(new ArrayList<TabIdentifier>()).length);
 
         final TabIdentifier[] tabIds = new TabIdentifier[] {
                 TabIdentifier.OVERVIEW, TabIdentifier.SQL
         };
-        final String[] tabNames = TabIdentifier.toDisplayNames(Arrays.asList(tabIds));
+        final String[] tabNames = TabIdentifierToolkit.toDisplayNames(Arrays.asList(tabIds));
         Assert.assertNotNull(tabNames);
         Assert.assertEquals(2, tabNames.length);
         Assert.assertEquals("Overview", tabNames[0]);
@@ -210,34 +297,13 @@ public final class TestTabIdentifier extends LoggingTestCase {
     }
 
     /**
-     * 
-     */
-    @Test
-    public void translateToTabNames() {
-        Assert.assertNotNull(TabIdentifier.toTabNames(null));
-        Assert.assertEquals(0, TabIdentifier.toTabNames(null).length);
-
-        Assert.assertNotNull(TabIdentifier.toTabNames(new ArrayList<TabIdentifier>()));
-        Assert.assertEquals(0, TabIdentifier.toTabNames(new ArrayList<TabIdentifier>()).length);
-
-        final TabIdentifier[] tabIds = new TabIdentifier[] {
-                TabIdentifier.OVERVIEW, TabIdentifier.SQL
-        };
-        final String[] tabNames = TabIdentifier.toTabNames(Arrays.asList(tabIds));
-        Assert.assertNotNull(tabNames);
-        Assert.assertEquals(2, tabNames.length);
-        Assert.assertEquals("OVERVIEW", tabNames[0]);
-        Assert.assertEquals("SQL", tabNames[1]);
-    }
-
-    /**
-     * 
+     *
      */
     @Test
     public void thereArePermanentTabs() {
-        final List<TabIdentifier> permanentTabIdentifiers = TabIdentifier.getPermanentTabIdentifiers();
+        final List<TabIdentifier> permanentTabIdentifiers = SystemTabIdentifiers.getPermanentTabIdentifiers();
         Assert.assertNotNull(permanentTabIdentifiers);
         Assert.assertTrue(permanentTabIdentifiers.size() > 0);
     }
-    
+
 }

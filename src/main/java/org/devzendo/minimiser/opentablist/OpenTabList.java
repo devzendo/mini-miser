@@ -19,13 +19,13 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 /**
  * Maintains a list of open tabs, for each open database, and fires events
  * when this changes.
- * 
+ *
  * @author matt
  *
  */
 public final class OpenTabList {
     private static final Logger LOGGER = Logger.getLogger(OpenTabList.class);
-    private Map<String, Set<TabDescriptor>> tabMap = new HashMap<String, Set<TabDescriptor>>();
+    private final Map<String, Set<TabDescriptor>> tabMap = new HashMap<String, Set<TabDescriptor>>();
     private final ObserverList<TabEvent> observerList = new ObserverList<TabEvent>();
 
     /**
@@ -41,7 +41,7 @@ public final class OpenTabList {
         if (tabSet == null) {
             return Collections.emptyList();
         }
-        return Arrays.asList((TabDescriptor[]) tabSet.toArray(new TabDescriptor[0]));
+        return Arrays.asList(tabSet.toArray(new TabDescriptor[0]));
     }
 
     /**
@@ -54,7 +54,7 @@ public final class OpenTabList {
      * However, we need the insertion point for each tab before we add it,
      * and you can't get the insertion point if the database has not been
      * added, so we call this before adding any tabs.
-     *  
+     *
      * @param database the database to add.
      */
     public void addDatabase(final DatabaseDescriptor database) {
@@ -81,10 +81,10 @@ public final class OpenTabList {
      */
     public void addTab(final DatabaseDescriptor database, final TabDescriptor tab) {
         addDatabase(database);
-        final String databaseName = database.getDatabaseName(); 
+        final String databaseName = database.getDatabaseName();
         final Set<TabDescriptor> tabSet = tabMap.get(databaseName);
         if (tabSet.contains(tab)) {
-            throw new IllegalStateException("Tab '" + tab.getTabIdentifier().toString() + "' already exists for database '" + databaseName + "'");
+            throw new IllegalStateException("Tab '" + tab.getTabIdentifier().getTabName() + "' already exists for database '" + databaseName + "'");
         }
         LOGGER.info("Adding tab '" + tab.getTabIdentifier() + "' for database '" + databaseName + "'");
         tabSet.add(tab);
@@ -100,7 +100,7 @@ public final class OpenTabList {
                     return i1.compareTo(i2);
                 }
             };
-            tabMap.put(databaseName, new TreeSet<TabDescriptor>(comparator));        
+            tabMap.put(databaseName, new TreeSet<TabDescriptor>(comparator));
         }
     }
 
@@ -172,7 +172,7 @@ public final class OpenTabList {
         }
         for (int i = 0; i < existingTabIds.length; i++) {
             final TabIdentifier existingId = existingTabIds[i];
-            if (existingId.ordinal() > tabId.ordinal()) {
+            if (existingId.compareTo(tabId) > 0) {
                 return i;
             }
         }

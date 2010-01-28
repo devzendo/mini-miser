@@ -81,10 +81,10 @@ public final class TestUpgradeEventListenerLifecycle extends SpringLoaderUnittes
     @Test
     public void prefsInitialisingFreshInstallListener() {
         // SQL tab should be hidden on fresh install
-        Assert.assertFalse(mPrefs.isTabHidden(TabIdentifier.SQL.toString()));
+        Assert.assertFalse(mPrefs.isTabHidden(TabIdentifier.SQL.getTabName()));
 
         mLifecycleManager.startup();
 
-        Assert.assertTrue(mPrefs.isTabHidden(TabIdentifier.SQL.toString()));
+        Assert.assertTrue(mPrefs.isTabHidden(TabIdentifier.SQL.getTabName()));
     }
 }

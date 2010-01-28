@@ -12,6 +12,7 @@ import org.devzendo.commoncode.gui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
+import org.devzendo.minimiser.gui.tab.TabIdentifierToolkit;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
@@ -27,7 +28,7 @@ import org.devzendo.minimiser.prefs.Prefs;
  * <li> uses the TabFactory to load tabs and add them to the JTabbedPane
  * <li> allows the JTabbedPane for a database to be queried
  * </ol>
- * 
+ *
  * TODO this class is now badly named - it's not just a view menu toolkit.
  * @author matt
  *
@@ -37,7 +38,7 @@ public final class ViewMenuHelper {
     private ViewMenuHelper() {
         // no instances
     }
-    
+
     /**
      * Update the view menu with hidden tabs from prefs
      * @param prefs the prefs
@@ -46,8 +47,8 @@ public final class ViewMenuHelper {
     public static void updateViewMenuFromPrefsHiddenTabs(final Prefs prefs, final Menu menu) {
         LOGGER.debug("Setting hidden tabs");
         for (final TabIdentifier tabId : TabIdentifier.values()) {
-            final boolean tabHidden = prefs.isTabHidden(tabId.toString());
-            menu.setTabHidden(tabId.toString(), tabHidden);
+            final boolean tabHidden = prefs.isTabHidden(tabId.getTabName());
+            menu.setTabHidden(tabId.getTabName(), tabHidden);
         }
         LOGGER.debug("Rebuilding view menu");
         menu.rebuildViewMenu();
@@ -67,7 +68,7 @@ public final class ViewMenuHelper {
         final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
 
         // We need the insertion point for the JTabbedPane
-        final TabDescriptor finalTabDescriptor = tabDescriptor; 
+        final TabDescriptor finalTabDescriptor = tabDescriptor;
         final String displayableName = finalTabDescriptor.getTabIdentifier().getDisplayableName();
         LOGGER.debug("Adding tab " + displayableName);
         final Tab tab = finalTabDescriptor.getTab();
@@ -75,13 +76,13 @@ public final class ViewMenuHelper {
         final int insertionPoint = openTabList.getInsertionPosition(databaseDescriptor.getDatabaseName(), tabDescriptor.getTabIdentifier());
         // TODO perhaps the OpenTabList should be throwing the IllegalStateException here?
         if (insertionPoint == -1) {
-            final String warning = "Cannot get insertion point for tab: database '" 
+            final String warning = "Cannot get insertion point for tab: database '"
                                     + databaseDescriptor.getDatabaseName() + "' not added to open tab list";
             LOGGER.warn(warning);
             throw new IllegalStateException(warning);
         }
-        
-        // Add the tab's component to the JTabbedPane on the EDT 
+
+        // Add the tab's component to the JTabbedPane on the EDT
         LOGGER.debug("Tab " + displayableName + " implemented by " + tab.getClass().getSimpleName() + " insertion point " + insertionPoint);
         final Component tabComponent = tab.getComponent();
         GUIUtils.runOnEventThread(new Runnable() {
@@ -101,7 +102,7 @@ public final class ViewMenuHelper {
                     insertionPoint);
             }
         });
-        
+
         // Add the loaded tab into the OpenTabList.
         LOGGER.debug("Adding tab to the OpenTabList");
         openTabList.addTab(databaseDescriptor, tabDescriptor);
@@ -110,19 +111,19 @@ public final class ViewMenuHelper {
     /**
      * Switch to a specific tab in the database descriptor's JTabbedPane.
      * @param databaseDescriptor the DatabaseDescriptor that's having a tab
-     * switched to 
+     * switched to
      * @param tabDescriptor the tab to switch to
      */
     public static void switchToTab(final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
         final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
 
         // We need the insertion point for the JTabbedPane
-        final TabDescriptor finalTabDescriptor = tabDescriptor; 
+        final TabDescriptor finalTabDescriptor = tabDescriptor;
         final Tab tab = finalTabDescriptor.getTab();
         final String displayableName = finalTabDescriptor.getTabIdentifier().getDisplayableName();
         LOGGER.debug("Switching to tab " + displayableName);
-        
-        // Switch to the tab's component on the EDT 
+
+        // Switch to the tab's component on the EDT
         final Component tabComponent = tab.getComponent();
         if (tabComponent == null) {
             LOGGER.warn("Tab " + displayableName
@@ -135,7 +136,7 @@ public final class ViewMenuHelper {
             }
         });
     }
-    
+
     /**
      * Obtain the TabIdentifier of the currently selected tab, for a given
      * database (by querying the JTabbedPane)
@@ -160,11 +161,11 @@ public final class ViewMenuHelper {
                     LOGGER.debug("Selected index is " + selectedIndex);
                     final String tabDisplayName = databaseTabbedPane.getTitleAt(selectedIndex);
                     LOGGER.debug("Selected tab name is " + tabDisplayName);
-                    final TabIdentifier toTabIdentifier = TabIdentifier.toTabIdentifierFromDisplayName(tabDisplayName);
+                    final TabIdentifier toTabIdentifier = TabIdentifierToolkit.toTabIdentifierFromDisplayName(tabDisplayName);
                     LOGGER.debug("Selected TabIdentifier is " + toTabIdentifier);
                     return toTabIdentifier;
                 }
-                
+
             });
         } catch (final Exception e) {
             // it has been logged by the GUIValueObtainer
@@ -199,14 +200,14 @@ public final class ViewMenuHelper {
                 final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
                 final Tab tab = tabDescriptor.getTab();
                 final Component component = tab.getComponent();
-                LOGGER.debug("Removing Tab " + tabDescriptor.getTabIdentifier().toString()
+                LOGGER.debug("Removing Tab " + tabDescriptor.getTabIdentifier().getTabName()
                     + " implemented by " + tab.getClass().getSimpleName()
                     + " from JTabbedPane");
                 databaseTabbedPane.remove(component);
             }
-            
+
         });
-        
+
         LOGGER.debug("Removing tab from the OpenTabList");
         openTabList.removeTab(databaseDescriptor, tabDescriptor);
     }

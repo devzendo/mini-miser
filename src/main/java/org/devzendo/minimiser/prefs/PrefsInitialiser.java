@@ -11,7 +11,7 @@ import org.devzendo.minimiser.gui.tab.TabIdentifier;
  * <p>
  * This code is triggered by an UpgradeDetector that's wired into the
  * Lifecycle. It is triggered on a fresh installation.
- * 
+ *
  * @author matt
  *
  */
@@ -19,11 +19,11 @@ public final class PrefsInitialiser {
     private static final Logger LOGGER = Logger
             .getLogger(PrefsInitialiser.class);
     /**
-     * No instances; this is a toolkit. 
+     * No instances; this is a toolkit.
      */
     private PrefsInitialiser() {
     }
-    
+
     /**
      * Initialise the incoming prefs object to its non-default settings.
      * @param prefs a preferences object
@@ -31,8 +31,8 @@ public final class PrefsInitialiser {
      */
     public static Prefs initialisePrefs(final Prefs prefs) {
         LOGGER.info("Initialising non-default prefs");
-        prefs.setTabHidden(TabIdentifier.SQL.toString());
-        
+        prefs.setTabHidden(TabIdentifier.SQL.getTabName());
+
         return prefs;
     }
 }

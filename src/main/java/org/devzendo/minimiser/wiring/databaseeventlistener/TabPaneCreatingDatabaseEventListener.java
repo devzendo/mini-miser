@@ -28,25 +28,25 @@ import org.devzendo.minimiser.opentablist.TabDescriptor;
  * A database has been opened, so create a JTabbedPane for it,
  * populate it with {the previously-open view tabs UNION the
  * permanent tabs} and add these tabs to the open tab list.
- * 
+ *
  * On close, remove the tabs from the open tab list.
- * 
+ *
  * @author matt
  *
  */
 public final class TabPaneCreatingDatabaseEventListener implements Observer<DatabaseEvent> {
     private static final Logger LOGGER = Logger
-        .getLogger(TabPaneCreatingDatabaseEventListener.class);   
-    
+        .getLogger(TabPaneCreatingDatabaseEventListener.class);
+
     private final TabListPrefs prefs;
     private final TabFactory tabFactory;
     private final OpenTabList openTabList;
-    
+
     // Used by the run-on-EDT code in createTabbedPaneOnEventThread
     private final Object lock = new Object();
     private JTabbedPane tabbedPane;
 
-    
+
 
     /**
      * Construct the tab pane creator.
@@ -81,54 +81,54 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         assert !SwingUtilities.isEventDispatchThread();
 
         final DatabaseDescriptor databaseDescriptor = openEvent.getDatabaseDescriptor();
-        
+
         // Create the JTabbedPane
         LOGGER.info("Creating tabbed pane for database '" + databaseDescriptor.getDatabaseName() + "'");
         // TODO replace this with the GUIValueObtainer
-        final JTabbedPane databaseTabbedPane = createTabbedPaneOnEventThread(databaseDescriptor); 
+        final JTabbedPane databaseTabbedPane = createTabbedPaneOnEventThread(databaseDescriptor);
         databaseDescriptor.setAttribute(AttributeIdentifier.TabbedPane, databaseTabbedPane);
-        
+
         // Add this database to the open tab list, so we can calculate
         // insertion points for tabs on the JTabbedPane.
         LOGGER.debug("Adding the database to the Open Tab List");
         openTabList.addDatabase(databaseDescriptor);
-        
+
         // Load the tabs
         LOGGER.info("Loading permanent and stored tabs for database '" + databaseDescriptor.getDatabaseName() + "'");
         final List<TabDescriptor> loadedTabDescriptors = loadPermanentAndStoredTabs(databaseDescriptor);
 
         LOGGER.debug(loadedTabDescriptors.size() + " tab(s) loaded; adding components to JTabbedPane");
         // Add each ones component into the JTabbedPane.
-        for (TabDescriptor tabDescriptor : loadedTabDescriptors) {
+        for (final TabDescriptor tabDescriptor : loadedTabDescriptors) {
             ViewMenuHelper.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
         }
-        
+
         // Switch to the previously active tab?
         final TabIdentifier previousActiveTab = prefs.getActiveTab(databaseDescriptor.getDatabaseName());
         if (previousActiveTab == null) {
             LOGGER.warn("There is no previously active tab for this database");
         } else {
             LOGGER.debug("Previously active tab is " + previousActiveTab);
-            for (TabDescriptor tabDescriptor : loadedTabDescriptors) {
+            for (final TabDescriptor tabDescriptor : loadedTabDescriptors) {
                 if (tabDescriptor.getTabIdentifier().equals(previousActiveTab)) {
                     ViewMenuHelper.switchToTab(databaseDescriptor, tabDescriptor);
                 }
             }
         }
-        
+
         LOGGER.debug("Finished adding components to JTabbedPane and handling DatabaseOpenedEvent");
     }
 
     private void handleDatabaseClosedEvent(final DatabaseClosedEvent closedEvent) {
         // this is called on a background thread - Closer or Lifecycle shutdown.
         assert !SwingUtilities.isEventDispatchThread();
-        
+
         final String databaseName = closedEvent.getDatabaseName();
         LOGGER.info("Closing tabs for database '" + databaseName + "'");
         final DatabaseDescriptor databaseDescriptor = closedEvent.getDatabaseDescriptor();
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(databaseName);
         LOGGER.debug("Tabs to be closed: " + tabsForDatabase);
-        
+
         // Persist the open tabs
         final List<TabIdentifier> tabIdsForDatabase = new ArrayList<TabIdentifier>();
         for (final TabDescriptor tabDesc : tabsForDatabase) {
@@ -140,9 +140,9 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
             LOGGER.warn("No currently active tab for database " + databaseName);
         } else {
             LOGGER.info("Saving " + currentTabIdentifier + " as the currently active tab for database " + databaseName);
-            prefs.setActiveTab(databaseName, currentTabIdentifier.toString());
+            prefs.setActiveTab(databaseName, currentTabIdentifier.getTabName());
         }
-        
+
         if (tabsForDatabase.size() == 0) {
             LOGGER.warn("Cannot close empty list of tabs");
         } else {
