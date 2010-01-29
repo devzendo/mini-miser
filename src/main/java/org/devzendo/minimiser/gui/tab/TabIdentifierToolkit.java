@@ -22,11 +22,11 @@ public class TabIdentifierToolkit {
      * displayable names (e.g. "Overview")
      * @return the output TabIdentifiers, always a list, could be empty.
      */
-    public static List<TabIdentifier> toTabIdentifiers(final String[] names) {
+    public static List<TabIdentifier> toTabIdentifiersFromTabNames(final String[] names) {
         final ArrayList<TabIdentifier> arrayList = new ArrayList<TabIdentifier>();
         if (names != null) {
             for (final String name : names) {
-                final TabIdentifier tabId = toTabIdentifier(name);
+                final TabIdentifier tabId = toTabIdentifierFromTabName(name);
                 if (tabId != null) {
                     arrayList.add(tabId);
                 }
@@ -36,12 +36,12 @@ public class TabIdentifierToolkit {
     }
 
     /**
-     * Given a name, return the TabIdentifier. Like valueOf, but returns null
+     * Given a tab name, return the TabIdentifier. Like valueOf, but returns null
      * rather than throwing an IllegalArgumentException on lookup failure.
      * @param tabName a tab name
      * @return the TabIdentifier, or null if the name does not correspond to one.
      */
-    public static TabIdentifier toTabIdentifier(final String tabName) {
+    public static TabIdentifier toTabIdentifierFromTabName(final String tabName) {
         if (tabName == null) {
             return null;
         }
@@ -96,7 +96,7 @@ public class TabIdentifierToolkit {
         if (names == null) {
             return Collections.emptyList();
         }
-        return sort(new HashSet<TabIdentifier>(toTabIdentifiers(names.toArray(new String[0]))));
+        return sort(new HashSet<TabIdentifier>(toTabIdentifiersFromTabNames(names.toArray(new String[0]))));
     }
 
     /**

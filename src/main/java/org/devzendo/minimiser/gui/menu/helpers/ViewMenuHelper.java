@@ -162,7 +162,7 @@ public final class ViewMenuHelper {
                     final String tabDisplayName = databaseTabbedPane.getTitleAt(selectedIndex);
                     LOGGER.debug("Selected tab name is " + tabDisplayName);
                     final TabIdentifier toTabIdentifier = TabIdentifierToolkit.toTabIdentifierFromDisplayName(tabDisplayName);
-                    LOGGER.debug("Selected TabIdentifier is " + toTabIdentifier);
+                    LOGGER.debug("Selected TabIdentifier is " + toTabIdentifier.getTabName());
                     return toTabIdentifier;
                 }
 

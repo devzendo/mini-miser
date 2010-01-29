@@ -150,7 +150,7 @@ public final class OpenTabList {
      */
     public int getInsertionPosition(final String databaseName, final TabIdentifier tabId) {
         checkDatabaseName(databaseName);
-        LOGGER.debug("Getting insertion point for database '" + databaseName + "' tab id '" + tabId + "'");
+        LOGGER.debug("Getting insertion point for database '" + databaseName + "' tab id '" + tabId.getTabName() + "'");
         if (!tabMap.containsKey(databaseName)) {
             return -1;
         }
@@ -158,7 +158,7 @@ public final class OpenTabList {
         LOGGER.debug("Tab set for this db is: " + tabSet);
         if (tabSet.contains(new TabDescriptor(tabId, null))) {
             throw new IllegalStateException("Database '" + databaseName
-                + "' already contains tab identifier " + tabId
+                + "' already contains tab identifier " + tabId.getTabName()
                 + ": cannot obtain the insertion point of a duplicate");
         }
         if (tabSet.size() == 0) {

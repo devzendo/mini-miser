@@ -47,7 +47,7 @@ public final class TabListPrefs {
     public List<TabIdentifier> getOpenTabs(final String databaseName) {
         LOGGER.debug("getOpenTabs for database " + databaseName);
         final List<TabIdentifier> permanentTabIdentifiers = SystemTabIdentifiers.getPermanentTabIdentifiers();
-        final List<TabIdentifier> openTabIdentifiers = TabIdentifierToolkit.toTabIdentifiers(prefs.getOpenTabs(databaseName));
+        final List<TabIdentifier> openTabIdentifiers = TabIdentifierToolkit.toTabIdentifiersFromTabNames(prefs.getOpenTabs(databaseName));
         final List<TabIdentifier> both = new ArrayList<TabIdentifier>();
         both.addAll(permanentTabIdentifiers);
         both.addAll(openTabIdentifiers);
@@ -68,12 +68,12 @@ public final class TabListPrefs {
         final List<TabIdentifier> noPermies = new ArrayList<TabIdentifier>(tabs);
         noPermies.removeAll(SystemTabIdentifiers.getPermanentTabIdentifiers());
         final List<TabIdentifier> sortedDeDupedNoPermies = TabIdentifierToolkit.sortAndDeDupeTabIdentifiers(noPermies);
-        final List<String> sortedDeDupedNoPermiesNames = new ArrayList<String>();
+        final List<String> sortedDeDupedNoPermiesTabNames = new ArrayList<String>();
         for (final TabIdentifier tabId : sortedDeDupedNoPermies) {
-            sortedDeDupedNoPermiesNames.add(tabId.getTabName());
+            sortedDeDupedNoPermiesTabNames.add(tabId.getTabName());
         }
-        LOGGER.debug("setOpenTabs after removing permanent tabs, sorting and de-duping, storing: " + sortedDeDupedNoPermiesNames);
-        prefs.setOpenTabs(databaseName, sortedDeDupedNoPermiesNames.toArray(new String[0]));
+        LOGGER.debug("setOpenTabs after removing permanent tabs, sorting and de-duping, storing: " + sortedDeDupedNoPermiesTabNames);
+        prefs.setOpenTabs(databaseName, sortedDeDupedNoPermiesTabNames.toArray(new String[0]));
     }
 
     /**
@@ -99,6 +99,6 @@ public final class TabListPrefs {
     public TabIdentifier getActiveTab(final String databaseName) {
         final String tabName = prefs.getActiveTab(databaseName);
         LOGGER.debug("getActiveTab for database " + databaseName + ": " + tabName);
-        return TabIdentifierToolkit.toTabIdentifier(tabName);
+        return TabIdentifierToolkit.toTabIdentifierFromTabName(tabName);
     }
 }

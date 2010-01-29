@@ -79,7 +79,9 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
 
         for (final TabIdentifier tabId : TabIdentifier.values()) {
             final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.getTabName());
-            LOGGER.debug("View menu item " + tabId + " hidden:" + viewMenuItemHidden);
+            LOGGER.debug("View menu item " + tabId.getTabName() + " hidden:" + viewMenuItemHidden);
+            // Only add items to the view menu that are not permanent - we don't need to be able to control
+            // whether the permanent tabs are visible.
             if (!tabId.isTabPermanent() && !viewMenuItemHidden) {
                 final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(tabId.getDisplayableName());
                 menuItem.setMnemonic(tabId.getMnemonic());
@@ -89,9 +91,9 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
                         new Thread(new Runnable() {
                             public void run() {
                                 try {
-                                    Thread.currentThread().setName("ViewOpener:" + tabId.getDisplayableName());
+                                    Thread.currentThread().setName("ViewOpener:" + tabId.getTabName());
                                     Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
-                                    LOGGER.info((opened ? "Opening" : "Closing") + " view '" + tabId.getDisplayableName() + "'");
+                                    LOGGER.info((opened ? "Opening" : "Closing") + " view '" + tabId.getTabName() + "'");
                                     viewMenuChoiceObservers.eventOccurred(new ViewMenuChoice(currentDatabase, tabId, opened));
                                 } catch (final Throwable t) {
                                     LOGGER.error("View opener thread caught unexpected " + t.getClass().getSimpleName(), t);

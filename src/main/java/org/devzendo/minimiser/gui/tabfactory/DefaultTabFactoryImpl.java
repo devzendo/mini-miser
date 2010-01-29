@@ -91,7 +91,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
                     tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));
                 }
             } else {
-                LOGGER.debug("Tab " + identifier + " already loaded; not reloading it");
+                LOGGER.debug("Tab " + identifier.getTabName() + " already loaded; not reloading it");
             }
         }
 

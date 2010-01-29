@@ -108,7 +108,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         if (previousActiveTab == null) {
             LOGGER.warn("There is no previously active tab for this database");
         } else {
-            LOGGER.debug("Previously active tab is " + previousActiveTab);
+            LOGGER.debug("Previously active tab is " + previousActiveTab.getTabName());
             for (final TabDescriptor tabDescriptor : loadedTabDescriptors) {
                 if (tabDescriptor.getTabIdentifier().equals(previousActiveTab)) {
                     ViewMenuHelper.switchToTab(databaseDescriptor, tabDescriptor);
@@ -139,7 +139,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         if (currentTabIdentifier == null) {
             LOGGER.warn("No currently active tab for database " + databaseName);
         } else {
-            LOGGER.info("Saving " + currentTabIdentifier + " as the currently active tab for database " + databaseName);
+            LOGGER.info("Saving " + currentTabIdentifier.getTabName() + " as the currently active tab for database " + databaseName);
             prefs.setActiveTab(databaseName, currentTabIdentifier.getTabName());
         }
 
