@@ -15,7 +15,7 @@ import org.devzendo.minimiser.opentablist.TabDescriptor;
  * <li> a database is closed, to close all its open tabs
  * <li> by the view menu, when a tab is opened/closed.
  * </ul>
- * 
+ *
  * @author matt
  *
  */
@@ -28,14 +28,14 @@ public interface TabFactory {
      * exist on the list - tabs are unique per TabIdentifier.
      * <p>
      * Tabs are loaded as beans from the Application Context,
-     * with a bean name of tabX where X is the TabIdentifier,
+     * with a bean name given in the TabIdentifier,
      * for example 'tabSQL' or 'tabOVERVIEW'.
      * <p>
      * The DatabaseDescriptor passed here will be available
      * from the SpringLoader via a
      * <constructor-arg ref="databaseDescriptor" /> passed to
      * each tab's bean definition.
-     * 
+     *
      * @param databaseDescriptor the database for which the tabs
      * are to be loaded.
      * @param tabIdentifiers the List of TabIdentifiers to
@@ -46,7 +46,7 @@ public interface TabFactory {
 
     /**
      * Close a list of tabs.
-     * 
+     *
      * @param databaseDescriptor the database for which the tabs
      * are to be loaded.
      * @param tabsForDatabase the tabs that are to be closed.

@@ -25,6 +25,11 @@
 <node CREATED="1264844163419" ID="Freemind_Link_241914261" MODIFIED="1264844179810" TEXT="Loading is delegated to an application&#xa;component"/>
 <node CREATED="1264844181172" ID="Freemind_Link_1258294205" MODIFIED="1264844191703" TEXT="Actual loading can be aided by the framework"/>
 </node>
+<node CREATED="1265355321727" ID="Freemind_Link_791756783" MODIFIED="1265355326527" TEXT="false dichotomy">
+<node CREATED="1265355327155" ID="Freemind_Link_1638120393" MODIFIED="1265355336214" TEXT="May just need the single tab loader"/>
+<node CREATED="1265355336923" ID="Freemind_Link_438274841" MODIFIED="1265355359373" TEXT="with the bean name to load being set&#xa;in the TabIdentifier itself"/>
+<node CREATED="1265355369936" ID="Freemind_Link_760598621" MODIFIED="1265355430408" TEXT="Might need a single tab loader&#xa;for all tabs of a given type, with&#xa;some object (Account primary key?)&#xa;used to parameterise the creation&#xa;of the tab?"/>
+</node>
 </node>
 </node>
 </node>

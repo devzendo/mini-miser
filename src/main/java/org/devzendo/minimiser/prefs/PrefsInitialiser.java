@@ -1,7 +1,7 @@
 package org.devzendo.minimiser.prefs;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.gui.tab.TabIdentifier;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 
 /**
  * Initisalise prefs to any non-default values. For example, a boolean flag
@@ -31,7 +31,7 @@ public final class PrefsInitialiser {
      */
     public static Prefs initialisePrefs(final Prefs prefs) {
         LOGGER.info("Initialising non-default prefs");
-        prefs.setTabHidden(TabIdentifier.SQL.getTabName());
+        prefs.setTabHidden(SystemTabIdentifiers.SQL.getTabName());
 
         return prefs;
     }

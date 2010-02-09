@@ -1,11 +1,17 @@
 package org.devzendo.minimiser.gui.menu;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 
+import org.apache.log4j.Logger;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu.SystemMenu;
+import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
@@ -18,6 +24,8 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
  *
  */
 public final class ApplicationMenuCombiner {
+    private static final Logger LOGGER = Logger
+            .getLogger(ApplicationMenuCombiner.class);
     private static final ApplicationMenu EMPTY_APPLICATION_MENU = new ApplicationMenu();
     private final ApplicationMenu mGlobalApplicationMenu;
     private final OpenDatabaseList mOpenDatabaseList;
@@ -40,6 +48,7 @@ public final class ApplicationMenuCombiner {
      * (if there is a current database, and if it has provided an ApplicationMenu) into
      * a single ApplicationMenu, with the items from the global menu taking priority
      * over those from the database menu.
+     * Also combine the View menu's TabIdentifiers.
      * @return the combined ApplicationMenu
      */
     public ApplicationMenu combineMenus() {
@@ -48,7 +57,39 @@ public final class ApplicationMenuCombiner {
         for (final ApplicationMenu.SystemMenu systemMenu : ApplicationMenu.SystemMenu.values()) {
             combineSystemMenus(combinedMenu, systemMenu);
         }
+        combineViewMenuTabIdentifiers(combinedMenu);
         return combinedMenu;
+    }
+
+    private void combineViewMenuTabIdentifiers(final ApplicationMenu combinedMenu) {
+        final Set<TabIdentifier> combinedTabIdentifiers = new TreeSet<TabIdentifier>(
+                new Comparator<TabIdentifier>() {
+                    public int compare(final TabIdentifier o1, final TabIdentifier o2) {
+                        return o1.compareTo(o2);
+                    }
+        });
+        final List<TabIdentifier> globalViewMenuTabIdentifiers = mGlobalApplicationMenu.getViewMenuTabIdentifiers();
+        final List<TabIdentifier> databaseApplicationViewMenuTabIdentifiers = getDatabaseApplicationMenu().getViewMenuTabIdentifiers();
+        if (!Collections.disjoint(globalViewMenuTabIdentifiers, databaseApplicationViewMenuTabIdentifiers)) {
+            LOGGER.warn("Global and Application View Menu TabIdentifiers are not disjoint");
+        }
+        for (final TabIdentifier globalTabIdentifier : globalViewMenuTabIdentifiers) {
+            if (combinedTabIdentifiers.contains(globalTabIdentifier)) {
+                LOGGER.warn("The Global TabIdentifier " + globalTabIdentifier + " is already present");
+            } else {
+                combinedTabIdentifiers.add(globalTabIdentifier);
+            }
+        }
+        for (final TabIdentifier applicationTabIdentifier : databaseApplicationViewMenuTabIdentifiers) {
+            if (combinedTabIdentifiers.contains(applicationTabIdentifier)) {
+                LOGGER.warn("The Application TabIdentifier " + applicationTabIdentifier + " is already present");
+            } else {
+                combinedTabIdentifiers.add(applicationTabIdentifier);
+            }
+        }
+        for (final TabIdentifier tabIdentifier : combinedTabIdentifiers) {
+            combinedMenu.addViewMenuTabIdentifier(tabIdentifier);
+        }
     }
 
     private void combineSystemMenus(

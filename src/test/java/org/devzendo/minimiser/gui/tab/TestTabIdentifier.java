@@ -22,9 +22,9 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void verifyTabSystemflag() {
-        Assert.assertTrue(TabIdentifier.SQL.isSystemTab());
-        Assert.assertTrue(TabIdentifier.OVERVIEW.isSystemTab());
-        Assert.assertTrue(TabIdentifier.CATEGORIES.isSystemTab());
+        Assert.assertTrue(SystemTabIdentifiers.SQL.isSystemTab());
+        Assert.assertTrue(SystemTabIdentifiers.OVERVIEW.isSystemTab());
+        Assert.assertTrue(SystemTabIdentifiers.CATEGORIES.isSystemTab());
     }
 
     /**
@@ -32,8 +32,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void systemTabsCompareEarlierThanPluginTabs() {
-        final TabIdentifier system = new TabIdentifier("FOO", "Foo", true, 'F', true);
-        final TabIdentifier plugin = new TabIdentifier("FOO", "Foo", true, 'F', false);
+        final TabIdentifier system = new TabIdentifier("FOO", "Foo", true, 'F', true, "irrelevantTabName", null);
+        final TabIdentifier plugin = new TabIdentifier("FOO", "Foo", true, 'F', false, "irrelevantTabName", null);
         Assert.assertTrue(system.compareTo(plugin) == -1);
         Assert.assertTrue(plugin.compareTo(system) == 1);
     }
@@ -43,8 +43,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void tabsDoNotCompareOnTabNames() {
-        final TabIdentifier one = new TabIdentifier("A", "Test", true, 'A', true);
-        final TabIdentifier two = new TabIdentifier("B", "Test", true, 'A', true);
+        final TabIdentifier one = new TabIdentifier("A", "Test", true, 'A', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("B", "Test", true, 'A', true, "irrelevantTabName", null);
         Assert.assertTrue(one.compareTo(two) == 0);
         Assert.assertTrue(two.compareTo(one) == 0);
     }
@@ -54,8 +54,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void pluginTabsCompareAlphabeticallyOnDisplayNames() {
-        final TabIdentifier alpha = new TabIdentifier("A", "Alpha", true, 'F');
-        final TabIdentifier bravo = new TabIdentifier("A", "Bravo", true, 'F');
+        final TabIdentifier alpha = new TabIdentifier("A", "Alpha", true, 'F', "irrelevantTabName", null);
+        final TabIdentifier bravo = new TabIdentifier("A", "Bravo", true, 'F', "irrelevantTabName", null);
         Assert.assertTrue(alpha.compareTo(bravo) == -1);
         Assert.assertTrue(bravo.compareTo(alpha) == 1);
     }
@@ -65,8 +65,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void systemTabsCompareAlphabeticallyOnDisplayNames() {
-        final TabIdentifier alpha = new TabIdentifier("X", "Alpha", true, 'F', true);
-        final TabIdentifier bravo = new TabIdentifier("X", "Bravo", true, 'F', true);
+        final TabIdentifier alpha = new TabIdentifier("X", "Alpha", true, 'F', true, "irrelevantTabName", null);
+        final TabIdentifier bravo = new TabIdentifier("X", "Bravo", true, 'F', true, "irrelevantTabName", null);
         Assert.assertTrue(alpha.compareTo(bravo) == -1);
         Assert.assertTrue(bravo.compareTo(alpha) == 1);
     }
@@ -76,8 +76,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void tabsWithEqualDisplayNamesCompareOnMnemonics() {
-        final TabIdentifier one = new TabIdentifier("TEST", "Test", true, 'A', true);
-        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true);
+        final TabIdentifier one = new TabIdentifier("TEST", "Test", true, 'A', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true, "irrelevantTabName", null);
         Assert.assertTrue(one.compareTo(two) == -1);
         Assert.assertTrue(two.compareTo(one) == 1);
     }
@@ -87,8 +87,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void tabsWithSameTabNamesAreEquivalent() {
-        final TabIdentifier one = new TabIdentifier("TEST", "Bo!", false, 'Z', false);
-        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true);
+        final TabIdentifier one = new TabIdentifier("TEST", "Bo!", false, 'Z', false, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true, "irrelevantTabName", null);
         Assert.assertEquals(one, two);
         Assert.assertEquals(two, one);
     }
@@ -98,8 +98,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      */
     @Test
     public void tabsWithOnlyDifferentTabNamesAreDifferent() {
-        final TabIdentifier one = new TabIdentifier("TESTY", "Test", true, 'B', true);
-        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true);
+        final TabIdentifier one = new TabIdentifier("TESTY", "Test", true, 'B', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true, "irrelevantTabName", null);
         Assert.assertFalse(one.equals(two));
         Assert.assertFalse(two.equals(one));
     }
@@ -108,22 +108,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
      *
      */
     @Test
-    public void verifyTabPermanence() {
-        Assert.assertFalse(TabIdentifier.SQL.isTabPermanent());
-        Assert.assertTrue(TabIdentifier.OVERVIEW.isTabPermanent());
-
-        final List<TabIdentifier> permanentTabIdentifiers = SystemTabIdentifiers.getPermanentTabIdentifiers();
-        Assert.assertEquals(1, permanentTabIdentifiers.size());
-
-        Assert.assertEquals(TabIdentifier.OVERVIEW, permanentTabIdentifiers.get(0));
-    }
-
-    /**
-     *
-     */
-    @Test
     public void verifyTabMnemonics() {
-        for (final TabIdentifier tabId : TabIdentifier.values()) {
+        for (final TabIdentifier tabId : SystemTabIdentifiers.values()) {
             final char mnemonic = tabId.getMnemonic();
             Assert.assertTrue(Character.isLetterOrDigit(mnemonic));
         }
@@ -160,11 +146,11 @@ public final class TestTabIdentifier extends LoggingTestCase {
 
         final TabIdentifier sqlId = TabIdentifierToolkit.toTabIdentifierFromTabName("SQL");
         Assert.assertNotNull(sqlId);
-        Assert.assertSame(TabIdentifier.SQL, sqlId);
+        Assert.assertSame(SystemTabIdentifiers.SQL, sqlId);
 
         final TabIdentifier overviewId = TabIdentifierToolkit.toTabIdentifierFromTabName("OVERVIEW");
         Assert.assertNotNull(overviewId);
-        Assert.assertSame(TabIdentifier.OVERVIEW, overviewId);
+        Assert.assertSame(SystemTabIdentifiers.OVERVIEW, overviewId);
     }
 
     /**
@@ -178,15 +164,15 @@ public final class TestTabIdentifier extends LoggingTestCase {
 
         final TabIdentifier sqlId = TabIdentifierToolkit.toTabIdentifierFromDisplayName("SQL");
         Assert.assertNotNull(sqlId);
-        Assert.assertSame(TabIdentifier.SQL, sqlId);
+        Assert.assertSame(SystemTabIdentifiers.SQL, sqlId);
 
         final TabIdentifier overviewId = TabIdentifierToolkit.toTabIdentifierFromDisplayName("Overview");
         Assert.assertNotNull(overviewId);
-        Assert.assertSame(TabIdentifier.OVERVIEW, overviewId);
+        Assert.assertSame(SystemTabIdentifiers.OVERVIEW, overviewId);
 
         final TabIdentifier categoriesId = TabIdentifierToolkit.toTabIdentifierFromDisplayName("Categories");
         Assert.assertNotNull(categoriesId);
-        Assert.assertSame(TabIdentifier.CATEGORIES, categoriesId);
+        Assert.assertSame(SystemTabIdentifiers.CATEGORIES, categoriesId);
     }
 
     /**
@@ -200,8 +186,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
         final List<TabIdentifier> out = TabIdentifierToolkit.toTabIdentifiersFromTabNames(in);
         Assert.assertNotNull(out);
         Assert.assertEquals(2, out.size());
-        Assert.assertEquals(TabIdentifier.SQL, out.get(0));
-        Assert.assertEquals(TabIdentifier.OVERVIEW, out.get(1));
+        Assert.assertEquals(SystemTabIdentifiers.SQL, out.get(0));
+        Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, out.get(1));
     }
 
     /**
@@ -215,10 +201,10 @@ public final class TestTabIdentifier extends LoggingTestCase {
         final List<TabIdentifier> out = TabIdentifierToolkit.toTabIdentifiersFromTabNames(in);
         Assert.assertNotNull(out);
         Assert.assertEquals(4, out.size());
-        Assert.assertEquals(TabIdentifier.OVERVIEW, out.get(0));
-        Assert.assertEquals(TabIdentifier.SQL, out.get(1));
-        Assert.assertEquals(TabIdentifier.SQL, out.get(2));
-        Assert.assertEquals(TabIdentifier.OVERVIEW, out.get(3));
+        Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, out.get(0));
+        Assert.assertEquals(SystemTabIdentifiers.SQL, out.get(1));
+        Assert.assertEquals(SystemTabIdentifiers.SQL, out.get(2));
+        Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, out.get(3));
     }
 
     /**
@@ -248,8 +234,8 @@ public final class TestTabIdentifier extends LoggingTestCase {
         final List<TabIdentifier> out = TabIdentifierToolkit.sortAndDeDupe(Arrays.asList(in));
         Assert.assertNotNull(out);
         Assert.assertEquals(2, out.size());
-        Assert.assertSame(TabIdentifier.SQL, out.get(0));
-        Assert.assertSame(TabIdentifier.OVERVIEW, out.get(1));
+        Assert.assertSame(SystemTabIdentifiers.SQL, out.get(0));
+        Assert.assertSame(SystemTabIdentifiers.OVERVIEW, out.get(1));
     }
 
     /**
@@ -266,13 +252,13 @@ public final class TestTabIdentifier extends LoggingTestCase {
         Assert.assertEquals(0, nothingMore.size());
 
         final TabIdentifier[] in = new TabIdentifier[] {
-                TabIdentifier.OVERVIEW, TabIdentifier.SQL, TabIdentifier.SQL, TabIdentifier.OVERVIEW
+                SystemTabIdentifiers.OVERVIEW, SystemTabIdentifiers.SQL, SystemTabIdentifiers.SQL, SystemTabIdentifiers.OVERVIEW
         };
         final List<TabIdentifier> out = TabIdentifierToolkit.sortAndDeDupeTabIdentifiers(Arrays.asList(in));
         Assert.assertNotNull(out);
         Assert.assertEquals(2, out.size());
-        Assert.assertSame(TabIdentifier.SQL, out.get(0));
-        Assert.assertSame(TabIdentifier.OVERVIEW, out.get(1));
+        Assert.assertSame(SystemTabIdentifiers.SQL, out.get(0));
+        Assert.assertSame(SystemTabIdentifiers.OVERVIEW, out.get(1));
     }
 
     /**
@@ -287,7 +273,7 @@ public final class TestTabIdentifier extends LoggingTestCase {
         Assert.assertEquals(0, TabIdentifierToolkit.toDisplayNames(new ArrayList<TabIdentifier>()).length);
 
         final TabIdentifier[] tabIds = new TabIdentifier[] {
-                TabIdentifier.OVERVIEW, TabIdentifier.SQL
+                SystemTabIdentifiers.OVERVIEW, SystemTabIdentifiers.SQL
         };
         final String[] tabNames = TabIdentifierToolkit.toDisplayNames(Arrays.asList(tabIds));
         Assert.assertNotNull(tabNames);
@@ -306,4 +292,20 @@ public final class TestTabIdentifier extends LoggingTestCase {
         Assert.assertTrue(permanentTabIdentifiers.size() > 0);
     }
 
+    /**
+     *
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotHaveNullTabFactoryBeanName() {
+        new TabIdentifier("irrelevantTabName", "Irrelevant display name",
+            false, 'I', null, null);
+    }
+    /**
+     *
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotHaveEmptyTabFactoryBeanName() {
+        new TabIdentifier("irrelevantTabName", "Irrelevant display name",
+            false, 'I', "", null);
+    }
 }

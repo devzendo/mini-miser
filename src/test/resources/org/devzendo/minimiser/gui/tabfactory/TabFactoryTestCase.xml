@@ -21,5 +21,9 @@
 	<bean id="tabSQL" scope="prototype" class="org.devzendo.minimiser.gui.tabfactory.StubRecordingTab" >
 		<constructor-arg ref="databaseDescriptor" />
 	</bean>
+
+	<bean id="myNamedTabBean" scope="prototype" class="org.devzendo.minimiser.gui.tabfactory.StubRecordingTab" >
+		<constructor-arg ref="databaseDescriptor" />
+	</bean>
 	
 </beans>

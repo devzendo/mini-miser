@@ -46,7 +46,7 @@ public class TabIdentifierToolkit {
             return null;
         }
         try {
-            return TabIdentifier.valueOf(tabName);
+            return SystemTabIdentifiers.valueOf(tabName);
         } catch (final IllegalArgumentException iae) {
             return null;
         }
@@ -62,7 +62,7 @@ public class TabIdentifierToolkit {
         if (tabDisplayName == null) {
             return null;
         }
-        for (final TabIdentifier tabId : TabIdentifier.values()) {
+        for (final TabIdentifier tabId : SystemTabIdentifiers.values()) {
             if (tabId.getDisplayableName().equals(tabDisplayName)) {
                 return tabId;
             }
@@ -114,7 +114,7 @@ public class TabIdentifierToolkit {
 
     private static List<TabIdentifier> sort(final Set<TabIdentifier> uniques) {
         final ArrayList<TabIdentifier> sortedDeDuped = new ArrayList<TabIdentifier>();
-        for (final TabIdentifier tabId : TabIdentifier.values()) {
+        for (final TabIdentifier tabId : SystemTabIdentifiers.values()) {
             if (uniques.contains(tabId)) {
                 sortedDeDuped.add(tabId);
             }

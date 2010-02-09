@@ -2,16 +2,21 @@ package org.devzendo.minimiser.gui.menu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
+
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
+import org.devzendo.minimiser.gui.tab.TabIdentifier;
 
 /**
  * A bean containing the Application's menu structure as a number of
@@ -27,6 +32,7 @@ public final class ApplicationMenu {
     private final Map<SystemMenu, List<JComponent>> mSystemMenus;
     private final Map<SystemMenu, Set<String>> mReservedSystemMenus;
     private final Set<String> mReservedMenuNames;
+    private final Set<TabIdentifier> mViewMenuTabIdentifiers;
 
     /**
      * The framework-provided system menus are...
@@ -84,6 +90,11 @@ public final class ApplicationMenu {
                 Arrays.asList(new String[] {
                 "Options"
         })));
+        mViewMenuTabIdentifiers = new TreeSet<TabIdentifier>(new Comparator<TabIdentifier>() {
+            public int compare(final TabIdentifier o1, final TabIdentifier o2) {
+                return o1.compareTo(o2);
+            }
+        });
     }
 
     /**
@@ -147,5 +158,28 @@ public final class ApplicationMenu {
         synchronized (mSystemMenus) {
             return new ArrayList<JComponent>(mSystemMenus.get(menu));
         }
+    }
+
+    /**
+     * @param tabIdentifier a TabIdentifier to add to the View menu
+     */
+    public void addViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
+        if (tabIdentifier == null) {
+            throw new IllegalArgumentException("Cannot add a null TabIdentifier to the View menu");
+        }
+        final Set<TabIdentifier> sysTabs = new HashSet<TabIdentifier>(Arrays.asList(SystemTabIdentifiers.values()));
+        if (sysTabs.contains(tabIdentifier)) {
+            throw new IllegalArgumentException("Cannot add the TabIdentifier '" + tabIdentifier.getTabName()
+                + " to the View menu as it has the same name as a System TabIdentifier");
+        }
+        mViewMenuTabIdentifiers.add(tabIdentifier);
+    }
+
+    /**
+     * @return a sorted list of TabIdentifiers that are attached to the View
+     * menu, containing no duplicates.
+     */
+    public List<TabIdentifier> getViewMenuTabIdentifiers() {
+        return Arrays.asList(mViewMenuTabIdentifiers.toArray(new TabIdentifier[0]));
     }
 }

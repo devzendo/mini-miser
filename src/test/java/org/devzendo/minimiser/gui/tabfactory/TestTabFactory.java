@@ -2,10 +2,12 @@ package org.devzendo.minimiser.gui.tabfactory;
 
 import java.awt.Label;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.AbstractDatabaseDescriptorFactoryUnittestCase;
@@ -18,7 +20,6 @@ import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 
 /**
@@ -66,11 +67,28 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         Assert.assertNull(problemReporter.getException());
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
-        final List<TabIdentifier> tabIdentifiersToOpen = getNonDeclaredTabIdentifiersToOpen();
+        final List<TabIdentifier> tabIdentifiersToOpen = getUndefinedTabIdentifiersToOpen();
         tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
 
         Assert.assertNotNull(problemReporter.getDoing());
         Assert.assertTrue(problemReporter.getException() instanceof org.springframework.beans.factory.NoSuchBeanDefinitionException);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void loadTabBeanGivenItsNameInTabIdentifier() {
+        final List<TabIdentifier> tabIdentifiers =
+            Arrays.asList(new TabIdentifier("id", "irrelevant display name", false, 'i', "myNamedTabBean", null)
+            );
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
+        final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(databaseDescriptor, tabIdentifiers);
+
+        Assert.assertNotNull(tabsForDatabase);
+        Assert.assertEquals(1, tabsForDatabase.size());
+        Assert.assertEquals("myNamedTabBean", tabsForDatabase.get(0).getTabIdentifier().getTabBeanName());
+        Assert.assertTrue(tabsForDatabase.get(0).getTab() instanceof StubRecordingTab);
     }
 
     /**
@@ -88,19 +106,19 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
 
         Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(1, tabsForDatabase.size());
-        Assert.assertEquals(TabIdentifier.OVERVIEW, tabsForDatabase.get(0).getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, tabsForDatabase.get(0).getTabIdentifier());
         // TODO further tests for correct tab instantiation?
     }
 
     private List<TabIdentifier> getTabIdentifiersToOpen() {
         final List<TabIdentifier> toOpenTabs = new ArrayList<TabIdentifier>();
-        toOpenTabs.add(TabIdentifier.OVERVIEW);
+        toOpenTabs.add(SystemTabIdentifiers.OVERVIEW);
         return toOpenTabs;
     }
 
-    private List<TabIdentifier> getNonDeclaredTabIdentifiersToOpen() {
+    private List<TabIdentifier> getUndefinedTabIdentifiersToOpen() {
         final List<TabIdentifier> toOpenTabs = new ArrayList<TabIdentifier>();
-        toOpenTabs.add(TabIdentifier.CATEGORIES);
+        toOpenTabs.add(SystemTabIdentifiers.CATEGORIES); // not in app context
         return toOpenTabs;
     }
 
@@ -174,7 +192,7 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
     @SuppressWarnings("unchecked")
     @Test
     public void doesntLoadTabIfItHasAlreadyBeenLoaded() {
-        final TabDescriptor overviewTabDescriptor = new TabDescriptor(TabIdentifier.OVERVIEW);
+        final TabDescriptor overviewTabDescriptor = new TabDescriptor(SystemTabIdentifiers.OVERVIEW);
         descriptor = new DatabaseDescriptor(DATABASE);
         openTabList.addTab(descriptor, overviewTabDescriptor);
 

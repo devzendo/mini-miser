@@ -11,7 +11,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import org.devzendo.minimiser.gui.dialog.toolsoptions.ToolsOptionsTab;
-import org.devzendo.minimiser.gui.tab.TabIdentifier;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.prefs.Prefs;
 
 /**
@@ -54,16 +54,16 @@ public final class AdvancedTab implements ToolsOptionsTab {
 
         final JCheckBox sqlViewEnabled = new JCheckBox("SQL view enabled?");
         synchronized (lock) {
-            sqlViewEnabled.setSelected(!changeCollectingPrefs.isTabHidden(TabIdentifier.SQL.getTabName()));
+            sqlViewEnabled.setSelected(!changeCollectingPrefs.isTabHidden(SystemTabIdentifiers.SQL.getTabName()));
         }
         sqlViewEnabled.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 final boolean enabled = sqlViewEnabled.isSelected();
                 synchronized (lock) {
                     if (enabled) {
-                        changeCollectingPrefs.clearTabHidden(TabIdentifier.SQL.getTabName());
+                        changeCollectingPrefs.clearTabHidden(SystemTabIdentifiers.SQL.getTabName());
                     } else {
-                        changeCollectingPrefs.setTabHidden(TabIdentifier.SQL.getTabName());
+                        changeCollectingPrefs.setTabHidden(SystemTabIdentifiers.SQL.getTabName());
                     }
                 }
             }

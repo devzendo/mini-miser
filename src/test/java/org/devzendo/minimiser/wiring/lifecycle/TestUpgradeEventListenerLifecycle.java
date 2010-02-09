@@ -3,7 +3,7 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import java.io.File;
 import java.io.IOException;
 
-import org.devzendo.minimiser.gui.tab.TabIdentifier;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.Prefs;
@@ -81,10 +81,10 @@ public final class TestUpgradeEventListenerLifecycle extends SpringLoaderUnittes
     @Test
     public void prefsInitialisingFreshInstallListener() {
         // SQL tab should be hidden on fresh install
-        Assert.assertFalse(mPrefs.isTabHidden(TabIdentifier.SQL.getTabName()));
+        Assert.assertFalse(mPrefs.isTabHidden(SystemTabIdentifiers.SQL.getTabName()));
 
         mLifecycleManager.startup();
 
-        Assert.assertTrue(mPrefs.isTabHidden(TabIdentifier.SQL.getTabName()));
+        Assert.assertTrue(mPrefs.isTabHidden(SystemTabIdentifiers.SQL.getTabName()));
     }
 }

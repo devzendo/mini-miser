@@ -104,8 +104,8 @@ public final class DefaultTabFactoryImpl implements TabFactory {
 
     private Tab loadTab(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
         try {
-            LOGGER.info("Loading " + identifier.getTabName() + " tab");
-            final Tab tab = springLoader.getBean("tab" + identifier.getTabName(), Tab.class);
+            LOGGER.info("Loading " + identifier.getTabName() + " tab; bean name " + identifier.getTabBeanName());
+            final Tab tab = springLoader.getBean(identifier.getTabBeanName(), Tab.class);
             callInitComponentOnSwingEventThread(tab);
             return tab;
         } catch (final RuntimeException re) {

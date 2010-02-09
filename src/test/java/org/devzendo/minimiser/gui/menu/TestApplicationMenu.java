@@ -7,6 +7,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
+import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -143,7 +145,7 @@ public final class TestApplicationMenu {
      *
      */
     @Test
-    public void canAddItemToViewMenu() {
+    public void canAddJComponentToViewMenu() {
         mAppMenu.addMenuComponent(ApplicationMenu.SystemMenu.View, new JMenuItem("All accounts"));
         final List<JComponent> viewMenu = mAppMenu.getMenu(ApplicationMenu.SystemMenu.View);
         Assert.assertEquals(1, viewMenu.size());
@@ -258,6 +260,47 @@ public final class TestApplicationMenu {
             Assert.assertTrue(menu.get(1) instanceof JSeparator);
             Assert.assertEquals("Two", ((JMenuItem) menu.get(2)).getText());
         }
+    }
 
+    /**
+     *
+     */
+    @Test
+    public void cannotAddSystemTabIdentifiersToViewMenu() {
+        for (final TabIdentifier systemTabIdentifier : SystemTabIdentifiers.values()) {
+            try {
+                mAppMenu.addViewMenuTabIdentifier(systemTabIdentifier);
+                Assert.fail(
+                    "Should not have been able to add a SystemTabIdentifier to the view menu, "
+                    + "but succeeded with " + systemTabIdentifier);
+            } catch (final IllegalArgumentException iae) {
+                // OK
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotAddNullTabIdentifierToViewMenu() {
+        mAppMenu.addViewMenuTabIdentifier(null);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void canAddTabIdentifiersToViewMenu() {
+        final TabIdentifier liveFeedTabId = new TabIdentifier("LF", "Live stats feed", false, 'S', "irrelevantTabName", null);
+        final TabIdentifier performanceTabId = new TabIdentifier("P", "Performance", false, 'P', "irrelevantTabName", null);
+        mAppMenu.addViewMenuTabIdentifier(performanceTabId);
+        mAppMenu.addViewMenuTabIdentifier(liveFeedTabId);
+        mAppMenu.addViewMenuTabIdentifier(performanceTabId); // Yes, add twice
+
+        final List<TabIdentifier> sortedDeDuped = mAppMenu.getViewMenuTabIdentifiers();
+        Assert.assertEquals(2, sortedDeDuped.size());
+        Assert.assertSame(liveFeedTabId, sortedDeDuped.get(0));
+        Assert.assertSame(performanceTabId, sortedDeDuped.get(1));
     }
 }

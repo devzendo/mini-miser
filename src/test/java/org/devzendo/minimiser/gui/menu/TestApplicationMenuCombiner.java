@@ -7,6 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
+import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
@@ -34,7 +35,8 @@ public final class TestApplicationMenuCombiner {
     public void getPrerequisites() {
         mGlobalApplicationMenu = new ApplicationMenu();
         mOpenDatabaseList = new OpenDatabaseList();
-        mApplicationMenuCombiner = new ApplicationMenuCombiner(mGlobalApplicationMenu, mOpenDatabaseList);
+        mApplicationMenuCombiner = new ApplicationMenuCombiner(
+            mGlobalApplicationMenu, mOpenDatabaseList);
     }
 
     /**
@@ -47,7 +49,8 @@ public final class TestApplicationMenuCombiner {
         final ApplicationMenu menu = mApplicationMenuCombiner.combineMenus();
 
         Assert.assertEquals(0, menu.getCustomMenus().size());
-        for (final ApplicationMenu.SystemMenu systemMenu : ApplicationMenu.SystemMenu.values()) {
+        for (final ApplicationMenu.SystemMenu systemMenu :
+            ApplicationMenu.SystemMenu.values()) {
             final List<JComponent> systemMenuList = menu.getMenu(systemMenu);
             Assert.assertEquals(0, systemMenuList.size());
         }
@@ -84,9 +87,11 @@ public final class TestApplicationMenuCombiner {
      */
     @Test
     public void separatorsBetweenGlobalAndDatabaseAreCoalesced() {
-        mGlobalApplicationMenu.addMenuComponent(ApplicationMenu.SystemMenu.File, new JSeparator());
+        mGlobalApplicationMenu.addMenuComponent(
+            ApplicationMenu.SystemMenu.File, new JSeparator());
         final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
-        databaseApplicationMenu.addMenuComponent(ApplicationMenu.SystemMenu.File, new JSeparator());
+        databaseApplicationMenu.addMenuComponent(
+            ApplicationMenu.SystemMenu.File, new JSeparator());
         setCurrentDatabaseApplicationMenu(databaseApplicationMenu);
 
         final ApplicationMenu menu = mApplicationMenuCombiner.combineMenus();
@@ -101,9 +106,11 @@ public final class TestApplicationMenuCombiner {
      */
     @Test
     public void menuItemsFromGlobalAreOrderedFirst() {
-        mGlobalApplicationMenu.addMenuComponent(ApplicationMenu.SystemMenu.File, new JMenuItem("GlobalMenuItem"));
+        mGlobalApplicationMenu.addMenuComponent(
+            ApplicationMenu.SystemMenu.File, new JMenuItem("GlobalMenuItem"));
         final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
-        databaseApplicationMenu.addMenuComponent(ApplicationMenu.SystemMenu.File, new JMenuItem("DatabaseMenuItem"));
+        databaseApplicationMenu.addMenuComponent(
+            ApplicationMenu.SystemMenu.File, new JMenuItem("DatabaseMenuItem"));
         setCurrentDatabaseApplicationMenu(databaseApplicationMenu);
 
         final ApplicationMenu menu = mApplicationMenuCombiner.combineMenus();
@@ -120,9 +127,11 @@ public final class TestApplicationMenuCombiner {
      */
     @Test
     public void closingDatabaseJustYieldsGlobal() {
-        mGlobalApplicationMenu.addMenuComponent(ApplicationMenu.SystemMenu.File, new JMenuItem("GlobalMenuItem"));
+        mGlobalApplicationMenu.addMenuComponent(
+            ApplicationMenu.SystemMenu.File, new JMenuItem("GlobalMenuItem"));
         final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
-        databaseApplicationMenu.addMenuComponent(ApplicationMenu.SystemMenu.File, new JMenuItem("DatabaseMenuItem"));
+        databaseApplicationMenu.addMenuComponent(
+            ApplicationMenu.SystemMenu.File, new JMenuItem("DatabaseMenuItem"));
         setCurrentDatabaseApplicationMenu(databaseApplicationMenu);
         final DatabaseDescriptor currentDatabase = mOpenDatabaseList.getCurrentDatabase();
         Assert.assertNotNull(currentDatabase);
@@ -133,5 +142,41 @@ public final class TestApplicationMenuCombiner {
         final List<JComponent> fileMenu = menu.getMenu(ApplicationMenu.SystemMenu.File);
         Assert.assertEquals(1, fileMenu.size());
         Assert.assertEquals("GlobalMenuItem", ((JMenuItem) fileMenu.get(0)).getText());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabIdentifiersAreCombinedAndSortedByDisplayableName() {
+        mGlobalApplicationMenu.addViewMenuTabIdentifier(
+            new TabIdentifier("G", "Global tabidentifier", false, 'G', "irrelevantTabName", null));
+        final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
+        databaseApplicationMenu.addViewMenuTabIdentifier(
+            new TabIdentifier("D", "Database tabidentifier", false, 'D', "irrelevantTabName", null));
+        setCurrentDatabaseApplicationMenu(databaseApplicationMenu);
+
+        final ApplicationMenu menu = mApplicationMenuCombiner.combineMenus();
+        final List<TabIdentifier> viewMenuTabIdentifiers = menu.getViewMenuTabIdentifiers();
+        Assert.assertEquals(2, viewMenuTabIdentifiers.size());
+        Assert.assertEquals("D", viewMenuTabIdentifiers.get(0).getTabName());
+        Assert.assertEquals("G", viewMenuTabIdentifiers.get(1).getTabName());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabIdentifiersAreDeDupedByTabName() {
+        mGlobalApplicationMenu.addViewMenuTabIdentifier(
+            new TabIdentifier("G", "Global tabidentifier", false, 'G', "irrelevantTabName", null));
+        final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
+        databaseApplicationMenu.addViewMenuTabIdentifier(
+            new TabIdentifier("G", "Global tabidentifier", false, 'G', "irrelevantTabName", null));
+        setCurrentDatabaseApplicationMenu(databaseApplicationMenu);
+        final ApplicationMenu menu = mApplicationMenuCombiner.combineMenus();
+        final List<TabIdentifier> viewMenuTabIdentifiers = menu.getViewMenuTabIdentifiers();
+        Assert.assertEquals(1, viewMenuTabIdentifiers.size());
+        Assert.assertEquals("G", viewMenuTabIdentifiers.get(0).getTabName());
     }
 }

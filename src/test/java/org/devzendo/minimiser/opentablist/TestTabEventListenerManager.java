@@ -4,7 +4,7 @@ import java.awt.Label;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.gui.tab.TabIdentifier;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.springloader.ApplicationContext;
 import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
@@ -51,7 +51,7 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
     public void nothingPropagatedUntilWired() {
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
-        final TabDescriptor tab = new TabDescriptor(TabIdentifier.SQL, stubTab);
+        final TabDescriptor tab = new TabDescriptor(SystemTabIdentifiers.SQL, stubTab);
         openTabList.addTab(new DatabaseDescriptor("one"), tab);
         final List<String> addOrdering = orderMonitor.getOrdering();
         Assert.assertEquals(0, addOrdering.size());
@@ -72,13 +72,13 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
 
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
-        final TabDescriptor tab = new TabDescriptor(TabIdentifier.SQL, stubTab);
+        final TabDescriptor tab = new TabDescriptor(SystemTabIdentifiers.SQL, stubTab);
         openTabList.addTab(new DatabaseDescriptor("one"), tab);
 
         final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase("one");
         Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(1, tabsForDatabase.size());
-        Assert.assertEquals(TabIdentifier.SQL, tabsForDatabase.get(0).getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.SQL, tabsForDatabase.get(0).getTabIdentifier());
         Assert.assertSame(label, tabsForDatabase.get(0).getTab().getComponent());
 
         final List<String> addOrdering = orderMonitor.getOrdering();
@@ -99,7 +99,7 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
 
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
-        final TabDescriptor tab = new TabDescriptor(TabIdentifier.SQL, stubTab);
+        final TabDescriptor tab = new TabDescriptor(SystemTabIdentifiers.SQL, stubTab);
         openTabList.addTab(new DatabaseDescriptor("one"), tab);
 
         final List<String> addOrdering = orderMonitor.getOrdering();
@@ -111,7 +111,7 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
 
         final Label label2 = new Label();
         final StubTab stubTab2 = new StubTab(label2);
-        final TabDescriptor tab2 = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab2);
+        final TabDescriptor tab2 = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, stubTab2);
         openTabList.addTab(new DatabaseDescriptor("two"), tab2);
 
         final List<String> addAgainOrdering = orderMonitor.getOrdering();

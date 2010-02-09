@@ -207,6 +207,7 @@ public final class OpenTabList {
             throw new IllegalStateException(warning);
         }
         tabSet.remove(tabDescriptor);
+        observerList.eventOccurred(new TabRemovedEvent(databaseDescriptor, tabDescriptor));
     }
 
     /**

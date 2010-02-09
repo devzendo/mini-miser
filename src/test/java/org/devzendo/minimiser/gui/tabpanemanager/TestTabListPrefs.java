@@ -66,18 +66,18 @@ public final class TestTabListPrefs extends LoggingTestCase {
     @Test
     public void duplicateAndPermanentTabsNotStored() {
         final List<TabIdentifier> badTabs = new ArrayList<TabIdentifier>();
-        badTabs.add(TabIdentifier.OVERVIEW); // permanent
-        badTabs.add(TabIdentifier.OVERVIEW);
-        badTabs.add(TabIdentifier.SQL); // not permanent, but duplicated
-        badTabs.add(TabIdentifier.SQL);
-        badTabs.add(TabIdentifier.SQL);
+        badTabs.add(SystemTabIdentifiers.OVERVIEW); // permanent
+        badTabs.add(SystemTabIdentifiers.OVERVIEW);
+        badTabs.add(SystemTabIdentifiers.SQL); // not permanent, but duplicated
+        badTabs.add(SystemTabIdentifiers.SQL);
+        badTabs.add(SystemTabIdentifiers.SQL);
         tabListPrefs.setOpenTabs("database", badTabs);
 
         final List<TabIdentifier> openTabs = tabListPrefs.getOpenTabs("database");
         Assert.assertNotNull(openTabs);
         final List<TabIdentifier> permanentTabIdentifiers = SystemTabIdentifiers.getPermanentTabIdentifiers();
         Assert.assertTrue(openTabs.containsAll(permanentTabIdentifiers));
-        Assert.assertTrue(openTabs.contains(TabIdentifier.SQL));
+        Assert.assertTrue(openTabs.contains(SystemTabIdentifiers.SQL));
         Assert.assertEquals(permanentTabIdentifiers.size() + 1, openTabs.size());
 
         // now check underneath the high level TabListPrefs - no permanent tabs
@@ -85,10 +85,10 @@ public final class TestTabListPrefs extends LoggingTestCase {
         final String[] lowLevelOpenTabNames = prefs.getOpenTabs("database");
         int sqlCount = 0;
         for (final String tabName : lowLevelOpenTabNames) {
-            final TabIdentifier nonPermanentTabId = TabIdentifier.valueOf(tabName);
+            final TabIdentifier nonPermanentTabId = SystemTabIdentifiers.valueOf(tabName);
             Assert.assertFalse(permanentTabIdentifiers.contains(nonPermanentTabId));
 
-            if (tabName.equals(TabIdentifier.SQL.getTabName())) {
+            if (tabName.equals(SystemTabIdentifiers.SQL.getTabName())) {
                 sqlCount++;
             }
         }

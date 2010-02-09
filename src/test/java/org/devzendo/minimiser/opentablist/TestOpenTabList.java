@@ -4,6 +4,7 @@ import java.awt.Label;
 import java.util.List;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
@@ -38,6 +39,7 @@ public final class TestOpenTabList extends LoggingTestCase {
     public void emptinessForNull() {
         Assert.assertNull(openList.getTabsForDatabase(null));
     }
+
     /**
      *
      */
@@ -103,13 +105,13 @@ public final class TestOpenTabList extends LoggingTestCase {
         openList.addDatabase(databaseDescriptor);
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
-        final TabDescriptor tab = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab);
+        final TabDescriptor tab = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, stubTab);
         openList.addTab(databaseDescriptor, tab);
 
         final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(1, oneTabs.size());
-        Assert.assertEquals(TabIdentifier.OVERVIEW, oneTabs.get(0).getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, oneTabs.get(0).getTabIdentifier());
         Assert.assertEquals(label, oneTabs.get(0).getTab().getComponent());
     }
 
@@ -117,22 +119,22 @@ public final class TestOpenTabList extends LoggingTestCase {
      *
      */
     @Test
-    public void canAddTabNoNonexistantDatabaseAndItllAddOk() {
+    public void canAddTabToNonexistantDatabaseAndItWillAddOk() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
 
-        Assert.assertFalse(openList.containsTab("one", TabIdentifier.OVERVIEW));
+        Assert.assertFalse(openList.containsTab("one", SystemTabIdentifiers.OVERVIEW));
 
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
-        final TabDescriptor tab = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab);
+        final TabDescriptor tab = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, stubTab);
         openList.addTab(databaseDescriptor, tab);
 
-        Assert.assertTrue(openList.containsTab("one", TabIdentifier.OVERVIEW));
+        Assert.assertTrue(openList.containsTab("one", SystemTabIdentifiers.OVERVIEW));
 
         final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(1, oneTabs.size());
-        Assert.assertEquals(TabIdentifier.OVERVIEW, oneTabs.get(0).getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, oneTabs.get(0).getTabIdentifier());
         Assert.assertEquals(label, oneTabs.get(0).getTab().getComponent());
     }
 
@@ -145,7 +147,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         openList.addDatabase(databaseDescriptor);
         final Label label = new Label();
         final StubTab stubTab = new StubTab(label);
-        final TabDescriptor tab = new TabDescriptor(TabIdentifier.OVERVIEW, stubTab);
+        final TabDescriptor tab = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, stubTab);
         openList.addTab(databaseDescriptor, tab);
 
         final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
@@ -164,20 +166,20 @@ public final class TestOpenTabList extends LoggingTestCase {
 
         final Label sqlLabel = new Label();
         final StubTab sqlStubTab = new StubTab(sqlLabel);
-        final TabDescriptor sqlTab = new TabDescriptor(TabIdentifier.SQL, sqlStubTab);
+        final TabDescriptor sqlTab = new TabDescriptor(SystemTabIdentifiers.SQL, sqlStubTab);
         openList.addTab(databaseDescriptor, sqlTab);
 
         final Label overviewLabel = new Label();
         final StubTab overviewStubTab = new StubTab(overviewLabel);
-        final TabDescriptor overviewTab = new TabDescriptor(TabIdentifier.OVERVIEW, overviewStubTab);
+        final TabDescriptor overviewTab = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, overviewStubTab);
         openList.addTab(databaseDescriptor, overviewTab);
 
         final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(2, oneTabs.size());
-        Assert.assertEquals(TabIdentifier.OVERVIEW, oneTabs.get(0).getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, oneTabs.get(0).getTabIdentifier());
         Assert.assertEquals(overviewLabel, oneTabs.get(0).getTab().getComponent());
-        Assert.assertEquals(TabIdentifier.SQL, oneTabs.get(1).getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.SQL, oneTabs.get(1).getTabIdentifier());
         Assert.assertEquals(sqlLabel, oneTabs.get(1).getTab().getComponent());
     }
 
@@ -190,7 +192,7 @@ public final class TestOpenTabList extends LoggingTestCase {
 
         final Label overviewLabel = new Label();
         final StubTab overviewStubTab = new StubTab(overviewLabel);
-        final TabDescriptor overviewTab = new TabDescriptor(TabIdentifier.OVERVIEW, overviewStubTab);
+        final TabDescriptor overviewTab = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, overviewStubTab);
         openList.addTab(databaseDescriptor, overviewTab);
 
         openList.addTab(databaseDescriptor, overviewTab);
@@ -206,7 +208,7 @@ public final class TestOpenTabList extends LoggingTestCase {
 
         final Label overviewLabel = new Label();
         final StubTab overviewStubTab = new StubTab(overviewLabel);
-        final TabDescriptor overviewTab = new TabDescriptor(TabIdentifier.OVERVIEW, overviewStubTab);
+        final TabDescriptor overviewTab = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, overviewStubTab);
 
         final Observer<TabEvent> obs = EasyMock.createStrictMock(Observer.class);
         obs.eventOccurred(EasyMock.eq(new TabOpenedEvent(databaseDescriptor, overviewTab)));
@@ -217,7 +219,27 @@ public final class TestOpenTabList extends LoggingTestCase {
         openList.addTab(databaseDescriptor, overviewTab);
 
         EasyMock.verify(obs);
-        Assert.assertTrue(openList.containsTab("one", TabIdentifier.OVERVIEW));
+        Assert.assertTrue(openList.containsTab("one", SystemTabIdentifiers.OVERVIEW));
+    }
+
+    /**
+     *
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void removeTabFiresListener() {
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
+        final TabDescriptor overviewTab = new TabDescriptor(SystemTabIdentifiers.OVERVIEW, new StubTab(new Label()));
+        openList.addTab(databaseDescriptor, overviewTab);
+        final Observer<TabEvent> obs = EasyMock.createStrictMock(Observer.class);
+        obs.eventOccurred(EasyMock.eq(new TabRemovedEvent(databaseDescriptor, overviewTab)));
+        EasyMock.replay(obs);
+        openList.addTabEventObserver(obs);
+
+        openList.removeTab(databaseDescriptor, overviewTab);
+
+        EasyMock.verify(obs);
+        Assert.assertFalse(openList.containsTab("one", SystemTabIdentifiers.OVERVIEW));
     }
 
     // Insertion position ordering tests ---------------------------------------
@@ -227,7 +249,7 @@ public final class TestOpenTabList extends LoggingTestCase {
      */
     @Test(expected = IllegalArgumentException.class)
     public void orderOfNull() {
-        openList.getInsertionPosition(null, TabIdentifier.SQL);
+        openList.getInsertionPosition(null, SystemTabIdentifiers.SQL);
     }
 
     /**
@@ -235,7 +257,7 @@ public final class TestOpenTabList extends LoggingTestCase {
      */
     @Test(expected = IllegalArgumentException.class)
     public void orderOfEmptyDbName() {
-        openList.getInsertionPosition("", TabIdentifier.SQL);
+        openList.getInsertionPosition("", SystemTabIdentifiers.SQL);
     }
 
     /**
@@ -243,7 +265,7 @@ public final class TestOpenTabList extends LoggingTestCase {
      */
     @Test
     public void orderOfNonExistantDatabase() {
-        Assert.assertEquals(-1, openList.getInsertionPosition("foo", TabIdentifier.SQL));
+        Assert.assertEquals(-1, openList.getInsertionPosition("foo", SystemTabIdentifiers.SQL));
     }
 
     /**
@@ -252,9 +274,9 @@ public final class TestOpenTabList extends LoggingTestCase {
     @Test(expected = IllegalStateException.class)
     public void orderOfDuplicate() { // only tests one TabIdentifier
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.SQL));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.SQL));
 
-        openList.getInsertionPosition("one", TabIdentifier.SQL);
+        openList.getInsertionPosition("one", SystemTabIdentifiers.SQL);
     }
 
     /**
@@ -265,7 +287,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
 
-        for (final TabIdentifier tabId : TabIdentifier.values()) {
+        for (final TabIdentifier tabId : SystemTabIdentifiers.values()) {
             Assert.assertEquals(0, openList.getInsertionPosition("one", tabId));
         }
     }
@@ -278,15 +300,15 @@ public final class TestOpenTabList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
 
-        Assert.assertEquals(0, openList.getInsertionPosition("one", TabIdentifier.SQL));
+        Assert.assertEquals(0, openList.getInsertionPosition("one", SystemTabIdentifiers.SQL));
 
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.SQL));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.SQL));
 
-        Assert.assertEquals(0, openList.getInsertionPosition("one", TabIdentifier.OVERVIEW));
+        Assert.assertEquals(0, openList.getInsertionPosition("one", SystemTabIdentifiers.OVERVIEW));
 
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
 
-        Assert.assertEquals(0, openList.getInsertionPosition("one", TabIdentifier.CATEGORIES));
+        Assert.assertEquals(0, openList.getInsertionPosition("one", SystemTabIdentifiers.CATEGORIES));
     }
 
     /**
@@ -297,15 +319,15 @@ public final class TestOpenTabList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
 
-        Assert.assertEquals(0, openList.getInsertionPosition("one", TabIdentifier.CATEGORIES));
+        Assert.assertEquals(0, openList.getInsertionPosition("one", SystemTabIdentifiers.CATEGORIES));
 
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.CATEGORIES));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.CATEGORIES));
 
-        Assert.assertEquals(1, openList.getInsertionPosition("one", TabIdentifier.OVERVIEW));
+        Assert.assertEquals(1, openList.getInsertionPosition("one", SystemTabIdentifiers.OVERVIEW));
 
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
 
-        Assert.assertEquals(2, openList.getInsertionPosition("one", TabIdentifier.SQL));
+        Assert.assertEquals(2, openList.getInsertionPosition("one", SystemTabIdentifiers.SQL));
     }
 
     /**
@@ -316,15 +338,15 @@ public final class TestOpenTabList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
 
-        Assert.assertEquals(0, openList.getInsertionPosition("one", TabIdentifier.OVERVIEW));
+        Assert.assertEquals(0, openList.getInsertionPosition("one", SystemTabIdentifiers.OVERVIEW));
 
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
 
-        Assert.assertEquals(1, openList.getInsertionPosition("one", TabIdentifier.SQL));
+        Assert.assertEquals(1, openList.getInsertionPosition("one", SystemTabIdentifiers.SQL));
 
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.SQL));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.SQL));
 
-        Assert.assertEquals(0, openList.getInsertionPosition("one", TabIdentifier.CATEGORIES));
+        Assert.assertEquals(0, openList.getInsertionPosition("one", SystemTabIdentifiers.CATEGORIES));
     }
 
     /**
@@ -332,7 +354,7 @@ public final class TestOpenTabList extends LoggingTestCase {
      */
     @Test(expected = IllegalArgumentException.class)
     public void removingTabFromNullDatabaseThrows() {
-        openList.removeTab(null, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.removeTab(null, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
     }
 
     /**
@@ -351,7 +373,7 @@ public final class TestOpenTabList extends LoggingTestCase {
     public void removingTabFromNonExistantDatabaseThrows() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
 
-        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.removeTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
     }
 
     /**
@@ -362,7 +384,7 @@ public final class TestOpenTabList extends LoggingTestCase {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
 
-        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.removeTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
     }
 
     /**
@@ -372,16 +394,16 @@ public final class TestOpenTabList extends LoggingTestCase {
     public void removingExistingTabOk() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.SQL));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.SQL));
 
-        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.removeTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
         final List<TabDescriptor> oneTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(oneTabs);
         Assert.assertEquals(1, oneTabs.size());
-        Assert.assertEquals(TabIdentifier.SQL, oneTabs.get(0).getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.SQL, oneTabs.get(0).getTabIdentifier());
 
-        openList.removeTab(databaseDescriptor, new TabDescriptor(TabIdentifier.SQL));
+        openList.removeTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.SQL));
         final List<TabDescriptor> zeroTabs = openList.getTabsForDatabase("one");
         Assert.assertNotNull(zeroTabs);
         Assert.assertEquals(0, zeroTabs.size());
@@ -402,7 +424,7 @@ public final class TestOpenTabList extends LoggingTestCase {
     public void removingNonEmptyDatabaseThrows() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("one");
         openList.addDatabase(databaseDescriptor);
-        openList.addTab(databaseDescriptor, new TabDescriptor(TabIdentifier.OVERVIEW));
+        openList.addTab(databaseDescriptor, new TabDescriptor(SystemTabIdentifiers.OVERVIEW));
 
         openList.removeDatabase(databaseDescriptor);
     }

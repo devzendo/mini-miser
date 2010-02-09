@@ -11,6 +11,7 @@ import javax.swing.JMenu;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.commoncode.patterns.observer.ObserverList;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
@@ -77,7 +78,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
 
         final HashSet<TabDescriptor> tabDescriptorSet = new HashSet<TabDescriptor>(tabsForDatabase);
 
-        for (final TabIdentifier tabId : TabIdentifier.values()) {
+        for (final TabIdentifier tabId : SystemTabIdentifiers.values()) {
             final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.getTabName());
             LOGGER.debug("View menu item " + tabId.getTabName() + " hidden:" + viewMenuItemHidden);
             // Only add items to the view menu that are not permanent - we don't need to be able to control

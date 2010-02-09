@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTabbedPane;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.gui.tab.TabIdentifier;
+import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
@@ -170,16 +170,16 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         
 
         // open the tab
-        getStubMenu().injectViewMenuRequest(databaseDescriptorOne, TabIdentifier.SQL, true);
+        getStubMenu().injectViewMenuRequest(databaseDescriptorOne, SystemTabIdentifiers.SQL, true);
 
         final List<TabDescriptor> tabsForDatabaseWithSql = getOpenTabList().getTabsForDatabase("one");
         Assert.assertNotNull(tabsForDatabaseWithSql);
         Assert.assertEquals(1, tabsForDatabaseWithSql.size());
         final TabDescriptor sql = tabsForDatabaseWithSql.get(0);
-        Assert.assertEquals(TabIdentifier.SQL, sql.getTabIdentifier());
+        Assert.assertEquals(SystemTabIdentifiers.SQL, sql.getTabIdentifier());
         
         // close the tab
-        getStubMenu().injectViewMenuRequest(databaseDescriptorOne, TabIdentifier.SQL, false);
+        getStubMenu().injectViewMenuRequest(databaseDescriptorOne, SystemTabIdentifiers.SQL, false);
 
         final List<TabDescriptor> tabsForDatabaseWithNoTabs = getOpenTabList().getTabsForDatabase("one");
         Assert.assertNotNull(tabsForDatabaseWithNoTabs);

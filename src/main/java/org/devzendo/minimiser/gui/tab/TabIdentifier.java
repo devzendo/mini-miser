@@ -1,18 +1,19 @@
 package org.devzendo.minimiser.gui.tab;
 
-
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Identifiers for the possible set of tabs that may be viewed.
+ * Identifiers for tabs that may be viewed and presented on the View menu.
  *
- * Some tabs are permanent and are always shown, and cannot be closed.
+ * Some tabs are permanent and are always present as Tabs, are not present on the View
+ * menu, and cannot be closed. Only non-permanent tabs appear on the View menu.
  *
- * The framework provides some tabs, these are System tabs - plugins can
- * contribute others.
+ * The framework provides some tabs, these are System tabs that are declared in
+ * SystemTabIdentifiers; plugins can contribute others.
  *
  * Tabs are always shown on the View menu is a specific order, and are
  * shown in the tabbed panes in that same order. System tabs are shown before
- * non-System tabs.
+ * non-System tabs. Tabs are then ordered on their Display Name.
  *
  * You can't open the same tab twice.
  *
@@ -22,55 +23,20 @@ package org.devzendo.minimiser.gui.tab;
  *
  * Comparison is based on the system flag, then display name, then mnemonic.
  *
+ * TabIdentifiers contain a Tab Bean Name, and optional Tab Bean Parameter that's used
+ * to load and initialise the Tab, by the TabFactory.
+ *
  * @author matt
  *
  */
 public final class TabIdentifier implements Comparable<TabIdentifier> {
-    // TODO: move these to the SystemTabIdentifiers
-    /**
-     * The SQL debug/developer tab
-     */
-    public static final TabIdentifier SQL = new TabIdentifier("SQL", "SQL", false, 'S', true);
-
-    /**
-     * The overview tab
-     */
-    public static final TabIdentifier OVERVIEW = new TabIdentifier("OVERVIEW", "Overview", true, 'O', true);
-
-    /**
-     * The Categories tab
-     */
-    public static final TabIdentifier CATEGORIES = new TabIdentifier("CATEGORIES", "Categories", false, 'C', true);
-
     private final String mName;
     private final String mDisplayName;
     private final boolean mTabPermanent;
     private final char mMnemonic;
     private final boolean mSystemTab;
-
-    /**
-     * TODO: SMELL: this is eeviiil.
-     * @param tabName a tab name
-     * @return the TabIdentifier for the given tabName
-     */
-    public static TabIdentifier valueOf(final String tabName) {
-        // use reflection?
-        if (tabName.equals("SQL")) {
-            return SQL;
-        } else if (tabName.equals("OVERVIEW")) {
-            return OVERVIEW;
-        } else if (tabName.equals("CATEGORIES")) {
-            return CATEGORIES;
-        }
-        throw new IllegalArgumentException("Unknown tab name '" + tabName + "'");
-    }
-
-    /**
-     * @return all the TabIdentifiers
-     */
-    public static TabIdentifier[] values() {
-        return new TabIdentifier[] {SQL, OVERVIEW, CATEGORIES};
-    }
+    private final String mTabBeanName;
+    private final Object mTabBeanParameter;
 
     /**
      * Construct a plugin TabIdentifier.
@@ -78,9 +44,16 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
      * @param displayName the displayable name of this tab that could change for different languages
      * @param permanent is this tab permanent? Can it be closed?
      * @param mne the tab's mnemonic, for the menu
+     * @param tabBeanName the name of a prototype-scoped bean defined in the application context that
+     * implements this Tab
+     * @param tabBeanParameter if not null, this Object will be passed to the Tab by the TabFactory when
+     * it has been loaded; it can be used to provide the context for the Tab, e.g. for an Account display
+     * Tab, this could be the primary key into the Accounts table that holds the detail of the Account, or
+     * it could be the DAO layer object that represents this Account.
      */
-    public TabIdentifier(final String name, final String displayName, final boolean permanent, final char mne) {
-        this(name, displayName, permanent, mne, false);
+    public TabIdentifier(final String name, final String displayName, final boolean permanent,
+            final char mne, final String tabBeanName, final Object tabBeanParameter) {
+        this(name, displayName, permanent, mne, false, tabBeanName, tabBeanParameter);
     }
 
     /**
@@ -90,13 +63,26 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
      * @param permanent is this tab permanent? Can it be closed?
      * @param mne the tab's mnemonic, for the menu
      * @param system is this a System tab?
+     * @param tabBeanName the name of a prototype-scoped bean defined in the application context that
+     * implements this Tab
+     * @param tabBeanParameter if not null, this Object will be passed to the Tab by the TabFactory when
+     * it has been loaded; it can be used to provide the context for the Tab, e.g. for an Account display
+     * Tab, this could be the primary key into the Accounts table that holds the detail of the Account, or
+     * it could be the DAO layer object that represents this Account.
+     *
      */
-    TabIdentifier(final String name, final String displayName, final boolean permanent, final char mne, final boolean system) {
+    TabIdentifier(final String name, final String displayName, final boolean permanent, final char mne,
+        final boolean system, final String tabBeanName, final Object tabBeanParameter) {
         this.mName = name;
         this.mDisplayName = displayName;
         this.mTabPermanent = permanent;
         this.mMnemonic = mne;
         this.mSystemTab = system;
+        this.mTabBeanName = tabBeanName;
+        this.mTabBeanParameter = tabBeanParameter;
+        if (StringUtils.isBlank(tabBeanName)) {
+            throw new IllegalArgumentException("TabIdentifiers cannot have a blank tab bean name");
+        }
     }
 
     /**
@@ -133,6 +119,20 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
      */
     public boolean isSystemTab() {
         return mSystemTab;
+    }
+
+    /**
+     * @return the tabBeanName
+     */
+    public String getTabBeanName() {
+        return mTabBeanName;
+    }
+
+    /**
+     * @return the tabBeanParameter
+     */
+    public Object getTabBeanParameter() {
+        return mTabBeanParameter;
     }
 
     /**
