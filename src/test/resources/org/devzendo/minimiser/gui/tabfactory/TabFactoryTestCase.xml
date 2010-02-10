@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<bean id="databaseDescriptor" class="org.devzendo.minimiser.openlist.DatabaseDescriptorFactory" />
+	<bean id="tabParameter" class="org.devzendo.minimiser.gui.tabfactory.TabParameterFactory" />
 	
 	<bean id="openTabList" class="org.devzendo.minimiser.opentablist.OpenTabList" />
 
@@ -17,13 +18,16 @@
 
 	<bean id="tabOVERVIEW" scope="prototype" class="org.devzendo.minimiser.gui.tabfactory.StubRecordingTab" >
 		<constructor-arg ref="databaseDescriptor" />
+		<constructor-arg ref="tabParameter" />
 	</bean>
 	<bean id="tabSQL" scope="prototype" class="org.devzendo.minimiser.gui.tabfactory.StubRecordingTab" >
 		<constructor-arg ref="databaseDescriptor" />
+		<constructor-arg ref="tabParameter" />
 	</bean>
 
 	<bean id="myNamedTabBean" scope="prototype" class="org.devzendo.minimiser.gui.tabfactory.StubRecordingTab" >
 		<constructor-arg ref="databaseDescriptor" />
+		<constructor-arg ref="tabParameter" />
 	</bean>
 	
 </beans>

@@ -10,12 +10,14 @@ import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
-import org.devzendo.minimiser.openlist.AbstractDatabaseDescriptorFactoryUnittestCase;
+import org.devzendo.minimiser.gui.tab.TabParameter;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
+import org.devzendo.minimiser.openlist.DatabaseDescriptorFactoryUnittestHelper;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.opentablist.TabEvent;
 import org.devzendo.minimiser.springloader.ApplicationContext;
+import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,15 +31,18 @@ import org.junit.Test;
  *
  */
 @ApplicationContext("org/devzendo/minimiser/gui/tabfactory/TabFactoryTestCase.xml")
-public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnittestCase {
+public final class TestTabFactory extends SpringLoaderUnittestCase {
 
     private static final String DATABASE = "database";
     private TabFactory tabFactory;
     private OpenTabList openTabList;
     private StubProblemReporter problemReporter;
+    private DatabaseDescriptorFactoryUnittestHelper mDatabaseDescriptorFactoryHelper;
+    private TabParameterFactoryUnittestHelper mTabParameterFactoryHelper;
 
     // Used by tests that make use of setUpStubRecordingTest
     private DatabaseDescriptor descriptor;
+    private TabParameter parameter;
     private StubRecordingTab stubTab;
 
     /**
@@ -45,6 +50,8 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
      */
     @Before
     public void getTabFactoryPrerequisites() {
+        mDatabaseDescriptorFactoryHelper = new DatabaseDescriptorFactoryUnittestHelper(getSpringLoader());
+        mTabParameterFactoryHelper = new TabParameterFactoryUnittestHelper(getSpringLoader());
         tabFactory = getSpringLoader().getBean("tabFactory", TabFactory.class);
         openTabList = getSpringLoader().getBean("openTabList", OpenTabList.class);
         problemReporter = getSpringLoader().getBean("problemReporter", StubProblemReporter.class);
@@ -55,7 +62,15 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
      */
     @Test
     public void descriptorIsNotRetrievableFromDescriptorFactoryBeforeLoadingViewPanels() {
-        Assert.assertNull(getDatabaseDescriptor());
+        Assert.assertNull(mDatabaseDescriptorFactoryHelper.getDatabaseDescriptor());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void parameterIsNotRetrievableFromParameterFactoryBeforeLoadingViewPanels() {
+        Assert.assertNull(mTabParameterFactoryHelper.getTabParameter());
     }
 
     /**
@@ -85,7 +100,6 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(databaseDescriptor, tabIdentifiers);
 
-        Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(1, tabsForDatabase.size());
         Assert.assertEquals("myNamedTabBean", tabsForDatabase.get(0).getTabIdentifier().getTabBeanName());
         Assert.assertTrue(tabsForDatabase.get(0).getTab() instanceof StubRecordingTab);
@@ -95,19 +109,13 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
      *
      */
     @Test
-    public void loadNewTabIntoTabOpenList() {
-        final List<TabDescriptor> initialTabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
-        Assert.assertNotNull(initialTabsForDatabase);
-        Assert.assertEquals(0, initialTabsForDatabase.size());
-
+    public void loadNewTabReturnsCorrectTabDescriptors() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
         final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
 
-        Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(1, tabsForDatabase.size());
         Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, tabsForDatabase.get(0).getTabIdentifier());
-        // TODO further tests for correct tab instantiation?
     }
 
     private List<TabIdentifier> getTabIdentifiersToOpen() {
@@ -126,6 +134,14 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
         StubRecordingTab.clearConstructCount();
 
         descriptor = new DatabaseDescriptor(DATABASE);
+        parameter = new TabParameter() {
+            /**
+             * Just something for the weekend
+             */
+            @SuppressWarnings("unused")
+            public void irrelevant() {
+            }
+        };
         final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
         final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
 
@@ -144,20 +160,34 @@ public final class TestTabFactory extends AbstractDatabaseDescriptorFactoryUnitt
      *
      */
     @Test
-    public void descriptorIsRetrievableFromDescriptorFactoryByTab() {
+    public void descriptorAndParameterAreRetrievableFromDescriptorFactoryByTab() {
+        // set up some fakes to test that the values returned from the stub are the
+        // real ones, rather than null
+        descriptor = new DatabaseDescriptor("irrelevant");
+        parameter = new TabParameter() {
+        };
+
         setUpStubRecordingTest();
 
         Assert.assertSame(descriptor, stubTab.getDatabaseDescriptor());
+        Assert.assertSame(parameter, stubTab.getTabParameter());
     }
 
     /**
      *
      */
     @Test
-    public void descriptorIsNotRetrievableFromDescriptorFactoryAfterLoadingTab() {
+    public void descriptorAndParameterAreNotRetrievableFromDescriptorFactoryAfterLoadingTab() {
+        // set up some fakes to test that the values returned from the stub are
+        // null, rather than real ones
+        descriptor = new DatabaseDescriptor("irrelevant");
+        parameter = new TabParameter() {
+        };
+
         setUpStubRecordingTest();
 
-        Assert.assertNull(getDatabaseDescriptor());
+        Assert.assertNull(mDatabaseDescriptorFactoryHelper.getDatabaseDescriptor());
+        Assert.assertNull(mTabParameterFactoryHelper.getTabParameter());
     }
 
     /**

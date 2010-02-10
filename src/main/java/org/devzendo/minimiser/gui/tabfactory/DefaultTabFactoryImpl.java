@@ -102,6 +102,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         return tabDescriptorList;
     }
 
+    // TODO: get rid of the databaseDescriptor parameter, it's not used.
     private Tab loadTab(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
         try {
             LOGGER.info("Loading " + identifier.getTabName() + " tab; bean name " + identifier.getTabBeanName());

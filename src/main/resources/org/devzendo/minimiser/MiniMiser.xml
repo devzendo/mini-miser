@@ -75,13 +75,15 @@
 		<constructor-arg ref="mainFrame" />	
 	</bean>
 
-    <!-- tab factory and tab definitions -->
+    <!-- tab factory, tab parameter bean factory and system tab definitions -->
     <bean id="tabFactory" class="org.devzendo.minimiser.gui.tabfactory.DefaultTabFactoryImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="problemReporter" />
 	</bean>
-
+	
+	<bean id="tabParameter" class="org.devzendo.minimiser.gui.tabfactory.TabParameterFactory" />
+	
 	<!-- tab definitions must have prototype scope -->
 	<bean id="tabOVERVIEW" scope="prototype" class="org.devzendo.minimiser.gui.tab.impl.DemoTab" >
 		<constructor-arg ref="databaseDescriptor" />

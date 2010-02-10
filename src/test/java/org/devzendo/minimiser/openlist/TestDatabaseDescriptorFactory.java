@@ -3,7 +3,9 @@ package org.devzendo.minimiser.openlist;
 import java.io.IOException;
 
 import org.devzendo.minimiser.springloader.ApplicationContext;
+import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -12,7 +14,16 @@ import org.junit.Test;
  *
  */
 @ApplicationContext("org/devzendo/minimiser/openlist/DatabaseDescriptorFactoryTestCase.xml")
-public final class TestDatabaseDescriptorFactory extends AbstractDatabaseDescriptorFactoryUnittestCase {
+public final class TestDatabaseDescriptorFactory extends SpringLoaderUnittestCase {
+    private DatabaseDescriptorFactoryUnittestHelper mDatabaseDescriptorFactoryHelper;
+
+    /**
+     *
+     */
+    @Before
+    public void getPrerequisites() {
+        mDatabaseDescriptorFactoryHelper = new DatabaseDescriptorFactoryUnittestHelper(getSpringLoader());
+    }
 
     /**
      * @throws IOException on failure
@@ -21,18 +32,18 @@ public final class TestDatabaseDescriptorFactory extends AbstractDatabaseDescrip
     @Test
     public void testStoreAndClearDescriptor() throws IOException {
         final DatabaseDescriptor dd = new DatabaseDescriptor("dd");
-        Assert.assertNull(getDatabaseDescriptor());
+        Assert.assertNull(mDatabaseDescriptorFactoryHelper.getDatabaseDescriptor());
 
-        getDatabaseDescriptorFactory().setDatabaseDescriptor(dd);
+        mDatabaseDescriptorFactoryHelper.getDatabaseDescriptorFactory().setDatabaseDescriptor(dd);
 
-        final DatabaseDescriptor dd2 = getDatabaseDescriptor();
+        final DatabaseDescriptor dd2 = mDatabaseDescriptorFactoryHelper.getDatabaseDescriptor();
         Assert.assertNotNull(dd2);
 
         Assert.assertEquals(dd.getDatabaseName(), dd2.getDatabaseName());
         Assert.assertSame(dd, dd2);
 
-        getDatabaseDescriptorFactory().clearDatabaseDescriptor();
-        Assert.assertNull(getDatabaseDescriptor());
+        mDatabaseDescriptorFactoryHelper.getDatabaseDescriptorFactory().clearDatabaseDescriptor();
+        Assert.assertNull(mDatabaseDescriptorFactoryHelper.getDatabaseDescriptor());
     }
 
     /**
@@ -42,13 +53,13 @@ public final class TestDatabaseDescriptorFactory extends AbstractDatabaseDescrip
     public void itsNotASingleton() throws IOException {
         final DatabaseDescriptor dd1 = new DatabaseDescriptor("dd1");
 
-        getDatabaseDescriptorFactory().setDatabaseDescriptor(dd1);
+        mDatabaseDescriptorFactoryHelper.getDatabaseDescriptorFactory().setDatabaseDescriptor(dd1);
 
         final DatabaseDescriptor dd2 = new DatabaseDescriptor("dd2");
 
-        getDatabaseDescriptorFactory().setDatabaseDescriptor(dd2);
+        mDatabaseDescriptorFactoryHelper.getDatabaseDescriptorFactory().setDatabaseDescriptor(dd2);
 
-        final DatabaseDescriptor ddcurrent = getDatabaseDescriptor();
+        final DatabaseDescriptor ddcurrent = mDatabaseDescriptorFactoryHelper.getDatabaseDescriptor();
         Assert.assertNotNull(ddcurrent);
 
         Assert.assertFalse(ddcurrent.getDatabaseName().equals(dd1.getDatabaseName()));

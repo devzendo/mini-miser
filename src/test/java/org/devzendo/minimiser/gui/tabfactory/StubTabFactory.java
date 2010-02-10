@@ -6,6 +6,7 @@ import java.util.List;
 import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
+import org.devzendo.minimiser.gui.tab.TabParameter;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
@@ -13,7 +14,7 @@ import org.devzendo.minimiser.opentablist.TabDescriptor;
 
 /**
  * A Stub TabFactory that just loads StubRecordingTabs.
- * 
+ *
  * @author matt
  *
  */
@@ -22,7 +23,7 @@ public final class StubTabFactory implements TabFactory {
     // Used by the run-on-EDT code in callInitComponentOnSwingEventThread
     // and callDisposeComponentOnSwingEventThread
     private final Object lock = new Object();
-    
+
     /**
      * Create the factory
      * @param tabList the open tab list
@@ -30,7 +31,7 @@ public final class StubTabFactory implements TabFactory {
     public StubTabFactory(final OpenTabList tabList) {
         this.openTabList = tabList;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -39,16 +40,17 @@ public final class StubTabFactory implements TabFactory {
             final List<TabIdentifier> tabIdentifiers) {
         final String databaseName = databaseDescriptor.getDatabaseName();
         final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>();
-        for (TabIdentifier identifier : tabIdentifiers) {
+        for (final TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
-                final StubRecordingTab stubRecordingTab = new StubRecordingTab(databaseDescriptor, identifier);
+                final StubRecordingTab stubRecordingTab = new StubRecordingTab(databaseDescriptor, new TabParameter() {
+                }, identifier);
                 callInitComponentOnSwingEventThread(stubRecordingTab);
                 tabDescriptorList.add(new TabDescriptor(identifier, stubRecordingTab));
             }
         }
         return tabDescriptorList;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -62,12 +64,12 @@ public final class StubTabFactory implements TabFactory {
         }
 
     }
-    
+
     /**
      * Call the disposeComponent method on the Swing Event Thread.
-     * Precondition: this code is never executed on the EDT - there's an 
+     * Precondition: this code is never executed on the EDT - there's an
      * assertion in the calling method for this.
-     * 
+     *
      * @param tab the tab to dispose whose component is to be disposed.
      */
     private void callDisposeComponentOnSwingEventThread(final Tab tab) {
@@ -83,12 +85,12 @@ public final class StubTabFactory implements TabFactory {
             return;
         }
     }
-    
+
     /**
      * Call the initComponent method on the Swing Event Thread.
      * Precondition: this code is never executed on the EDT - there's an
      * assertion in the calling method for this.
-     * 
+     *
      * @param tab the tab to initialise
      */
     private void callInitComponentOnSwingEventThread(final Tab tab) {
