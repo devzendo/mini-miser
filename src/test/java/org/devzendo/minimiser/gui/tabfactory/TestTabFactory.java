@@ -1,7 +1,6 @@
 package org.devzendo.minimiser.gui.tabfactory;
 
 import java.awt.Label;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,8 +40,6 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
     private TabParameterFactoryUnittestHelper mTabParameterFactoryHelper;
 
     // Used by tests that make use of setUpStubRecordingTest
-    private DatabaseDescriptor descriptor;
-    private TabParameter parameter;
     private StubRecordingTab stubTab;
 
     /**
@@ -82,7 +79,7 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
         Assert.assertNull(problemReporter.getException());
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
-        final List<TabIdentifier> tabIdentifiersToOpen = getUndefinedTabIdentifiersToOpen();
+        final List<TabIdentifier> tabIdentifiersToOpen = getUndefinedTabIdentifiersAsList();
         tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
 
         Assert.assertNotNull(problemReporter.getDoing());
@@ -111,38 +108,50 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
     @Test
     public void loadNewTabReturnsCorrectTabDescriptors() {
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
-        final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
+        final List<TabIdentifier> tabIdentifiersToOpen = getDefinedTabIdentifierAsList();
         final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(databaseDescriptor, tabIdentifiersToOpen);
 
         Assert.assertEquals(1, tabsForDatabase.size());
         Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, tabsForDatabase.get(0).getTabIdentifier());
     }
 
-    private List<TabIdentifier> getTabIdentifiersToOpen() {
-        final List<TabIdentifier> toOpenTabs = new ArrayList<TabIdentifier>();
-        toOpenTabs.add(SystemTabIdentifiers.OVERVIEW);
-        return toOpenTabs;
+    private List<TabIdentifier> getParameterisedTabIdentifierAsList() {
+        final TabIdentifier tabIdentifier =
+            new TabIdentifier("test", "Irrelevant display name",
+                false, 'I', "myNamedTabBean",
+                new IntegerHoldingTabParameter(42));
+        return Arrays.asList(tabIdentifier);
     }
 
-    private List<TabIdentifier> getUndefinedTabIdentifiersToOpen() {
-        final List<TabIdentifier> toOpenTabs = new ArrayList<TabIdentifier>();
-        toOpenTabs.add(SystemTabIdentifiers.CATEGORIES); // not in app context
-        return toOpenTabs;
+    private List<TabIdentifier> getDefinedTabIdentifierAsList() {
+        return Arrays.asList(SystemTabIdentifiers.OVERVIEW);
     }
 
-    private List<TabDescriptor> setUpStubRecordingTest() {
+    private List<TabIdentifier> getUndefinedTabIdentifiersAsList() {
+        return Arrays.asList(SystemTabIdentifiers.CATEGORIES); // not in app context
+    }
+
+    private class IntegerHoldingTabParameter implements TabParameter {
+        private final int mValue;
+
+        /**
+         * @param value
+         */
+        public IntegerHoldingTabParameter(final int value) {
+            mValue = value;
+        }
+
+        /**
+         * @return the value
+         */
+        public int getValue() {
+            return mValue;
+        }
+    }
+
+    private List<TabDescriptor> setUpStubRecordingTest(final DatabaseDescriptor descriptor, final List<TabIdentifier> tabIdentifiersToOpen) {
         StubRecordingTab.clearConstructCount();
 
-        descriptor = new DatabaseDescriptor(DATABASE);
-        parameter = new TabParameter() {
-            /**
-             * Just something for the weekend
-             */
-            @SuppressWarnings("unused")
-            public void irrelevant() {
-            }
-        };
-        final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
         final List<TabDescriptor> tabsForDatabase = tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
 
         Assert.assertEquals(1, StubRecordingTab.getConstructCount());
@@ -160,31 +169,52 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
      *
      */
     @Test
-    public void descriptorAndParameterAreRetrievableFromDescriptorFactoryByTab() {
-        // set up some fakes to test that the values returned from the stub are the
-        // real ones, rather than null
-        descriptor = new DatabaseDescriptor("irrelevant");
-        parameter = new TabParameter() {
-        };
+    public void descriptorAndParameterAreRetrievableFromFactoriesByTab() {
+        setUpStubRecordingTest(new DatabaseDescriptor(DATABASE), getParameterisedTabIdentifierAsList());
 
-        setUpStubRecordingTest();
-
-        Assert.assertSame(descriptor, stubTab.getDatabaseDescriptor());
-        Assert.assertSame(parameter, stubTab.getTabParameter());
+        Assert.assertEquals(DATABASE, stubTab.getDatabaseDescriptor().getDatabaseName());
+        final IntegerHoldingTabParameter retrievedParameter = (IntegerHoldingTabParameter) stubTab.getTabParameter();
+        Assert.assertEquals(42, retrievedParameter.getValue());
     }
 
     /**
      *
      */
     @Test
-    public void descriptorAndParameterAreNotRetrievableFromDescriptorFactoryAfterLoadingTab() {
-        // set up some fakes to test that the values returned from the stub are
-        // null, rather than real ones
-        descriptor = new DatabaseDescriptor("irrelevant");
-        parameter = new TabParameter() {
-        };
+    public void individualTabIdentifierParametersAreRetrievableFromFactoriesByCorrectTab() {
+        final TabIdentifier tabIdentifierOne = new TabIdentifier("one", "one", false, '1', "myNamedTabBean",
+            new IntegerHoldingTabParameter(101));
+        final TabIdentifier tabIdentifierTwo = new TabIdentifier("two", "two", false, '2', "myNamedTabBean",
+            new IntegerHoldingTabParameter(102));
 
-        setUpStubRecordingTest();
+        final List<TabDescriptor> tabsForDatabase =
+            tabFactory.loadTabs(
+                new DatabaseDescriptor(DATABASE),
+                Arrays.asList(tabIdentifierOne, tabIdentifierTwo));
+
+        final TabDescriptor tabDescriptorOne = tabsForDatabase.get(0);
+        final TabDescriptor tabDescriptorTwo = tabsForDatabase.get(1);
+        Assert.assertSame(tabIdentifierOne, tabDescriptorOne.getTabIdentifier());
+        Assert.assertEquals(101,
+            ((IntegerHoldingTabParameter) ((StubRecordingTab) tabDescriptorOne.getTab()).
+                    getTabParameter()).getValue());
+        Assert.assertSame(tabIdentifierTwo, tabDescriptorTwo.getTabIdentifier());
+        Assert.assertEquals(102,
+            ((IntegerHoldingTabParameter) ((StubRecordingTab) tabDescriptorTwo.getTab()).
+                    getTabParameter()).getValue());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void descriptorAndParameterAreNotRetrievableFromFactoriesAfterLoadingTab() {
+        // stash rubbish into the factories to ensure that they get cleared down
+        mDatabaseDescriptorFactoryHelper.getDatabaseDescriptorFactory().setDatabaseDescriptor(new DatabaseDescriptor("IRRELEVANT"));
+        mTabParameterFactoryHelper.getTabParameterFactory().setTabParameter(new TabParameter() {
+        });
+
+        setUpStubRecordingTest(new DatabaseDescriptor(DATABASE), getParameterisedTabIdentifierAsList());
 
         Assert.assertNull(mDatabaseDescriptorFactoryHelper.getDatabaseDescriptor());
         Assert.assertNull(mTabParameterFactoryHelper.getTabParameter());
@@ -198,7 +228,7 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
      */
     @Test
     public void tabIsConstructedOnNonEDT() {
-        setUpStubRecordingTest();
+        setUpStubRecordingTest(new DatabaseDescriptor(DATABASE), getDefinedTabIdentifierAsList());
 
         Assert.assertFalse(stubTab.isConstructedOnEventThread());
     }
@@ -208,7 +238,7 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
      */
     @Test
     public void tabComponentIsInitialisedOnEDT() {
-        setUpStubRecordingTest();
+        setUpStubRecordingTest(new DatabaseDescriptor(DATABASE), getDefinedTabIdentifierAsList());
 
         Assert.assertTrue(stubTab.isInitComponentCalled());
         Assert.assertTrue(stubTab.isInitComponentsCalledOnEventThread());
@@ -223,7 +253,7 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
     @Test
     public void doesntLoadTabIfItHasAlreadyBeenLoaded() {
         final TabDescriptor overviewTabDescriptor = new TabDescriptor(SystemTabIdentifiers.OVERVIEW);
-        descriptor = new DatabaseDescriptor(DATABASE);
+        final DatabaseDescriptor descriptor = new DatabaseDescriptor(DATABASE);
         openTabList.addTab(descriptor, overviewTabDescriptor);
 
         final Observer<TabEvent> obs = EasyMock.createStrictMock(Observer.class);
@@ -232,7 +262,7 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
 
         StubRecordingTab.clearConstructCount();
 
-        final List<TabIdentifier> tabIdentifiersToOpen = getTabIdentifiersToOpen();
+        final List<TabIdentifier> tabIdentifiersToOpen = getDefinedTabIdentifierAsList();
         tabFactory.loadTabs(descriptor, tabIdentifiersToOpen);
 
         Assert.assertEquals(0, StubRecordingTab.getConstructCount());
@@ -245,7 +275,8 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
      */
     @Test
     public void tabComponentIsDestroyedOnCorrectThreads() {
-        final List<TabDescriptor> tabsForDatabase = setUpStubRecordingTest();
+        final DatabaseDescriptor descriptor = new DatabaseDescriptor(DATABASE);
+        final List<TabDescriptor> tabsForDatabase = setUpStubRecordingTest(descriptor, getDefinedTabIdentifierAsList());
 
         Assert.assertFalse(stubTab.isDestroyCalled());
         Assert.assertFalse(stubTab.isDestroyedOnNonEventThread());

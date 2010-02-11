@@ -36,7 +36,7 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
     private final char mMnemonic;
     private final boolean mSystemTab;
     private final String mTabBeanName;
-    private final Object mTabBeanParameter;
+    private final TabParameter mTabBeanParameter;
 
     /**
      * Construct a plugin TabIdentifier.
@@ -52,7 +52,7 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
      * it could be the DAO layer object that represents this Account.
      */
     public TabIdentifier(final String name, final String displayName, final boolean permanent,
-            final char mne, final String tabBeanName, final Object tabBeanParameter) {
+            final char mne, final String tabBeanName, final TabParameter tabBeanParameter) {
         this(name, displayName, permanent, mne, false, tabBeanName, tabBeanParameter);
     }
 
@@ -72,7 +72,7 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
      *
      */
     TabIdentifier(final String name, final String displayName, final boolean permanent, final char mne,
-        final boolean system, final String tabBeanName, final Object tabBeanParameter) {
+        final boolean system, final String tabBeanName, final TabParameter tabBeanParameter) {
         this.mName = name;
         this.mDisplayName = displayName;
         this.mTabPermanent = permanent;
@@ -131,7 +131,7 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
     /**
      * @return the tabBeanParameter
      */
-    public Object getTabBeanParameter() {
+    public TabParameter getTabBeanParameter() {
         return mTabBeanParameter;
     }
 

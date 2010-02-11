@@ -66,6 +66,15 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         return springLoader.getBean("&databaseDescriptor", DatabaseDescriptorFactory.class);
     }
 
+
+    /**
+     * Get the TabParameterFactory
+     * @return the tab parameter factory
+     */
+    private TabParameterFactory getTabParameterFactory() {
+        return springLoader.getBean("&tabParameter", TabParameterFactory.class);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -78,32 +87,41 @@ public final class DefaultTabFactoryImpl implements TabFactory {
         final DatabaseDescriptorFactory databaseDescriptorFactory = getDatabaseDescriptorFactory();
         databaseDescriptorFactory.setDatabaseDescriptor(databaseDescriptor);
 
+        final TabParameterFactory tabParameterFactory = getTabParameterFactory();
+
         // Now load each tab
         final String databaseName = databaseDescriptor.getDatabaseName();
         final ArrayList<TabDescriptor> tabDescriptorList = new ArrayList<TabDescriptor>();
         for (final TabIdentifier identifier : tabIdentifiers) {
             if (!openTabList.containsTab(databaseName, identifier)) {
+
+                // Set the TabParameter in the factory so that it can be
+                // retrieved by any tab beans that need it
+                LOGGER.debug("Storing tab parameter " + identifier.getTabBeanParameter() + " in factory for tab to use");
+                tabParameterFactory.setTabParameter(identifier.getTabBeanParameter());
+
                 LOGGER.debug("Loading tab " + identifier.getTabName());
-                final Tab loadedTab = loadTab(databaseDescriptor, identifier);
+                final Tab loadedTab = loadTab(identifier);
                 if (loadedTab == null) { // TODO need test for failure to load causes lack of addition to list
                     LOGGER.warn("Could not load tab " + identifier.getTabName());
                 } else {
                     tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));
                 }
+
+                LOGGER.debug("Clearing tab parameter from factory");
+                tabParameterFactory.clearTabParameter();
             } else {
                 LOGGER.debug("Tab " + identifier.getTabName() + " already loaded; not reloading it");
             }
         }
 
-        // Clear database descriptor in factory
         LOGGER.debug("Clearing database descriptor from factory");
         databaseDescriptorFactory.clearDatabaseDescriptor();
 
         return tabDescriptorList;
     }
 
-    // TODO: get rid of the databaseDescriptor parameter, it's not used.
-    private Tab loadTab(final DatabaseDescriptor databaseDescriptor, final TabIdentifier identifier) {
+    private Tab loadTab(final TabIdentifier identifier) {
         try {
             LOGGER.info("Loading " + identifier.getTabName() + " tab; bean name " + identifier.getTabBeanName());
             final Tab tab = springLoader.getBean(identifier.getTabBeanName(), Tab.class);
