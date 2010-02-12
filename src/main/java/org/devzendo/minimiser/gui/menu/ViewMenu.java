@@ -84,32 +84,42 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
             // Only add items to the view menu that are not permanent - we don't need to be able to control
             // whether the permanent tabs are visible.
             if (!tabId.isTabPermanent() && !viewMenuItemHidden) {
-                final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(tabId.getDisplayableName());
-                menuItem.setMnemonic(tabId.getMnemonic());
-                menuItem.addActionListener(new ActionListener() {
-                    public void actionPerformed(final ActionEvent e) {
-                        final boolean opened = menuItem.isSelected();
-                        new Thread(new Runnable() {
-                            public void run() {
-                                try {
-                                    Thread.currentThread().setName("ViewOpener:" + tabId.getTabName());
-                                    Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
-                                    LOGGER.info((opened ? "Opening" : "Closing") + " view '" + tabId.getTabName() + "'");
-                                    viewMenuChoiceObservers.eventOccurred(new ViewMenuChoice(currentDatabase, tabId, opened));
-                                } catch (final Throwable t) {
-                                    LOGGER.error("View opener thread caught unexpected " + t.getClass().getSimpleName(), t);
-                                } finally {
-                                    LOGGER.debug("View menu choice complete");
-                                }
-                            }
-                        }).start();
-                    }
-                });
-                menuItem.setSelected(tabDescriptorSet.contains(new TabDescriptor(tabId)));
-                viewMenu.add(menuItem);
+                final boolean isSelected = tabDescriptorSet.contains(new TabDescriptor(tabId));
+                LOGGER.debug("Adding view menu item for " + tabId.getTabName() + "; selected: " + isSelected);
+                viewMenu.add(createTabIdentifierMenuItem(
+                    currentDatabase, tabId, isSelected));
             }
         }
         viewMenu.setEnabled(true);
+    }
+
+    private JCheckBoxMenuItem createTabIdentifierMenuItem(
+            final DatabaseDescriptor currentDatabase,
+            final TabIdentifier tabId,
+            final boolean isSelected) {
+        final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(tabId.getDisplayableName());
+        menuItem.setMnemonic(tabId.getMnemonic());
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                final boolean opened = menuItem.isSelected();
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            Thread.currentThread().setName("ViewOpener:" + tabId.getTabName());
+                            Thread.currentThread().setPriority(Thread.MIN_PRIORITY + 1);
+                            LOGGER.info((opened ? "Opening" : "Closing") + " view '" + tabId.getTabName() + "'");
+                            viewMenuChoiceObservers.eventOccurred(new ViewMenuChoice(currentDatabase, tabId, opened));
+                        } catch (final Throwable t) {
+                            LOGGER.error("View opener thread caught unexpected " + t.getClass().getSimpleName(), t);
+                        } finally {
+                            LOGGER.debug("View menu choice complete");
+                        }
+                    }
+                }).start();
+            }
+        });
+        menuItem.setSelected(isSelected);
+        return menuItem;
     }
 
     /**

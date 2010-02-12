@@ -32,7 +32,7 @@ CURRENT TASKS:
     - the global and the current-database ApplicationMenus are merged to
       present the final menu.
 
-  * DONE An ApplicationMenu uber-bean, MenuControlFacade and OpenDatabaseList is passed
+  * DONE An ApplicationMenu uber-bean, MenuFacade and OpenDatabaseList is passed
     into the application-provided MenuProviding(Facade)
   * DONE This uber-bean is added to the DatabaseDescriptor by a class in the
     databaseEventListenerList when the database is opened - this is done early,
@@ -64,13 +64,13 @@ CURRENT TASKS:
         MenuDatabaseEventObserver, TabPaneCreatingDatabaseEventListener,
         TabPaneManagerDatabaseEventListener
         
-  * DONE Listeners can be added to the MenuControlFacade so that the menu code can
-    be made aware of events e.g. number of databases open (so that menu items
-    can be disabled if only one / zero databases are open).
+  * DONE (via ODL listeners) Listeners can be added to the MenuFacade so that
+    the menu code can be made aware of events e.g. number of databases open 
+    (so that menu items can be disabled if only one / zero databases are open).
   * DONE These listeners are really best placed against the OpenDatabaseList as that's
     where knowledge of these events comes from.
-    ? Is the MenuControlFacade needed?
-  * The MenuControlFacade can be asked to rebuild the entire menu at any time
+    ? Is the MenuFacade needed?
+  * The MenuFacade can be asked to rebuild the entire menu at any time
     e.g. if you add an account, and the view menu is dynamically built from the
     static set plus accounts, you'd want to load the account list in a worker
     thread, then populate the view menu in the EDT and trigger a menu rebuild. 
@@ -91,12 +91,13 @@ CURRENT TASKS:
     work is done:
     * Add an Edit menu with Undo / Redo, Cut / Copy / Paste - not sure how we'll
       hook into this yet.
-    * Allow for extensible TabIdentifiers - the static set we have now, with
+    * DONE Allow for extensible TabIdentifiers - the static set we have now, with
       Categories removed, and allow for dynamic additions (e.g. each different
       account). Allow each plugin to register view TabIdentifiers in the
       ApplicationMenu
-    * Allow ActionListeners to be registered against these TabIdentifiers.
-      
+    * PROBABLY NOT BEST Allow ActionListeners to be registered against these TabIdentifiers.
+    * Provide more than just an add method for TabIdentifiers in the ApplicationMenu.
+    
 * Remove Mycila
 * Documentation
   Reference:
