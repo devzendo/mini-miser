@@ -35,6 +35,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     private final OpenTabList openTabList;
     private final Prefs prefs;
     private final ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
+    private final ApplicationMenuCombiner mApplicationMenuCombiner;
 
     /**
      * Construct the view menu
@@ -47,11 +48,13 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     public ViewMenu(final MenuWiring wiring,
             final OpenDatabaseList databaseList,
             final OpenTabList tabList,
-            final Prefs preferences) {
+            final Prefs preferences,
+            final ApplicationMenuCombiner applicationMenuCombiner) {
         super(wiring);
         this.openDatabaseList = databaseList;
         this.openTabList = tabList;
         this.prefs = preferences;
+        mApplicationMenuCombiner = applicationMenuCombiner;
         viewMenuChoiceObservers = new ObserverList<ViewMenuChoice>();
 
         viewMenu = new JMenu("View");

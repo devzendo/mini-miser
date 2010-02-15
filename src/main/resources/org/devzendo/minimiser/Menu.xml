@@ -97,6 +97,7 @@
 		<constructor-arg ref="openDatabaseList" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="prefs" />
+		<constructor-arg ref="applicationMenuCombiner" />
 	</bean>
 
 	<bean id="toolsMenu" class="org.devzendo.minimiser.gui.menu.ToolsMenu">
@@ -162,5 +163,11 @@
 	</bean>
 	
 	<!-- miscellaneous -->
+	<bean id="globalApplicationMenu" class="org.devzendo.minimiser.gui.menu.ApplicationMenu" />
+
+	<bean id="applicationMenuCombiner" class="org.devzendo.minimiser.gui.menu.ApplicationMenuCombiner">
+		<constructor-arg ref="globalApplicationMenu" />
+		<constructor-arg ref="openDatabaseList" />
+	</bean>
 	
 </beans>
