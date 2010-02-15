@@ -1,8 +1,6 @@
 package org.devzendo.minimiser.gui.menu;
 
 import java.awt.Component;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -14,7 +12,6 @@ import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.prefs.Prefs;
-import org.devzendo.minimiser.prefs.TestPrefs;
 import org.easymock.classextension.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,10 +31,10 @@ public final class TestViewMenu {
     private Prefs mPrefs;
 
     /**
-     * @throws IOException
+     *
      */
     @Before
-    public void getPrerequisites() throws IOException {
+    public void getPrerequisites() {
         final MenuWiring menuWiring = new MenuWiring();
         mOpenDatabaseList = new OpenDatabaseList();
         final OpenTabList openTabList = new OpenTabList();
@@ -45,13 +42,6 @@ public final class TestViewMenu {
         final ApplicationMenu globalApplicationMenu = new ApplicationMenu();
         final ApplicationMenuCombiner applicationMenuCombiner = new ApplicationMenuCombiner(globalApplicationMenu, mOpenDatabaseList);
         mViewMenu = new ViewMenu(menuWiring, mOpenDatabaseList, openTabList, mPrefs, applicationMenuCombiner);
-    }
-
-    private Prefs createPrefs() throws IOException {
-        final Prefs prefs = TestPrefs.createUnitTestPrefsFile();
-        final File prefsFile = new File(prefs.getAbsolutePath());
-        prefsFile.deleteOnExit();
-        return prefs;
     }
 
     /**
