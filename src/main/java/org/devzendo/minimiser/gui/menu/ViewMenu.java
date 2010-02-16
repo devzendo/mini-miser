@@ -2,8 +2,12 @@ package org.devzendo.minimiser.gui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -44,6 +48,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
      * @param databaseList the Open Database List
      * @param tabList the Open Tab List
      * @param preferences the Preferences
+     * @param applicationMenuCombiner the ApplicationMenuCombiner
      */
     public ViewMenu(final MenuWiring wiring,
             final OpenDatabaseList databaseList,
@@ -75,13 +80,11 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
 
         final DatabaseDescriptor currentDatabase = openDatabaseList.getCurrentDatabase();
         LOGGER.debug("current database is " + currentDatabase);
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(
-                                        currentDatabase.getDatabaseName());
-        LOGGER.debug("tab list tabs for this are " + tabsForDatabase);
+        final HashSet<TabDescriptor> tabDescriptorSet = new HashSet<TabDescriptor>(openTabList.getTabsForDatabase(
+                                        currentDatabase.getDatabaseName()));
+        LOGGER.debug("tab list tabs for this are " + tabDescriptorSet);
 
-        final HashSet<TabDescriptor> tabDescriptorSet = new HashSet<TabDescriptor>(tabsForDatabase);
-
-        for (final TabIdentifier tabId : SystemTabIdentifiers.values()) {
+        for (final TabIdentifier tabId : combineAllTabIdentifiers()) {
             final boolean viewMenuItemHidden = prefs.isTabHidden(tabId.getTabName());
             LOGGER.debug("View menu item " + tabId.getTabName() + " hidden:" + viewMenuItemHidden);
             // Only add items to the view menu that are not permanent - we don't need to be able to control
@@ -94,6 +97,17 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
             }
         }
         viewMenu.setEnabled(true);
+    }
+
+    private List<TabIdentifier> combineAllTabIdentifiers() {
+        final Set<TabIdentifier> sortedTabIdentifiers = new TreeSet<TabIdentifier>(new Comparator<TabIdentifier>() {
+            public int compare(final TabIdentifier o1, final TabIdentifier o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        sortedTabIdentifiers.addAll(Arrays.asList(SystemTabIdentifiers.values()));
+        sortedTabIdentifiers.addAll(mApplicationMenuCombiner.combineMenus().getViewMenuTabIdentifiers());
+        return Arrays.asList(sortedTabIdentifiers.toArray(new TabIdentifier[0]));
     }
 
     private JCheckBoxMenuItem createTabIdentifierMenuItem(

@@ -29,6 +29,7 @@ public final class TestViewMenu {
     private ViewMenu mViewMenu;
     private OpenDatabaseList mOpenDatabaseList;
     private Prefs mPrefs;
+    private ApplicationMenu mGlobalApplicationMenu;
 
     /**
      *
@@ -39,8 +40,8 @@ public final class TestViewMenu {
         mOpenDatabaseList = new OpenDatabaseList();
         final OpenTabList openTabList = new OpenTabList();
         mPrefs = EasyMock.createMock(Prefs.class);
-        final ApplicationMenu globalApplicationMenu = new ApplicationMenu();
-        final ApplicationMenuCombiner applicationMenuCombiner = new ApplicationMenuCombiner(globalApplicationMenu, mOpenDatabaseList);
+        mGlobalApplicationMenu = new ApplicationMenu();
+        final ApplicationMenuCombiner applicationMenuCombiner = new ApplicationMenuCombiner(mGlobalApplicationMenu, mOpenDatabaseList);
         mViewMenu = new ViewMenu(menuWiring, mOpenDatabaseList, openTabList, mPrefs, applicationMenuCombiner);
     }
 
@@ -63,8 +64,8 @@ public final class TestViewMenu {
         mOpenDatabaseList.addOpenedDatabase(new DatabaseDescriptor("testdb"));
 
         mViewMenu.rebuildMenuGroup();
-        final JMenu jMenu = mViewMenu.getJMenu();
 
+        final JMenu jMenu = mViewMenu.getJMenu();
         Assert.assertTrue(jMenu.isEnabled());
         final int numberOfNonPermanentTabIdentifiers =
             SystemTabIdentifiers.values().length
@@ -84,8 +85,8 @@ public final class TestViewMenu {
         mOpenDatabaseList.addOpenedDatabase(new DatabaseDescriptor("testdb"));
 
         mViewMenu.rebuildMenuGroup();
-        final JMenu jMenu = mViewMenu.getJMenu();
 
+        final JMenu jMenu = mViewMenu.getJMenu();
         boolean foundSQL = false;
         final Component[] menuComponents = jMenu.getMenuComponents();
         for (final Component component : menuComponents) {
@@ -98,6 +99,9 @@ public final class TestViewMenu {
         EasyMock.verify(mPrefs);
     }
 
+    /**
+     *
+     */
     @Test
     public void databaseApplicationMenuTabIdentifierPresent() {
         final TabIdentifier tabIdentifier = createTestTabIdentifier();
@@ -110,6 +114,67 @@ public final class TestViewMenu {
         databaseDescriptor.setAttribute(AttributeIdentifier.ApplicationMenu, databaseApplicationMenu);
 
         mViewMenu.rebuildMenuGroup();
+
+        checkForTestTabIdentifier(tabIdentifier);
+        EasyMock.verify(mPrefs);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void globalApplicationMenuTabIdentifierPresent() {
+        final TabIdentifier tabIdentifier = createTestTabIdentifier();
+        EasyMock.expect(mPrefs.isTabHidden((String) EasyMock.anyObject())).andReturn(false).anyTimes();
+        EasyMock.replay(mPrefs);
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("testdb");
+        mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
+        mGlobalApplicationMenu.addViewMenuTabIdentifier(tabIdentifier);
+        final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
+        databaseDescriptor.setAttribute(AttributeIdentifier.ApplicationMenu, databaseApplicationMenu);
+
+        mViewMenu.rebuildMenuGroup();
+
+        checkForTestTabIdentifier(tabIdentifier);
+        EasyMock.verify(mPrefs);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void viewMenuOrderingCorrect() {
+        final TabIdentifier tabIdentifierA = new TabIdentifier("AARDVARK", "Aardvark", false, 'A', "irrelevantTabBean", null);
+        final TabIdentifier tabIdentifierZ = new TabIdentifier("ZYGOTE", "Zygote", false, 'Z', "irrelevantTabBean", null);
+        EasyMock.expect(mPrefs.isTabHidden((String) EasyMock.anyObject())).andReturn(false).anyTimes();
+        EasyMock.replay(mPrefs);
+        final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("testdb");
+        mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
+        mGlobalApplicationMenu.addViewMenuTabIdentifier(tabIdentifierA);
+        final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
+        databaseApplicationMenu.addViewMenuTabIdentifier(tabIdentifierZ);
+        databaseDescriptor.setAttribute(AttributeIdentifier.ApplicationMenu, databaseApplicationMenu);
+
+        mViewMenu.rebuildMenuGroup();
+
+        final JMenu jMenu = mViewMenu.getJMenu();
+        final Component[] menuComponents = jMenu.getMenuComponents();
+        Assert.assertEquals(4, menuComponents.length); // Remember Overview is permanent!
+        checkTabIdentifierDisplayableName(menuComponents[0], SystemTabIdentifiers.CATEGORIES);
+        checkTabIdentifierDisplayableName(menuComponents[1], SystemTabIdentifiers.SQL);
+        checkTabIdentifierDisplayableName(menuComponents[2], tabIdentifierA);
+        checkTabIdentifierDisplayableName(menuComponents[3], tabIdentifierZ);
+        EasyMock.verify(mPrefs);
+    }
+
+    private void checkTabIdentifierDisplayableName(
+            final Component component,
+            final TabIdentifier tabIdentifier) {
+        final JMenuItem jMenuItem = (JMenuItem) component;
+        Assert.assertEquals(jMenuItem.getText(), tabIdentifier.getDisplayableName());
+    }
+
+    private void checkForTestTabIdentifier(final TabIdentifier tabIdentifier) {
         final JMenu jMenu = mViewMenu.getJMenu();
 
         boolean foundTestTabIdentifier = false;
@@ -121,15 +186,9 @@ public final class TestViewMenu {
             }
         }
         Assert.assertTrue(foundTestTabIdentifier);
-        EasyMock.verify(mPrefs);
     }
 
     private TabIdentifier createTestTabIdentifier() {
         return new TabIdentifier("TEST", "Test Tab Identifier", false, 'T', "irrelevantTabBean", null);
-    }
-
-    @Test
-    public void globalApplicationMenuTabIdentifierPresent() {
-        Assert.fail("unfinished");
     }
 }
