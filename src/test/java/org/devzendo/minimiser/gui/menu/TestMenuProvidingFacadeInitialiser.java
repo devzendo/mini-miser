@@ -34,6 +34,7 @@ public final class TestMenuProvidingFacadeInitialiser {
     private StubMenu mMenu;
     private ApplicationMenu mGlobalApplicationMenu;
     private StubProblemReporter mStubProblemReporter;
+    private MenuProvidingFacadeAppPlugin mApplicationPlugin;
 
     /**
      * @throws PluginException never
@@ -44,6 +45,7 @@ public final class TestMenuProvidingFacadeInitialiser {
         mPluginRegistry = new DefaultPluginRegistry();
         mPluginManager = new DefaultPluginManager(mSpringLoader, mPluginRegistry);
         mPluginManager.loadPlugins("org/devzendo/minimiser/gui/menu/pluginwithmenuprovidingfacade.properties");
+        mApplicationPlugin = (MenuProvidingFacadeAppPlugin) mPluginManager.getApplicationPlugin();
 
         // Ensure ApplicationMenu is present but empty on database open
         mOpenDatabaseList = new OpenDatabaseList();
@@ -123,7 +125,22 @@ public final class TestMenuProvidingFacadeInitialiser {
      *
      */
     @Test
-    public void menuProvidingFacadeThatBlowsUpGetsProblemReported() {
+    public void menuProvidingThatBlowsUpLoadingFacadeGetsProblemReported() {
+        mApplicationPlugin.injectFacadeLoadFailure();
+
+        // Pass the ODL, Menu, global ApplicationMenu to the plugin
+        new MenuProvidingFacadeInitialiser(
+            mPluginManager, mOpenDatabaseList, mMenu,
+            mGlobalApplicationMenu, mStubProblemReporter).initialise();
+
+        Assert.assertEquals("while initialising the application menu", mStubProblemReporter.getDoing());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void menuProvidingFacadeThatBlowsUpInFacadeGetsProblemReported() {
         final StubMenuProvidingFacade stubMenuProvidingFacade =
             (StubMenuProvidingFacade) mPluginManager.getPluginsImplementingFacade(
                 MenuProviding.class).get(0).getMenuProvidingFacade();

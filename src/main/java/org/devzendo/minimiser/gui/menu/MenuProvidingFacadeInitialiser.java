@@ -86,20 +86,20 @@ public final class MenuProvidingFacadeInitialiser {
                     LOGGER.info("Initialising MenuProviding facades on Event Thread");
                     final List<MenuProviding> pluginsImplementingFacade = mPluginManager.getPluginsImplementingFacade(MenuProviding.class);
                     for (final MenuProviding menuProviding : pluginsImplementingFacade) {
-                        final MenuProvidingFacade menuProvidingFacade = menuProviding.getMenuProvidingFacade();
-                        if (menuProvidingFacade == null) {
-                            LOGGER.warn(
-                                "MenuProviding class "
-                                + menuProviding.getClass().getName()
-                                + " returned a null facade - ignoring");
-                        } else {
-                            LOGGER.info("Initialising " + menuProvidingFacade.getClass().getName());
-                            try {
-                                menuProvidingFacade.initialise(mGlobalApplicationMenu, mOpenDatabaseList, menuFacade);
-                                LOGGER.info("Initialised " + menuProvidingFacade.getClass().getName());
-                            } catch (final RuntimeException re) {
-                                mProblemReporter.reportProblem("while initialising the application menu", re);
+                        try {
+                            final MenuProvidingFacade menuProvidingFacade = menuProviding.getMenuProvidingFacade();
+                            if (menuProvidingFacade == null) {
+                                LOGGER.warn(
+                                    "MenuProviding class "
+                                    + menuProviding.getClass().getName()
+                                    + " returned a null facade - ignoring");
+                            } else {
+                                LOGGER.info("Initialising " + menuProvidingFacade.getClass().getName());
+                                    menuProvidingFacade.initialise(mGlobalApplicationMenu, mOpenDatabaseList, menuFacade);
+                                    LOGGER.info("Initialised " + menuProvidingFacade.getClass().getName());
                             }
+                        } catch (final RuntimeException re) {
+                            mProblemReporter.reportProblem("while initialising the application menu", re);
                         }
                     }
                     LOGGER.info("Initialised MenuProviding facades on Event Thread");

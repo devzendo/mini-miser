@@ -6,6 +6,7 @@ import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProviding;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProvidingFacade;
 import org.devzendo.minimiser.springloader.SpringLoader;
+import org.springframework.beans.factory.CannotLoadBeanClassException;
 
 
 /**
@@ -16,11 +17,13 @@ import org.devzendo.minimiser.springloader.SpringLoader;
  */
 public final class MenuProvidingFacadeAppPlugin implements ApplicationPlugin, MenuProviding {
     private final MenuProvidingFacade mMenuProvidingFacade;
+    private boolean mFailOnLoad;
 
     /**
      *
      */
     public MenuProvidingFacadeAppPlugin() {
+        mFailOnLoad = false;
         mMenuProvidingFacade = new StubMenuProvidingFacade();
     }
 
@@ -138,6 +141,20 @@ public final class MenuProvidingFacadeAppPlugin implements ApplicationPlugin, Me
      * {@inheritDoc}
      */
     public MenuProvidingFacade getMenuProvidingFacade() {
+        if (mFailOnLoad) {
+            // simulate a common fault, e.g. bean not found
+            throw new CannotLoadBeanClassException(
+                "Cannot find class", "badMenuProvidingFacade",
+                "org.devzendo.minimiser.gui.menu.BadMenuProvidingFacade",
+                new ClassNotFoundException());
+        }
         return mMenuProvidingFacade;
+    }
+
+    /**
+     * Set a bomb for getMenuProvidingFacade() to explode
+     */
+    void injectFacadeLoadFailure() {
+        mFailOnLoad  = true;
     }
 }
