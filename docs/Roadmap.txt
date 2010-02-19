@@ -38,7 +38,7 @@ Prehistory
   * Early sketches in Ruby/Rails - 02/12/2007.  
   * Project restarted in Java - 11/04/2008.
 
-Version 0.1 - Build the Foundations
+Version 0.1.0 - Build the Foundations
   * Technical goals:
     * Start new Maven-based product.
     * Get building under CI server / repository management.
@@ -79,6 +79,11 @@ Version 0.1 - Build the Foundations
     the framework in my own time, provided I do no contracted work
     on it for any of its competitors, and that all IPR in the
     framework is held by me - 03/09/2009.
+
+  * 18/02/2010 decided to release the project in its current state
+    with the date set for the fist release as Mar 20 2010,
+    Spring Equinox (NH). Started opening up the devzendo.org website.
+    
     
 Version 0.2 - Drive the data structure definition
 

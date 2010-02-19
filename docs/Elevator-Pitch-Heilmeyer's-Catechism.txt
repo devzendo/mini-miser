@@ -1,0 +1,53 @@
+An elevator pitch for the MiniMiser Framework, in the format of <a href="http://en.wikipedia.org/wiki/George_H._Heilmeier#Heilmeier.27s_Catechism">Heilmeyer's Catcheism</a> (A set of questions credited to Heilmeier that anyone proposing a research project or product development effort should be able to answer. Text of the questions below taken from the Wikipedia article.)
+
+<ul>
+<li><em>What are you trying to do? Articulate your objectives using absolutely no jargon.</em>
+Help software developers write applications that store their information in database files.<br />
+Absolutely no jargon is going to be hard for a developer framework!<br />
+Create a library that allows developers to focus on the content of their embedded-database-backed Java/Swing application (i.e. the database structure and menus/screens/dialogs) providing all the boilerplate essential code needed in such an application, for:
+<ul>
+<li> creating, opening, closing multiple databases (optionally encrypted),</li>
+<li> switching between them,</li>
+<li> providing a mechanism for building multiple screens/views into the database, allowing the user to open/close/switch between multiple such views,</li>
+<li> remembering user settings,</li>
+<li> managing database schema upgrades to new versions,</li>
+<li> new release update notification, containing a report of "what's new if you upgrade" (not auto-upgrade a la Firefox)</li>
+</ul>
+</li>
+
+<li><em>How is it done today, and what are the limits of current practice?</em>
+Ignoring web-based approaches such as Ruby on Rails, or Grails, part of what the framework does could be achieved using (e.g.) Eclipse or Netbeans as the GUI framework. Upon this, a data access layer would be built manually, probably using Spring JDBC, Hibernate, iBatis. This would be connected to an underlying embedded database (e.g. H2, which is what MiniMiser uses; Hypersonic, its predecessor, Derby, etc.)<br />
+There are no limits to that approach - you take several well-designed high-level generic components and create the internal structure yourself. MiniMiser provides some of what those high-level frameworks provide, tailored to the domain in question (embedded-database-backed Swing apps). 
+</li>
+
+<li><em>What's new in your approach and why do you think it will be successful?</em>
+I'm providing a more tailored solution than the build-it-yourself approach, using industry standard components, a simple architecture, built using test-driven/agile practices. Although it's not as easy to get started as with, say, Ruby on Rails, I believe it fills a niche (as Rails did: it made writing database-backed web apps easy, and illustrated the complexity of J2EE for the same task).
+</li>
+
+<li><em>Who cares?</em>
+Anyone wanting to write an embedded-database-backed Swing application would have to write a lot of code to provide the essentials - if you can reuse another project's code to provide this, you would be able to focus on your application's business domain.
+</li>
+
+<li><em>If you're successful, what difference will it make?</em>
+There would be a small community of like-minded developers / software craftsmen/women who could make use of it, and use it to create more insanely great software. The next iTunes; the next Quicken; who knows? I hope a consequence of it is that more developers start using TDD, write clean(er) code, practice craftsmanship, agility, etc. Hopefully we can help those not yet versed in these skills to understand them and practice them in their own projects.
+
+</li>
+<li><em>What are the risks and the payoffs?</em>
+Risks: it fails, miserably; no-one but me uses it.<br />
+Payoffs: it takes off, gains widespread adoption, and helps many people.<br />
+</li>
+
+<li><em>How much will it cost?</em>
+It is an Open Source project released under the GNU General Public License. It is free, as in speech. In terms of what it could cost a developer in time in order to understand it, and become proficient with it, I cannot say.
+</li>
+
+<li><em>How long will it take?</em>
+I have been developing it for almost two years; I am making the first release after this time so that I can be sure that it is viable, and that I am not wasting my time. It is not yet finished - no product ever is - it could take another year of development before it is feature-complete, given my current goals for it. However, its direction may change when others start to work with it, so it's difficult to say.
+
+</li>
+<li><em>What are the midterm and final "exams" to check for success?</em>
+Midterm: Having developers pick it up, evaluate it, discuss it on twitter/mailing lists, provide feedback.<br />
+Final: Having a vibrant developer community creating great apps with it.
+</li>
+
+</ul>

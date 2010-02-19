@@ -1,0 +1,10 @@
+The release schedule for the MiniMiser Framework is set to the following dates:
+
+    * Spring Equinox - March 20th
+    * Beltane - April 30th
+    * Midsummer - June 21st
+    * Lughnasadh / Lammas - August 1st
+    * Autumn Equinox - September 20th
+    * Samhain (Halloween) - October 31st
+    * Yule / Winter Solstice - December 20th
+    * Imbolc - February 1st
