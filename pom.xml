@@ -1,15 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>uk.me.gumbley</groupId>
+  <groupId>org.devzendo</groupId>
   <artifactId>MiniMiser</artifactId>
   <packaging>jar</packaging>
   <version>0.1.0-SNAPSHOT</version>
-  <name>MiniMiser</name>
-  <url>http://devzendo.org/minimiser/</url>
+  <name>The MiniMiser Framework</name>
+  <url>http://devzendo.org/minimiser</url>
+  <description>Framework for building embedded database-backed Swing applications.
+  (GPL2) 2008-2010 Matt Gumbley, DevZendo.org</description>
   
   <parent>
-  	<groupId>uk.me.gumbley</groupId>
+  	<groupId>org.devzendo</groupId>
     <artifactId>GroupParent</artifactId>
 	<version>1.0.0</version>
   </parent>
@@ -126,7 +128,7 @@
       <version>3.1</version>
     </dependency>
     
-    <dependency>
+    <dependency>  <!--  to be removed -->
 	    <groupId>com.mycila</groupId>
 	    <artifactId>mycila-plugin</artifactId>
 	    <version>1.3</version>
@@ -139,7 +141,7 @@
 	    <scope>test</scope>
 	</dependency>
 	
-	<dependency>
+	<dependency>  <!--  to be removed  -->
 	    <groupId>org.jdom</groupId>
 	    <artifactId>jdom</artifactId>
 	    <version>1.1</version>
@@ -152,7 +154,7 @@
 	</dependency> 
 
 	<dependency>
-      <groupId>uk.me.gumbley</groupId>
+      <groupId>org.devzendo</groupId>
       <artifactId>CommonCode</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
