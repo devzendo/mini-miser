@@ -1,0 +1,19 @@
+Notes on I18N and L10N from Chris:
+
+- externalizing your strings and moving them to an arg syntax that supports arg insertion
+  in different order, e.g. "The {1} is at {2}" as some language constructs may want 1 and
+  2 in a different order.
+- ensuring all marshaling of data represents and interprets character encoding correctly
+  (also extends to not doing fast hacks like interpreting byte arrays as ascii sequences
+  for example.
+- ensuring in memory representation doesnt balls things up (easier in the java world).
+- ensure normalization techniques such as lower case are unicode aware.
+- honor different date and numbering representations "1,000,000" is 1M in some parts of
+  the world, "1/2/2010" has two meanings etc.
+- ensure that your ui doesnt explode when strings are extra long or extra short.
+- If your application has any type of textual search, then you will need extra thought
+  into language identification, normalization and word segmentation (think german
+  compound words and CJK lack of spaces to identify words).  
+- think about the workflow for translating strings, how are you going to discover
+  changes to or additions of strings that need translation?  How are you going to deliver
+  them to translators that typically don't want to see your code?
