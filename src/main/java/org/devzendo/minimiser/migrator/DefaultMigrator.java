@@ -23,7 +23,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
 /**
  * The default database schema migrator.
- * 
+ *
  * @author matt
  *
  */
@@ -89,7 +89,9 @@ public final class DefaultMigrator implements Migrator {
             .getVersionDao();
         final List<String> pluginNames = getPluginNames();
         for (final String pluginName : pluginNames) {
+            LOGGER.debug("Finding schema version stored for plugin " + pluginName);
             final Version schemaVersion = versionsDao.findVersion(pluginName, VersionableEntity.SCHEMA_VERSION);
+            LOGGER.debug("Schema version for plugin " + pluginName + " is " + schemaVersion.getVersion());
             psv.addPluginSchemaVersion(pluginName, schemaVersion.getVersion());
         }
         return psv;
