@@ -1,0 +1,98 @@
+Some notes on licenses - made when finally deciding which license I want to use
+in licensing this framework, and investigating the licenses of the 3rd party
+components used by this framework..
+
+References
+[DWheeler] http://www.dwheeler.com/essays/gpl-compatible.html
+"Make your Open Source Software GPL-Compatible. Or Else."
+States that:
+CPL:
+"For now, avoid the "Common Public License" 1.0 (CPL), though this may change. The CPL is
+ not nearly as popular as the GPL, LGPL, BSD-new, or MIT/X11 licenses, but it has more uses
+ than most other licenses. The CPL is even in the OSI's list of "Licenses that are popular 
+ and widely used or with strong communities". Some other licenses, such as the Eclipse 
+ license, are based on the CPL. It is known that the CPL is incompatible with GPLv2, so for 
+ the moment it is probably best avoided. However, it is possible that the CPL is compatible 
+ with GPL version 3, which would make it much more palatible and similar to the Apache 2.0 
+ license (which is incompatible with GPLv2 but compatible with GPLv3). At the moment, I'd 
+ wait until there's been lengthy legal analysis to settle the matter."
+MPL:
+"Avoid the "Mozilla Public License" (MPL). This was originally created by Mozilla, but its
+ GPL-incompatibility caused so many problems that they re-licensed their work under a
+ GPL/LGPL/MPL triple license. Other former MPL users like Alfresco have abandoned it too.
+ Even the original creator of the MPL has abandoned it, because of GPL-incompatibility; don't
+ duplicate their mistake. (Note: Google no longer accepts the MPL, even though they once did.)"
+CDDL:
+"Avoid the CDDL. This Sun creation is similar to the MPL. Yet the original creator of the
+ MPL no longer uses it (exclusively), and the experience of OpenSolaris and cdrtools shows 
+ that the license is a real stumbling block."  
+ 
+[MPLFAQ] http://www.mozilla.org/MPL/mpl-faq.html
+"May I combine MPLed code and BSD-licensed code in the same binary?
+    Yes. mozilla.org does this - for example libjpeg, which decodes JPEG images,
+    is under a BSD license. 
+ May I combine MPLed code and GPL-licensed code in the same binary?
+    No, unless the MPLed code is also available under the GPL - for example using
+    the mozilla.org tri-license. This is because the MPL imposes additional restrictions
+    over and above those imposed by the GPL, which makes it incompatible with section 
+    6 of GPL version 2, and the corresponding section in any later versions."
+    
+[EPLFAQ] http://www.eclipse.org/legal/eplfaq.php
+"Are the Eclipse Public License (EPL) and the General Public License (GPL) compatible?
+ The EPL and the GPL are not compatible in any combination where the result would be
+ considered either: (a) a "derivative work" (which Eclipse interprets consistent with the
+ definition of that term in the U.S. Copyright Act ) or (b) a work "based on" the GPL
+ code, as that phrase is used in the GPLv2, GPLv3 or the GPL FAQ as applicable. Further,
+ you may not combine EPL and GPL code in any scenario where source code under those
+ licenses are both the same source code module.
+
+ Based upon the position of the Free Software Foundation, you may not combine EPL and
+ GPL code in any scenario where linking exists between code made available under those
+ licenses. The above applies to both GPL version 2 and GPL version 3."
+  
+[H2] http://www.h2database.com/html/license.html
+" * You can use H2 for free. You can integrate it into your application (including
+    commercial applications), and you can distribute it.
+  * Files containing only your code are not covered by this license (it is 'commercial
+    friendly').
+  * Modifications to the H2 source code must be published.
+  * You don't need to provide the source code of H2 if you did not modify anything."
+Also, from the H2 developer list:
+http://groups.google.co.uk/group/h2-database/browse_thread/thread/7015d396fb3018bb/2183002a63800f30?lnk=gst&q=license#2183002a63800f30
+From Thomas Mueller: "If you modify the source code of H2 and distribute H2, then you need
+to distribute the changed source code of H2 under MPL (or EPL). If you
+don't modify H2, you don't need to include the source code of H2 (but
+you can). ... If you distribute the h2.jar file, you can use
+whatever license you like for your source code."
+
+[ZackFAQ] http://developer.kde.org/documentation/licensing/licenses_summary.html
+States that:
+  * CPL "do not mix it with code licensed under an incompatible license."
+  * EPL ok
+  * BSD-new ok
+  * MIT ok 
+
+[DWheeler-Slide] http://www.dwheeler.com/essays/floss-license-slide.html
+
+[CDDLFAQ]
+http://hub.opensolaris.org/bin/view/Main/licensing_faq#HCancodelicensedundertheCDDLbecombinedwithcodelicensedunderotheropensourcelicenses
+"Can code licensed under the CDDL be combined with code licensed under other open
+ source licenses?
+ CDDL is file-based. That means files licensed under the CDDL can be combined with files
+ licensed under other licenses, whether open source or proprietary. However, other licenses
+ may have different restrictions which may prevent such combination; it is your
+ responsibility to read and recognize such restrictions."
+ 
+[JUnit]
+From the junit-dev mailing list, from Kent Beck:
+"Three Rivers Consulting, Inc. (my commercial persona) is willing and able to
+license JUnit under commercial terms. Quoting from the license agreement, "A
+Contributor may choose to distribute the Program in object code form under
+its own license agreement". Please have the office contact me for terms."
+
+[Chandan]
+http://blogs.sun.com/chandan/entry/copyrights_licenses_and_cddl_illustrated
+Excellent illustration of copyrights and licenses.
+[Beranger]
+http://www.beranger.org/index.php?article=1652&page=3k
+Enhanced version of Chandan's diagrams.

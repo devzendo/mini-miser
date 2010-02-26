@@ -18,3 +18,5 @@ See http://en.wikipedia.org/wiki/List_of_Flags_by_Country
 
 Saving the window position / size is based on code in O'Reilly's Swing Hacks
 book.
+
+ZebraJTable is Copyright (c) 2010, Dr. David R. Nadeau, Nadeau Software Consulting.

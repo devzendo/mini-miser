@@ -1,9 +1,11 @@
 The third party components used in this product are licensed under the following
-licenses: 
+licenses: (For [References] see LicenseResearch.txt)
 
 Common Public License Version 1.0:
 http://www.opensource.org/licenses/cpl1.0.txt
+See [DWheeler], [JUnit]
   junit 4.4
+  JRuby 1.0 [triple license CPL/GPL/LGPL]
   
 MIT License
   easymock 2.3
@@ -12,29 +14,36 @@ Apache Software License Version 2.0
   log4j 1.2.8
   Spring framework 2.5.3
   commons-lang 2.4
-  commons-httpclient 3.1 (need to check this - assuming this license) 
+  commons-httpclient 3.1 
+  simple framework 4.1.10 
   
+Public Domain:
+  backport-util-concurrent 3.0
   
-BSD License
+BSD License (3-clause BSD license)
 http://www.opensource.org/licenses/bsd-license.php
-  jgoodies forms 1.0.7
   jgoodies looks 2.1.2
-  jgoodies binding 1.4.0
   ZebraJTable from Dr. David R. Nadeau
+  asm 2.2.3
     
 Common Development and Distribution License 1.0
 http://www.opensource.org/licenses/cddl1.php
+See [DWheeler], [CDDLFAQ], [Chandan], [Beranger]
   wizard 0.998.1
 
 Mozilla Public License 1.1
 http://www.mozilla.org/MPL
+See [DWheeler], [MPLFAQ], [H2]
   h2 1.0.79 (Dual Licensed)
   
 Eclipse Public License 1.0
 http://opensource.org/licenses/eclipse-1.0.php
+See [DWheeler], [EPLFAQ], [H2]
   h2 1.0.79 (Dual Licensed)
   
-GNU Lesser General Public License
-  jcalendar 1.3.2
+GNU Lesser General Public License [unknown version]
+  JRuby 1.0 [triple license CPL/GPL/LGPL]
   
+GNU General Public License [unknown version]
+  JRuby 1.0 [triple license CPL/GPL/LGPL]
   

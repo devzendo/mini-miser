@@ -40,7 +40,7 @@ import org.devzendo.minimiser.springloader.SpringLoader;
  * @author matt
  *
  */
-public interface Plugin extends com.mycila.plugin.api.Plugin {
+public interface Plugin {
     /**
      * What is the name of this plugin?
      *

@@ -17,8 +17,8 @@ import org.devzendo.minimiser.springloader.SpringLoader;
  * plugins found there, and passes them on to the PluginInitialiser
  * for initialisation, from where they are published (as
  * PluginDescriptors) in the PluginRegistry.
- * 
- * 
+ *
+ *
  * @author matt
  *
  */
@@ -29,7 +29,7 @@ public final class DefaultPluginManager implements PluginManager {
     private final ObserverList<PluginEvent> mObserverList;
     private final PluginRegistry mPluginRegistry;
     private final PluginLoader mPluginLoader;
-    
+
     /**
      * Construct a PluginManager that will pass the SpringLoader
      * to loaded plugins
@@ -41,9 +41,9 @@ public final class DefaultPluginManager implements PluginManager {
         mPluginRegistry = pluginRegistry;
         mObserverList = new ObserverList<PluginEvent>();
         mPluginInitialiser = new PluginInitialiser(springLoader, pluginRegistry);
-        mPluginLoader = new MycilaPluginLoader();
+        mPluginLoader = new DefaultPluginLoader();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -99,7 +99,7 @@ public final class DefaultPluginManager implements PluginManager {
             LOGGER.warn(warning);
             throw new PluginException(warning);
         }
-        
+
         final PluginDescriptor applicationPluginDescriptor = mPluginRegistry.getApplicationPluginDescriptor();
         LOGGER.info("Notifying observers of application " + applicationPluginDescriptor.getName() + " details");
         final ApplicationPluginLoadedEvent appLoadedEvent = new ApplicationPluginLoadedEvent(applicationPluginDescriptor);
