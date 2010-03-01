@@ -3,6 +3,53 @@ in licensing this framework, and investigating the licenses of the 3rd party
 components used by this framework..
 
 References
+[Apache-Legal] http://www.apache.org/legal/resolved.html
+Licenses which may NOT be included in Apache products:
+    * Binary Code License (BCL)
+    * Special exceptions to the GNU GPL (e.g. GNU Classpath)
+    * GNU GPL 1, 2, 3
+    * GNU LGPL 2, 2.1, 3
+    * Affero GPL 3
+    * NPL 1.0/NPL 1.1
+    * QPL
+    * Sleepycat License
+    * Microsoft Limited Public License
+    
+Works under the following licenses are similar to the Apache license and
+may be included in Apache products:
+    * Apache License 2.0
+    * Apache Software License 1.1. Including variants:
+          o PHP License 3.01
+    * BSD (without advertising clause). Including variants:
+          o DOM4J License
+    * MIT/X11
+    * University of Illinois/NCSA
+    * W3C Software License
+    * X.Net
+    * zlib/libpng
+    * FSF autoconf license
+    * DejaVu Fonts (Bitstream Vera/Arev licenses)
+    * Academic Free License 3.0
+    * Service+Component+Architecture+Specifications
+    * OOXML XSD ECMA License
+    * Microsoft Public License (MsPL)
+    * Creative Commons Attribution (CC-A)
+    * Creative Commons Copyright-Only Dedication
+    * Python Software Foundation License
+    * Adobe Postcript(R) AFM files
+    
+Software under the following licenses may be included in binary form within an Apache product
+if the inclusion is appropriately labelled:
+    * CDDL 1.0
+    * CPL 1.0
+    * EPL 1.0
+    * IPL 1.0
+    * MPL 1.0 and MPL 1.1
+    * SPL 1.0
+    * Open Software License 3.0
+    * Erlang Public License
+    * 'UnRAR License' (only for unarchiving)
+     
 [DWheeler] http://www.dwheeler.com/essays/gpl-compatible.html
 "Make your Open Source Software GPL-Compatible. Or Else."
 States that:

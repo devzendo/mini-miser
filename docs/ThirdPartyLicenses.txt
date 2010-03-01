@@ -5,7 +5,7 @@ Common Public License Version 1.0:
 http://www.opensource.org/licenses/cpl1.0.txt
 See [DWheeler], [JUnit]
   junit 4.4
-  JRuby 1.0 [triple license CPL/GPL/LGPL]
+  JRuby 1.0 [triple license CPL/GPL/LGPL, I am using it under the CPL - see [Apache-Legal]]
   
 MIT License
   easymock 2.3
@@ -42,8 +42,7 @@ See [DWheeler], [EPLFAQ], [H2]
   h2 1.0.79 (Dual Licensed)
   
 GNU Lesser General Public License [unknown version]
-  JRuby 1.0 [triple license CPL/GPL/LGPL]
+  JRuby 1.0 [triple license CPL/GPL/LGPL - see under CPL]
   
 GNU General Public License [unknown version]
-  JRuby 1.0 [triple license CPL/GPL/LGPL]
-  
+  JRuby 1.0 [triple license CPL/GPL/LGPL - see under CPL]
