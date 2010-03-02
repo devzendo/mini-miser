@@ -8,7 +8,7 @@
   <name>MiniMiser</name> <!-- stored as the entity name in schema versions - do not change! -->
   <url>http://devzendo.org/minimiser</url>
   <description>Framework for building embedded database-backed Swing applications.
-  (GPL2) 2008-2010 Matt Gumbley, DevZendo.org</description>
+  (Apache License v2) 2008-2010 Matt Gumbley, DevZendo.org</description>
   
   <parent>
   	<groupId>org.devzendo</groupId>

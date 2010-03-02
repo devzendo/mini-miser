@@ -72,7 +72,7 @@ public final class TestPluginManager extends LoggingTestCase {
                     "http://localhost/",
                     "bob@aol.com",
                     "(C) 2009 J. R. Bob Dobbs",
-                    "COPYING.txt",
+                    "LICENSE.txt",
                     "About.txt",
                     "changelog.txt",
                     null))));

@@ -20,9 +20,16 @@ v0.1 - first "foundations" release
   * Allow switching between view tabs.
   * Remember which view tabs were open when exiting and re-open
     them on startup. Remember which tab was current.
-  * About dialog / credits / GPL license
+  * About dialog / credits / license
   * Prefs dialog / advanced tab / SQL debug tab
   * SQL debug tab for issuing statements.
   * Update available checker.
-
+  * Plugin architecture.
+  * Plugins can:
+    * Prompt for creation information.
+    * Create databases
+    * Open databases
+    * Customise menus.
+  * Code and schema versions for framework and plugins persisted.
+  * Database migration between schema versions.
  

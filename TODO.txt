@@ -282,9 +282,7 @@ DOCUMENTATION:
   renaming databases.
 
 * about dialog
-  * switch to HTML version of GPL2 text - text/plain looks poor
-  * upgrade to GPL3?
-  * choose licence compatible with all components
+  * switch to HTML version of license text - text/plain looks poor
 
 * docs to write:
   * privacy policy

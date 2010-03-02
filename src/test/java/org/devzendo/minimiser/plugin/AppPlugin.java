@@ -81,7 +81,7 @@ public final class AppPlugin extends AbstractPlugin implements ApplicationPlugin
      * {@inheritDoc}
      */
     public String getFullLicenceDetailsResourcePath() {
-        return "COPYING.txt";
+        return "LICENSE.txt";
     }
 
     /**

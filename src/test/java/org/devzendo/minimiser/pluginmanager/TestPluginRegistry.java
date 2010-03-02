@@ -9,7 +9,7 @@ import org.junit.Test;
 
 /**
  * Tests the plugin registry.
- * 
+ *
  * @author matt
  *
  */
@@ -19,16 +19,16 @@ public final class TestPluginRegistry {
     private PluginDescriptor mNormalPluginDescriptor;
     private ApplicationPluginDescriptor mBadAppPluginDescriptor;
     private ApplicationPluginDescriptor mNullDetailsAppPluginDescriptor;
-    
+
     /**
-     * 
+     *
      */
     @Before
     public void getPrerequisites() {
         mPluginRegistry = new DefaultPluginRegistry();
-        mAppPluginDescriptor = new ApplicationPluginDescriptor(true, 
+        mAppPluginDescriptor = new ApplicationPluginDescriptor(true,
             "App Name", "1.0.0", "3.4", "http://localhost",
-            "developers@appplugin.com", "GPL", "License", "About",
+            "developers@appplugin.com", "ASLv2", "License", "About",
             "changelog.txt", null);
         mNormalPluginDescriptor = new PluginDescriptor(false,
             "Plugin Name", "0.1.0", "4.5");
@@ -43,7 +43,7 @@ public final class TestPluginRegistry {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void validatePluginDescriptors() {
@@ -54,7 +54,7 @@ public final class TestPluginRegistry {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void emptiness() {
@@ -65,7 +65,7 @@ public final class TestPluginRegistry {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void addNoNameOrVersionAppPluginYieldsUnknown() {
@@ -75,7 +75,7 @@ public final class TestPluginRegistry {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void addNullNameOrVersionAppPluginYieldsUnknown() {
@@ -85,7 +85,7 @@ public final class TestPluginRegistry {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void applicationAddedToRegistryCanBeFound() {
@@ -95,9 +95,9 @@ public final class TestPluginRegistry {
         Assert.assertEquals(1, pluginDescriptors.size());
         Assert.assertSame(mAppPluginDescriptor, pluginDescriptors.get(0));
     }
-    
+
     /**
-     * 
+     *
      */
     @Test(expected = IllegalStateException.class)
     public void multipleApplicationsAreBadForYou() {
@@ -106,7 +106,7 @@ public final class TestPluginRegistry {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void pluginAddedMultipleTimesIsOnlyReturnedOnce() {

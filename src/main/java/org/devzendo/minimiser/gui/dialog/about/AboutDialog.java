@@ -33,20 +33,20 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
 /**
  * A modal About... dialog.
- * 
+ *
  * @author matt
  */
-public final class AboutDialog extends JDialog implements 
+public final class AboutDialog extends JDialog implements
         PropertyChangeListener {
     private static final long serialVersionUID = -5494127720196381487L;
-    private static final int TEXTPANE_WIDTH = 550; // to get the GPL to fit!
+    private static final int TEXTPANE_WIDTH = 550; // to get the license to fit!
     private static final int TEXTPANE_HEIGHT = 350;
     private final JOptionPane optionPane;
     private final String btnString1 = "Continue";
     private final ArrayList<SwingWorker> mWorkers;
     private final AWTEventListener awtEventListener;
     private final CursorManager mCursorManager;
-    private final PluginRegistry mPluginRegistry; 
+    private final PluginRegistry mPluginRegistry;
 
     /**
      * Creates the reusable dialog.
@@ -62,7 +62,7 @@ public final class AboutDialog extends JDialog implements
         mPluginRegistry = pluginRegistry;
         setTitle("About " + mPluginRegistry.getApplicationName());
         mWorkers = new ArrayList<SwingWorker>();
-        
+
         // Create an array of the text and components to be displayed.
         final StringBuilder msg = new StringBuilder();
         msg.append(mPluginRegistry.getApplicationName());
@@ -80,15 +80,15 @@ public final class AboutDialog extends JDialog implements
         tabbedPane.addTab("Credits", getCreditsComponent());
         tabbedPane.addTab("License", getLicenseComponent());
         cursorNormal();
-        
+
         final JTextArea textArea = new JTextArea(msg.toString());
         textArea.setEditable(false);
-        
+
         final Object[] array = {textArea, tabbedPane};
         // Create an array specifying the number of dialog buttons
         // and their text.
         final Object[] options = {btnString1};
-        
+
         // Create the JOptionPane.
         optionPane = new JOptionPane(array, JOptionPane.PLAIN_MESSAGE,
                 JOptionPane.OK_OPTION, null, options, options[0]);
@@ -105,13 +105,13 @@ public final class AboutDialog extends JDialog implements
         });
         // Register an event handler that reacts to option pane state changes.
         optionPane.addPropertyChangeListener(this);
-        
+
         // Load and display the about texts after the window has been
         // made visible. Performance legerdemain...
         awtEventListener = new AWTEventListener() {
                             public void eventDispatched(final AWTEvent event) {
                                 if (event.getID() == WindowEvent.WINDOW_OPENED) {
-                                    for (SwingWorker worker : mWorkers) {
+                                    for (final SwingWorker worker : mWorkers) {
                                         worker.start();
                                     }
                                 }
@@ -176,7 +176,7 @@ public final class AboutDialog extends JDialog implements
         scrollPane.setMinimumSize(new Dimension(TEXTPANE_WIDTH, TEXTPANE_HEIGHT));
         return scrollPane;
     }
-    
+
     private void loadLater(final String resourceName, final JTextPane textPane) {
         final SwingWorker worker = new SwingWorker() {
             @Override
@@ -186,7 +186,7 @@ public final class AboutDialog extends JDialog implements
                 ResourceLoader.readResource(text, resourceName);
                 return text.toString();
             }
-            
+
             @Override
             public void finished() {
                 textPane.setText(get().toString());
@@ -195,7 +195,7 @@ public final class AboutDialog extends JDialog implements
         };
         mWorkers.add(worker);
     }
-    
+
     private void cursorNormal() {
         final SwingWorker worker = new SwingWorker() {
 
@@ -203,7 +203,7 @@ public final class AboutDialog extends JDialog implements
             public Object construct() {
                 return null;
             }
-            
+
             @Override
             public void finished() {
                 mCursorManager.normal("AboutDialog");

@@ -25,6 +25,7 @@ http://www.opensource.org/licenses/bsd-license.php
   jgoodies looks 2.1.2
   ZebraJTable from Dr. David R. Nadeau
   asm 2.2.3
+  Quaqua 5.2.1
     
 Common Development and Distribution License 1.0
 http://www.opensource.org/licenses/cddl1.php
@@ -41,8 +42,10 @@ http://opensource.org/licenses/eclipse-1.0.php
 See [DWheeler], [EPLFAQ], [H2]
   h2 1.0.79 (Dual Licensed)
   
-GNU Lesser General Public License [unknown version]
+GNU Lesser General Public License v2
   JRuby 1.0 [triple license CPL/GPL/LGPL - see under CPL]
   
-GNU General Public License [unknown version]
+GNU General Public License v2
   JRuby 1.0 [triple license CPL/GPL/LGPL - see under CPL]
+
+  

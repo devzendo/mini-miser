@@ -124,7 +124,7 @@ public final class SpringContractPlugin implements ApplicationPlugin {
      * {@inheritDoc}
      */
     public String getFullLicenceDetailsResourcePath() {
-        return "COPYING.txt";
+        return "LICENSE.txt";
     }
 
     /**
