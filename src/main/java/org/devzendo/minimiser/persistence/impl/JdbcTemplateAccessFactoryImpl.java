@@ -113,7 +113,9 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 dbURL += ";IFEXISTS=TRUE";
             }
 
-            observer.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
+            if (observer != null) {
+                observer.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
+            }
             LOGGER.debug("Obtaining data source bean");
             final String driverClassName = "org.h2.Driver";
             final String userName = "sa";
@@ -122,10 +124,14 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 dbURL, userName, dbPassword + " userpwd", suppressClose);
             LOGGER.debug("DataSource is " + dataSource);
 
-            observer.eventOccurred(new PersistenceObservableEvent("Opening database"));
+            if (observer != null) {
+                observer.eventOccurred(new PersistenceObservableEvent("Opening database"));
+            }
             LOGGER.debug("Obtaining SimpleJdbcTemplate");
             jdbcTemplate = new SimpleJdbcTemplate(dataSource);
-            observer.eventOccurred(new PersistenceObservableEvent("Database opened"));
+            if (observer != null) {
+                observer.eventOccurred(new PersistenceObservableEvent("Database opened"));
+            }
             LOGGER.debug("Database setup done");
         }
         public String getDbPassword() {
@@ -262,7 +268,9 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 dbSetup.getDbPath(),
                 dbSetup.getJdbcTemplate(),
                 dbSetup.getDataSource());
-        observer.eventOccurred(new PersistenceObservableEvent("Database creation complete"));
+        if (observer != null) {
+            observer.eventOccurred(new PersistenceObservableEvent("Database creation complete"));
+        }
         final InstanceSet<DAOFactory> daoFactories = new InstanceSet<DAOFactory>();
         daoFactories.addInstance(MiniMiserDAOFactory.class, templateImpl);
         createDatabaseOpeningFacadeDAOFactories(dbSetup, daoFactories);
@@ -276,11 +284,14 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final Map<String, Object> pluginProperties) {
         final SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
         for (int i = 0; i < CREATION_DDL_STRINGS.length; i++) {
-            observer.eventOccurred(new PersistenceObservableEvent("Creating table " + (i + 1) + " of " + CREATION_DDL_STRINGS.length));
+            if (observer != null) {
+                observer.eventOccurred(new PersistenceObservableEvent("Creating table " + (i + 1) + " of " + CREATION_DDL_STRINGS.length));
+            }
             jdbcTemplate.getJdbcOperations().execute(CREATION_DDL_STRINGS[i]);
         }
         // Now let the plugins loose
         final List<NewDatabaseCreation> newDatabaseCreationPlugins = mPluginManager.getPluginsImplementingFacade(NewDatabaseCreation.class);
+        LOGGER.debug("New Database Creation Plugins: " + newDatabaseCreationPlugins);
         for (final NewDatabaseCreation newDatabaseCreation : newDatabaseCreationPlugins) {
             final NewDatabaseCreationFacade newDatabaseCreationFacade = newDatabaseCreation.getNewDatabaseCreationFacade();
             if (newDatabaseCreationFacade != null) {
@@ -303,7 +314,9 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         final VersionsDao versionsDao = new JdbcTemplateVersionsDao(dbDetails.getJdbcTemplate());
         final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
-            observer.eventOccurred(new PersistenceObservableEvent("Populating table 1 of 1 for " + plugin.getName() + " plugin"));
+            if (observer != null) {
+                observer.eventOccurred(new PersistenceObservableEvent("Populating table 1 of 1 for " + plugin.getName() + " plugin"));
+            }
             final String pluginName = plugin.getName();
             final Version schemaVersion = new Version(
                 pluginName,
