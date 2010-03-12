@@ -246,6 +246,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final Observer<PersistenceObservableEvent> observer,
             final Map<String, Object> pluginProperties) {
         LOGGER.info("Creating database at '" + databasePath + "' and password '" + StringUtils.maskSensitiveText(password) + "'");
+        LOGGER.debug("Observer is " + observer);
+        LOGGER.debug("Plugin properties are " + pluginProperties);
         // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
         final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);
