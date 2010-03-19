@@ -79,15 +79,15 @@ public final class TestTransactionHandling extends LoggingTestCase {
         LOGGER.info("Starting transaction template");
         final Boolean existsInTransaction = (Boolean) mTransactionTemplate.execute(new TransactionCallback() {
             public Boolean doInTransaction(final TransactionStatus ts) {
-                final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
+                final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                 mVersionsDao.persistVersion(version);
-                return mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
+                return mVersionsDao.exists(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION);
             }
         });
         // test
         LOGGER.info("End of transaction template");
         Assert.assertTrue(existsInTransaction);
-        Assert.assertTrue(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
+        Assert.assertTrue(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION));
     }
 
     /**
@@ -103,9 +103,9 @@ public final class TestTransactionHandling extends LoggingTestCase {
         try {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
-                    final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
+                    final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                     mVersionsDao.persistVersion(version);
-                    existsInTransaction[0] = mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
+                    existsInTransaction[0] = mVersionsDao.exists(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION);
                     throw new DataIntegrityViolationException("A simulated access failure");
                 }
             });
@@ -116,7 +116,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         LOGGER.info("End of transaction template");
         Assert.assertTrue(correctlyCaught);
         Assert.assertTrue(existsInTransaction[0]);
-        Assert.assertFalse(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
+        Assert.assertFalse(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION));
     }
 
 
@@ -136,9 +136,9 @@ public final class TestTransactionHandling extends LoggingTestCase {
         try {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
-                    final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
+                    final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                     mVersionsDao.persistVersion(version);
-                    existsInTransaction[0] = mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION);
+                    existsInTransaction[0] = mVersionsDao.exists(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION);
                     // if I do some DDL then force a rollback, the above DML will commit
                     mSimpleJdbcTemplate.update("CREATE TABLE TEST(ID INT PRIMARY KEY, NAME VARCHAR(255))");
                     mSimpleJdbcTemplate.update("INSERT INTO TEST (ID, NAME) VALUES(?, ?)", 69, "testobject");
@@ -153,7 +153,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         LOGGER.info("End of transaction template");
         Assert.assertTrue(existsInTransaction[0]);
         // Unfortunately, the DML for the Versions table will have been committed.
-        Assert.assertTrue(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION));
+        Assert.assertTrue(mVersionsDao.exists(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION));
         // But the DML for the TEST table will have been rolled back
         // The TEST table will exist, however.
         final int count = mSimpleJdbcTemplate.queryForInt("SELECT COUNT(*) FROM TEST WHERE NAME = ?", "testobject");

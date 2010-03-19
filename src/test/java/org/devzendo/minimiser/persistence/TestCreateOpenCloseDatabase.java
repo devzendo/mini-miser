@@ -317,7 +317,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
             LOGGER.info(String.format("... schema version returned from db should not be null - it is %s", dbVersion));
             Assert.assertNotNull(dbVersion);
             //
-            final Version appVersion = mmData.getVersionDao().findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+            final Version appVersion = mmData.getVersionDao().findVersion(appPlugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION);
             LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
             Assert.assertNotNull(dbVersion);
             

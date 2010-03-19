@@ -328,7 +328,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             versionsDao.persistVersion(schemaVersion);
             final Version appVersion = new Version(
                 pluginName,
-                VersionableEntity.APPLICATION_VERSION,
+                VersionableEntity.PLUGIN_CODE_VERSION,
                 plugin == appPlugin,
                 plugin.getVersion());
             versionsDao.persistVersion(appVersion);

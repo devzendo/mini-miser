@@ -103,7 +103,7 @@ public final class TestAutoCommit extends LoggingTestCase {
             public Object doInTransaction(final TransactionStatus ts) {
                 autoCommitActive[0] = isAutoCommitEnabled(mSimpleJdbcTemplate);
                 // create something for the transaction to be useful for
-                final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
+                final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                 mVersionsDao.persistVersion(version);
                 autoCommitActive[1] = isAutoCommitEnabled(mSimpleJdbcTemplate);
                 return null;
@@ -126,7 +126,7 @@ public final class TestAutoCommit extends LoggingTestCase {
         mTransactionTemplate.execute(new TransactionCallback() {
             public Object doInTransaction(final TransactionStatus ts) {
                 // create something for the transaction to be useful for
-                final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
+                final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                 mVersionsDao.persistVersion(version);
                 return null;
             }
@@ -149,7 +149,7 @@ public final class TestAutoCommit extends LoggingTestCase {
         try {
             mTransactionTemplate.execute(new TransactionCallback() {
                 public Object doInTransaction(final TransactionStatus ts) {
-                    final Version version = new Version(TESTPLUGIN, VersionableEntity.APPLICATION_VERSION, false, "1.0");
+                    final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                     mVersionsDao.persistVersion(version);
                     throw new DataIntegrityViolationException("A simulated access failure");
                 }

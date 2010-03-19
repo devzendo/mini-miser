@@ -92,11 +92,11 @@ public final class TestVersionDao extends LoggingTestCase {
         Assert.assertEquals(plugin.getSchemaVersion(), dbVersion.getVersion());
         Assert.assertEquals(isApplication, dbVersion.isApplication());
         //
-        final Version appVersion = versionsDao.findVersion(plugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version appVersion = versionsDao.findVersion(plugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION);
         LOGGER.info(String.format("... application version returned from db should not be null - it is %s", appVersion));
         Assert.assertNotNull(dbVersion);
         Assert.assertEquals(plugin.getName(), appVersion.getPluginName());
-        Assert.assertEquals(VersionableEntity.APPLICATION_VERSION, appVersion.getEntity());
+        Assert.assertEquals(VersionableEntity.PLUGIN_CODE_VERSION, appVersion.getEntity());
         Assert.assertEquals(plugin.getVersion(), appVersion.getVersion());
         Assert.assertEquals(isApplication, appVersion.isApplication());
     }
@@ -133,7 +133,7 @@ public final class TestVersionDao extends LoggingTestCase {
             getInstanceOf(MiniMiserDAOFactory.class).
             getVersionDao();
         final Plugin appPlugin = getAppPlugin();
-        final Version appVersion = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version appVersion = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION);
         Assert.assertTrue(appVersion.isApplication());
         Assert.assertEquals("1.0.0", appVersion.getVersion());
         appVersion.setIsApplication(false);
@@ -142,7 +142,7 @@ public final class TestVersionDao extends LoggingTestCase {
         Assert.assertEquals("1.0.1", appVersion.getVersion());
         versionsDao.persistVersion(appVersion);
 
-        final Version newAppVersion = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version newAppVersion = versionsDao.findVersion(appPlugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION);
         Assert.assertTrue(newAppVersion.isApplication()); // but the change in application status cannot be persisted
         Assert.assertEquals("1.0.1", newAppVersion.getVersion()); // version can be updated though
     }

@@ -201,7 +201,7 @@ public final class DefaultMigrator implements Migrator {
                 + pluginVersion);
             versionsDao.persistVersion(
                 new Version(pluginName,
-                    VersionableEntity.APPLICATION_VERSION,
+                    VersionableEntity.PLUGIN_CODE_VERSION,
                     plugin == appPlugin,
                     pluginVersion));
         }

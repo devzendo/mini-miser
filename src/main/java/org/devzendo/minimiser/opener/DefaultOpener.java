@@ -189,8 +189,8 @@ public final class DefaultOpener implements Opener {
         LOGGER.debug(" the app plugin is " + applicationPlugin);
         LOGGER.debug("therer are " + mPluginManager.getPlugins().size() + " plugins");
         LOGGER.info("Checking that the '" + dbName + "' database was created by the '" + applicationPlugin.getName() + "' application");
-        if (versionsDao.exists(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION)) {
-            final Version storedApplicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        if (versionsDao.exists(applicationPlugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION)) {
+            final Version storedApplicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION);
             if (storedApplicationVersion.isApplication()) {
                 LOGGER.info("Yes: there is an application plugin version stored for '" + applicationPlugin.getName() + "'");
                 return false;

@@ -116,7 +116,7 @@ public final class PersistenceMigratorHelper {
         final Version applicationSchemaVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
         Assert.assertEquals(applicationPlugin.getSchemaVersion(), applicationSchemaVersion.getVersion());
 
-        final Version applicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version applicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION);
         Assert.assertEquals(applicationPlugin.getVersion(), applicationVersion.getVersion());
     }
 
@@ -132,7 +132,7 @@ public final class PersistenceMigratorHelper {
         final Version applicationSchemaVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.SCHEMA_VERSION);
         Assert.assertEquals("1.0", applicationSchemaVersion.getVersion());
 
-        final Version applicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.APPLICATION_VERSION);
+        final Version applicationVersion = versionsDao.findVersion(applicationPlugin.getName(), VersionableEntity.PLUGIN_CODE_VERSION);
         Assert.assertEquals("1.0", applicationVersion.getVersion());
     }
 
