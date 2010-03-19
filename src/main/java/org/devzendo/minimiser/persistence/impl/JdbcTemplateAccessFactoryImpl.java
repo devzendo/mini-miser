@@ -134,9 +134,6 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             }
             LOGGER.debug("Database setup done");
         }
-        public String getDbPassword() {
-            return dbPassword;
-        }
         public String getDbPath() {
             return dbPath;
         }
