@@ -29,7 +29,7 @@ import org.devzendo.minimiser.springloader.SpringLoader;
 /**
  * A Plugin Manager for tests that returns a single App, and a
  * single normal plugin.
- * 
+ *
  * @author matt
  *
  */
@@ -74,14 +74,6 @@ public final class DummyAppPluginManager implements PluginManager {
             }
 
             public void shutdown() {
-            }
-
-            public List<String> getAfter() {
-                return null;
-            }
-
-            public List<String> getBefore() {
-                return null;
             }
 
             public String getDevelopersContactDetails() {
@@ -136,14 +128,6 @@ public final class DummyAppPluginManager implements PluginManager {
             public void shutdown() {
             }
 
-            public List<String> getAfter() {
-                return null;
-            }
-
-            public List<String> getBefore() {
-                return null;
-            }
-
             public String getSchemaVersion() {
                 return "0.1";
             }
@@ -174,7 +158,7 @@ public final class DummyAppPluginManager implements PluginManager {
             throws PluginException {
         mObserverList.eventOccurred(
             new ApplicationPluginLoadedEvent(
-                new ApplicationPluginDescriptor(true, 
+                new ApplicationPluginDescriptor(true,
                     getApplicationPlugin().getName(),
                     getApplicationPlugin().getVersion(),
                     getApplicationPlugin().getSchemaVersion(),
