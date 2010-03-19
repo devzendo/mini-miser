@@ -1,6 +1,6 @@
 # MiniMiser Change history
 
-v0.1 - first "foundations" release
+v0.1.0 20/03/2010 first "foundations" release 
   * Contains data access layer foundation.
   * Functionality - build foundations of data access and UI without
     supporting "real application" data structures yet.
@@ -29,7 +29,11 @@ v0.1 - first "foundations" release
     * Prompt for creation information.
     * Create databases
     * Open databases
-    * Customise menus.
+    * Customise menus (work in progress).
+    * Migrate data from old to new schema versions
   * Code and schema versions for framework and plugins persisted.
-  * Database migration between schema versions.
- 
+  * Statistics:
+    * Lines of Java: 59416 (main: 31737; test: 27759)
+    * Tests: 649; 4 ignored
+    * Test coverage: 70.1% 
+    * Metric violations: 14
