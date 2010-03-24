@@ -47,7 +47,7 @@ public final class TestMenuProvidingFacadeInitialiser {
     private DefaultPluginRegistry mPluginRegistry;
     private DefaultPluginManager mPluginManager;
     private OpenDatabaseList mOpenDatabaseList;
-    private StubMenu mMenu;
+    private MenuFacade mMenuFacade;
     private ApplicationMenu mGlobalApplicationMenu;
     private StubProblemReporter mStubProblemReporter;
     private MenuProvidingFacadeAppPlugin mApplicationPlugin;
@@ -67,7 +67,7 @@ public final class TestMenuProvidingFacadeInitialiser {
         mOpenDatabaseList = new OpenDatabaseList();
         mOpenDatabaseList.addDatabaseEventObserver(new ApplicationMenuCreatingDatabaseEventListener());
 
-        mMenu = new StubMenu();
+        mMenuFacade = new MenuFacadeImpl(new StubMenu());
 
         mGlobalApplicationMenu = new ApplicationMenu();
 
@@ -98,7 +98,7 @@ public final class TestMenuProvidingFacadeInitialiser {
 
         // Pass the ODL, Menu, global ApplicationMenu to the plugin
         new MenuProvidingFacadeInitialiser(
-            mPluginManager, mOpenDatabaseList, mMenu,
+            mPluginManager, mOpenDatabaseList, mMenuFacade,
             mGlobalApplicationMenu, mStubProblemReporter).initialise();
 
         // Did the plugin get them?
@@ -131,7 +131,7 @@ public final class TestMenuProvidingFacadeInitialiser {
 
         // Pass the ODL, Menu, global ApplicationMenu to the plugin
         new MenuProvidingFacadeInitialiser(
-            mPluginManager, mOpenDatabaseList, mMenu,
+            mPluginManager, mOpenDatabaseList, mMenuFacade,
             mGlobalApplicationMenu, mStubProblemReporter).initialise();
 
         Assert.assertTrue(stubMenuProvidingFacade.initialisedOnEventThread());
@@ -146,7 +146,7 @@ public final class TestMenuProvidingFacadeInitialiser {
 
         // Pass the ODL, Menu, global ApplicationMenu to the plugin
         new MenuProvidingFacadeInitialiser(
-            mPluginManager, mOpenDatabaseList, mMenu,
+            mPluginManager, mOpenDatabaseList, mMenuFacade,
             mGlobalApplicationMenu, mStubProblemReporter).initialise();
 
         Assert.assertEquals("while initialising the application menu", mStubProblemReporter.getDoing());
@@ -164,7 +164,7 @@ public final class TestMenuProvidingFacadeInitialiser {
 
         // Pass the ODL, Menu, global ApplicationMenu to the plugin
         new MenuProvidingFacadeInitialiser(
-            mPluginManager, mOpenDatabaseList, mMenu,
+            mPluginManager, mOpenDatabaseList, mMenuFacade,
             mGlobalApplicationMenu, mStubProblemReporter).initialise();
 
         Assert.assertEquals("while initialising the application menu", mStubProblemReporter.getDoing());

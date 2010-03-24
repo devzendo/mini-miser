@@ -41,7 +41,7 @@ public final class MenuProvidingFacadeInitialiser {
             .getLogger(MenuProvidingFacadeInitialiser.class);
     private final PluginManager mPluginManager;
     private final OpenDatabaseList mOpenDatabaseList;
-    private final Menu mMenu;
+    private final MenuFacade mMenuFacade;
     private final ProblemReporter mProblemReporter;
     private final ApplicationMenu mGlobalApplicationMenu;
     // Used by the run-on-EDT code in callInitialiseOnSwingEventThread
@@ -51,7 +51,7 @@ public final class MenuProvidingFacadeInitialiser {
      * @param pluginManager the PluginManager from which to obtain the MenuProviding plugins
      *        (there should only be one)
      * @param openDatabaseList the OpenDatabaseList
-     * @param menu the actual system menu controller
+     * @param menuFacade the menu rebuild facade
      * @param globalApplicationMenu the global Application Menu
      * @param problemReporter the ProblemReporter used to display any problems
      * with the facade initialisation
@@ -59,13 +59,13 @@ public final class MenuProvidingFacadeInitialiser {
     public MenuProvidingFacadeInitialiser(
             final PluginManager pluginManager,
             final OpenDatabaseList openDatabaseList,
-            final Menu menu,
+            final MenuFacade menuFacade,
             final ApplicationMenu globalApplicationMenu,
             final ProblemReporter problemReporter) {
         synchronized (lock) {
             mPluginManager = pluginManager;
             mOpenDatabaseList = openDatabaseList;
-            mMenu = menu;
+            mMenuFacade = menuFacade;
             mGlobalApplicationMenu = globalApplicationMenu;
             mProblemReporter = problemReporter;
         }
@@ -85,20 +85,6 @@ public final class MenuProvidingFacadeInitialiser {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
-                    final MenuFacade menuFacade = new MenuFacade() {
-
-                        public void rebuildEntireMenu() {
-                            mMenu.rebuildEntireMenu();
-                        }
-
-                        public void rebuildFileMenu() {
-                            mMenu.rebuildFileMenu();
-                        }
-
-                        public void rebuildViewMenu() {
-                            mMenu.rebuildViewMenu();
-                        }
-                    };
                     LOGGER.info("Initialising MenuProviding facades on Event Thread");
                     final List<MenuProviding> pluginsImplementingFacade = mPluginManager.getPluginsImplementingFacade(MenuProviding.class);
                     for (final MenuProviding menuProviding : pluginsImplementingFacade) {
@@ -111,7 +97,7 @@ public final class MenuProvidingFacadeInitialiser {
                                     + " returned a null facade - ignoring");
                             } else {
                                 LOGGER.info("Initialising " + menuProvidingFacade.getClass().getName());
-                                    menuProvidingFacade.initialise(mGlobalApplicationMenu, mOpenDatabaseList, menuFacade);
+                                    menuProvidingFacade.initialise(mGlobalApplicationMenu, mOpenDatabaseList, mMenuFacade);
                                     LOGGER.info("Initialised " + menuProvidingFacade.getClass().getName());
                             }
                         } catch (final RuntimeException re) {

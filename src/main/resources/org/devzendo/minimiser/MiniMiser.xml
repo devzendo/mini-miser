@@ -295,7 +295,7 @@
 	<bean id="menuProvidingFacadeInitialiser" class="org.devzendo.minimiser.gui.menu.MenuProvidingFacadeInitialiser">
 		<constructor-arg ref="pluginManager" />
 		<constructor-arg ref="openDatabaseList" />
-		<constructor-arg ref="menu" />
+		<constructor-arg ref="menuFacade" />
 		<constructor-arg ref="globalApplicationMenu" />
 		<constructor-arg ref="problemReporter" />	
 	</bean>

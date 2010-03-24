@@ -37,10 +37,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
  * @author matt
  *
  */
-/**
- * @author matt
- *
- */
 public final class StubMenu implements Menu {
     private boolean closeMenuEnabled;
     private final List<String> databases;

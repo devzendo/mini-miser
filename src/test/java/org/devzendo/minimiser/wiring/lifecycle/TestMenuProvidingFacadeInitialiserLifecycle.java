@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
+import org.devzendo.minimiser.gui.menu.MenuFacadeImpl;
 import org.devzendo.minimiser.gui.menu.MenuProvidingFacadeInitialiser;
 import org.devzendo.minimiser.gui.menu.StubMenu;
 import org.devzendo.minimiser.gui.menu.StubMenuProvidingFacade;
@@ -75,7 +76,7 @@ public final class TestMenuProvidingFacadeInitialiserLifecycle {
         mStubProblemReporter = new StubProblemReporter();
 
         mMenuProvidingFacadeInitialiser = new MenuProvidingFacadeInitialiser(
-            mPluginManager, mOpenDatabaseList, mMenu,
+            mPluginManager, mOpenDatabaseList, new MenuFacadeImpl(mMenu),
             mGlobalApplicationMenu, mStubProblemReporter);
 
     }
