@@ -310,13 +310,25 @@ public final class TestApplicationMenu {
     public void canAddTabIdentifiersToViewMenu() {
         final TabIdentifier liveFeedTabId = new TabIdentifier("LF", "Live stats feed", false, 'S', "irrelevantTabName", null);
         final TabIdentifier performanceTabId = new TabIdentifier("P", "Performance", false, 'P', "irrelevantTabName", null);
-        mAppMenu.addViewMenuTabIdentifier(performanceTabId);
-        mAppMenu.addViewMenuTabIdentifier(liveFeedTabId);
-        mAppMenu.addViewMenuTabIdentifier(performanceTabId); // Yes, add twice
+        Assert.assertTrue(mAppMenu.addViewMenuTabIdentifier(performanceTabId));
+        Assert.assertTrue(mAppMenu.addViewMenuTabIdentifier(liveFeedTabId));
+        Assert.assertFalse(mAppMenu.addViewMenuTabIdentifier(performanceTabId)); // Yes, add twice
 
         final List<TabIdentifier> sortedDeDuped = mAppMenu.getViewMenuTabIdentifiers();
         Assert.assertEquals(2, sortedDeDuped.size());
         Assert.assertSame(liveFeedTabId, sortedDeDuped.get(0));
         Assert.assertSame(performanceTabId, sortedDeDuped.get(1));
+    }
+
+    @Test
+    public void canRemoveTabIdentifiersFromViewMenu() {
+        final TabIdentifier tabId = new TabIdentifier("P", "Performance", false, 'P', "irrelevantTabName", null);
+        Assert.assertFalse(mAppMenu.containsViewMenuTabIdentifier(tabId));
+        Assert.assertFalse(mAppMenu.removeViewMenuTabIdentifier(tabId));
+        Assert.assertTrue(mAppMenu.addViewMenuTabIdentifier(tabId));
+        Assert.assertTrue(mAppMenu.containsViewMenuTabIdentifier(tabId));
+        Assert.assertTrue(mAppMenu.removeViewMenuTabIdentifier(tabId));
+        Assert.assertFalse(mAppMenu.containsViewMenuTabIdentifier(tabId));
+        Assert.assertFalse(mAppMenu.removeViewMenuTabIdentifier(tabId));
     }
 }

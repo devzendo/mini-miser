@@ -177,9 +177,12 @@ public final class ApplicationMenu {
     }
 
     /**
+     * Add a TabIdentifier to the View Menu
      * @param tabIdentifier a TabIdentifier to add to the View menu
+     * @return true iff adding the TabIdentifier changed the View menu,
+     * i.e. did it exist before?
      */
-    public void addViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
+    public boolean addViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
         if (tabIdentifier == null) {
             throw new IllegalArgumentException("Cannot add a null TabIdentifier to the View menu");
         }
@@ -188,7 +191,7 @@ public final class ApplicationMenu {
             throw new IllegalArgumentException("Cannot add the TabIdentifier '" + tabIdentifier.getTabName()
                 + " to the View menu as it has the same name as a System TabIdentifier");
         }
-        mViewMenuTabIdentifiers.add(tabIdentifier);
+        return mViewMenuTabIdentifiers.add(tabIdentifier);
     }
 
     /**
@@ -197,5 +200,24 @@ public final class ApplicationMenu {
      */
     public List<TabIdentifier> getViewMenuTabIdentifiers() {
         return Arrays.asList(mViewMenuTabIdentifiers.toArray(new TabIdentifier[0]));
+    }
+
+    /**
+     * Does the View menu contain a given TabIdentifier?
+     * @param tabIdentifier the TabIdentifier to check for existence
+     * @return true iff the View menu contains the TabIdentifier
+     */
+    public boolean containsViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
+        return mViewMenuTabIdentifiers.contains(tabIdentifier);
+    }
+
+    /**
+     * Remove a TabIdentifier from the View menu
+     * @param tabIdentifier the tab identifier to remove
+     * @return true iff the set of identifiers was changed as a result of the removal - i.e. was this item
+     * present?
+     */
+    public boolean removeViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
+        return mViewMenuTabIdentifiers.remove(tabIdentifier);
     }
 }
