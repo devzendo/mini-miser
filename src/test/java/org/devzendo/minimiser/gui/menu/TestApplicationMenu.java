@@ -320,6 +320,9 @@ public final class TestApplicationMenu {
         Assert.assertSame(performanceTabId, sortedDeDuped.get(1));
     }
 
+    /**
+     *
+     */
     @Test
     public void canRemoveTabIdentifiersFromViewMenu() {
         final TabIdentifier tabId = new TabIdentifier("P", "Performance", false, 'P', "irrelevantTabName", null);

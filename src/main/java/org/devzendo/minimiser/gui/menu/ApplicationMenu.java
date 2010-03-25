@@ -183,15 +183,17 @@ public final class ApplicationMenu {
      * i.e. did it exist before?
      */
     public boolean addViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
-        if (tabIdentifier == null) {
-            throw new IllegalArgumentException("Cannot add a null TabIdentifier to the View menu");
+        synchronized (mViewMenuTabIdentifiers) {
+            if (tabIdentifier == null) {
+                throw new IllegalArgumentException("Cannot add a null TabIdentifier to the View menu");
+            }
+            final Set<TabIdentifier> sysTabs = new HashSet<TabIdentifier>(Arrays.asList(SystemTabIdentifiers.values()));
+            if (sysTabs.contains(tabIdentifier)) {
+                throw new IllegalArgumentException("Cannot add the TabIdentifier '" + tabIdentifier.getTabName()
+                    + " to the View menu as it has the same name as a System TabIdentifier");
+            }
+            return mViewMenuTabIdentifiers.add(tabIdentifier);
         }
-        final Set<TabIdentifier> sysTabs = new HashSet<TabIdentifier>(Arrays.asList(SystemTabIdentifiers.values()));
-        if (sysTabs.contains(tabIdentifier)) {
-            throw new IllegalArgumentException("Cannot add the TabIdentifier '" + tabIdentifier.getTabName()
-                + " to the View menu as it has the same name as a System TabIdentifier");
-        }
-        return mViewMenuTabIdentifiers.add(tabIdentifier);
     }
 
     /**
@@ -199,7 +201,9 @@ public final class ApplicationMenu {
      * menu, containing no duplicates.
      */
     public List<TabIdentifier> getViewMenuTabIdentifiers() {
-        return Arrays.asList(mViewMenuTabIdentifiers.toArray(new TabIdentifier[0]));
+        synchronized (mViewMenuTabIdentifiers) {
+            return Arrays.asList(mViewMenuTabIdentifiers.toArray(new TabIdentifier[0]));
+        }
     }
 
     /**
@@ -208,7 +212,9 @@ public final class ApplicationMenu {
      * @return true iff the View menu contains the TabIdentifier
      */
     public boolean containsViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
-        return mViewMenuTabIdentifiers.contains(tabIdentifier);
+        synchronized (mViewMenuTabIdentifiers) {
+            return mViewMenuTabIdentifiers.contains(tabIdentifier);
+        }
     }
 
     /**
@@ -218,6 +224,8 @@ public final class ApplicationMenu {
      * present?
      */
     public boolean removeViewMenuTabIdentifier(final TabIdentifier tabIdentifier) {
-        return mViewMenuTabIdentifiers.remove(tabIdentifier);
+        synchronized (mViewMenuTabIdentifiers) {
+            return mViewMenuTabIdentifiers.remove(tabIdentifier);
+        }
     }
 }
