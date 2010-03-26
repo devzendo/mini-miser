@@ -26,7 +26,6 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.gui.menu.helpers.ViewMenuHelper;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tabfactory.TabFactory;
 import org.devzendo.minimiser.gui.tabpanemanager.TabListPrefs;
@@ -37,6 +36,7 @@ import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
+import org.devzendo.minimiser.tabcontroller.TabController;
 
 
 
@@ -116,7 +116,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         LOGGER.debug(loadedTabDescriptors.size() + " tab(s) loaded; adding components to JTabbedPane");
         // Add each ones component into the JTabbedPane.
         for (final TabDescriptor tabDescriptor : loadedTabDescriptors) {
-            ViewMenuHelper.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
+            TabController.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
         }
 
         // Switch to the previously active tab?
@@ -127,7 +127,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
             LOGGER.debug("Previously active tab is " + previousActiveTab.getTabName());
             for (final TabDescriptor tabDescriptor : loadedTabDescriptors) {
                 if (tabDescriptor.getTabIdentifier().equals(previousActiveTab)) {
-                    ViewMenuHelper.switchToTab(databaseDescriptor, tabDescriptor);
+                    TabController.switchToTab(databaseDescriptor, tabDescriptor);
                 }
             }
         }
@@ -151,7 +151,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
             tabIdsForDatabase.add(tabDesc.getTabIdentifier());
         }
         prefs.setOpenTabs(databaseName, tabIdsForDatabase);
-        final TabIdentifier currentTabIdentifier = ViewMenuHelper.getCurrentTab(databaseDescriptor);
+        final TabIdentifier currentTabIdentifier = TabController.getCurrentTab(databaseDescriptor);
         if (currentTabIdentifier == null) {
             LOGGER.warn("No currently active tab for database " + databaseName);
         } else {

@@ -24,12 +24,12 @@ import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
 import org.devzendo.minimiser.gui.menu.ViewMenuChoice;
-import org.devzendo.minimiser.gui.menu.helpers.ViewMenuHelper;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tabfactory.TabFactory;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
+import org.devzendo.minimiser.tabcontroller.TabController;
 
 
 /**
@@ -90,8 +90,8 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
         final List<TabDescriptor> loadedTab = tabFactory.loadTabs(databaseDescriptor, tabListOfOne);
 
         final TabDescriptor tabDescriptor = loadedTab.get(0);
-        ViewMenuHelper.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
-        ViewMenuHelper.switchToTab(databaseDescriptor, tabDescriptor);
+        TabController.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
+        TabController.switchToTab(databaseDescriptor, tabDescriptor);
     }
 
     private void closeTab(final ViewMenuChoice observableEvent) {
@@ -108,7 +108,7 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
         }
 
         if (tabListToClose.size() > 0) {
-            ViewMenuHelper.removeTabFromTabbedPaneAndOpenTabList(openTabList, observableEvent.getDatabaseDescriptor(), tabListToClose.get(0));
+            TabController.removeTabFromTabbedPaneAndOpenTabList(openTabList, observableEvent.getDatabaseDescriptor(), tabListToClose.get(0));
 
             tabFactory.closeTabs(databaseDescriptor, tabListToClose);
         }
