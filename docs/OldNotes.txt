@@ -338,3 +338,41 @@ Allowing plugins to handle database new / open / migrate
   be reported as a method on OpenerAdapter rather than just a
   ProgressState
 * add the real swing update progress adapter
+
+
+INFRASTRUCTURE AND RESOURCES FOR 0.1.0 RELEASE:
+* Source code release
+  * Switch development to private repo
+  * Become confident with Mercurial on private repo
+  * Investigate BitBucket security, virtual repo for just DevZendo.org
+  * Create BitBucket account
+  * Read Karl Fogel: advice on copyleft headers
+  * Insert copyleft notices
+  * Push to BitBucket
+  * Switch development to BitBucket
+  * Switch private Hudson to pull/update from BitBucket
+  * Document repositories on website
+* Maven release
+  * See what's non-standard about my dependencies (i.e. Quaqua ZIP installed
+    in private Archiva)
+  * Investigate Sonatype OSS hosting: security, virtual Nexus for just DevZendo.org
+  * Set up Sonatype OSS hosting
+  * Deploy snapshots to Sonatype
+  * Document changes to settings.xml to make use of it, in framework user guide
+  * Document Sonatype repositories on website
+* Mailing list
+  * Investigate providers of mailing lists
+  * Investigate web forum <-> mailing list adapters - Nabble, etc.
+  * Investigate embedding Nabble on website
+  * Set up minimiser-dev mailing list
+  * Add me, and an archive user on private server
+  * Document mailing list on website
+* Release
+  * Document steps to getting a release ready
+    * Maven Release Plugin - investigate
+    * Maven deploy non-snapshot to Sonatype
+    * Assembly / ZIP with/without dependencies for non-Maven users, publish to website
+    * Convert framework user guide to PDF, publish to website
+    * Hg tagging
+    * Page on website - changelog
+  * Publicity
