@@ -81,6 +81,7 @@
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="tabFactory" />
+		<constructor-arg ref="tabController" />
 	</bean>
 		
 	<bean id="menuPluginLoadedObserver" class="org.devzendo.minimiser.wiring.menu.MenuPluginLoadedObserver">

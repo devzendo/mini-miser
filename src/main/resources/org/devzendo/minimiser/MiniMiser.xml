@@ -84,6 +84,10 @@
 	
 	<bean id="tabParameter" class="org.devzendo.minimiser.gui.tabfactory.TabParameterFactory" />
 	
+	<bean id="tabController" class="org.devzendo.minimiser.tabcontroller.TabController">
+		<constructor-arg ref="openTabList" />
+	</bean>
+	
 	<!-- tab definitions must have prototype scope -->
 	<bean id="tabOVERVIEW" scope="prototype" class="org.devzendo.minimiser.gui.tab.impl.DemoTab" >
 		<constructor-arg ref="databaseDescriptor" />
@@ -325,6 +329,7 @@
 		<constructor-arg ref="tabListPrefs" />
 		<constructor-arg ref="tabFactory" />
 		<constructor-arg ref="openTabList" />
+		<constructor-arg ref="tabController" />
 	</bean>
 	
 	<bean id="tabPaneManagerDatabaseEventListener" class="org.devzendo.minimiser.wiring.databaseeventlistener.TabPaneManagerDatabaseEventListener" >

@@ -38,6 +38,7 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.tabcontroller.TabController;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +46,7 @@ import org.junit.Test;
 
 
 /**
- * Tests the adapter that adapts between DatabaseEvents and the
+ * Tests the mAdapter that adapts between DatabaseEvents and the
  * creation and population of the database descriptor's
  * TabbedPane attribute.
  * <p>
@@ -69,10 +70,11 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
     private static final Logger LOGGER = Logger
             .getLogger(TestTabPaneCreatingDatabaseEventListener.class);
     private static final String DATABASE = "db";
-    private OpenDatabaseList openDatabaseList;
-    private OpenTabList openTabList;
-    private TabFactory tabFactory;
-    private TabPaneCreatingDatabaseEventListener adapter;
+    private OpenDatabaseList mOpenDatabaseList;
+    private OpenTabList mOpenTabList;
+    private TabFactory mTabFactory;
+    private TabPaneCreatingDatabaseEventListener mAdapter;
+    private TabController mTabController;
 
     private volatile int tabCount = 0;
     private volatile boolean component0IsLabel = false;
@@ -85,9 +87,10 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
      */
     @Before
     public void getPrerequisites() {
-        openDatabaseList = new OpenDatabaseList();
-        openTabList = new OpenTabList();
-        tabFactory = new StubTabFactory(openTabList);
+        mOpenDatabaseList = new OpenDatabaseList();
+        mOpenTabList = new OpenTabList();
+        mTabFactory = new StubTabFactory(mOpenTabList);
+        mTabController = new TabController(mOpenTabList);
     }
 
     /**
@@ -108,15 +111,15 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
 
         final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
 
-        adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, tabFactory, openTabList);
-        openDatabaseList.addDatabaseEventObserver(adapter);
+        mAdapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, mTabFactory, mOpenTabList, mTabController);
+        mOpenDatabaseList.addDatabaseEventObserver(mAdapter);
 
-        final List<TabDescriptor> emptyTabDescriptors = openTabList.getTabsForDatabase(DATABASE);
+        final List<TabDescriptor> emptyTabDescriptors = mOpenTabList.getTabsForDatabase(DATABASE);
         Assert.assertNotNull(emptyTabDescriptors); // db not added yet
         Assert.assertEquals(0, emptyTabDescriptors.size());
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
-        openDatabaseList.addOpenedDatabase(databaseDescriptor);
+        mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
 
         final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
         // The JTabbedPane should now have been added to the DD
@@ -130,8 +133,8 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         });
         Assert.assertTrue(sqlIsActiveTab);
 
-        // The OVERVIEW and SQL tabs should have been added to the openTabList
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        // The OVERVIEW and SQL tabs should have been added to the mOpenTabList
+        final List<TabDescriptor> tabsForDatabase = mOpenTabList.getTabsForDatabase(DATABASE);
         Assert.assertNotNull(tabsForDatabase);
         Assert.assertEquals(2, tabsForDatabase.size());
         Assert.assertEquals(SystemTabIdentifiers.OVERVIEW, tabsForDatabase.get(0).getTabIdentifier());
@@ -180,23 +183,23 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
 
         final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
 
-        adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, tabFactory, openTabList);
-        openDatabaseList.addDatabaseEventObserver(adapter);
+        mAdapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, mTabFactory, mOpenTabList, mTabController);
+        mOpenDatabaseList.addDatabaseEventObserver(mAdapter);
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
-        openDatabaseList.addOpenedDatabase(databaseDescriptor);
+        mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
 
         // Remember the tabs, they'll be disposed of by the close and not
         // obtainable by getTabsForDatabase, but we want to make sure they've
         // been disposed correctly.
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        final List<TabDescriptor> tabsForDatabase = mOpenTabList.getTabsForDatabase(DATABASE);
         final StubRecordingTab overviewTab = (StubRecordingTab) tabsForDatabase.get(0).getTab();
         final StubRecordingTab sqlTab = (StubRecordingTab) tabsForDatabase.get(1).getTab();
 
         // Now close it and the open tab list should have been cleared
-        openDatabaseList.removeClosedDatabase(databaseDescriptor);
+        mOpenDatabaseList.removeClosedDatabase(databaseDescriptor);
 
-        final List<TabDescriptor> clearTabsForDatabase = openTabList.getTabsForDatabase(DATABASE);
+        final List<TabDescriptor> clearTabsForDatabase = mOpenTabList.getTabsForDatabase(DATABASE);
         Assert.assertNotNull(clearTabsForDatabase);
         Assert.assertEquals(0, clearTabsForDatabase.size());
 
@@ -232,12 +235,12 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
 
         final TabListPrefs tabListPrefs = new TabListPrefs(prefs);
 
-        adapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, tabFactory, openTabList);
-        openDatabaseList.addDatabaseEventObserver(adapter);
+        mAdapter = new TabPaneCreatingDatabaseEventListener(tabListPrefs, mTabFactory, mOpenTabList, mTabController);
+        mOpenDatabaseList.addDatabaseEventObserver(mAdapter);
 
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         LOGGER.debug("Test now adding opened database");
-        openDatabaseList.addOpenedDatabase(databaseDescriptor);
+        mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
 
         final Boolean sqlIsActiveTab = new GUIValueObtainer<Boolean>().obtainFromEventThread(new Callable<Boolean>() {
             public Boolean call() throws Exception {
@@ -250,7 +253,7 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         Assert.assertTrue(sqlIsActiveTab);
 
         LOGGER.debug("Test now removing closed database");
-        openDatabaseList.removeClosedDatabase(databaseDescriptor);
+        mOpenDatabaseList.removeClosedDatabase(databaseDescriptor);
 
         EasyMock.verify(prefs);
         LOGGER.debug("** openTabsAndPreviouslyActiveTabIsPersistedOnDatabaseClose end");

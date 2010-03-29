@@ -23,19 +23,30 @@ import org.devzendo.minimiser.opentablist.TabDescriptor;
  * @author matt
  *
  */
-public class TabController {
+public final class TabController {
     private static final Logger LOGGER = Logger.getLogger(TabController.class);
+
+    private final OpenTabList mOpenTabList;
+
+    /**
+     * Create the TabController.
+     *
+     * @param openTabList the OpenTabList
+     */
+    public TabController(final OpenTabList openTabList) {
+        mOpenTabList = openTabList;
+    }
+
     /**
      * Add a tab to the database descriptor's JTabbedPane, at the
      * correct insertion point, given any existing tabs, and also add the tab
      * to the OpenTabList
-     * @param openTabList the OpenTabList
      * @param databaseDescriptor the DatabaseDescriptor that's having a tab
      * added
      * @param tabDescriptor the tab to add
      */
-    public static void addTabToTabbedPaneAndOpenTabList(final OpenTabList openTabList,
-        final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
+    public void addTabToTabbedPaneAndOpenTabList(final DatabaseDescriptor databaseDescriptor,
+        final TabDescriptor tabDescriptor) {
         final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
 
         // We need the insertion point for the JTabbedPane
@@ -44,7 +55,7 @@ public class TabController {
         LOGGER.debug("Adding tab " + displayableName);
         final Tab tab = finalTabDescriptor.getTab();
         LOGGER.debug("Getting insertion point for tab " + displayableName);
-        final int insertionPoint = openTabList.getInsertionPosition(databaseDescriptor.getDatabaseName(), tabDescriptor.getTabIdentifier());
+        final int insertionPoint = mOpenTabList.getInsertionPosition(databaseDescriptor.getDatabaseName(), tabDescriptor.getTabIdentifier());
         // TODO perhaps the OpenTabList should be throwing the IllegalStateException here?
         if (insertionPoint == -1) {
             final String warning = "Cannot get insertion point for tab: database '"
@@ -76,7 +87,7 @@ public class TabController {
 
         // Add the loaded tab into the OpenTabList.
         LOGGER.debug("Adding tab to the OpenTabList");
-        openTabList.addTab(databaseDescriptor, tabDescriptor);
+        mOpenTabList.addTab(databaseDescriptor, tabDescriptor);
     }
 
     /**
@@ -85,7 +96,7 @@ public class TabController {
      * switched to
      * @param tabDescriptor the tab to switch to
      */
-    public static void switchToTab(final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
+    public void switchToTab(final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
         final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
 
         // We need the insertion point for the JTabbedPane
@@ -116,7 +127,7 @@ public class TabController {
      * @return the TabIdentifier of the currently selected tab, or null if no
      * TabIdentifier can be discovered.
      */
-    public static TabIdentifier getCurrentTab(final DatabaseDescriptor databaseDescriptor) {
+    public TabIdentifier getCurrentTab(final DatabaseDescriptor databaseDescriptor) {
         LOGGER.debug("Getting current tab for database " + databaseDescriptor.getDatabaseName());
         final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
         if (databaseTabbedPane == null) {
@@ -157,13 +168,12 @@ public class TabController {
     /**
      * Remove a tab from the database descriptor's JTabbedPane, and also remove
      * the tab from the OpenTabList
-     * @param openTabList the OpenTabList
      * @param databaseDescriptor the DatabaseDescriptor that's having a tab
      * remove
      * @param tabDescriptor the tab to remove
      */
-    public static void removeTabFromTabbedPaneAndOpenTabList(final OpenTabList openTabList,
-            final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
+    public void removeTabFromTabbedPaneAndOpenTabList(final DatabaseDescriptor databaseDescriptor,
+            final TabDescriptor tabDescriptor) {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
@@ -180,7 +190,6 @@ public class TabController {
         });
 
         LOGGER.debug("Removing tab from the OpenTabList");
-        openTabList.removeTab(databaseDescriptor, tabDescriptor);
+        mOpenTabList.removeTab(databaseDescriptor, tabDescriptor);
     }
-
 }

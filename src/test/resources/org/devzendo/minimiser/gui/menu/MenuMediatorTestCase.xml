@@ -14,6 +14,9 @@
 	<bean id="tabFactory" class="org.devzendo.minimiser.gui.tabfactory.StubTabFactory">
 		<constructor-arg ref="openTabList" />
 	</bean>
+	<bean id="tabController" class="org.devzendo.minimiser.tabcontroller.TabController">
+		<constructor-arg ref="openTabList" />
+	</bean>
 	<bean id="pluginManager" class="org.devzendo.minimiser.pluginmanager.DummyAppPluginManager" />
 
 	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" lazy-init="true" />
@@ -80,6 +83,7 @@
 		<constructor-arg ref="menu" />
 		<constructor-arg ref="openTabList" />
 		<constructor-arg ref="tabFactory" />
+		<constructor-arg ref="tabController" />
 	</bean>
 	
 	<bean id="menuPluginLoadedObserver" class="org.devzendo.minimiser.wiring.menu.MenuPluginLoadedObserver">

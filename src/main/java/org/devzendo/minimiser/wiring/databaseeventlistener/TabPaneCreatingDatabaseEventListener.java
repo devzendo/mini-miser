@@ -47,6 +47,10 @@ import org.devzendo.minimiser.tabcontroller.TabController;
  *
  * On close, remove the tabs from the open tab list.
  *
+ * TODO SRP I could argue that this class has two reasons to change,
+ * and so violates SRP. At least it should be renamed as it's a
+ * lifecycle manager for the TabPanes.
+ *
  * @author matt
  *
  */
@@ -54,15 +58,14 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
     private static final Logger LOGGER = Logger
         .getLogger(TabPaneCreatingDatabaseEventListener.class);
 
-    private final TabListPrefs prefs;
-    private final TabFactory tabFactory;
-    private final OpenTabList openTabList;
+    private final TabListPrefs mPrefs;
+    private final TabFactory mTabFactory;
+    private final OpenTabList mOpenTabList;
 
     // Used by the run-on-EDT code in createTabbedPaneOnEventThread
-    private final Object lock = new Object();
-    private JTabbedPane tabbedPane;
-
-
+    private final Object mLock = new Object();
+    private JTabbedPane mTabbedPane;
+    private final TabController mTabController;
 
     /**
      * Construct the tab pane creator.
@@ -72,12 +75,15 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
      * and add them to the OpenTabList
      * @param tabList the OpenTabList used to determine the insertion order
      * and that's added to when tabs are loaded
+     * @param tabController the TabController that mediates between prefs, menu and tabs.
      */
     public TabPaneCreatingDatabaseEventListener(final TabListPrefs prefsStore,
-            final TabFactory factory, final OpenTabList tabList) {
-        prefs = prefsStore;
-        tabFactory = factory;
-        openTabList = tabList;
+            final TabFactory factory, final OpenTabList tabList,
+            final TabController tabController) {
+        mPrefs = prefsStore;
+        mTabFactory = factory;
+        mOpenTabList = tabList;
+        mTabController = tabController;
     }
 
     /**
@@ -107,7 +113,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         // Add this database to the open tab list, so we can calculate
         // insertion points for tabs on the JTabbedPane.
         LOGGER.debug("Adding the database to the Open Tab List");
-        openTabList.addDatabase(databaseDescriptor);
+        mOpenTabList.addDatabase(databaseDescriptor);
 
         // Load the tabs
         LOGGER.info("Loading permanent and stored tabs for database '" + databaseDescriptor.getDatabaseName() + "'");
@@ -116,18 +122,18 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         LOGGER.debug(loadedTabDescriptors.size() + " tab(s) loaded; adding components to JTabbedPane");
         // Add each ones component into the JTabbedPane.
         for (final TabDescriptor tabDescriptor : loadedTabDescriptors) {
-            TabController.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
+            mTabController.addTabToTabbedPaneAndOpenTabList(databaseDescriptor, tabDescriptor);
         }
 
         // Switch to the previously active tab?
-        final TabIdentifier previousActiveTab = prefs.getActiveTab(databaseDescriptor.getDatabaseName());
+        final TabIdentifier previousActiveTab = mPrefs.getActiveTab(databaseDescriptor.getDatabaseName());
         if (previousActiveTab == null) {
             LOGGER.warn("There is no previously active tab for this database");
         } else {
             LOGGER.debug("Previously active tab is " + previousActiveTab.getTabName());
             for (final TabDescriptor tabDescriptor : loadedTabDescriptors) {
                 if (tabDescriptor.getTabIdentifier().equals(previousActiveTab)) {
-                    TabController.switchToTab(databaseDescriptor, tabDescriptor);
+                    mTabController.switchToTab(databaseDescriptor, tabDescriptor);
                 }
             }
         }
@@ -142,7 +148,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         final String databaseName = closedEvent.getDatabaseName();
         LOGGER.info("Closing tabs for database '" + databaseName + "'");
         final DatabaseDescriptor databaseDescriptor = closedEvent.getDatabaseDescriptor();
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(databaseName);
+        final List<TabDescriptor> tabsForDatabase = mOpenTabList.getTabsForDatabase(databaseName);
         LOGGER.debug("Tabs to be closed: " + tabsForDatabase);
 
         // Persist the open tabs
@@ -150,36 +156,36 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         for (final TabDescriptor tabDesc : tabsForDatabase) {
             tabIdsForDatabase.add(tabDesc.getTabIdentifier());
         }
-        prefs.setOpenTabs(databaseName, tabIdsForDatabase);
-        final TabIdentifier currentTabIdentifier = TabController.getCurrentTab(databaseDescriptor);
+        mPrefs.setOpenTabs(databaseName, tabIdsForDatabase);
+        final TabIdentifier currentTabIdentifier = mTabController.getCurrentTab(databaseDescriptor);
         if (currentTabIdentifier == null) {
             LOGGER.warn("No currently active tab for database " + databaseName);
         } else {
             LOGGER.info("Saving " + currentTabIdentifier.getTabName() + " as the currently active tab for database " + databaseName);
-            prefs.setActiveTab(databaseName, currentTabIdentifier.getTabName());
+            mPrefs.setActiveTab(databaseName, currentTabIdentifier.getTabName());
         }
 
         if (tabsForDatabase.size() == 0) {
             LOGGER.warn("Cannot close empty list of tabs");
         } else {
             LOGGER.debug("Closing tabs via tab factory");
-            tabFactory.closeTabs(databaseDescriptor, tabsForDatabase);
+            mTabFactory.closeTabs(databaseDescriptor, tabsForDatabase);
             LOGGER.debug("Removing tabs from open tab list");
             for (final TabDescriptor tabDescriptor : tabsForDatabase) {
-                openTabList.removeTab(databaseDescriptor, tabDescriptor);
+                mOpenTabList.removeTab(databaseDescriptor, tabDescriptor);
             }
         }
         LOGGER.debug("Removing database from open tab list");
-        openTabList.removeDatabase(databaseDescriptor);
+        mOpenTabList.removeDatabase(databaseDescriptor);
         LOGGER.debug("Finished removing tab components and handling DatabaseClosedEvent");
     }
 
     private List<TabDescriptor> loadPermanentAndStoredTabs(final DatabaseDescriptor databaseDescriptor) {
-        final List<TabIdentifier> permanentAndOpenTabs = prefs.getOpenTabs(databaseDescriptor.getDatabaseName());
+        final List<TabIdentifier> permanentAndOpenTabs = mPrefs.getOpenTabs(databaseDescriptor.getDatabaseName());
         LOGGER.info("Permanent and stored tabs: " + permanentAndOpenTabs);
         // TODO perhaps the check for existence of tabs in the OpenTabList should be
         // done here and not in the tab factory?
-        return tabFactory.loadTabs(databaseDescriptor,
+        return mTabFactory.loadTabs(databaseDescriptor,
                             permanentAndOpenTabs);
     }
 
@@ -190,8 +196,8 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
             final CountDownLatch latch = new CountDownLatch(1);
             GUIUtils.runOnEventThread(new Runnable() {
                 public void run() {
-                    synchronized (lock) {
-                        tabbedPane = new JTabbedPane();
+                    synchronized (mLock) {
+                        mTabbedPane = new JTabbedPane();
                     }
                     latch.countDown();
                 }
@@ -201,8 +207,8 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
             } catch (final InterruptedException e) {
                 return null;
             }
-            synchronized (lock) {
-                return tabbedPane;
+            synchronized (mLock) {
+                return mTabbedPane;
             }
         }
     }

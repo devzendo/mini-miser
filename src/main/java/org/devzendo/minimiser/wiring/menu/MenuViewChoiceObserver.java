@@ -42,23 +42,27 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
     private static final Logger LOGGER = Logger
         .getLogger(MenuViewChoiceObserver.class);
 
-    private final Menu menu;
-    private final OpenTabList openTabList;
-    private final TabFactory tabFactory;
+    private final Menu mMenu;
+    private final OpenTabList mOpenTabList;
+    private final TabFactory mTabFactory;
+    private final TabController mTabController;
 
     /**
      * Construct the adapter given other system objects for interaction.
-     * @param leMenu the menu
-     * @param tabList the open tab list
-     * @param tabFact the tab factory
+     * @param menu the menu
+     * @param openTabList the open tab list
+     * @param tabFactory the tab factory
+     * @param tabController the tab controller
      */
     public MenuViewChoiceObserver(
-            final Menu leMenu,
-            final OpenTabList tabList,
-            final TabFactory tabFact) {
-                this.menu = leMenu;
-                this.openTabList = tabList;
-                this.tabFactory = tabFact;
+            final Menu menu,
+            final OpenTabList openTabList,
+            final TabFactory tabFactory,
+            final TabController tabController) {
+        mMenu = menu;
+        mOpenTabList = openTabList;
+        mTabFactory = tabFactory;
+        mTabController = tabController;
     }
 
     /**
@@ -66,7 +70,7 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
      */
     public void connectWiring() {
         // menu -> tab opener (the view menu)
-        menu.addViewChoiceObserver(this);
+        mMenu.addViewChoiceObserver(this);
     }
 
     /**
@@ -87,11 +91,11 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
         final List<TabIdentifier> tabListOfOne = new ArrayList<TabIdentifier>();
         tabListOfOne.add(observableEvent.getTabId());
         final DatabaseDescriptor databaseDescriptor = observableEvent.getDatabaseDescriptor();
-        final List<TabDescriptor> loadedTab = tabFactory.loadTabs(databaseDescriptor, tabListOfOne);
+        final List<TabDescriptor> loadedTab = mTabFactory.loadTabs(databaseDescriptor, tabListOfOne);
 
         final TabDescriptor tabDescriptor = loadedTab.get(0);
-        TabController.addTabToTabbedPaneAndOpenTabList(openTabList, databaseDescriptor, tabDescriptor);
-        TabController.switchToTab(databaseDescriptor, tabDescriptor);
+        mTabController.addTabToTabbedPaneAndOpenTabList(databaseDescriptor, tabDescriptor);
+        mTabController.switchToTab(databaseDescriptor, tabDescriptor);
     }
 
     private void closeTab(final ViewMenuChoice observableEvent) {
@@ -99,7 +103,7 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
         final DatabaseDescriptor databaseDescriptor = observableEvent.getDatabaseDescriptor();
         final TabIdentifier tabIdentifier = observableEvent.getTabId();
 
-        final List<TabDescriptor> tabsForDatabase = openTabList.getTabsForDatabase(databaseDescriptor.getDatabaseName());
+        final List<TabDescriptor> tabsForDatabase = mOpenTabList.getTabsForDatabase(databaseDescriptor.getDatabaseName());
         final List<TabDescriptor> tabListToClose = new ArrayList<TabDescriptor>();
         for (final TabDescriptor tabDescriptor : tabsForDatabase) {
             if (tabDescriptor.getTabIdentifier().equals(tabIdentifier)) {
@@ -108,9 +112,9 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
         }
 
         if (tabListToClose.size() > 0) {
-            TabController.removeTabFromTabbedPaneAndOpenTabList(openTabList, observableEvent.getDatabaseDescriptor(), tabListToClose.get(0));
+            mTabController.removeTabFromTabbedPaneAndOpenTabList(observableEvent.getDatabaseDescriptor(), tabListToClose.get(0));
 
-            tabFactory.closeTabs(databaseDescriptor, tabListToClose);
+            mTabFactory.closeTabs(databaseDescriptor, tabListToClose);
         }
     }
 }
