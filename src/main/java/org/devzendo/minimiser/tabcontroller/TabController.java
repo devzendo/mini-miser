@@ -97,12 +97,8 @@ public final class TabController {
      * @param tabDescriptor the tab to switch to
      */
     public void switchToTab(final DatabaseDescriptor databaseDescriptor, final TabDescriptor tabDescriptor) {
-        final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
-
-        // We need the insertion point for the JTabbedPane
-        final TabDescriptor finalTabDescriptor = tabDescriptor;
-        final Tab tab = finalTabDescriptor.getTab();
-        final String displayableName = finalTabDescriptor.getTabIdentifier().getDisplayableName();
+        final Tab tab = tabDescriptor.getTab();
+        final String displayableName = tabDescriptor.getTabIdentifier().getDisplayableName();
         LOGGER.debug("Switching to tab " + displayableName);
 
         // Switch to the tab's component on the EDT
@@ -114,7 +110,7 @@ public final class TabController {
         }
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
-                databaseTabbedPane.setSelectedComponent(tabComponent);
+                getTabbedPane(databaseDescriptor).setSelectedComponent(tabComponent);
             }
         });
     }
@@ -177,7 +173,6 @@ public final class TabController {
         GUIUtils.runOnEventThread(new Runnable() {
 
             public void run() {
-                // TODO Auto-generated method stub
                 final JTabbedPane databaseTabbedPane = getTabbedPane(databaseDescriptor);
                 final Tab tab = tabDescriptor.getTab();
                 final Component component = tab.getComponent();

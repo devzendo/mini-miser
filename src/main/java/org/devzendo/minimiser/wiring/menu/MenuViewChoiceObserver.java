@@ -17,6 +17,7 @@
 package org.devzendo.minimiser.wiring.menu;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -88,33 +89,49 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
     }
 
     private void openTab(final ViewMenuChoice observableEvent) {
-        final List<TabIdentifier> tabListOfOne = new ArrayList<TabIdentifier>();
-        tabListOfOne.add(observableEvent.getTabId());
         final DatabaseDescriptor databaseDescriptor = observableEvent.getDatabaseDescriptor();
-        final List<TabDescriptor> loadedTab = mTabFactory.loadTabs(databaseDescriptor, tabListOfOne);
-
-        final TabDescriptor tabDescriptor = loadedTab.get(0);
+        final TabDescriptor tabDescriptor = loadTabForViewMenuChoice(
+            observableEvent, databaseDescriptor);
         mTabController.addTabToTabbedPaneAndOpenTabList(databaseDescriptor, tabDescriptor);
         mTabController.switchToTab(databaseDescriptor, tabDescriptor);
+    }
+
+    private TabDescriptor loadTabForViewMenuChoice(
+            final ViewMenuChoice observableEvent,
+            final DatabaseDescriptor databaseDescriptor) {
+        final List<TabIdentifier> tabIdsToOpen = Arrays.asList(observableEvent.getTabId());
+        final List<TabDescriptor> loadedTabs = mTabFactory.loadTabs(databaseDescriptor, tabIdsToOpen);
+        final TabDescriptor tabDescriptor = loadedTabs.get(0);
+        return tabDescriptor;
     }
 
     private void closeTab(final ViewMenuChoice observableEvent) {
         // find this tab descriptor
         final DatabaseDescriptor databaseDescriptor = observableEvent.getDatabaseDescriptor();
-        final TabIdentifier tabIdentifier = observableEvent.getTabId();
+        final TabIdentifier tabIdentifierToClose = observableEvent.getTabId();
 
         final List<TabDescriptor> tabsForDatabase = mOpenTabList.getTabsForDatabase(databaseDescriptor.getDatabaseName());
-        final List<TabDescriptor> tabListToClose = new ArrayList<TabDescriptor>();
-        for (final TabDescriptor tabDescriptor : tabsForDatabase) {
-            if (tabDescriptor.getTabIdentifier().equals(tabIdentifier)) {
-                tabListToClose.add(tabDescriptor);
-            }
-        }
+        final List<TabDescriptor> tabListToClose = getTabDescriptorsMatchingTabIdentifier(
+            tabIdentifierToClose, tabsForDatabase);
 
         if (tabListToClose.size() > 0) {
+            // TODO there must be a bug lurking here - close all the tabs, but only remove the first of them
+            // from the tabbed pane and open tab list?
             mTabController.removeTabFromTabbedPaneAndOpenTabList(observableEvent.getDatabaseDescriptor(), tabListToClose.get(0));
 
             mTabFactory.closeTabs(databaseDescriptor, tabListToClose);
         }
+    }
+
+    private List<TabDescriptor> getTabDescriptorsMatchingTabIdentifier(
+            final TabIdentifier tabIdentifierToFind,
+            final List<TabDescriptor> tabsForDatabase) {
+        final List<TabDescriptor> tabListToClose = new ArrayList<TabDescriptor>();
+        for (final TabDescriptor tabDescriptor : tabsForDatabase) {
+            if (tabDescriptor.getTabIdentifier().equals(tabIdentifierToFind)) {
+                tabListToClose.add(tabDescriptor);
+            }
+        }
+        return tabListToClose;
     }
 }
