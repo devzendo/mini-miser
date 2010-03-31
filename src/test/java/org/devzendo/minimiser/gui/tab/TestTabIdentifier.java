@@ -21,8 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -109,36 +107,6 @@ public final class TestTabIdentifier extends LoggingTestCase {
         final TabIdentifier two = new TabIdentifier("TEST", "Bo!", false, 'Z', false, "irrelevantTabName", null);
         Assert.assertEquals(one, two);
         Assert.assertEquals(two, one);
-    }
-
-    private class IntegerTabParameter implements TabParameter {
-        private final Integer mValue;
-
-        public IntegerTabParameter(final int value) {
-            mValue = new Integer(value);
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null || getClass() != obj.getClass()) {
-                return false;
-            }
-            final IntegerTabParameter castObj = (IntegerTabParameter) obj;
-            return new EqualsBuilder()
-                .append(this.mValue, castObj.mValue)
-                .isEquals();
-        }
-
-        @Override
-        public int hashCode() {
-            // pick 2 hard-coded, odd, >0 ints as args
-            return new HashCodeBuilder(1, 31)
-                .append(mValue)
-                .toHashCode();
-        }
     }
 
     /**
