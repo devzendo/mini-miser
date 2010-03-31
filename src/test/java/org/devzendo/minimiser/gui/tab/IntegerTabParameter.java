@@ -35,6 +35,13 @@ public final class IntegerTabParameter implements TabParameter {
     }
 
     /**
+     * @return the value
+     */
+    public Integer getValue() {
+        return mValue;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
