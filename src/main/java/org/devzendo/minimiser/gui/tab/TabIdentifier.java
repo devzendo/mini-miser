@@ -37,7 +37,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  *
  * Toolkit routines in TabIdentifierToolkit help to enforce these rules.
  *
- * Equality is based on the tab name (as is the hash code).
+ * Equality is based on the all parts of the TabIdentifier (as is the hash code).
  *
  * Comparison is based on the system flag, then display name, then mnemonic.
  *
@@ -167,6 +167,12 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
         final TabIdentifier castObj = (TabIdentifier) obj;
         return new EqualsBuilder()
             .append(this.mName, castObj.mName)
+            .append(this.mDisplayName, castObj.mDisplayName)
+            .append(this.mTabPermanent, castObj.mTabPermanent)
+            .append(this.mMnemonic, castObj.mMnemonic)
+            .append(this.mSystemTab, castObj.mSystemTab)
+            .append(this.mTabBeanName, castObj.mTabBeanName)
+            .append(this.mTabBeanParameter, castObj.mTabBeanParameter)
             .isEquals();
     }
 
@@ -178,6 +184,12 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
         // pick 2 hard-coded, odd, >0 ints as args
         return new HashCodeBuilder(1, 31)
             .append(this.mName)
+            .append(this.mDisplayName)
+            .append(this.mTabPermanent)
+            .append(this.mMnemonic)
+            .append(this.mSystemTab)
+            .append(this.mTabBeanName)
+            .append(this.mTabBeanParameter)
             .toHashCode();
     }
 

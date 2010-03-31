@@ -23,6 +23,10 @@ package org.devzendo.minimiser.gui.tab;
  *
  * TabParameter is only a marker interface to provide some type safety, rather than just
  * using Object for tab parameters.
+ *
+ * The TapParameter forms part of the equality test for TabIdentifiers, so you must
+ * implement equals and hashCode.
+ *
  * @author matt
  *
  */

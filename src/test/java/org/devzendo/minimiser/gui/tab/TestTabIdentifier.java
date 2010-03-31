@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -102,11 +104,41 @@ public final class TestTabIdentifier extends LoggingTestCase {
      *
      */
     @Test
-    public void tabsWithSameTabNamesAreEquivalent() {
+    public void tabEquivalence() {
         final TabIdentifier one = new TabIdentifier("TEST", "Bo!", false, 'Z', false, "irrelevantTabName", null);
-        final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Bo!", false, 'Z', false, "irrelevantTabName", null);
         Assert.assertEquals(one, two);
         Assert.assertEquals(two, one);
+    }
+
+    private class IntegerTabParameter implements TabParameter {
+        private final Integer mValue;
+
+        public IntegerTabParameter(final int value) {
+            mValue = new Integer(value);
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            final IntegerTabParameter castObj = (IntegerTabParameter) obj;
+            return new EqualsBuilder()
+                .append(this.mValue, castObj.mValue)
+                .isEquals();
+        }
+
+        @Override
+        public int hashCode() {
+            // pick 2 hard-coded, odd, >0 ints as args
+            return new HashCodeBuilder(1, 31)
+                .append(mValue)
+                .toHashCode();
+        }
     }
 
     /**
@@ -116,6 +148,72 @@ public final class TestTabIdentifier extends LoggingTestCase {
     public void tabsWithOnlyDifferentTabNamesAreDifferent() {
         final TabIdentifier one = new TabIdentifier("TESTY", "Test", true, 'B', true, "irrelevantTabName", null);
         final TabIdentifier two = new TabIdentifier("TEST", "Test", true, 'B', true, "irrelevantTabName", null);
+        Assert.assertFalse(one.equals(two));
+        Assert.assertFalse(two.equals(one));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithOnlyDifferentDisplayNamesAreDifferent() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Testivus", true, 'B', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Maximus", true, 'B', true, "irrelevantTabName", null);
+        Assert.assertFalse(one.equals(two));
+        Assert.assertFalse(two.equals(one));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithOnlyDifferentPermanenceAreDifferent() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Testivus", true, 'B', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Testivus", false, 'B', true, "irrelevantTabName", null);
+        Assert.assertFalse(one.equals(two));
+        Assert.assertFalse(two.equals(one));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithOnlyDifferentMnemonicsAreDifferent() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Testivus", true, 'A', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Testivus", true, 'B', true, "irrelevantTabName", null);
+        Assert.assertFalse(one.equals(two));
+        Assert.assertFalse(two.equals(one));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithOnlyDifferentSystemTabnessAreDifferent() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Testivus", true, 'B', true, "irrelevantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Testivus", true, 'B', false, "irrelevantTabName", null);
+        Assert.assertFalse(one.equals(two));
+        Assert.assertFalse(two.equals(one));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithOnlyDifferentTabBeanNamesAreDifferent() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Testivus", true, 'B', true, "importantTabName", null);
+        final TabIdentifier two = new TabIdentifier("TEST", "Testivus", true, 'B', true, "eschewObfuscationTabName", null);
+        Assert.assertFalse(one.equals(two));
+        Assert.assertFalse(two.equals(one));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void tabsWithOnlyDifferentTabBeanParametersAreDifferent() {
+        final TabIdentifier one = new TabIdentifier("TEST", "Bo!", false, 'Z', false, "irrelevantTabName", new IntegerTabParameter(1));
+        final TabIdentifier two = new TabIdentifier("TEST", "Bo!", false, 'Z', false, "irrelevantTabName", new IntegerTabParameter(2));
         Assert.assertFalse(one.equals(two));
         Assert.assertFalse(two.equals(one));
     }
