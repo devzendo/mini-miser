@@ -17,6 +17,8 @@
 package org.devzendo.minimiser.gui.tab;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Identifiers for tabs that may be viewed and presented on the View menu.
@@ -24,18 +26,18 @@ import org.apache.commons.lang.StringUtils;
  * Some tabs are permanent and are always present as Tabs, are not present on the View
  * menu, and cannot be closed. Only non-permanent tabs appear on the View menu.
  *
- * The framework provides some tabs, these are System tabs that are declared in
+ * The framework provides some 'System' tabs that are declared in
  * SystemTabIdentifiers; plugins can contribute others.
  *
  * Tabs are always shown on the View menu is a specific order, and are
  * shown in the tabbed panes in that same order. System tabs are shown before
- * non-System tabs. Tabs are then ordered on their Display Name.
+ * non-System tabs. Tabs are then ordered on their Display Name, then Mnemonic.
  *
  * You can't open the same tab twice.
  *
  * Toolkit routines in TabIdentifierToolkit help to enforce these rules.
  *
- * Equality is based only on the tab name (as is the hash code).
+ * Equality is based on the tab name (as is the hash code).
  *
  * Comparison is based on the system flag, then display name, then mnemonic.
  *
@@ -162,7 +164,10 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        return mName.equals(((TabIdentifier) obj).getTabName());
+        final TabIdentifier castObj = (TabIdentifier) obj;
+        return new EqualsBuilder()
+            .append(this.mName, castObj.mName)
+            .isEquals();
     }
 
     /**
@@ -170,7 +175,10 @@ public final class TabIdentifier implements Comparable<TabIdentifier> {
      */
     @Override
     public int hashCode() {
-        return mName.hashCode();
+        // pick 2 hard-coded, odd, >0 ints as args
+        return new HashCodeBuilder(1, 31)
+            .append(this.mName)
+            .toHashCode();
     }
 
     /**
