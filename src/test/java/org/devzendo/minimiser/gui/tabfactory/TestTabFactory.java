@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
+import org.devzendo.minimiser.gui.tab.IntegerTabParameter;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
@@ -135,7 +136,7 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
         final TabIdentifier tabIdentifier =
             new TabIdentifier("test", "Irrelevant display name",
                 false, 'I', "myNamedTabBean",
-                new IntegerHoldingTabParameter(42));
+                new IntegerTabParameter(42));
         return Arrays.asList(tabIdentifier);
     }
 
@@ -145,24 +146,6 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
 
     private List<TabIdentifier> getUndefinedTabIdentifiersAsList() {
         return Arrays.asList(SystemTabIdentifiers.CATEGORIES); // not in app context
-    }
-
-    private class IntegerHoldingTabParameter implements TabParameter {
-        private final int mValue;
-
-        /**
-         * @param value
-         */
-        public IntegerHoldingTabParameter(final int value) {
-            mValue = value;
-        }
-
-        /**
-         * @return the value
-         */
-        public int getValue() {
-            return mValue;
-        }
     }
 
     private List<TabDescriptor> setUpStubRecordingTest(final DatabaseDescriptor descriptor, final List<TabIdentifier> tabIdentifiersToOpen) {
@@ -189,8 +172,8 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
         setUpStubRecordingTest(new DatabaseDescriptor(DATABASE), getParameterisedTabIdentifierAsList());
 
         Assert.assertEquals(DATABASE, stubTab.getDatabaseDescriptor().getDatabaseName());
-        final IntegerHoldingTabParameter retrievedParameter = (IntegerHoldingTabParameter) stubTab.getTabParameter();
-        Assert.assertEquals(42, retrievedParameter.getValue());
+        final IntegerTabParameter retrievedParameter = (IntegerTabParameter) stubTab.getTabParameter();
+        Assert.assertEquals(new Integer(42), retrievedParameter.getValue());
     }
 
     /**
@@ -199,9 +182,9 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
     @Test
     public void individualTabIdentifierParametersAreRetrievableFromFactoriesByCorrectTab() {
         final TabIdentifier tabIdentifierOne = new TabIdentifier("one", "one", false, '1', "myNamedTabBean",
-            new IntegerHoldingTabParameter(101));
+            new IntegerTabParameter(101));
         final TabIdentifier tabIdentifierTwo = new TabIdentifier("two", "two", false, '2', "myNamedTabBean",
-            new IntegerHoldingTabParameter(102));
+            new IntegerTabParameter(102));
 
         final List<TabDescriptor> tabsForDatabase =
             tabFactory.loadTabs(
@@ -211,12 +194,12 @@ public final class TestTabFactory extends SpringLoaderUnittestCase {
         final TabDescriptor tabDescriptorOne = tabsForDatabase.get(0);
         final TabDescriptor tabDescriptorTwo = tabsForDatabase.get(1);
         Assert.assertSame(tabIdentifierOne, tabDescriptorOne.getTabIdentifier());
-        Assert.assertEquals(101,
-            ((IntegerHoldingTabParameter) ((StubRecordingTab) tabDescriptorOne.getTab()).
+        Assert.assertEquals(new Integer(101),
+            ((IntegerTabParameter) ((StubRecordingTab) tabDescriptorOne.getTab()).
                     getTabParameter()).getValue());
         Assert.assertSame(tabIdentifierTwo, tabDescriptorTwo.getTabIdentifier());
-        Assert.assertEquals(102,
-            ((IntegerHoldingTabParameter) ((StubRecordingTab) tabDescriptorTwo.getTab()).
+        Assert.assertEquals(new Integer(102),
+            ((IntegerTabParameter) ((StubRecordingTab) tabDescriptorTwo.getTab()).
                     getTabParameter()).getValue());
     }
 
