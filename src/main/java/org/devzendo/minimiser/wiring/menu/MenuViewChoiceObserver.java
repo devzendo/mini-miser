@@ -114,12 +114,21 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
         final List<TabDescriptor> tabListToClose = getTabDescriptorsMatchingTabIdentifier(
             tabIdentifierToClose, tabsForDatabase);
 
+        // Since you can only have one TabDescriptor for each unique TabIdentifier, and we're only
+        // closing one tab, there should only be one TabDescriptor to close. If there's more than one,
+        // just warn, and close everything we've been given.
         if (tabListToClose.size() > 0) {
-            // TODO there must be a bug lurking here - close all the tabs, but only remove the first of them
-            // from the tabbed pane and open tab list?
-            mTabController.removeTabFromTabbedPaneAndOpenTabList(observableEvent.getDatabaseDescriptor(), tabListToClose.get(0));
-
+            if (tabListToClose.size() > 1) {
+                LOGGER.warn("Request to close tab " + tabIdentifierToClose + " but found " + tabListToClose.size()
+                    + " tabs: " + tabListToClose);
+            }
+            LOGGER.debug("removing from the tabbed pane and open tab list");
+            for (final TabDescriptor tabDescriptor : tabListToClose) {
+                mTabController.removeTabFromTabbedPaneAndOpenTabList(observableEvent.getDatabaseDescriptor(), tabDescriptor);
+            }
+            LOGGER.debug("closing tabs via the tab factory");
             mTabFactory.closeTabs(databaseDescriptor, tabListToClose);
+            LOGGER.debug("tab " + tabIdentifierToClose + " closed");
         }
     }
 
@@ -130,6 +139,7 @@ public final class MenuViewChoiceObserver implements MenuWiringAdapter, Observer
         for (final TabDescriptor tabDescriptor : tabsForDatabase) {
             if (tabDescriptor.getTabIdentifier().equals(tabIdentifierToFind)) {
                 tabListToClose.add(tabDescriptor);
+                LOGGER.debug("Will close tab descriptor " + tabDescriptor);
             }
         }
         return tabListToClose;
