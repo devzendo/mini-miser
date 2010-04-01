@@ -241,10 +241,11 @@ public final class StubMenu implements Menu {
     }
 
     /**
-     * Inject a view menu choice
+     * Inject a view menu choice, either an open or a close.
      * @param database the database (the current one)
      * @param tabId the tab that's been opened or closed
-     * @param opened true iff opened
+     * @param opened true if this is an open choice; false if a
+     * close choice.
      */
     public void injectViewMenuRequest(final DatabaseDescriptor database, final TabIdentifier tabId, final boolean opened) {
         viewMenuChoiceObservers.eventOccurred(new ViewMenuChoice(database, tabId, opened));
