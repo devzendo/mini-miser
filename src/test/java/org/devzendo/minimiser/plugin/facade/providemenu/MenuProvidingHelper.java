@@ -5,6 +5,7 @@ import java.util.List;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.plugin.Plugin;
+import org.devzendo.minimiser.pluginmanager.PluginException;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.easymock.EasyMock;
@@ -43,11 +44,22 @@ public class MenuProvidingHelper {
     }
 
     /**
+     * Load the plugins (specifically the stub MenuProvidingAppPlugin).
+     * @return the stub MenuProvidingAppPlugin
+     * @throws PluginException on load failure
+     */
+    public MenuProvidingAppPlugin loadStubMenuProvidingPlugin() throws PluginException {
+        mPluginManager.loadPlugins(
+            "org/devzendo/minimiser/plugin/facade/providemenu/providemenuplugin.properties");
+        return getCheckedMenuProvidingAppPlugin();
+    }
+
+    /**
      * The Plugins have been loaded, return the stub for tests.
      *
      * @return the stub MenuProvidingAppPlugin
      */
-    public MenuProvidingAppPlugin getCheckedMenuProvidingAppPlugin() {
+    private MenuProvidingAppPlugin getCheckedMenuProvidingAppPlugin() {
         final List<Plugin> plugins = mPluginManager.getPlugins();
         Assert.assertEquals(1, plugins.size());
         final MenuProvidingAppPlugin menuProvidingAppPlugin = (MenuProvidingAppPlugin) plugins.get(0);

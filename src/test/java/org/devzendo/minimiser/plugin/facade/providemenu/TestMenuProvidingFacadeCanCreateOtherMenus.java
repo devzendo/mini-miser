@@ -53,10 +53,8 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
         mOpenDatabaseList = new OpenDatabaseList();
         final OpenTabList mOpenTabList = new OpenTabList();
         final PluginManager pluginManager = getPluginManager();
-        pluginManager.loadPlugins(
-            "org/devzendo/minimiser/plugin/facade/providemenu/providemenuplugin.properties");
         mMenuProvidingHelper = new MenuProvidingHelper(pluginManager);
-        final MenuProvidingAppPlugin menuProvidingAppPlugin = mMenuProvidingHelper.getCheckedMenuProvidingAppPlugin();
+        final MenuProvidingAppPlugin menuProvidingAppPlugin = mMenuProvidingHelper.loadStubMenuProvidingPlugin();
         mPrefs = mMenuProvidingHelper.createMockPrefs();
         final ViewMenuHelper viewMenuHelper =
             new ViewMenuHelper(
