@@ -26,15 +26,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+
 /**
- * Test that the view menu is correctly initialised, after a
- * database is opened. It should contain several TabIdentifiers.
+ * MenuProvidingFacades must be able to create other menus, not just populate the view menu.
  *
  * @author matt
  *
  */
-public class TestMenuProvidingFacadeCanPopulateViewMenu extends
-        DefaultPluginManagerPersistenceUnittestCase {
+public class TestMenuProvidingFacadeCanCreateOtherMenus extends
+    DefaultPluginManagerPersistenceUnittestCase {
     private static final String PLUGINDBNAME = "pluginmenudb";
 
     private OpenDatabaseList mOpenDatabaseList;
@@ -122,4 +122,5 @@ public class TestMenuProvidingFacadeCanPopulateViewMenu extends
         }
         return false;
     }
+
 }
