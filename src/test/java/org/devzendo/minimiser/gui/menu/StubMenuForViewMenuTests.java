@@ -91,6 +91,7 @@ public class StubMenuForViewMenuTests implements Menu {
      * {@inheritDoc}
      */
     public void rebuildEntireMenu() {
+        mViewMenu.rebuildMenuGroup();
     }
 
     /**

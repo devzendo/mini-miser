@@ -51,7 +51,7 @@ public final class ViewMenuHelper {
     /**
      * Initialise the MenuProviding plugins
      * @param pluginManager the PluginManager used to obtain the MenuProviding plugins
-     * @param menuFacade the MenuFacade to pass to the plugins
+     * @param menuFacade the MenuFacade
      * @param problemReporter the ProblemReporter to pass
      */
     public void initialiseMenuProvidingPlugins(

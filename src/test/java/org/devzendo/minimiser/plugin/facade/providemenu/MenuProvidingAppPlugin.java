@@ -2,6 +2,9 @@ package org.devzendo.minimiser.plugin.facade.providemenu;
 
 import java.util.List;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
@@ -33,12 +36,16 @@ public final class MenuProvidingAppPlugin implements ApplicationPlugin, MenuProv
     public MenuProvidingAppPlugin() {
         LOGGER.info("** in plugin CTOR");
         mMenuProvidingFacade = new MenuProvidingFacade() {
+            private ApplicationMenu mGlobalApplicationMenu;
+
             public void initialise(
                     final ApplicationMenu globalApplicationMenu,
                     final OpenDatabaseList openDatabaseList,
                     final MenuFacade menuFacade) {
-                mInitialised = true;
-                LOGGER.info("** Adding database event observer");
+                synchronized(this) {
+                    mInitialised = true;
+                }
+                LOGGER.info("** Initialised; Adding database event observer");
                 openDatabaseList.addDatabaseEventObserver(new Observer<DatabaseEvent>() {
                     public void eventOccurred(final DatabaseEvent observableEvent) {
                         LOGGER.info("** Event observed");
@@ -55,11 +62,41 @@ public final class MenuProvidingAppPlugin implements ApplicationPlugin, MenuProv
                                 AttributeIdentifier.ApplicationMenu);
                         applicationMenu.addViewMenuTabIdentifier(
                             new TabIdentifier("APPLICATION", "Application menu entry", false, 'a', "irrelevant", null));
+                        applicationMenu.addCustomMenu(createCustomMenu1());
+                        applicationMenu.addCustomMenu(createCustomMenu2());
                         globalApplicationMenu.addViewMenuTabIdentifier(
                             new TabIdentifier("GLOBAL", "Global menu entry", false, 'g', "irrelevant", null));
-                        menuFacade.rebuildViewMenu();
+                        globalApplicationMenu.addCustomMenu(createCustomMenu3());
+                        globalApplicationMenu.addCustomMenu(createCustomMenu4());
+
+                        menuFacade.rebuildEntireMenu();
+                    }
+
+                    private JMenu createCustomMenu4() {
+                        final JMenu menu = new JMenu("Custom 4");
+                        menu.add(new JMenuItem("Au Revoir"));
+                        return menu;
+                    }
+
+                    private JMenu createCustomMenu3() {
+                        final JMenu menu = new JMenu("Custom 3");
+                        menu.add(new JMenuItem("Bonjour"));
+                        return menu;
+                    }
+
+                    private JMenu createCustomMenu2() {
+                        final JMenu menu = new JMenu("Custom 2");
+                        menu.add(new JMenuItem("World"));
+                        return menu;
+                    }
+
+                    private JMenu createCustomMenu1() {
+                        final JMenu menu = new JMenu("Custom 1");
+                        menu.add(new JMenuItem("Hello"));
+                        return menu;
                     }
                 });
+                LOGGER.info("** Plugin initialisation complete");
             }
         };
     }
@@ -172,6 +209,8 @@ public final class MenuProvidingAppPlugin implements ApplicationPlugin, MenuProv
      * @return true iff initialised
      */
     public boolean isInitialised() {
-        return mInitialised;
+        synchronized (this) {
+            return mInitialised;
+        }
     }
 }

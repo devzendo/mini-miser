@@ -51,14 +51,14 @@ public class TestMenuProvidingFacadeCanPopulateViewMenu extends
     @Before
     public final void getPrerequisites() throws PluginException {
         mOpenDatabaseList = new OpenDatabaseList();
-        final OpenTabList mOpenTabList = new OpenTabList();
+        final OpenTabList openTabList = new OpenTabList();
         final PluginManager pluginManager = getPluginManager();
         mMenuProvidingHelper = new MenuProvidingHelper(pluginManager);
         final MenuProvidingAppPlugin menuProvidingAppPlugin = mMenuProvidingHelper.loadStubMenuProvidingPlugin();
         mPrefs = mMenuProvidingHelper.createMockPrefs();
         final ViewMenuHelper viewMenuHelper =
             new ViewMenuHelper(
-                mOpenDatabaseList, mOpenTabList, mPrefs);
+                mOpenDatabaseList, openTabList, mPrefs);
         mViewMenu = viewMenuHelper.createViewMenu();
         Assert.assertFalse(menuProvidingAppPlugin.isInitialised());
         viewMenuHelper.initialiseMenuProvidingPlugins(
