@@ -38,6 +38,7 @@ public final class MenuImpl implements Menu {
     private final Object lock = new Object();
     private SpringLoader springLoader;
     private MenuWiring menuWiring;
+    private ApplicationMenuCombiner mApplicationMenuCombiner;
 
     private JMenuBar menuBar;
 
@@ -52,14 +53,16 @@ public final class MenuImpl implements Menu {
      * Create the Menu
      * @param loader the SpringLoader singleton
      * @param wiring the MenuWiring singleton
+     * @param applicationMenuCombiner the ApplicationMenuCombiner singleton
      */
-    public MenuImpl(final SpringLoader loader, final MenuWiring wiring) {
+    public MenuImpl(final SpringLoader loader, final MenuWiring wiring, final ApplicationMenuCombiner applicationMenuCombiner) {
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
                 synchronized (lock) {
                     LOGGER.info("Constructing");
                     springLoader = loader;
                     menuWiring = wiring;
+                    mApplicationMenuCombiner = applicationMenuCombiner;
                 }
             }
         });

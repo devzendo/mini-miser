@@ -70,6 +70,13 @@ public final class ViewMenuHelper {
     }
 
     /**
+     * @return the ApplicationMenuCombiner
+     */
+    public ApplicationMenuCombiner getApplicationMenuCombiner() {
+        return mApplicationMenuCombiner;
+    }
+
+    /**
      * @return the Menu Wiring
      */
     public MenuWiring getMenuWiring() {

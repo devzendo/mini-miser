@@ -83,7 +83,7 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
                 mOpenDatabaseList, mOpenTabList, mPrefs);
         mMenuWiring = viewMenuHelper.getMenuWiring();
 
-        mMenu = new MenuImpl(mSpringLoader, mMenuWiring);
+        mMenu = new MenuImpl(mSpringLoader, mMenuWiring, viewMenuHelper.getApplicationMenuCombiner());
 
         // Menus needed by the MenuImpl initialise...
         mFileMenu = new FileMenu(mMenuWiring, mOpenDatabaseList, mRecentFilesList);

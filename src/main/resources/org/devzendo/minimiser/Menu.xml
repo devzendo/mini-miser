@@ -10,6 +10,7 @@
 	<bean id="menu" class="org.devzendo.minimiser.gui.menu.MenuImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="menuWiring" />
+		<constructor-arg ref="applicationMenuCombiner" />
 	</bean>
 
 	<bean id="menuFacade" class="org.devzendo.minimiser.gui.menu.MenuFacadeImpl">
