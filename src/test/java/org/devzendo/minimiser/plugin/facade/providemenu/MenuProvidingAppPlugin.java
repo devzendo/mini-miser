@@ -36,13 +36,12 @@ public final class MenuProvidingAppPlugin implements ApplicationPlugin, MenuProv
     public MenuProvidingAppPlugin() {
         LOGGER.info("** in plugin CTOR");
         mMenuProvidingFacade = new MenuProvidingFacade() {
-            private ApplicationMenu mGlobalApplicationMenu;
 
             public void initialise(
                     final ApplicationMenu globalApplicationMenu,
                     final OpenDatabaseList openDatabaseList,
                     final MenuFacade menuFacade) {
-                synchronized(this) {
+                synchronized (this) {
                     mInitialised = true;
                 }
                 LOGGER.info("** Initialised; Adding database event observer");
