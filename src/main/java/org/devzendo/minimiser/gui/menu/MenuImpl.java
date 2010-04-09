@@ -17,7 +17,9 @@
 package org.devzendo.minimiser.gui.menu;
 
 import java.awt.event.ActionListener;
+import java.util.List;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
 import org.apache.log4j.Logger;
@@ -115,6 +117,11 @@ public final class MenuImpl implements Menu {
 
                     viewMenuGroup.rebuildMenuGroup();
                     menuBar.add(viewMenuGroup.getJMenu());
+
+                    final List<JMenu> customMenus = mApplicationMenuCombiner.combineMenus().getCustomMenus();
+                    for (final JMenu jMenu : customMenus) {
+                        menuBar.add(jMenu);
+                    }
 
                     menuBar.add(toolsMenuGroup.getJMenu());
 

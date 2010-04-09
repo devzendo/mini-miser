@@ -141,12 +141,20 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
     }
 
     private void checkMenuBar(final JMenuBar menuBar) {
+        // System
         Assert.assertEquals("File", menuBar.getMenu(0).getText());
         Assert.assertEquals("View", menuBar.getMenu(1).getText());
-        Assert.assertEquals("Tools", menuBar.getMenu(2).getText());
-        Assert.assertEquals("Window", menuBar.getMenu(3).getText());
-        Assert.assertEquals("Help", menuBar.getMenu(4).getText());
-        Assert.assertEquals(5, menuBar.getMenuCount());
+        // Global Application Menu
+        Assert.assertEquals("Custom 3", menuBar.getMenu(2).getText());
+        Assert.assertEquals("Custom 4", menuBar.getMenu(3).getText());
+        // Database Application Menu
+        Assert.assertEquals("Custom 1", menuBar.getMenu(4).getText());
+        Assert.assertEquals("Custom 2", menuBar.getMenu(5).getText());
+        // System
+        Assert.assertEquals("Tools", menuBar.getMenu(6).getText());
+        Assert.assertEquals("Window", menuBar.getMenu(7).getText());
+        Assert.assertEquals("Help", menuBar.getMenu(8).getText());
+        Assert.assertEquals(9, menuBar.getMenuCount());
     }
 
     private void checkDatabaseCustomMenus(
@@ -177,12 +185,5 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
         Assert.assertEquals(1, customMenu4.getMenuComponentCount());
         final JMenuItem jMenuItem4 = (JMenuItem) (customMenu4.getMenuComponent(0));
         Assert.assertEquals("Au Revoir", jMenuItem4.getText());
-    }
-
-    private void checkDatabaseApplicationMenu(
-            final ApplicationMenu databaseApplicationMenu) {
-        Assert.assertNotNull(databaseApplicationMenu);
-        final List<JMenu> databaseApplicationCustomMenus = databaseApplicationMenu.getCustomMenus();
-        checkDatabaseCustomMenus(databaseApplicationCustomMenus);
     }
 }
