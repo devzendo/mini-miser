@@ -3,6 +3,7 @@ package org.devzendo.minimiser.plugin.facade.providemenu;
 import java.util.List;
 
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
@@ -128,6 +129,28 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
         final ApplicationMenu databaseApplicationMenu = (ApplicationMenu) databaseDescriptor.getAttribute(AttributeIdentifier.ApplicationMenu);
         Assert.assertNotNull(databaseApplicationMenu);
         final List<JMenu> databaseApplicationCustomMenus = databaseApplicationMenu.getCustomMenus();
+        checkDatabaseCustomMenus(databaseApplicationCustomMenus);
+
+        final List<JMenu> globalApplicationCustomMenus = mGlobalApplicationMenu.getCustomMenus();
+        checkGlobalCustomMenus(globalApplicationCustomMenus);
+
+        final JMenuBar menuBar = mMenu.getMenuBar();
+        checkMenuBar(menuBar);
+
+        EasyMock.verify(mPrefs);
+    }
+
+    private void checkMenuBar(final JMenuBar menuBar) {
+        Assert.assertEquals("File", menuBar.getMenu(0).getText());
+        Assert.assertEquals("View", menuBar.getMenu(1).getText());
+        Assert.assertEquals("Tools", menuBar.getMenu(2).getText());
+        Assert.assertEquals("Window", menuBar.getMenu(3).getText());
+        Assert.assertEquals("Help", menuBar.getMenu(4).getText());
+        Assert.assertEquals(5, menuBar.getMenuCount());
+    }
+
+    private void checkDatabaseCustomMenus(
+            final List<JMenu> databaseApplicationCustomMenus) {
         Assert.assertEquals(2, databaseApplicationCustomMenus.size());
         final JMenu customMenu1 = databaseApplicationCustomMenus.get(0);
         Assert.assertEquals("Custom 1", customMenu1.getText());
@@ -139,8 +162,10 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
         Assert.assertEquals(1, customMenu2.getMenuComponentCount());
         final JMenuItem jMenuItem2 = (JMenuItem) (customMenu2.getMenuComponent(0));
         Assert.assertEquals("World", jMenuItem2.getText());
+    }
 
-        final List<JMenu> globalApplicationCustomMenus = mGlobalApplicationMenu.getCustomMenus();
+    private void checkGlobalCustomMenus(
+            final List<JMenu> globalApplicationCustomMenus) {
         Assert.assertEquals(2, globalApplicationCustomMenus.size());
         final JMenu customMenu3 = globalApplicationCustomMenus.get(0);
         Assert.assertEquals("Custom 3", customMenu3.getText());
@@ -152,9 +177,12 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
         Assert.assertEquals(1, customMenu4.getMenuComponentCount());
         final JMenuItem jMenuItem4 = (JMenuItem) (customMenu4.getMenuComponent(0));
         Assert.assertEquals("Au Revoir", jMenuItem4.getText());
+    }
 
-        //final JMenuBar menuBar = mMenu.getMenuBar();
-
-        EasyMock.verify(mPrefs);
+    private void checkDatabaseApplicationMenu(
+            final ApplicationMenu databaseApplicationMenu) {
+        Assert.assertNotNull(databaseApplicationMenu);
+        final List<JMenu> databaseApplicationCustomMenus = databaseApplicationMenu.getCustomMenus();
+        checkDatabaseCustomMenus(databaseApplicationCustomMenus);
     }
 }
