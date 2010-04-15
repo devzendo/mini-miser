@@ -78,6 +78,9 @@ public interface NewDatabaseCreationFacade {
      * database, populate any resources necessary, informing the
      * user of progress via the observer as necessary.
      * 
+     * TODO change this to take a DataSource not a derived version, and have
+     * the DataSource first, as in createDatabase.
+     * 
      * @param jdbcTemplate the Spring JDBC Template access to the
      * database
      * @param dataSource the data source for other connection to
