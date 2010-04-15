@@ -70,7 +70,7 @@ public final class DefaultMigrator implements Migrator {
 
     /**
      * Compare PluginSchemaVersions for the plugins and database
-     * and return their MigratorVersion
+     * and return their MigrationVersion
      * @param pluginSchemaVersions the schema versions of the plugins
      * @param databaseSchemaVersions the schema versions of the database
      * @return the MigrationVersion state of the comparison, either
