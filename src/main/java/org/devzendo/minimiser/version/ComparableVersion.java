@@ -151,6 +151,8 @@ public final class ComparableVersion implements Comparable<ComparableVersion> {
         }
         // version numbers are identical, but shorter numbers of elements mean
         // earlier releases (e.g. 1.0 is earlier than 1.0.1)
+        // TODO I don't think these size comparisons work - compareElementForElement
+        // will have catered for this by right-zero-padding?
         if (this.versionNumberList.size() < obj.versionNumberList.size()) {
             return -1;
         }

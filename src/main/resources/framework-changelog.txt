@@ -37,3 +37,9 @@ v0.1.0 20/03/2010 first "foundations" release
     * Tests: 649; 4 ignored
     * Test coverage: 70.1% 
     * Metric violations: 14
+
+v0.2.0 30/04/2010 second "foundations" release 
+  * Improvements to the menu building subsystem:
+    * MenuProviding plugins can now create items in the View menu, and also
+      create their own custom menus.
+    * Bug fixes & refactoring; more tests. (659/71.6%)
