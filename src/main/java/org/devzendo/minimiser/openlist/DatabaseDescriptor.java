@@ -16,9 +16,6 @@
 
 package org.devzendo.minimiser.openlist;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.JTabbedPane;
 
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
@@ -42,17 +39,7 @@ public final class DatabaseDescriptor {
     private final String mDatabasePath;
     private JTabbedPane mTabbedPane;
     private ApplicationMenu mApplicationMenu;
-    private final Map<AttributeIdentifier, Object> mAttributeMap;
     private final InstanceSet<DAOFactory> mDAOFactories;
-
-    /**
-     * The attribute identifiers.
-     *
-     * @author matt
-     *
-     */
-    public enum AttributeIdentifier {
-    }
 
     /**
      * Create a new DatabaseDesriptor, given just a name, used primarily in
@@ -69,7 +56,6 @@ public final class DatabaseDescriptor {
      * @param databaseFullPath the full path to the database.
      */
     public DatabaseDescriptor(final String databaseName, final String databaseFullPath) {
-        mAttributeMap = new HashMap<AttributeIdentifier, Object>();
         mDAOFactories = new InstanceSet<DAOFactory>();
         this.mDatabaseName = databaseName;
         this.mDatabasePath = databaseFullPath == null ? "" : databaseFullPath;
@@ -133,34 +119,6 @@ public final class DatabaseDescriptor {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Obtain the object set against a given attribute id.
-     * @param attrId the attribute id
-     * @return the object, or null if nothing ahs been set
-     */
-    public Object getAttribute(final AttributeIdentifier attrId) {
-        return mAttributeMap.get(attrId);
-    }
-
-    /**
-     * Set an object as a value against an attribute id
-     * @param attrId the attribute id
-     * @param object the object to set, can be null to clear, but you can
-     * use clearAttribute for that, especially for Path, as that'll be set
-     * to an empty string upon clearing.
-     */
-    public void setAttribute(final AttributeIdentifier attrId, final Object object) {
-        mAttributeMap.put(attrId, object);
-    }
-
-    /**
-     * Clear an attribute given an attribute id
-     * @param attrId the attribute id
-     */
-    public void clearAttribute(final AttributeIdentifier attrId) {
-        mAttributeMap.remove(attrId);
     }
 
     /**
