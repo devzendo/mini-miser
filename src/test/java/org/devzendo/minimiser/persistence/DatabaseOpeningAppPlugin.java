@@ -21,13 +21,14 @@ package org.devzendo.minimiser.persistence;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.devzendo.minimiser.plugin.AbstractPlugin;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.facade.opendatabase.DatabaseOpening;
 import org.devzendo.minimiser.plugin.facade.opendatabase.DatabaseOpeningFacade;
 import org.devzendo.minimiser.util.InstancePair;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 
 /**
@@ -57,8 +58,8 @@ public final class DatabaseOpeningAppPlugin extends AbstractPlugin implements
         mDatabaseOpeningFacade = new DatabaseOpeningFacade() {
 
             public InstancePair<DAOFactory> createDAOFactory(
-                    final SimpleJdbcTemplate jdbcTemplate,
-                    final SingleConnectionDataSource dataSource) {
+                    final DataSource dataSource,
+                    final SimpleJdbcTemplate jdbcTemplate) {
                 mCreateDAOFactoryCalled = true;
                 final DatabaseOpeningDAOFactory daoFactory = new DatabaseOpeningDAOFactory();
                 return new InstancePair<DAOFactory>(DatabaseOpeningDAOFactory.class, daoFactory);

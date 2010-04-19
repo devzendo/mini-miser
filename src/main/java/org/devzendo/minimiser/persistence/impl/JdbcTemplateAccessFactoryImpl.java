@@ -213,8 +213,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 LOGGER.debug("Plugin " + databaseOpeningPlugin.getClass().getName() + " creating DAOFactory for database");
                 final InstancePair<DAOFactory> daoFactoryPair =
                     databaseOpeningFacade.createDAOFactory(
-                        dbSetup.getJdbcTemplate(),
-                        dbSetup.getDataSource());
+                        dbSetup.getDataSource(),
+                        dbSetup.getJdbcTemplate());
                 if (daoFactoryPair == null) {
                     LOGGER.warn(
                         "DatabaseOpeningFacade class "

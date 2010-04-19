@@ -102,8 +102,8 @@ public final class DatabaseCreationAppPlugin extends AbstractPlugin implements
         mDatabaseOpeningFacade = new DatabaseOpeningFacade() {
 
             public InstancePair<DAOFactory> createDAOFactory(
-                    final SimpleJdbcTemplate jdbcTemplate,
-                    final SingleConnectionDataSource dataSource) {
+                    final DataSource dataSource,
+                    final SimpleJdbcTemplate jdbcTemplate) {
                 mOpenDatabaseCalled = true;
                 final DatabaseOpeningDAOFactory daoFactory = new DatabaseOpeningDAOFactory();
                 final InstancePair<DAOFactory> daoFactoryPair = new InstancePair<DAOFactory>(DatabaseOpeningDAOFactory.class, daoFactory);
