@@ -19,6 +19,8 @@ package org.devzendo.minimiser.openlist;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JTabbedPane;
+
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.devzendo.minimiser.util.InstanceSet;
 
@@ -37,6 +39,7 @@ import org.devzendo.minimiser.util.InstanceSet;
 public final class DatabaseDescriptor {
     private final String mDatabaseName;
     private final String mDatabasePath;
+    private JTabbedPane mTabbedPane;
     private final Map<AttributeIdentifier, Object> mAttributeMap;
     private final InstanceSet<DAOFactory> mDAOFactories;
 
@@ -47,11 +50,6 @@ public final class DatabaseDescriptor {
      *
      */
     public enum AttributeIdentifier {
-        /**
-         * The tabbed pane of views
-         */
-        TabbedPane,
-
         /**
          * The application's menu structure
          */
@@ -189,5 +187,23 @@ public final class DatabaseDescriptor {
             final Class<D> daoFactoryInterface,
             final D daoFactoryInstance) {
         mDAOFactories.addInstance(daoFactoryInterface, daoFactoryInstance);
+    }
+    
+    /**
+     * Obtain the tabbed pane of view Tab objects for the database.
+     * 
+     * @return the tabbed pane of views
+     */
+    public JTabbedPane getTabbedPane() {
+        return mTabbedPane;
+    }
+    
+    /**
+     * Set the tabbed pane of view Tab objects for the database.
+     * 
+     * @param tabbedPane the tabbed pane to set for the database 
+     */
+    public void setTabbedPane(final JTabbedPane tabbedPane) {
+        mTabbedPane = tabbedPane;
     }
 }

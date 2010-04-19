@@ -32,7 +32,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
 import org.devzendo.minimiser.openlist.DatabaseSwitchedEvent;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.pluginmanager.PluginException;
 import org.junit.Assert;
@@ -174,8 +173,8 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         final Object lock = new Object();
         synchronized (lock) {
             final JTabbedPane tabbedPane = new JTabbedPane(); // EDT be damned!
-            databaseDescriptorOne.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
-            Assert.assertEquals(0, ((JTabbedPane) databaseDescriptorOne.getAttribute(AttributeIdentifier.TabbedPane)).getComponentCount());
+            databaseDescriptorOne.setTabbedPane(tabbedPane);
+            Assert.assertEquals(0, databaseDescriptorOne.getTabbedPane().getComponentCount());
         }
 
         getOpenDatabaseList().addOpenedDatabase(databaseDescriptorOne);
@@ -191,7 +190,7 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         // open the tab
         getStubMenu().injectViewMenuRequest(databaseDescriptorOne, SystemTabIdentifiers.SQL, true);
         synchronized (lock) {
-            Assert.assertEquals(1, ((JTabbedPane) databaseDescriptorOne.getAttribute(AttributeIdentifier.TabbedPane)).getComponentCount());
+            Assert.assertEquals(1, databaseDescriptorOne.getTabbedPane().getComponentCount());
         }
 
         final List<TabDescriptor> tabsForDatabaseWithSql = getOpenTabList().getTabsForDatabase("one");
@@ -207,7 +206,7 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         Assert.assertNotNull(tabsForDatabaseWithNoTabs);
         Assert.assertEquals(0, tabsForDatabaseWithNoTabs.size());
         synchronized (lock) {
-            Assert.assertEquals(0, ((JTabbedPane) databaseDescriptorOne.getAttribute(AttributeIdentifier.TabbedPane)).getComponentCount());
+            Assert.assertEquals(0, databaseDescriptorOne.getTabbedPane().getComponentCount());
         }
     }
 
@@ -220,8 +219,8 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         final Object lock = new Object();
         synchronized (lock) {
             final JTabbedPane tabbedPane = new JTabbedPane(); // EDT be damned!
-            databaseDescriptorOne.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
-            Assert.assertEquals(0, ((JTabbedPane) databaseDescriptorOne.getAttribute(AttributeIdentifier.TabbedPane)).getComponentCount());
+            databaseDescriptorOne.setTabbedPane(tabbedPane);
+            Assert.assertEquals(0, databaseDescriptorOne.getTabbedPane().getComponentCount());
         }
 
         getOpenDatabaseList().addOpenedDatabase(databaseDescriptorOne);
@@ -240,7 +239,7 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         getStubMenu().injectViewMenuRequest(databaseDescriptorOne, firstTabId, true);
         getStubMenu().injectViewMenuRequest(databaseDescriptorOne, secondTabId, true);
         synchronized (lock) {
-            Assert.assertEquals(2, ((JTabbedPane) databaseDescriptorOne.getAttribute(AttributeIdentifier.TabbedPane)).getComponentCount());
+            Assert.assertEquals(2, databaseDescriptorOne.getTabbedPane().getComponentCount());
         }
 
         final List<TabDescriptor> tabsForDatabaseWithTwoTabs = getOpenTabList().getTabsForDatabase("one");
@@ -262,7 +261,7 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         final IntegerTabParameter remainingTabParameter = (IntegerTabParameter) remainingTabDescriptor.getTabIdentifier().getTabBeanParameter();
         Assert.assertEquals(new Integer(1), remainingTabParameter.getValue());
         synchronized (lock) {
-            final JTabbedPane jTabbedPane = ((JTabbedPane) databaseDescriptorOne.getAttribute(AttributeIdentifier.TabbedPane));
+            final JTabbedPane jTabbedPane = databaseDescriptorOne.getTabbedPane();
             Assert.assertEquals(1, jTabbedPane.getComponentCount());
             Assert.assertEquals("Test One", ((Label) jTabbedPane.getComponent(0)).getText()); // StubRecordingTab creates Labels
         }
@@ -274,7 +273,7 @@ public final class TestMenuMediator extends MenuMediatorUnittestCase {
         Assert.assertNotNull(shouldBeEmptyTabsForDatabase);
         Assert.assertEquals(0, shouldBeEmptyTabsForDatabase.size());
         synchronized (lock) {
-            final JTabbedPane jTabbedPane = ((JTabbedPane) databaseDescriptorOne.getAttribute(AttributeIdentifier.TabbedPane));
+            final JTabbedPane jTabbedPane = databaseDescriptorOne.getTabbedPane();
             Assert.assertEquals(0, jTabbedPane.getComponentCount());
         }
    }

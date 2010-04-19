@@ -20,7 +20,6 @@ import javax.swing.JTabbedPane;
 
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +58,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
     public void addNewTabPane() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
+        dd.setTabbedPane(tabbedPane);
         tabPaneManager.addTabPane(dd);
         Assert.assertEquals(1, tabPaneManager.getNumberOfTabPanes());
         Assert.assertSame(tabbedPane, tabPaneManager.getTabPane("one"));
@@ -73,11 +72,11 @@ public final class TestTabPaneManager extends LoggingTestCase {
     public void addExistingTabPaneOverwrites() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
+        dd.setTabbedPane(tabbedPane);
         tabPaneManager.addTabPane(dd);
         
         final JTabbedPane tabbedPane2 = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane2);
+        dd.setTabbedPane(tabbedPane2);
         tabPaneManager.addTabPane(dd);
         
         Assert.assertNotSame(tabbedPane, tabbedPane2);
@@ -117,7 +116,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
     public void addExistingDatabaseDescriptorWithNullTabbedPaneDoesntOverwrite() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
+        dd.setTabbedPane(tabbedPane);
         tabPaneManager.addTabPane(dd);
         
         final DatabaseDescriptor dd2 = new DatabaseDescriptor("one"); // same name
@@ -167,7 +166,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
     public void removeNonStoredRemovesNothing() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
+        dd.setTabbedPane(tabbedPane);
 
         tabPaneManager.removeTabPane(dd);
         
@@ -182,7 +181,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
     public void removeActuallyRemoves() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
+        dd.setTabbedPane(tabbedPane);
         tabPaneManager.addTabPane(dd);
         
         tabPaneManager.removeTabPane(dd);
@@ -207,7 +206,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
     public void switchActuallySwitches() {
         final DatabaseDescriptor dd1 = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane1 = new JTabbedPane();
-        dd1.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane1);
+        dd1.setTabbedPane(tabbedPane1);
         tabPaneManager.addTabPane(dd1);
         
         Assert.assertNull(tabPaneManager.getLastSwitchedTabbedPane());
@@ -218,7 +217,7 @@ public final class TestTabPaneManager extends LoggingTestCase {
         
         final DatabaseDescriptor dd2 = new DatabaseDescriptor("two");
         final JTabbedPane tabbedPane2 = new JTabbedPane();
-        dd2.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane2);
+        dd2.setTabbedPane(tabbedPane2);
         tabPaneManager.addTabPane(dd2);
         
         Assert.assertSame(tabbedPane1, tabPaneManager.getLastSwitchedTabbedPane());

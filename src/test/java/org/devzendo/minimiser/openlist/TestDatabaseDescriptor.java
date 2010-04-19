@@ -57,7 +57,8 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     @Test
     public void attributesAreNullInitially() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        Assert.assertNull(dd.getAttribute(AttributeIdentifier.TabbedPane));
+        Assert.assertNull(dd.getTabbedPane());
+        Assert.assertNull(dd.getAttribute(AttributeIdentifier.ApplicationMenu));
     }
     
     /**
@@ -85,9 +86,9 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     @Test
     public void attributesCanBeCleared() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        dd.setAttribute(AttributeIdentifier.TabbedPane, "foo");
-        dd.clearAttribute(AttributeIdentifier.TabbedPane);
-        Assert.assertNull(dd.getAttribute(AttributeIdentifier.TabbedPane));
+        dd.setAttribute(AttributeIdentifier.ApplicationMenu, "foo");
+        dd.clearAttribute(AttributeIdentifier.ApplicationMenu);
+        Assert.assertNull(dd.getAttribute(AttributeIdentifier.ApplicationMenu));
     }
     
     private class TestDAOFactory implements DAOFactory {

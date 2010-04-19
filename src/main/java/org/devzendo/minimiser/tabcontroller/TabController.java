@@ -13,7 +13,6 @@ import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tab.TabIdentifierToolkit;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 
@@ -152,7 +151,7 @@ public final class TabController {
     }
 
     private static JTabbedPane getTabbedPane(final DatabaseDescriptor databaseDescriptor) {
-        final JTabbedPane databaseTabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
+        final JTabbedPane databaseTabbedPane = databaseDescriptor.getTabbedPane();
         if (databaseTabbedPane == null) {
             final String warning = "No JTabbedPane stored in database descriptor";
             LOGGER.warn(warning);

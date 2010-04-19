@@ -33,7 +33,6 @@ import org.devzendo.minimiser.openlist.DatabaseClosedEvent;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.tabcontroller.TabController;
@@ -108,7 +107,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
         LOGGER.info("Creating tabbed pane for database '" + databaseDescriptor.getDatabaseName() + "'");
         // TODO replace this with the GUIValueObtainer
         final JTabbedPane databaseTabbedPane = createTabbedPaneOnEventThread(databaseDescriptor);
-        databaseDescriptor.setAttribute(AttributeIdentifier.TabbedPane, databaseTabbedPane);
+        databaseDescriptor.setTabbedPane(databaseTabbedPane);
 
         // Add this database to the open tab list, so we can calculate
         // insertion points for tabs on the JTabbedPane.

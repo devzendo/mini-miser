@@ -34,7 +34,6 @@ import org.devzendo.minimiser.gui.tabpanemanager.TabListPrefs;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.prefs.Prefs;
@@ -121,7 +120,7 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(DATABASE);
         mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
 
-        final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
+        final JTabbedPane tabbedPane = databaseDescriptor.getTabbedPane();
         // The JTabbedPane should now have been added to the DD
         Assert.assertNotNull(tabbedPane);
 
@@ -244,7 +243,7 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
 
         final Boolean sqlIsActiveTab = new GUIValueObtainer<Boolean>().obtainFromEventThread(new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
+                final JTabbedPane tabbedPane = databaseDescriptor.getTabbedPane();
                 final Label selectedComponent = (Label) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
                 LOGGER.debug("selected component is " + selectedComponent);
                 return selectedComponent.getText().equals(SystemTabIdentifiers.SQL.getDisplayableName());

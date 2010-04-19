@@ -22,7 +22,6 @@ import org.devzendo.minimiser.gui.tabpanemanager.HeadlessTabPaneManager;
 import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +62,7 @@ public final class TestTabPaneManagerDatabaseEventListener extends LoggingTestCa
     public void openDatabaseAddsTabPane() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
+        dd.setTabbedPane(tabbedPane);
         openDatabaseList.addOpenedDatabase(dd);
 
         Assert.assertEquals(1, tabPaneManager.getNumberOfTabPanes());
@@ -101,7 +100,7 @@ public final class TestTabPaneManagerDatabaseEventListener extends LoggingTestCa
     public void addExistingDatabaseDescriptorWithNullTabbedPaneDoesntOverwrite() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane = new JTabbedPane();
-        dd.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane);
+        dd.setTabbedPane(tabbedPane);
         openDatabaseList.addOpenedDatabase(dd);
 
         final DatabaseDescriptor dd2 = new DatabaseDescriptor("one"); // same name
@@ -131,12 +130,12 @@ public final class TestTabPaneManagerDatabaseEventListener extends LoggingTestCa
     public void removePenultimateActuallyRemovesButDoesntClear() {
         final DatabaseDescriptor dd1 = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane1 = new JTabbedPane();
-        dd1.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane1);
+        dd1.setTabbedPane(tabbedPane1);
         openDatabaseList.addOpenedDatabase(dd1);
 
         final DatabaseDescriptor dd2 = new DatabaseDescriptor("two");
         final JTabbedPane tabbedPane2 = new JTabbedPane();
-        dd2.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane2);
+        dd2.setTabbedPane(tabbedPane2);
         openDatabaseList.addOpenedDatabase(dd2);
 
         openDatabaseList.removeClosedDatabase(dd1);
@@ -154,7 +153,7 @@ public final class TestTabPaneManagerDatabaseEventListener extends LoggingTestCa
     public void removeLastActuallyRemovesAndClears() {
         final DatabaseDescriptor dd1 = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane1 = new JTabbedPane();
-        dd1.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane1);
+        dd1.setTabbedPane(tabbedPane1);
         openDatabaseList.addOpenedDatabase(dd1);
 
         openDatabaseList.removeClosedDatabase(dd1);
@@ -180,14 +179,14 @@ public final class TestTabPaneManagerDatabaseEventListener extends LoggingTestCa
     public void switchActuallySwitches() {
         final DatabaseDescriptor dd1 = new DatabaseDescriptor("one");
         final JTabbedPane tabbedPane1 = new JTabbedPane();
-        dd1.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane1);
+        dd1.setTabbedPane(tabbedPane1);
         openDatabaseList.addOpenedDatabase(dd1);
 
         Assert.assertSame(tabbedPane1, tabPaneManager.getLastSwitchedTabbedPane());
 
         final DatabaseDescriptor dd2 = new DatabaseDescriptor("two");
         final JTabbedPane tabbedPane2 = new JTabbedPane();
-        dd2.setAttribute(AttributeIdentifier.TabbedPane, tabbedPane2);
+        dd2.setTabbedPane(tabbedPane2);
         openDatabaseList.addOpenedDatabase(dd2);
 
         Assert.assertSame(tabbedPane2, tabPaneManager.getLastSwitchedTabbedPane());

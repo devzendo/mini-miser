@@ -23,7 +23,6 @@ import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 
 /**
  * Provides the body of Tab Pane Manager functionality without involving any
@@ -62,7 +61,7 @@ public abstract class AbstractTabPaneManager implements TabPaneManager {
             return;
         }
         LOGGER.info("Adding tab pane for database '" + databaseDescriptor.getDatabaseName() + "'");
-        final JTabbedPane tabbedPane = (JTabbedPane) databaseDescriptor.getAttribute(AttributeIdentifier.TabbedPane);
+        final JTabbedPane tabbedPane = databaseDescriptor.getTabbedPane();
         if (tabbedPane == null) {
             return;
         }
