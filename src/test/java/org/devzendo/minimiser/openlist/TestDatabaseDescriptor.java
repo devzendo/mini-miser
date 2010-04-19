@@ -64,9 +64,8 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
      * 
      */
     @Test
-    public void pathAttributeIsEmptyInitially() {
+    public void pathIsEmptyInitially() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        Assert.assertEquals("", dd.getAttribute(AttributeIdentifier.Path));
         Assert.assertEquals("", dd.getDatabasePath());
     }
     
@@ -76,8 +75,8 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     @Test
     public void attributesCanBeSet() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        dd.setAttribute(AttributeIdentifier.Path, "foo");
-        Assert.assertEquals("foo", dd.getAttribute(AttributeIdentifier.Path));
+        dd.setAttribute(AttributeIdentifier.ApplicationMenu, "foo");
+        Assert.assertEquals("foo", dd.getAttribute(AttributeIdentifier.ApplicationMenu));
     }
 
     /**
@@ -91,48 +90,6 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
         Assert.assertNull(dd.getAttribute(AttributeIdentifier.TabbedPane));
     }
     
-    /**
-     * 
-     */
-    @Test
-    public void pathCanBeGotFromAnAttributeAndAGetter() {
-        final DatabaseDescriptor dd = new DatabaseDescriptor("one", "/tmp/foo");
-        Assert.assertEquals("/tmp/foo", dd.getDatabasePath());
-        Assert.assertEquals("/tmp/foo", dd.getAttribute(AttributeIdentifier.Path));
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void unsetPathIsEmptyFromAnAttributeAndAGetter() {
-        final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        Assert.assertEquals("", dd.getDatabasePath());
-        Assert.assertEquals("", dd.getAttribute(AttributeIdentifier.Path));
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void clearedPathIsEmptyFromAnAttributeAndAGetter() {
-        final DatabaseDescriptor dd = new DatabaseDescriptor("one", "/tmp/foo");
-        dd.clearAttribute(AttributeIdentifier.Path);
-        Assert.assertEquals("", dd.getDatabasePath());
-        Assert.assertEquals("", dd.getAttribute(AttributeIdentifier.Path));
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void pathCanBeSetNullIfThatsWhatYouReallyReallyWant() {
-        final DatabaseDescriptor dd = new DatabaseDescriptor("one", "/tmp/foo");
-        dd.setAttribute(AttributeIdentifier.Path, null);
-        Assert.assertNull(dd.getDatabasePath());
-        Assert.assertNull(dd.getAttribute(AttributeIdentifier.Path));
-    }
-
     private class TestDAOFactory implements DAOFactory {
         // do nothing
     }

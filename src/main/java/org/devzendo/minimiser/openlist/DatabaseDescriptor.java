@@ -36,6 +36,7 @@ import org.devzendo.minimiser.util.InstanceSet;
  */
 public final class DatabaseDescriptor {
     private final String mDatabaseName;
+    private final String mDatabasePath;
     private final Map<AttributeIdentifier, Object> mAttributeMap;
     private final InstanceSet<DAOFactory> mDAOFactories;
 
@@ -46,11 +47,6 @@ public final class DatabaseDescriptor {
      *
      */
     public enum AttributeIdentifier {
-        /**
-         * The database path
-         */
-        Path,
-
         /**
          * The tabbed pane of views
          */
@@ -80,7 +76,7 @@ public final class DatabaseDescriptor {
         mAttributeMap = new HashMap<AttributeIdentifier, Object>();
         mDAOFactories = new InstanceSet<DAOFactory>();
         this.mDatabaseName = databaseName;
-        setAttribute(AttributeIdentifier.Path, databaseFullPath == null ? "" : databaseFullPath);
+        this.mDatabasePath = databaseFullPath == null ? "" : databaseFullPath;
     }
 
     /**
@@ -96,7 +92,7 @@ public final class DatabaseDescriptor {
      * @return the database path, which may be an empty string, but never null.
      */
     public String getDatabasePath() {
-        return (String) getAttribute(AttributeIdentifier.Path);
+        return mDatabasePath;
     }
 
     /**
@@ -168,11 +164,7 @@ public final class DatabaseDescriptor {
      * @param attrId the attribute id
      */
     public void clearAttribute(final AttributeIdentifier attrId) {
-        if (attrId == AttributeIdentifier.Path) {
-            mAttributeMap.put(AttributeIdentifier.Path, "");
-        } else {
-            mAttributeMap.remove(attrId);
-        }
+        mAttributeMap.remove(attrId);
     }
 
     /**
