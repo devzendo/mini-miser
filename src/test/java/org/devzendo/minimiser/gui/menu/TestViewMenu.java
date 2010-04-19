@@ -25,7 +25,6 @@ import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.easymock.EasyMock;
@@ -127,7 +126,7 @@ public final class TestViewMenu {
         mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
         final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
         databaseApplicationMenu.addViewMenuTabIdentifier(tabIdentifier);
-        databaseDescriptor.setAttribute(AttributeIdentifier.ApplicationMenu, databaseApplicationMenu);
+        databaseDescriptor.setApplicationMenu(databaseApplicationMenu);
 
         mViewMenu.rebuildMenuGroup();
 
@@ -147,7 +146,7 @@ public final class TestViewMenu {
         mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
         mGlobalApplicationMenu.addViewMenuTabIdentifier(tabIdentifier);
         final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
-        databaseDescriptor.setAttribute(AttributeIdentifier.ApplicationMenu, databaseApplicationMenu);
+        databaseDescriptor.setApplicationMenu(databaseApplicationMenu);
 
         mViewMenu.rebuildMenuGroup();
 
@@ -169,7 +168,7 @@ public final class TestViewMenu {
         mGlobalApplicationMenu.addViewMenuTabIdentifier(tabIdentifierA);
         final ApplicationMenu databaseApplicationMenu = new ApplicationMenu();
         databaseApplicationMenu.addViewMenuTabIdentifier(tabIdentifierZ);
-        databaseDescriptor.setAttribute(AttributeIdentifier.ApplicationMenu, databaseApplicationMenu);
+        databaseDescriptor.setApplicationMenu(databaseApplicationMenu);
 
         mViewMenu.rebuildMenuGroup();
 

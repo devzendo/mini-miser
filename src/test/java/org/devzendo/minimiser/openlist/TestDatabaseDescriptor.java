@@ -16,8 +16,8 @@
 
 package org.devzendo.minimiser.openlist;
 
+import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.logging.LoggingTestCase;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     public void attributesAreNullInitially() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
         Assert.assertNull(dd.getTabbedPane());
-        Assert.assertNull(dd.getAttribute(AttributeIdentifier.ApplicationMenu));
+        Assert.assertNull(dd.getApplicationMenu());
     }
     
     /**
@@ -76,8 +76,9 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     @Test
     public void attributesCanBeSet() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        dd.setAttribute(AttributeIdentifier.ApplicationMenu, "foo");
-        Assert.assertEquals("foo", dd.getAttribute(AttributeIdentifier.ApplicationMenu));
+        final ApplicationMenu applicationMenu = new ApplicationMenu();
+        dd.setApplicationMenu(applicationMenu);
+        Assert.assertSame(applicationMenu, dd.getApplicationMenu());
     }
 
     /**
@@ -86,9 +87,10 @@ public final class TestDatabaseDescriptor extends LoggingTestCase {
     @Test
     public void attributesCanBeCleared() {
         final DatabaseDescriptor dd = new DatabaseDescriptor("one");
-        dd.setAttribute(AttributeIdentifier.ApplicationMenu, "foo");
-        dd.clearAttribute(AttributeIdentifier.ApplicationMenu);
-        Assert.assertNull(dd.getAttribute(AttributeIdentifier.ApplicationMenu));
+        final ApplicationMenu applicationMenu = new ApplicationMenu();
+        dd.setApplicationMenu(applicationMenu);
+        dd.setApplicationMenu(null);
+        Assert.assertNull(dd.getApplicationMenu());
     }
     
     private class TestDAOFactory implements DAOFactory {

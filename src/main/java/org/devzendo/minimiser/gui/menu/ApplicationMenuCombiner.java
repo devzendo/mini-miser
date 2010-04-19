@@ -30,7 +30,6 @@ import org.devzendo.minimiser.gui.menu.ApplicationMenu.SystemMenu;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 
 
 /**
@@ -136,7 +135,7 @@ public final class ApplicationMenuCombiner {
     private ApplicationMenu getDatabaseApplicationMenu() {
         final DatabaseDescriptor descriptor = mOpenDatabaseList.getCurrentDatabase();
         if (descriptor != null) {
-            final ApplicationMenu databaseApplicationMenu = (ApplicationMenu) descriptor.getAttribute(AttributeIdentifier.ApplicationMenu);
+            final ApplicationMenu databaseApplicationMenu = descriptor.getApplicationMenu();
             if (databaseApplicationMenu != null) {
                 return databaseApplicationMenu;
             }

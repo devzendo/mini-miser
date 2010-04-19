@@ -15,7 +15,6 @@ import org.devzendo.minimiser.gui.menu.ViewMenuHelper;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.persistence.DefaultPluginManagerPersistenceUnittestCase;
 import org.devzendo.minimiser.pluginmanager.PluginException;
@@ -84,11 +83,11 @@ public class TestMenuProvidingFacadeCanPopulateViewMenu extends
         // populates the database-specific ApplicationMenu and global
         // ApplicationMenu when a database is opened.
         final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor(PLUGINDBNAME);
-        Assert.assertNull(databaseDescriptor.getAttribute(AttributeIdentifier.ApplicationMenu));
+        Assert.assertNull(databaseDescriptor.getApplicationMenu());
 
         mOpenDatabaseList.addOpenedDatabase(databaseDescriptor);
 
-        final ApplicationMenu databaseApplicationMenu = (ApplicationMenu) databaseDescriptor.getAttribute(AttributeIdentifier.ApplicationMenu);
+        final ApplicationMenu databaseApplicationMenu = databaseDescriptor.getApplicationMenu();
         Assert.assertNotNull(databaseApplicationMenu);
         Assert.assertEquals(1, databaseApplicationMenu.getViewMenuTabIdentifiers().size());
         Assert.assertEquals("Application menu entry", databaseApplicationMenu.getViewMenuTabIdentifiers().get(0).getDisplayableName());

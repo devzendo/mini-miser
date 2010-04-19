@@ -26,7 +26,6 @@ import javax.swing.JSeparator;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,7 +93,7 @@ public final class TestApplicationMenuCombiner {
     private void setCurrentDatabaseApplicationMenu(
             final ApplicationMenu applicationMenu) {
         final DatabaseDescriptor descriptor = new DatabaseDescriptor("FOO");
-        descriptor.setAttribute(AttributeIdentifier.ApplicationMenu, applicationMenu);
+        descriptor.setApplicationMenu(applicationMenu);
         mOpenDatabaseList.addOpenedDatabase(descriptor);
     }
 

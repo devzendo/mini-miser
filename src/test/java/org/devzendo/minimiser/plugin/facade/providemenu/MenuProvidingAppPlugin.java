@@ -14,7 +14,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.springloader.SpringLoader;
 
@@ -57,8 +56,7 @@ public final class MenuProvidingAppPlugin implements ApplicationPlugin, MenuProv
                         LOGGER.info("** Database opened, adding menu");
                         final DatabaseDescriptor databaseDescriptor = observableEvent.getDatabaseDescriptor();
                         final ApplicationMenu applicationMenu =
-                            (ApplicationMenu) databaseDescriptor.getAttribute(
-                                AttributeIdentifier.ApplicationMenu);
+                            databaseDescriptor.getApplicationMenu();
                         applicationMenu.addViewMenuTabIdentifier(
                             new TabIdentifier("APPLICATION", "Application menu entry", false, 'a', "irrelevant", null));
                         applicationMenu.addCustomMenu(createCustomMenu1());

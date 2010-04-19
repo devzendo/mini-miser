@@ -21,7 +21,6 @@ import java.util.List;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProviding;
 import org.devzendo.minimiser.pluginmanager.DefaultPluginManager;
@@ -113,7 +112,7 @@ public final class TestMenuProvidingFacadeInitialiser {
         // A blank ApplicationMenu will have been set by the
         // ApplicationMenuCreatingDatabaseEventListener...
         final ApplicationMenu databaseApplicationMenu =
-            (ApplicationMenu) databaseDescriptor.getAttribute(AttributeIdentifier.ApplicationMenu);
+            databaseDescriptor.getApplicationMenu();
         Assert.assertNotNull(databaseApplicationMenu);
         // ...but the StubMenuProvidingFacade should have populated it.
 

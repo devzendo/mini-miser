@@ -24,7 +24,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProvidingFacade;
 
 
@@ -66,7 +65,7 @@ public final class StubMenuProvidingFacade implements MenuProvidingFacade {
                 if (observableEvent instanceof DatabaseOpenedEvent) {
                     final DatabaseOpenedEvent open = (DatabaseOpenedEvent) observableEvent;
                     final DatabaseDescriptor databaseDescriptor = open.getDatabaseDescriptor();
-                    final ApplicationMenu applicationMenu = (ApplicationMenu) databaseDescriptor.getAttribute(AttributeIdentifier.ApplicationMenu);
+                    final ApplicationMenu applicationMenu = databaseDescriptor.getApplicationMenu();
                     applicationMenu.addCustomMenu(new JMenu("DB Custom"));
                 }
 

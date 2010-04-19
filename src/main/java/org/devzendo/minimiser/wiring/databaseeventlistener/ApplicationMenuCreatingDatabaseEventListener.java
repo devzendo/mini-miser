@@ -23,7 +23,6 @@ import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
-import org.devzendo.minimiser.openlist.DatabaseDescriptor.AttributeIdentifier;
 
 
 /**
@@ -51,6 +50,6 @@ public final class ApplicationMenuCreatingDatabaseEventListener implements
         assert !SwingUtilities.isEventDispatchThread();
 
         final DatabaseDescriptor databaseDescriptor = openEvent.getDatabaseDescriptor();
-        databaseDescriptor.setAttribute(AttributeIdentifier.ApplicationMenu, new ApplicationMenu());
+        databaseDescriptor.setApplicationMenu(new ApplicationMenu());
     }
 }

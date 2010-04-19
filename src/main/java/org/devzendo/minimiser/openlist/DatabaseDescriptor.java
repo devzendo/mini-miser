@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.swing.JTabbedPane;
 
+import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.devzendo.minimiser.util.InstanceSet;
 
@@ -40,6 +41,7 @@ public final class DatabaseDescriptor {
     private final String mDatabaseName;
     private final String mDatabasePath;
     private JTabbedPane mTabbedPane;
+    private ApplicationMenu mApplicationMenu;
     private final Map<AttributeIdentifier, Object> mAttributeMap;
     private final InstanceSet<DAOFactory> mDAOFactories;
 
@@ -50,10 +52,6 @@ public final class DatabaseDescriptor {
      *
      */
     public enum AttributeIdentifier {
-        /**
-         * The application's menu structure
-         */
-        ApplicationMenu,
     }
 
     /**
@@ -205,5 +203,23 @@ public final class DatabaseDescriptor {
      */
     public void setTabbedPane(final JTabbedPane tabbedPane) {
         mTabbedPane = tabbedPane;
+    }
+
+    /**
+     * Obtain the application menu for the database.
+     * 
+     * @return the database-specific ApplicationMenu
+     */
+    public ApplicationMenu getApplicationMenu() {
+        return mApplicationMenu;
+    }
+    
+    /**
+     * Set the application menu for the database.
+     * 
+     * @param applicationMenu the ApplicationMenu to set for the database 
+     */
+    public void setApplicationMenu(final ApplicationMenu applicationMenu) {
+        mApplicationMenu = applicationMenu;
     }
 }
