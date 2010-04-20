@@ -39,7 +39,7 @@ public interface DatabaseMigrationFacade {
      * 
      * @param dataSource the DataSource, for low-level access to
      * the database
-     * @param simpleJdbcTemplate the Spring SimpleJdbcTemplate, for
+     * @param jdbcTemplate the Spring SimpleJdbcTemplate, for
      * easier access to the database atop JDBC
      * @param currentSchemaVersion this plugin's current database
      * schema version
@@ -47,6 +47,6 @@ public interface DatabaseMigrationFacade {
      */
     void migrateSchema(
             DataSource dataSource,
-            SimpleJdbcTemplate simpleJdbcTemplate,
+            SimpleJdbcTemplate jdbcTemplate,
             String currentSchemaVersion) throws DataAccessException;
 }
