@@ -21,8 +21,6 @@ BUGS:
 * new database wizard mentions on the intro page, that "Once created, an empty
   database can be used immediately, or data from other personal finance software
   can be imported into it."
-* NewDatabaseCreationFacade: change populateDatabase to take a DataSource not a
-  derived version, and have the DataSource first, as in createDatabase.
 * Investigate size checks in ComparableVersion.compareTo - they may be
   superfluous.  
 * beancounter: clean out config, restart - about text says minimiser 

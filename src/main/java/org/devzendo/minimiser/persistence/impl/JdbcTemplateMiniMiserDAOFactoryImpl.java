@@ -17,6 +17,7 @@
 package org.devzendo.minimiser.persistence.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -28,6 +29,9 @@ import org.devzendo.minimiser.persistence.dao.impl.JdbcTemplateSequenceDao;
 import org.devzendo.minimiser.persistence.dao.impl.JdbcTemplateVersionsDao;
 import org.devzendo.minimiser.persistence.sql.SQLAccess;
 import org.devzendo.minimiser.persistence.sql.impl.H2SQLAccess;
+import org.devzendo.minimiser.plugin.facade.closedatabase.DatabaseClosing;
+import org.devzendo.minimiser.plugin.facade.closedatabase.DatabaseClosingFacade;
+import org.devzendo.minimiser.pluginmanager.PluginManager;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -43,14 +47,15 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
     private static final Logger LOGGER = Logger.getLogger(JdbcTemplateMiniMiserDAOFactoryImpl.class);
     
     @SuppressWarnings("unused")
-    private final String dbURL;
-    private final String dbPath;
-    private final SimpleJdbcTemplate jdbcTemplate;
-    private volatile boolean isClosed = true;
+    private final String mDbURL;
+    private final String mDbPath;
+    private final SimpleJdbcTemplate mJdbcTemplate;
+    private volatile boolean mIsClosed = true;
     private final VersionsDao versionsDao;
     private final SequenceDao sequenceDao;
-    private final DataSource dataSource;
-    private SQLAccess sqlAccess;
+    private final DataSource mDataSource;
+    private final PluginManager mPluginManager;
+    private SQLAccess mSqlAccess;
     private final Object mLock = new Object();
 
     /**
@@ -58,16 +63,21 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
      * @param path the path to the database for display
      * @param template the SimpleJdbcTemplate to access this database with
      * @param source the dataSource to access this database with
+     * @param pluginManager the pluginManager used to find the plugins that
+     * implement DatabaseClosing, when closing.
      */
-    public JdbcTemplateMiniMiserDAOFactoryImpl(final String url, final String path, final SimpleJdbcTemplate template, final DataSource source) {
+    public JdbcTemplateMiniMiserDAOFactoryImpl(
+            final String url, final String path, final SimpleJdbcTemplate template,
+            final DataSource source, final PluginManager pluginManager) {
         synchronized (mLock) {
-            this.dbURL = url;
-            this.dbPath = path;
-            this.jdbcTemplate = template;
-            this.dataSource = source;
-            isClosed = false;
-            versionsDao = new JdbcTemplateVersionsDao(jdbcTemplate);
-            sequenceDao = new JdbcTemplateSequenceDao(jdbcTemplate);
+            mDbURL = url;
+            mDbPath = path;
+            mJdbcTemplate = template;
+            mDataSource = source;
+            mPluginManager = pluginManager;
+            mIsClosed = false;
+            versionsDao = new JdbcTemplateVersionsDao(mJdbcTemplate);
+            sequenceDao = new JdbcTemplateSequenceDao(mJdbcTemplate);
         }
     }
 
@@ -76,20 +86,37 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
      */
     public void close() {
         synchronized (mLock) {
-            if (isClosed) {
-                LOGGER.info("Database at '" + dbPath + "' is already closed");
+            if (mIsClosed) {
+                LOGGER.info("Database at '" + mDbPath + "' is already closed");
                 return;
             }
+            callDatabaseClosingFacades();
             try {
-                LOGGER.info("Closing database at '" + dbPath + "'");
-                DataSourceUtils.getConnection(dataSource).close();
-                isClosed = true;
+                LOGGER.info("Closing database at '" + mDbPath + "'");
+                DataSourceUtils.getConnection(mDataSource).close();
+                mIsClosed = true;
             } catch (final CannotGetJdbcConnectionException e) {
                 LOGGER.warn("Can't get JDBC Connection on close: " + e.getMessage(), e);
             } catch (final SQLException e) {
                 LOGGER.warn("SQL Exception on close: " + e.getMessage(), e);
             }
         }
+    }
+
+    private void callDatabaseClosingFacades() {
+        final List<DatabaseClosing> databaseClosingPlugins = mPluginManager.getPluginsImplementingFacade(DatabaseClosing.class);
+        for (final DatabaseClosing databaseClosingPlugin : databaseClosingPlugins) {
+            final DatabaseClosingFacade databaseClosingFacade = databaseClosingPlugin.getDatabaseClosingFacade();
+            if (databaseClosingFacade == null) {
+                LOGGER.warn(
+                    "DatabaseClosing class "
+                    + databaseClosingPlugin.getClass().getName()
+                    + " returned a null facade - ignoring");
+            } else {
+                LOGGER.debug("Plugin " + databaseClosingPlugin.getClass().getName() + " tidying up in database");
+                databaseClosingFacade.closeDatabase(mDataSource, mJdbcTemplate);
+            }
+        }        
     }
 
     /**
@@ -113,7 +140,7 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
     }
     
     private void checkClosed(final String method) {
-        if (isClosed) {
+        if (mIsClosed) {
             throw new IllegalStateException(String.format("Cannot call %s with a closed database", method));
         }
     }
@@ -123,11 +150,11 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
      */
     public boolean isClosed() {
         synchronized (mLock) {
-            if (isClosed) {
+            if (mIsClosed) {
                 return true;
             }
             try {
-                return DataSourceUtils.getConnection(dataSource).isClosed();
+                return DataSourceUtils.getConnection(mDataSource).isClosed();
             } catch (final CannotGetJdbcConnectionException e) {
                 LOGGER.warn("Can't get JDBC Connection on isClosed: " + e.getMessage(), e);
             } catch (final SQLException e) {
@@ -143,10 +170,10 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
     public SQLAccess getSQLAccess() {
         synchronized (mLock) {
             checkClosed("getSQLAccess");
-            if (sqlAccess == null) {
-                sqlAccess = new H2SQLAccess(dataSource, jdbcTemplate);
+            if (mSqlAccess == null) {
+                mSqlAccess = new H2SQLAccess(mDataSource, mJdbcTemplate);
             }
-            return sqlAccess;
+            return mSqlAccess;
         }
     }
 }

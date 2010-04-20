@@ -189,7 +189,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         final JdbcTemplateMiniMiserDAOFactoryImpl miniMiserDAOFactory =
             new JdbcTemplateMiniMiserDAOFactoryImpl(
                 dbSetup.getDbURL(), dbSetup.getDbPath(),
-                dbSetup.getJdbcTemplate(), dbSetup.getDataSource());
+                dbSetup.getJdbcTemplate(), dbSetup.getDataSource(),
+                mPluginManager);
         daoFactories.addInstance(MiniMiserDAOFactory.class, miniMiserDAOFactory);
 
         createDatabaseOpeningFacadeDAOFactories(dbSetup, daoFactories);
@@ -266,7 +267,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
                 dbSetup.getDbURL(),
                 dbSetup.getDbPath(),
                 dbSetup.getJdbcTemplate(),
-                dbSetup.getDataSource());
+                dbSetup.getDataSource(),
+                mPluginManager);
         if (observer != null) {
             observer.eventOccurred(new PersistenceObservableEvent("Database creation complete"));
         }

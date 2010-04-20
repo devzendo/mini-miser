@@ -42,4 +42,20 @@ v0.2.0 30/04/2010 second "foundations" release
   * Improvements to the menu building subsystem:
     * MenuProviding plugins can now create items in the View menu, and also
       create their own custom menus.
-    * Bug fixes & refactoring; more tests. (659/71.6%)
+    * Bug fixes & refactoring; more tests.
+    * The menu building subsystem is now documented in the reference part of
+      the user guide.
+  * Removed type-unsafe access of 'attributes' from DatabaseDescriptor.
+  * Reworked several sections and improved the outline of the user guide.
+  * Added the DatabaseClosing facade to allow plugins to hook into database
+    closing.
+  * Documented the new database wizard facade, database creating facade,
+    database opening facade, database closing facade, database migration facade
+    in the user guide.
+  * Changed the database opening facade to take the same database objects as
+    other database-related facades. (DataSource and SimpleJdbcTemplate).
+  * Statistics:
+    * Lines of Java: 61018 (main: 32020; test: 28998)
+    * Tests: 656, 4 ignored
+    * Test coverage: 71.6%
+    * Metric violations: 18
