@@ -51,39 +51,44 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
     private final SequenceDao sequenceDao;
     private final DataSource dataSource;
     private SQLAccess sqlAccess;
+    private final Object mLock = new Object();
 
     /**
      * @param url the database URL
      * @param path the path to the database for display
      * @param template the SimpleJdbcTemplate to access this database with
-     * @param source the dataSource to access this databse with
+     * @param source the dataSource to access this database with
      */
     public JdbcTemplateMiniMiserDAOFactoryImpl(final String url, final String path, final SimpleJdbcTemplate template, final DataSource source) {
-        this.dbURL = url;
-        this.dbPath = path;
-        this.jdbcTemplate = template;
-        this.dataSource = source;
-        isClosed = false;
-        versionsDao = new JdbcTemplateVersionsDao(jdbcTemplate);
-        sequenceDao = new JdbcTemplateSequenceDao(jdbcTemplate);
+        synchronized (mLock) {
+            this.dbURL = url;
+            this.dbPath = path;
+            this.jdbcTemplate = template;
+            this.dataSource = source;
+            isClosed = false;
+            versionsDao = new JdbcTemplateVersionsDao(jdbcTemplate);
+            sequenceDao = new JdbcTemplateSequenceDao(jdbcTemplate);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void close() {
-        if (isClosed) {
-            LOGGER.info("Database at '" + dbPath + "' is already closed");
-            return;
-        }
-        try {
-            LOGGER.info("Closing database at '" + dbPath + "'");
-            DataSourceUtils.getConnection(dataSource).close();
-            isClosed = true;
-        } catch (final CannotGetJdbcConnectionException e) {
-            LOGGER.warn("Can't get JDBC Connection on close: " + e.getMessage(), e);
-        } catch (final SQLException e) {
-            LOGGER.warn("SQL Exception on close: " + e.getMessage(), e);
+        synchronized (mLock) {
+            if (isClosed) {
+                LOGGER.info("Database at '" + dbPath + "' is already closed");
+                return;
+            }
+            try {
+                LOGGER.info("Closing database at '" + dbPath + "'");
+                DataSourceUtils.getConnection(dataSource).close();
+                isClosed = true;
+            } catch (final CannotGetJdbcConnectionException e) {
+                LOGGER.warn("Can't get JDBC Connection on close: " + e.getMessage(), e);
+            } catch (final SQLException e) {
+                LOGGER.warn("SQL Exception on close: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -91,16 +96,20 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
      * {@inheritDoc}
      */
     public VersionsDao getVersionDao() {
-        checkClosed("getVersionDao");
-        return versionsDao;
+        synchronized (mLock) {
+            checkClosed("getVersionDao");
+            return versionsDao;
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public SequenceDao getSequenceDao() {
-        checkClosed("getSequenceDao");
-        return sequenceDao;
+        synchronized (mLock) {
+            checkClosed("getSequenceDao");
+            return sequenceDao;
+        }
     }
     
     private void checkClosed(final String method) {
@@ -113,24 +122,26 @@ public final class JdbcTemplateMiniMiserDAOFactoryImpl implements MiniMiserDAOFa
      * {@inheritDoc}
      */
     public boolean isClosed() {
-        if (isClosed) {
-            return true;
+        synchronized (mLock) {
+            if (isClosed) {
+                return true;
+            }
+            try {
+                return DataSourceUtils.getConnection(dataSource).isClosed();
+            } catch (final CannotGetJdbcConnectionException e) {
+                LOGGER.warn("Can't get JDBC Connection on isClosed: " + e.getMessage(), e);
+            } catch (final SQLException e) {
+                LOGGER.warn("SQL Exception on isClosed: " + e.getMessage(), e);
+            }
+            return false;
         }
-        try {
-            return DataSourceUtils.getConnection(dataSource).isClosed();
-        } catch (final CannotGetJdbcConnectionException e) {
-            LOGGER.warn("Can't get JDBC Connection on isClosed: " + e.getMessage(), e);
-        } catch (final SQLException e) {
-            LOGGER.warn("SQL Exception on isClosed: " + e.getMessage(), e);
-        }
-        return false;
     }
     
     /**
      * {@inheritDoc}
      */
     public SQLAccess getSQLAccess() {
-        synchronized (this) {
+        synchronized (mLock) {
             checkClosed("getSQLAccess");
             if (sqlAccess == null) {
                 sqlAccess = new H2SQLAccess(dataSource, jdbcTemplate);
