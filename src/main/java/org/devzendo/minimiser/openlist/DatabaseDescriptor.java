@@ -40,6 +40,7 @@ public final class DatabaseDescriptor {
     private JTabbedPane mTabbedPane;
     private ApplicationMenu mApplicationMenu;
     private final InstanceSet<DAOFactory> mDAOFactories;
+    private final Object mLock = new Object();
 
     /**
      * Create a new DatabaseDesriptor, given just a name, used primarily in
@@ -56,9 +57,11 @@ public final class DatabaseDescriptor {
      * @param databaseFullPath the full path to the database.
      */
     public DatabaseDescriptor(final String databaseName, final String databaseFullPath) {
-        mDAOFactories = new InstanceSet<DAOFactory>();
-        this.mDatabaseName = databaseName;
-        this.mDatabasePath = databaseFullPath == null ? "" : databaseFullPath;
+        synchronized (mLock) {
+            mDAOFactories = new InstanceSet<DAOFactory>();
+            this.mDatabaseName = databaseName;
+            this.mDatabasePath = databaseFullPath == null ? "" : databaseFullPath;
+        }
     }
 
     /**
@@ -66,7 +69,9 @@ public final class DatabaseDescriptor {
      * @return the database name
      */
     public String getDatabaseName() {
-        return mDatabaseName;
+        synchronized (mLock) {
+            return mDatabaseName;
+        }
     }
 
     /**
@@ -74,7 +79,9 @@ public final class DatabaseDescriptor {
      * @return the database path, which may be an empty string, but never null.
      */
     public String getDatabasePath() {
-        return mDatabasePath;
+        synchronized (mLock) {
+            return mDatabasePath;
+        }
     }
 
     /**
@@ -82,7 +89,9 @@ public final class DatabaseDescriptor {
      */
     @Override
     public String toString() {
-        return mDatabaseName;
+        synchronized (mLock) {
+            return mDatabaseName;
+        }
     }
 
     /**
@@ -90,10 +99,12 @@ public final class DatabaseDescriptor {
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((mDatabaseName == null) ? 0 : mDatabaseName.hashCode());
-        return result;
+        synchronized (mLock) {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((mDatabaseName == null) ? 0 : mDatabaseName.hashCode());
+            return result;
+        }
     }
 
     /**
@@ -101,24 +112,26 @@ public final class DatabaseDescriptor {
      */
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!DatabaseDescriptor.class.isAssignableFrom(obj.getClass())) {
-            return false;
-        }
-        final DatabaseDescriptor other = (DatabaseDescriptor) obj;
-        if (mDatabaseName == null) {
-            if (other.mDatabaseName != null) {
+        synchronized (mLock) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
                 return false;
             }
-        } else if (!mDatabaseName.equals(other.mDatabaseName)) {
-            return false;
+            if (!DatabaseDescriptor.class.isAssignableFrom(obj.getClass())) {
+                return false;
+            }
+            final DatabaseDescriptor other = (DatabaseDescriptor) obj;
+            if (mDatabaseName == null) {
+                if (other.mDatabaseName != null) {
+                    return false;
+                }
+            } else if (!mDatabaseName.equals(other.mDatabaseName)) {
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
     /**
@@ -129,7 +142,9 @@ public final class DatabaseDescriptor {
      * interface has not been set.
      */
     public <D extends DAOFactory> D getDAOFactory(final Class<D> daoFactoryInterface) {
-        return mDAOFactories.getInstanceOf(daoFactoryInterface);
+        synchronized (mLock) {
+            return mDAOFactories.getInstanceOf(daoFactoryInterface);
+        }
     }
 
     /**
@@ -142,7 +157,9 @@ public final class DatabaseDescriptor {
     public <D extends DAOFactory> void setDAOFactory(
             final Class<D> daoFactoryInterface,
             final D daoFactoryInstance) {
-        mDAOFactories.addInstance(daoFactoryInterface, daoFactoryInstance);
+        synchronized (mLock) {
+            mDAOFactories.addInstance(daoFactoryInterface, daoFactoryInstance);
+        }
     }
     
     /**
@@ -151,7 +168,9 @@ public final class DatabaseDescriptor {
      * @return the tabbed pane of views
      */
     public JTabbedPane getTabbedPane() {
-        return mTabbedPane;
+        synchronized (mLock) {
+            return mTabbedPane;
+        }
     }
     
     /**
@@ -160,7 +179,9 @@ public final class DatabaseDescriptor {
      * @param tabbedPane the tabbed pane to set for the database 
      */
     public void setTabbedPane(final JTabbedPane tabbedPane) {
-        mTabbedPane = tabbedPane;
+        synchronized (mLock) {
+            mTabbedPane = tabbedPane;
+        }
     }
 
     /**
@@ -169,7 +190,9 @@ public final class DatabaseDescriptor {
      * @return the database-specific ApplicationMenu
      */
     public ApplicationMenu getApplicationMenu() {
-        return mApplicationMenu;
+        synchronized (mLock) {
+            return mApplicationMenu;
+        }
     }
     
     /**
@@ -178,6 +201,8 @@ public final class DatabaseDescriptor {
      * @param applicationMenu the ApplicationMenu to set for the database 
      */
     public void setApplicationMenu(final ApplicationMenu applicationMenu) {
-        mApplicationMenu = applicationMenu;
+        synchronized (mLock) {
+            mApplicationMenu = applicationMenu;
+        }
     }
 }
