@@ -63,9 +63,6 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
             + "Please choose a meaningful, unique name! You cannot open multiple databases\n"
             + "with the same name, even if in different folders.\n\n"
             
-            + "Once created, an empty database can be used immediately, or data from other\n"
-            + "personal finance software can be imported into it.\n\n"
-            
             + "Databases can be optionally encrypted for security. " + gPluginRegistry.getApplicationName() + " uses AES-256\n"
             + "(Advanced Encryption System) to ensure your information is secure.\n"
             + "If encrypted, the password must be supplied when opening the database.\n"

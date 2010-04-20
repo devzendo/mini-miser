@@ -151,6 +151,7 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String validateContents(final Component component, final Object object) {
         if (encryptCheckBox.isSelected()) {
             enableDisableControls(true);
@@ -185,6 +186,6 @@ public final class FileNewWizardSecurityOptionPage extends MiniMiserWizardPage {
      * @return the page description
      */
     public static String getDescription() {
-        return "Protect with Encryption?";
+        return "Protect with encryption?";
     }
 }
