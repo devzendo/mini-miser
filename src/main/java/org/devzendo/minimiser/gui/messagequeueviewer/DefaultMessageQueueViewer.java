@@ -37,7 +37,6 @@ import javax.swing.JScrollPane;
 import org.apache.log4j.Logger;
 import org.devzendo.minimiser.messagequeue.Message;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
-import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
 
 /**
@@ -50,47 +49,47 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
 
     private static final Logger LOGGER = Logger
             .getLogger(DefaultMessageQueueViewer.class);
-    private final JDialog dialog;
-    private final MessageQueue messageQueue;
-    private HTMLPanel messageSubjectPane;
-    private HTMLPanel noMessagesTextPane;
-    private JButton previousButton;
-    private JButton removeButton;
-    private JButton nextButton;
-    private final MessageRendererFactory messageRendererFactory;
-    private JPanel mainPanel;
-    private JComponent emptyControls;
-    private JPanel controlsContainer;
-    private JPanel bodyContainer;
-    private Message currentMessage;
-    private MessageRenderer currentMessageRenderer;
+    private final JDialog mDialog;
+    private final MessageQueue mMessageQueue;
+    private HTMLPanel mMessageSubjectPane;
+    private HTMLPanel mNoMessagesTextPane;
+    private JButton mPreviousButton;
+    private JButton mRemoveButton;
+    private JButton mNextButton;
+    private final MessageRendererFactory mMessageRendererFactory;
+    private JPanel mMainPanel;
+    private JComponent mEmptyControls;
+    private JPanel mControlsContainer;
+    private JPanel mBodyContainer;
+    private Message mCurrentMessage;
+    private MessageRenderer mCurrentMessageRenderer;
 
     /**
      * Create the DefaultMessageQueueViewer given its factory.
      * @param factory this viewer's factory
      * @param rendererFactory the message renderer factory
-     * @param pluginRegistry the plugin registry
+     * @param applicationName the application name
      */
     public DefaultMessageQueueViewer(final MessageQueueViewerFactory factory,
             final MessageRendererFactory rendererFactory,
-            final PluginRegistry pluginRegistry) {
+            final String applicationName) {
         super(factory);
-        this.messageRendererFactory = rendererFactory;
+        this.mMessageRendererFactory = rendererFactory;
         final Frame mainFrame = getMessageQueueViewerFactory().getMainFrame();
-        messageQueue = getMessageQueueViewerFactory().getMessageQueue();
+        mMessageQueue = getMessageQueueViewerFactory().getMessageQueue();
         
-        dialog = new JDialog(mainFrame, false);
-        dialog.setPreferredSize(new Dimension(mainFrame.getWidth() - 40, 200));
+        mDialog = new JDialog(mainFrame, false);
+        mDialog.setPreferredSize(new Dimension(mainFrame.getWidth() - 40, 200));
         // TODO I'd like it moved so it's bottom edge is just above the
         // status bar, and centred within the main app frame
-        dialog.setTitle("Messages from " + pluginRegistry.getApplicationName());
+        mDialog.setTitle("Messages from " + applicationName);
         
         initialiseNoMessagesTextPane();
         initialiseEmptyControlsPane();
         initialiseMainPanel();
-        dialog.add(mainPanel);
+        mDialog.add(mMainPanel);
         
-        dialog.addWindowListener(new WindowAdapter() {
+        mDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(final WindowEvent e) {
                 getMessageQueueViewerFactory().messageViewerClosed();
@@ -99,65 +98,65 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         
         updateWithSelectedMessage();
         
-        dialog.pack();
-        dialog.setVisible(true);
+        mDialog.pack();
+        mDialog.setVisible(true);
     }
 
     private void initialiseEmptyControlsPane() {
-        emptyControls = new JLabel("");
+        mEmptyControls = new JLabel("");
     }
 
     private void initialiseNoMessagesTextPane() {
-        noMessagesTextPane = new HTMLPanel(createHTMLText("<p align=\"center\">No messages waiting</p>"));
+        mNoMessagesTextPane = new HTMLPanel(createHTMLText("<p align=\"center\">No messages waiting</p>"));
     }
 
     private void setBodyComponent(final Component component) {
         LOGGER.debug("Setting body component to " + component);
-        bodyContainer.removeAll();
-        bodyContainer.add(component, BorderLayout.CENTER);
-        bodyContainer.revalidate();
-        bodyContainer.repaint();
+        mBodyContainer.removeAll();
+        mBodyContainer.add(component, BorderLayout.CENTER);
+        mBodyContainer.revalidate();
+        mBodyContainer.repaint();
     }
 
     private void setControlsComponent(final Component controls) {
         LOGGER.debug("Setting controls component to " + controls);
-        controlsContainer.removeAll();
-        controlsContainer.add(controls, BorderLayout.EAST);
-        controlsContainer.revalidate();
-        controlsContainer.repaint();
+        mControlsContainer.removeAll();
+        mControlsContainer.add(controls, BorderLayout.EAST);
+        mControlsContainer.revalidate();
+        mControlsContainer.repaint();
     }
     
     private void updateWithSelectedMessage() {
-        final int currentIndex = messageQueue.getCurrentMessageIndex();
+        final int currentIndex = mMessageQueue.getCurrentMessageIndex();
         boolean enablePrevious = false;
         boolean enableRemove = false;
         boolean enableNext = false;
         // TODO turn off updates
         if (currentIndex == -1) {
-            currentMessage = null;
-            currentMessageRenderer = null;
+            mCurrentMessage = null;
+            mCurrentMessageRenderer = null;
             LOGGER.info("empty - no message display");
-            messageSubjectPane.setText(createDialogFontText("<em>No messages</em>"));
-            setBodyComponent(noMessagesTextPane);
-            setControlsComponent(emptyControls);
+            mMessageSubjectPane.setText(createDialogFontText("<em>No messages</em>"));
+            setBodyComponent(mNoMessagesTextPane);
+            setControlsComponent(mEmptyControls);
         } else {
-            currentMessage = messageQueue.getMessageByIndex(currentIndex);
-            LOGGER.info("rendering message " + currentIndex + ": " + currentMessage.getSubject());
+            mCurrentMessage = mMessageQueue.getMessageByIndex(currentIndex);
+            LOGGER.info("rendering message " + currentIndex + ": " + mCurrentMessage.getSubject());
             // Subject... always text, for all messages. so handle it here.
-            messageSubjectPane.setText(createSubjectLabelText(currentIndex + 1, messageQueue.size(), currentMessage.getSubject()));
-            currentMessageRenderer = messageRendererFactory.createRenderer(currentMessage);
-            setBodyComponent(currentMessageRenderer.render());
-            final Component controls = currentMessageRenderer.renderControls();
-            setControlsComponent(controls == null ? emptyControls : controls);
+            mMessageSubjectPane.setText(createSubjectLabelText(currentIndex + 1, mMessageQueue.size(), mCurrentMessage.getSubject()));
+            mCurrentMessageRenderer = mMessageRendererFactory.createRenderer(mCurrentMessage);
+            setBodyComponent(mCurrentMessageRenderer.render());
+            final Component controls = mCurrentMessageRenderer.renderControls();
+            setControlsComponent(controls == null ? mEmptyControls : controls);
             enableRemove = true;
             enablePrevious = currentIndex != 0;
-            enableNext = currentIndex != messageQueue.size() - 1;
+            enableNext = currentIndex != mMessageQueue.size() - 1;
         }
-        messageSubjectPane.setCaretPosition(0);
-        previousButton.setEnabled(enablePrevious);
-        removeButton.setEnabled(enableRemove);
-        nextButton.setEnabled(enableNext);
-        mainPanel.validate();
+        mMessageSubjectPane.setCaretPosition(0);
+        mPreviousButton.setEnabled(enablePrevious);
+        mRemoveButton.setEnabled(enableRemove);
+        mNextButton.setEnabled(enableNext);
+        mMainPanel.validate();
         // TODO turn on updates
     }
 
@@ -177,15 +176,15 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
      * @return
      */
     private void initialiseMainPanel() {
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(subjectPanel(), BorderLayout.NORTH);
-        bodyContainer = new JPanel();
-        bodyContainer.setLayout(new BorderLayout());
-        mainPanel.add(bodyPanel(), BorderLayout.CENTER);
-        controlsContainer = new JPanel();
-        controlsContainer.setLayout(new BorderLayout());
-        mainPanel.add(controlsPanel(), BorderLayout.SOUTH);
+        mMainPanel = new JPanel();
+        mMainPanel.setLayout(new BorderLayout());
+        mMainPanel.add(subjectPanel(), BorderLayout.NORTH);
+        mBodyContainer = new JPanel();
+        mBodyContainer.setLayout(new BorderLayout());
+        mMainPanel.add(bodyPanel(), BorderLayout.CENTER);
+        mControlsContainer = new JPanel();
+        mControlsContainer.setLayout(new BorderLayout());
+        mMainPanel.add(controlsPanel(), BorderLayout.SOUTH);
     }
 
     private Component subjectPanel() {
@@ -195,11 +194,11 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         greypanel.setLayout(new BorderLayout());
         greypanel.setBackground(Color.GRAY);
         greypanel.setForeground(Color.WHITE);
-        messageSubjectPane = new HTMLPanel();
-        messageSubjectPane.setHTMLText(createHTMLText("<font face=\"dialog\"><b>No messages</b></font>"));
-        messageSubjectPane.setBackground(Color.GRAY);
-        messageSubjectPane.setForeground(Color.WHITE);
-        greypanel.add(messageSubjectPane, BorderLayout.WEST);
+        mMessageSubjectPane = new HTMLPanel();
+        mMessageSubjectPane.setHTMLText(createHTMLText("<font face=\"dialog\"><b>No messages</b></font>"));
+        mMessageSubjectPane.setBackground(Color.GRAY);
+        mMessageSubjectPane.setForeground(Color.WHITE);
+        greypanel.add(mMessageSubjectPane, BorderLayout.WEST);
         panel.add(greypanel, BorderLayout.CENTER);
         return panel;
     }
@@ -207,7 +206,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
     private Component bodyPanel() {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.add(new JScrollPane(bodyContainer), BorderLayout.CENTER);
+        panel.add(new JScrollPane(mBodyContainer), BorderLayout.CENTER);
         return panel;
     }
 
@@ -216,42 +215,42 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         controlsMainPanel.setLayout(new BorderLayout());
         
         // Dynamic controls
-        controlsMainPanel.add(controlsContainer, BorderLayout.CENTER);
+        controlsMainPanel.add(mControlsContainer, BorderLayout.CENTER);
         
         // Static controls
         final JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new FlowLayout());
-        previousButton = new JButton("<< Previous");
-        previousButton.addActionListener(new ActionListener() {
+        mPreviousButton = new JButton("<< Previous");
+        mPreviousButton.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                messageQueue.previous();
+                mMessageQueue.previous();
                 updateWithSelectedMessage();
             }
         });
-        buttonsPanel.add(previousButton);
+        buttonsPanel.add(mPreviousButton);
         
-        removeButton = new JButton("Remove");
-        removeButton.addActionListener(new ActionListener() {
+        mRemoveButton = new JButton("Remove");
+        mRemoveButton.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                assert currentMessage != null;
-                assert currentMessageRenderer != null;
+                assert mCurrentMessage != null;
+                assert mCurrentMessageRenderer != null;
                 // used to be messageQueue.getMessageByIndex(messageQueue.getCurrentMessageIndex())
-                messageQueue.removeMessage(currentMessage);
+                mMessageQueue.removeMessage(mCurrentMessage);
                 updateWithSelectedMessage();
             }
         });
         
-        buttonsPanel.add(removeButton);
+        buttonsPanel.add(mRemoveButton);
         
-        nextButton = new JButton("Next >>");
-        nextButton.addActionListener(new ActionListener() {
+        mNextButton = new JButton("Next >>");
+        mNextButton.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                messageQueue.next();
+                mMessageQueue.next();
                 updateWithSelectedMessage();
             }
         });
         
-        buttonsPanel.add(nextButton);
+        buttonsPanel.add(mNextButton);
         controlsMainPanel.add(buttonsPanel, BorderLayout.EAST);
        
         return controlsMainPanel;

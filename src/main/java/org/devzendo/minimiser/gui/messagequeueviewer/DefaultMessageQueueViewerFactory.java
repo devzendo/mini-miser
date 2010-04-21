@@ -66,7 +66,7 @@ public final class DefaultMessageQueueViewerFactory extends
         final DefaultMessageQueueViewer messageQueueViewer =
             new DefaultMessageQueueViewer(this, 
                 new MessageRendererFactory(),
-                mPluginRegistry);
+                mPluginRegistry.getApplicationName());
         mCursorManager.normal(this.getClass().getSimpleName());
         return messageQueueViewer;
     }
