@@ -20,12 +20,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -50,9 +48,6 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
     private final MessageQueue mMessageQueue;
     private HTMLPanel mMessageSubjectPane;
     private HTMLPanel mNoMessagesTextPane;
-    private JButton mPreviousButton;
-    private JButton mRemoveButton;
-    private JButton mNextButton;
     private final MessageRendererFactory mMessageRendererFactory;
     private JPanel mMainPanel;
     private JComponent mEmptyControls;
@@ -60,6 +55,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
     private JPanel mBodyContainer;
     private Message mCurrentMessage;
     private MessageRenderer mCurrentMessageRenderer;
+    private DefaultMessageQueueViewerButtonsPanel mButtonsPanel;
 
     /**
      * Create the DefaultMessageQueueViewer given its factory.
@@ -145,9 +141,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
             enableNext = currentIndex != mMessageQueue.size() - 1;
         }
         mMessageSubjectPane.setCaretPosition(0);
-        mPreviousButton.setEnabled(enablePrevious);
-        mRemoveButton.setEnabled(enableRemove);
-        mNextButton.setEnabled(enableNext);
+        mButtonsPanel.setControlsEnabled(enablePrevious, enableRemove, enableNext);
         mMainPanel.validate();
         // TODO turn on updates
     }
@@ -174,6 +168,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         mBodyContainer = new JPanel();
         mBodyContainer.setLayout(new BorderLayout());
         mMainPanel.add(bodyPanel(), BorderLayout.CENTER);
+        mButtonsPanel = buttonsPanel();
         mControlsContainer = new JPanel();
         mControlsContainer.setLayout(new BorderLayout());
         mMainPanel.add(controlsPanel(), BorderLayout.SOUTH);
@@ -210,19 +205,22 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         controlsMainPanel.add(mControlsContainer, BorderLayout.CENTER);
         
         // Static controls
-        final JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new FlowLayout());
-        mPreviousButton = new JButton("<< Previous");
-        mPreviousButton.addActionListener(new ActionListener() {
+        controlsMainPanel.add(mButtonsPanel, BorderLayout.EAST);
+       
+        return controlsMainPanel;
+    }
+
+    private DefaultMessageQueueViewerButtonsPanel buttonsPanel() {
+        final DefaultMessageQueueViewerButtonsPanel buttonsPanel = new DefaultMessageQueueViewerButtonsPanel();
+
+        buttonsPanel.addPreviousActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 mMessageQueue.previous();
                 updateWithSelectedMessage();
             }
         });
-        buttonsPanel.add(mPreviousButton);
         
-        mRemoveButton = new JButton("Remove");
-        mRemoveButton.addActionListener(new ActionListener() {
+        buttonsPanel.addRemoveActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 assert mCurrentMessage != null;
                 assert mCurrentMessageRenderer != null;
@@ -232,19 +230,12 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
             }
         });
         
-        buttonsPanel.add(mRemoveButton);
-        
-        mNextButton = new JButton("Next >>");
-        mNextButton.addActionListener(new ActionListener() {
+        buttonsPanel.addNextActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 mMessageQueue.next();
                 updateWithSelectedMessage();
             }
         });
-        
-        buttonsPanel.add(mNextButton);
-        controlsMainPanel.add(buttonsPanel, BorderLayout.EAST);
-       
-        return controlsMainPanel;
+        return buttonsPanel;
     }
 }
