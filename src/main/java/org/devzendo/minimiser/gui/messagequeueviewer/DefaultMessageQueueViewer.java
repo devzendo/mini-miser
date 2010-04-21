@@ -24,8 +24,6 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -46,7 +44,6 @@ import org.devzendo.minimiser.messagequeue.MessageQueue;
  *
  */
 public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer {
-
     private static final Logger LOGGER = Logger
             .getLogger(DefaultMessageQueueViewer.class);
     private final JDialog mDialog;
@@ -89,12 +86,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         initialiseMainPanel();
         mDialog.add(mMainPanel);
         
-        mDialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(final WindowEvent e) {
-                getMessageQueueViewerFactory().messageViewerClosed();
-            }
-        });
+        mDialog.addWindowListener(new MessageViewerCloseNotifier(getMessageQueueViewerFactory()));
         
         updateWithSelectedMessage();
         
