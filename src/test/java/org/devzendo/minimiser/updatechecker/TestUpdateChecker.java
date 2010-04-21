@@ -19,7 +19,6 @@ package org.devzendo.minimiser.updatechecker;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.messagequeue.Message;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
@@ -46,7 +45,7 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestUpdateChecker extends LoggingTestCase {
+public final class TestUpdateChecker {
     private static final String VERSION_1_0_0 = "1.0.0";
     private static final String VERSION_0_9_0 = "0.9.0";
     private static final String NOT_TODAYS_DATE = "22/02/1999";
