@@ -29,11 +29,11 @@ import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.util.Sleeper;
-import org.devzendo.minimiser.util.StubToday;
 import org.devzendo.minimiser.util.Today;
 import org.devzendo.minimiser.util.WorkerPool;
 import org.devzendo.minimiser.wiring.lifecycle.PeriodicUpdateCheckerLifecycle;
 import org.easymock.EasyMock;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,13 +78,23 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
             new MessageQueueBorderGuardFactory(mPrefs));
         mRemoteFileRetriever = new StubRemoteFileRetriever();
         mChangeLogTransformer = new NullChangeLogTransformer();
-        mToday = new StubToday(TODAYS_DATE);
+        mToday = EasyMock.createMock(Today.class);
+        EasyMock.expect(mToday.getUKDateString()).andReturn(TODAYS_DATE).anyTimes();
+        EasyMock.replay(mToday);
         mWorkerPool = new WorkerPool();
         mPluginRegistry = new DummyAppPluginRegistry("Foo", VERSION_1_0_0);
         mUpdateChecker = new DefaultUpdateChecker(mPrefs, mMessageQueue,
                 mRemoteFileRetriever, mChangeLogTransformer, mToday,
                 mWorkerPool, mPluginRegistry);
         mSleeper = new Sleeper(3600);
+    }
+
+    /**
+     * 
+     */
+    @After
+    public void checkMocks() {
+        EasyMock.verify(mToday);
     }
     
     /**

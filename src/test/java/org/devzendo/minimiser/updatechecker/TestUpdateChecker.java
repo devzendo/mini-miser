@@ -29,10 +29,10 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
-import org.devzendo.minimiser.util.StubToday;
 import org.devzendo.minimiser.util.Today;
 import org.devzendo.minimiser.util.WorkerPool;
 import org.easymock.EasyMock;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,11 +68,20 @@ public final class TestUpdateChecker {
         mMessageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(mPrefs));
         mRemoteFileRetriever = new StubRemoteFileRetriever();
         mChangeLogTransformer = new NullChangeLogTransformer();
-        mToday = new StubToday(TODAYS_DATE);
+        mToday = EasyMock.createMock(Today.class);
+        EasyMock.expect(mToday.getUKDateString()).andReturn(TODAYS_DATE).anyTimes();
+        EasyMock.replay(mToday);
         mWorkerPool = new WorkerPool();
     }
 
-
+    /**
+     * 
+     */
+    @After
+    public void checkMocks() {
+        EasyMock.verify(mToday);
+    }
+    
     private void createUpdateCheckerWithAppDetails(final PluginRegistry pluginRegistry) {
         mUpdateChecker = new DefaultUpdateChecker(mPrefs,
             mMessageQueue, mRemoteFileRetriever,
