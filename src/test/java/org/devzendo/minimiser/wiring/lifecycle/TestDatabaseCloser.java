@@ -122,7 +122,7 @@ public final class TestDatabaseCloser extends DummyAppPluginManagerPersistenceUn
      */
     @Test
     public void closeFailureShouldDisplayAnError() {
-        // TODO - will need to decouple problem reporting from closing, in the
+        // TODO: - will need to decouple problem reporting from closing, in the
         // same way I did for the Opener, via an adapter.
         // This can be reused in the opener lifecycle.
     }

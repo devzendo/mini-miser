@@ -242,7 +242,7 @@ public interface OpenerAdapter {
      * Report to the user the migration cannot be done as this
      * database is at a more recent version than the plugins
      * support.
-     * TODO possibly add the versions of the plugins that are
+     * TODO: possibly add the versions of the plugins that are
      * present in the database?
      */
     void migrationNotPossible();

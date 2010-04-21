@@ -153,7 +153,7 @@ public interface Menu {
     /**
      * Add an observer of window menu database switches
      * @param observer of switches
-     * TODO this appears to have not been added TDD - need to write tests
+     * TODO: this appears to have not been added TDD - need to write tests
      * for observation of database switching?
      */
     void addDatabaseSwitchObserver(Observer<DatabaseNameChoice> observer);

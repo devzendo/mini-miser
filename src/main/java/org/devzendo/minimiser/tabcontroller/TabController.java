@@ -55,7 +55,7 @@ public final class TabController {
         final Tab tab = finalTabDescriptor.getTab();
         LOGGER.debug("Getting insertion point for tab " + displayableName);
         final int insertionPoint = mOpenTabList.getInsertionPosition(databaseDescriptor.getDatabaseName(), tabDescriptor.getTabIdentifier());
-        // TODO perhaps the OpenTabList should be throwing the IllegalStateException here?
+        // TODO: perhaps the OpenTabList should be throwing the IllegalStateException here?
         if (insertionPoint == -1) {
             final String warning = "Cannot get insertion point for tab: database '"
                                     + databaseDescriptor.getDatabaseName() + "' not added to open tab list";

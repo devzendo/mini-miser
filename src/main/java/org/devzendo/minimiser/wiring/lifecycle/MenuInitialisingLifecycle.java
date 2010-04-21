@@ -81,7 +81,7 @@ public final class MenuInitialisingLifecycle implements Lifecycle {
         menu.initialise();
         final RecentFilesList recentList = mSpringLoader.getBean("recentFilesList", RecentFilesList.class);
         menu.refreshRecentList(recentList.getRecentDatabases());
-        // TODO SMELL why not have it populated correctly at first?
+        // TODO: SMELL why not have it populated correctly at first?
         // we could pass in the recent strings to a ctor?
         // NOTE the view menu is initially populated via a lifecycle
         LOGGER.info("Got the menu");

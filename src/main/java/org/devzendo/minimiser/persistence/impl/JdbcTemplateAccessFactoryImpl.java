@@ -278,7 +278,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         return daoFactories;
     }
 
-    // TODO move this to VersionsDao?
+    // TODO: move this to VersionsDao?
     private void createTables(
             final DatabaseSetup dbDetails,
             final Observer<PersistenceObservableEvent> observer,
@@ -309,7 +309,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
             final Map<String, Object> pluginProperties) {
         // Don't forget to adjust POPULATION_STEPS when we add steps to
         // the population.
-        // TODO get this from Spring when we have a factory bean that can
+        // TODO: get this from Spring when we have a factory bean that can
         // create a JdbcTemplate from a programatically created
         // DataSource.
         final VersionsDao versionsDao = new JdbcTemplateVersionsDao(dbDetails.getJdbcTemplate());

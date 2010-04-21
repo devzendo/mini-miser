@@ -302,7 +302,7 @@ public final class TestOpenDatabaseList extends LoggingTestCase {
      * i.e. the tick should stay in the same place.
      * 
      */
-    // TODO do we have a test that covers the above comment?
+    // TODO: do we have a test that covers the above comment?
     
     /**
      * Close the only database, fire a listener, and get list empty.

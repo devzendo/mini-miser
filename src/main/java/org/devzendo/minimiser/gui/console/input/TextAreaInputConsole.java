@@ -176,7 +176,7 @@ public final class TextAreaInputConsole implements InputConsole {
      * observers to determine the history number that a command will be stored
      * under, if it succeeds in being transformed as a history command (or
      * passed through if it isn't a history command)
-     * TODO this code is a bit smelly, relying on the order of observers
+     * TODO: this code is a bit smelly, relying on the order of observers
      * being called and ignoring history transformation failure.
      */
     public int getNextHistoryNumber() {

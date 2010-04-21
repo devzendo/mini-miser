@@ -176,7 +176,7 @@ public final class ProblemDialog extends JDialog implements
         final ApplicationPluginDescriptor appPlugin = mPluginRegistry.getApplicationPluginDescriptor();
         if (appPlugin == null
             || StringUtils.isBlank(appPlugin.getDevelopersContactDetails())) {
-            mailaddr.append("minimiser-dev@gumbley.me.uk"); // TODO make this a resource?
+            mailaddr.append("minimiser-dev@gumbley.me.uk"); // TODO: make this a resource?
         } else {
             mailaddr.append(appPlugin.getDevelopersContactDetails().trim());
         }

@@ -223,7 +223,7 @@ public final class WelcomeDialog extends AbstractSnailDialog {
             if (resourceAsStream == null) {
                 return "No " + changeLogResourcePath + " available";
             }
-            final DefaultChangeLogTransformer transformer = new DefaultChangeLogTransformer(); // TODO inject this!!
+            final DefaultChangeLogTransformer transformer = new DefaultChangeLogTransformer(); // TODO: inject this!!
             try {
                 final String transformedChangeLog = transformer.readAllStream(resourceAsStream);
                 LOGGER.debug("The HTML is:");

@@ -256,7 +256,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
         LOGGER.info(">>> testCreatePlaintextDatabase");
         final String dbName = "testcreate";
         // should we be able to create this db?
-        // TODO my assumption about the databse directory + dbname was wrong.
+        // TODO: my assumption about the databse directory + dbname was wrong.
         // I thought it'd create a dir for the db, but dbName is just the
         // prefix of the files in the parent dir
         final String dbDirPlusDbName = getAbsoluteDatabaseDirectory(dbName);
@@ -367,7 +367,7 @@ public final class TestCreateOpenCloseDatabase extends DummyAppPluginManagerPers
     
     /**
      * Test that we cannot get DAOs when we've closed.
-     * TODO loop on all DAOs when we have more - need to check that all fail
+     * TODO: loop on all DAOs when we have more - need to check that all fail
      * @throws IllegalStateException due to closed db
      */
     @Test(expected = IllegalStateException.class)

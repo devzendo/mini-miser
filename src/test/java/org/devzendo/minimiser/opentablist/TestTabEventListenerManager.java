@@ -103,7 +103,7 @@ public final class TestTabEventListenerManager extends SpringLoaderUnittestCase 
         Assert.assertEquals("one TabOpenedEvent", addOrdering.get(0));
         Assert.assertEquals("two TabOpenedEvent", addOrdering.get(1));
 
-        // TODO add tests for switch ordering in here
+        // TODO: add tests for switch ordering in here
     }
 
     /**

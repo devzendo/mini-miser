@@ -28,11 +28,11 @@ public final class PasswordValidator {
     /**
      * 
      */
-    public static final int MAX_PASSWORD_LENGTH = 32; // TODO I don't know what the maximum password length in h2 is
+    public static final int MAX_PASSWORD_LENGTH = 32; // TODO: I don't know what the maximum password length in h2 is
     /**
      * 
      */
-    public static final int MIN_PASSWORD_LENGTH = 8; // TODO I don't know what the maximum password length in h2 is
+    public static final int MIN_PASSWORD_LENGTH = 8; // TODO: I don't know what the maximum password length in h2 is
     /**
      * 
      */

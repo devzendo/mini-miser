@@ -73,7 +73,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         
         mDialog = new JDialog(mainFrame, false);
         mDialog.setPreferredSize(new Dimension(mainFrame.getWidth() - 40, 200));
-        // TODO I'd like it moved so it's bottom edge is just above the
+        // TODO: I'd like it moved so it's bottom edge is just above the
         // status bar, and centred within the main app frame
         mDialog.setTitle("Messages from " + applicationName);
         
@@ -119,7 +119,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         boolean enablePrevious = false;
         boolean enableRemove = false;
         boolean enableNext = false;
-        // TODO turn off updates
+        // TODO: turn off updates
         if (currentIndex == -1) {
             mCurrentMessage = null;
             mCurrentMessageRenderer = null;
@@ -143,7 +143,7 @@ public final class DefaultMessageQueueViewer extends AbstractMessageQueueViewer 
         mMessageSubjectPane.setCaretPosition(0);
         mButtonsPanel.setControlsEnabled(enablePrevious, enableRemove, enableNext);
         mMainPanel.validate();
-        // TODO turn on updates
+        // TODO: turn on updates
     }
 
     private String createHTMLText(final String bodyText) {

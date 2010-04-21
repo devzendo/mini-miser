@@ -93,7 +93,7 @@ public final class ApplicationMenu {
             mReservedMenuNames.add(systemMenu.toString());
         }
         mReservedSystemMenus = new HashMap<SystemMenu, Set<String>>();
-        // TODO remove duplication of menu text
+        // TODO: remove duplication of menu text
         mReservedSystemMenus.put(SystemMenu.File, new HashSet<String>(
                 Arrays.asList(new String[] {
                 "New...", "Open...", "Close", "Close all", "Exit"

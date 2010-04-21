@@ -62,7 +62,7 @@ public final class PluginInitialiser {
      * @throws PluginException on initialisation failure
      */
     public void initialisePlugins(final List<Plugin> loadedPlugins) throws PluginException {
-        // TODO improve this diag
+        // TODO: improve this diag
         LOGGER.info("List of plugins: " + loadedPlugins);
         if (loadedPlugins.size() == 0) {
             final String warning = "No plugins have been found";

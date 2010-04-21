@@ -301,7 +301,7 @@ public final class MenuImpl implements Menu {
 
     /**
      * {@inheritDoc}
-     * TODO this can be removed
+     * TODO: this can be removed
      */
     public void setTabHidden(final String tabName, final boolean tabHidden) {
         LOGGER.debug("Tab " + tabName + " is " + (tabHidden ? "" : "not ") + "hidden");

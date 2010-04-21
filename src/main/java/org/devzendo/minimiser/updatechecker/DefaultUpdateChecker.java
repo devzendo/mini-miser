@@ -127,7 +127,7 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             progressAdapter.commsFailure(e);
             return;
         }
-        // TODO may need to do some massaging of the remote
+        // TODO: may need to do some massaging of the remote
         // version number, removing whitespace, extra newlines,
         // etc.
         LOGGER.info("Remote version number is " + remoteVersionNumber);
@@ -139,7 +139,7 @@ public final class DefaultUpdateChecker implements UpdateChecker {
             lastSuccessfulUpdateWasToday();
             return;
         }
-        // TODO not sure whether comparing the remote version against the
+        // TODO: not sure whether comparing the remote version against the
         // last downloaded remote version is right - it means that
         // we only do the update check once. There needs to be a DSTA
         // placed against the 'remote version is different'.
@@ -210,9 +210,9 @@ public final class DefaultUpdateChecker implements UpdateChecker {
         progressAdapter.updateAvailable();
         final SimpleMessage message = new SimpleMessage("Update to version " + remoteVersionNumber + " available",
             changeLogContents, Message.Importance.MEDIUM);
-        // TODO add in the downloads page URL to the message with
+        // TODO: add in the downloads page URL to the message with
         // a hypertext link
-        // TODO PLUGIN - allow the download page and version
+        // TODO: PLUGIN - allow the download page and version
         // check URLs to be specified in plugin descriptors
         mMessageQueue.addMessage(message);
         lastSuccessfulUpdateWasToday();

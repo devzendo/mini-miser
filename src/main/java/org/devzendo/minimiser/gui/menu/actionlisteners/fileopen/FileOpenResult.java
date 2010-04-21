@@ -96,7 +96,7 @@ public final class FileOpenResult extends DeferredWizardResult {
         final String dbName = dbPathFile.getName();
         final String dbFullPath = StringUtils.slashTerminate(dbPath) + dbName;
 
-        // TODO pass the wizard's frame in here
+        // TODO: pass the wizard's frame in here
         final OpenerAdapter openerAdapter = new FileOpenWizardOpenerAdapter(null, dbName, cursor, progress);
         dbOpener.openDatabase(dbName, dbFullPath, openerAdapter);
 

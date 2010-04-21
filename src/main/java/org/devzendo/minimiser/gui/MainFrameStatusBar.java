@@ -66,7 +66,7 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
         progressBarPanel.add(label);
         statusBarPanel.add(progressBarPanel, BorderLayout.WEST);
         
-        messageQueueButton = new MessagesButton(new Sleeper()); // TODO inject this
+        messageQueueButton = new MessagesButton(new Sleeper()); // TODO: inject this
         messageQueueButton.setPreferredSize(new Dimension(150, 16));
         messageQueueButton.setVisible(false);
         statusBarPanel.add(messageQueueButton, BorderLayout.EAST);
@@ -108,7 +108,7 @@ public final class MainFrameStatusBar extends AbstractStatusBar {
      * {@inheritDoc}
      */
     public void setEncryptedIndicator(final boolean encrypted) {
-        // TODO Auto-generated method stub
+        // TODO: Auto-generated method stub
     }
 
     /**

@@ -118,7 +118,7 @@ public final class DefaultTabFactoryImpl implements TabFactory {
 
                 LOGGER.debug("Loading tab " + identifier.getTabName());
                 final Tab loadedTab = loadTab(identifier);
-                if (loadedTab == null) { // TODO need test for failure to load causes lack of addition to list
+                if (loadedTab == null) { // TODO: need test for failure to load causes lack of addition to list
                     LOGGER.warn("Could not load tab " + identifier.getTabName());
                 } else {
                     tabDescriptorList.add(new TabDescriptor(identifier, loadedTab));

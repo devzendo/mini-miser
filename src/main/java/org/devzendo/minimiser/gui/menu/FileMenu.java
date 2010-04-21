@@ -79,7 +79,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     @Override
     public void rebuildMenuGroup() {
         fileMenu.removeAll();
-        // TODO remove duplication of menu text
+        // TODO: remove duplication of menu text
         createMenuItem(MenuIdentifier.FileNew, "New...", 'N', fileMenu);
         createMenuItem(MenuIdentifier.FileOpen, "Open...", 'O', fileMenu);
         fileMenu.add(buildRecentList());
@@ -89,7 +89,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
         createMenuItem(MenuIdentifier.FileClose, "Close", 'C', fileMenu);
         createMenuItem(MenuIdentifier.FileCloseAll, "Close all", 'l', fileMenu);
 
-        // TODO enable import / export in 0.2
+        // TODO: enable import / export in 0.2
 //        fileMenu.add(new JSeparator());
 //
 //        getMainMenu().createMenuItem(MenuIdentifier.FileImport, "Import...", 'I', fileMenu);
@@ -166,7 +166,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     public void enableCloseMenu(final boolean enabled) {
         LOGGER.debug("Close menu is " + (enabled ? "enabled" : "disabled"));
         getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileClose, enabled);
-        // TODO enable import / export in 0.2
+        // TODO: enable import / export in 0.2
         // getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileImport, enabled);
         // getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileExport, enabled);
     }

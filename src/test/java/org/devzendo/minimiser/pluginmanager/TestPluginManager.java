@@ -132,7 +132,7 @@ public final class TestPluginManager extends LoggingTestCase {
         defaultPluginManager.loadPlugins("org/devzendo/minimiser/plugin/twoappplugin.properties");
     }
 
-    // TODO should provide some tests to show that mycila
+    // TODO: should provide some tests to show that mycila
     // exceptions are caught and rethrown....
 
     /**

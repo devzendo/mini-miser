@@ -39,7 +39,7 @@ public final class DelayedExecutorFlushLifecycle implements Lifecycle {
      * {@inheritDoc}
      */
     public void shutdown() {
-        // TODO write the flushing functionality
+        // TODO: write the flushing functionality
         // delayedExecutor.flush();
         delayedExecutor.toString(); // no checkstyle warning please Bob
     }

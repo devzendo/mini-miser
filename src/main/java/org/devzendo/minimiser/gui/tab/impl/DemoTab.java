@@ -61,7 +61,7 @@ public final class DemoTab implements Tab {
      * {@inheritDoc}
      */
     public void destroy() {
-        // TODO Auto-generated method stub
+        // TODO: Auto-generated method stub
         
     }
     
@@ -69,7 +69,7 @@ public final class DemoTab implements Tab {
      * {@inheritDoc}
      */
     public void disposeComponent() {
-        // TODO Auto-generated method stub
+        // TODO: Auto-generated method stub
         
     }
 }

@@ -303,13 +303,13 @@ public final class StubMenu implements Menu {
      * {@inheritDoc}
      */
     public void rebuildEntireMenu() {
-        // TODO currently untested
+        // TODO: currently untested
     }
 
     /**
      * {@inheritDoc}
      */
     public void rebuildFileMenu() {
-        // TODO currently untested
+        // TODO: currently untested
     }
 }

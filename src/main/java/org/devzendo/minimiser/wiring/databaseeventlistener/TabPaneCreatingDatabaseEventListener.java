@@ -46,7 +46,7 @@ import org.devzendo.minimiser.tabcontroller.TabController;
  *
  * On close, remove the tabs from the open tab list.
  *
- * TODO SRP I could argue that this class has two reasons to change,
+ * TODO: SRP I could argue that this class has two reasons to change,
  * and so violates SRP. At least it should be renamed as it's a
  * lifecycle manager for the TabPanes.
  *
@@ -105,7 +105,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
 
         // Create the JTabbedPane
         LOGGER.info("Creating tabbed pane for database '" + databaseDescriptor.getDatabaseName() + "'");
-        // TODO replace this with the GUIValueObtainer
+        // TODO: replace this with the GUIValueObtainer
         final JTabbedPane databaseTabbedPane = createTabbedPaneOnEventThread(databaseDescriptor);
         databaseDescriptor.setTabbedPane(databaseTabbedPane);
 
@@ -182,7 +182,7 @@ public final class TabPaneCreatingDatabaseEventListener implements Observer<Data
     private List<TabDescriptor> loadPermanentAndStoredTabs(final DatabaseDescriptor databaseDescriptor) {
         final List<TabIdentifier> permanentAndOpenTabs = mPrefs.getOpenTabs(databaseDescriptor.getDatabaseName());
         LOGGER.info("Permanent and stored tabs: " + permanentAndOpenTabs);
-        // TODO perhaps the check for existence of tabs in the OpenTabList should be
+        // TODO: perhaps the check for existence of tabs in the OpenTabList should be
         // done here and not in the tab factory?
         return mTabFactory.loadTabs(databaseDescriptor,
                             permanentAndOpenTabs);

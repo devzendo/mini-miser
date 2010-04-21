@@ -30,7 +30,7 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
  * persistence methods.
  * 
  * 
- * TODO a couple of smells here:
+ * TODO: a couple of smells here:
  * 1) The prefs-loading call to load then setDatabaseList, since there's now an
  * inheritance hierarchy... a little smelly.
  * 
@@ -133,7 +133,7 @@ public abstract class AbstractRecentFilesListImpl implements RecentFilesList {
      * {@inheritDoc}
      */
     public final int getCapacity() {
-        // TODO later, possibly allow this to be configured via prefs.
+        // TODO: later, possibly allow this to be configured via prefs.
         // reducing the size of the list would truncate.
         return DEFAULT_CAPACITY;
     }

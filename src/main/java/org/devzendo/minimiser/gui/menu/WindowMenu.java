@@ -84,7 +84,7 @@ public final class WindowMenu extends AbstractRebuildableMenuGroup {
             final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(databaseName, databaseDescriptor.equals(currentDatabaseDescriptor));
             menuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent e) {
-                    // TODO might be better to spawn this on a separate thread?
+                    // TODO: might be better to spawn this on a separate thread?
                     windowMenuChoiceObservers.eventOccurred(new DatabaseNameChoice(databaseName));
                 }
             });

@@ -43,7 +43,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 /**
  * The Opener should add all DAOFactories (from miniMiser and the
  * plugins) to the DatabaseDescriptor.
- * TODO rewrite this to use the PersistencePluginHelper
+ * TODO: rewrite this to use the PersistencePluginHelper
  * @author matt
  *
  */

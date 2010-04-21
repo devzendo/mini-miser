@@ -82,8 +82,8 @@ public final class DatabaseDirectoryValidator {
         if (!dir.isDirectory()) {
             return "'" + directoryName + "' is not a folder";
         }
-        // TODO what about lock files?
-        // TODO what if we already have this db open?
+        // TODO: what about lock files?
+        // TODO: what if we already have this db open?
         int numCorrectlyNamedFiles = 0;
         final String[] fileList = dir.list();
         for (String fileName : fileList) {

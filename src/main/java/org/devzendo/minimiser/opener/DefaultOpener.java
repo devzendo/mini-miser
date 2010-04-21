@@ -196,7 +196,7 @@ public final class DefaultOpener implements Opener {
                 return false;
             } else {
                 LOGGER.warn("No: there is a plugin version stored for '" + applicationPlugin.getName() + "' but it is not an application");
-                // TODO test that this should give a response
+                // TODO: test that this should give a response
             }
         } else {
             LOGGER.warn("No: there is no version stored for the '" + applicationPlugin.getName() + "' plugin");

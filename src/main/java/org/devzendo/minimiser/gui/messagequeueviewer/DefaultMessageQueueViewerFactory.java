@@ -62,7 +62,7 @@ public final class DefaultMessageQueueViewerFactory extends
         
         messageViewerCreated();
         mCursorManager.hourglass(this.getClass().getSimpleName());
-        // TODO inject MessageRendererFactory
+        // TODO: inject MessageRendererFactory
         final DefaultMessageQueueViewer messageQueueViewer =
             new DefaultMessageQueueViewer(this, 
                 new MessageRendererFactory(),

@@ -75,7 +75,7 @@ public final class DefaultRecentFilesListImpl extends AbstractRecentFilesListImp
                 LOGGER.info("stored " + nameAndPath + " name " + pair.getName() + " path " + pair.getPath());
                 descriptors.add(new DatabaseDescriptor(pair.getName(), pair.getPath()));
             } catch (final IllegalArgumentException iae) {
-                // TODO should this be a warning in a dialog?
+                // TODO: should this be a warning in a dialog?
                 LOGGER.warn("Could not reload entry from recent list '" + nameAndPath + "'");
             }
         }

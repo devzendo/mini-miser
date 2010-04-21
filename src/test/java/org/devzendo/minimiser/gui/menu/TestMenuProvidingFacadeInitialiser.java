@@ -168,6 +168,6 @@ public final class TestMenuProvidingFacadeInitialiser {
 
         Assert.assertEquals("while initialising the application menu", mStubProblemReporter.getDoing());
     }
-    // TODO do I need tests that ensure that only the ApplicationPlugin can implement
+    // TODO: do I need tests that ensure that only the ApplicationPlugin can implement
     // MenuProviding?
 }

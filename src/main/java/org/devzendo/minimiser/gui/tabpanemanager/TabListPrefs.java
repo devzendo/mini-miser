@@ -97,7 +97,7 @@ public final class TabListPrefs {
      * <p>
      * Delegates directly to the underlying Prefs object.
      *
-     * TODO should take a TabIdentifier?
+     * TODO: should take a TabIdentifier?
      *
      * @param databaseName the name of the database with an active tab
      * @param tabName the name of the tab to store against that database

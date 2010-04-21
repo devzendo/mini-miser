@@ -28,7 +28,7 @@ import org.devzendo.commoncode.gui.GUIUtils;
  * entered password (or empty string, if user cancelled) to the calling
  * thread.
  * 
- * TODO rework this to use the GUIValueObtainer
+ * TODO: rework this to use the GUIValueObtainer
  *  
  * @author matt
  *

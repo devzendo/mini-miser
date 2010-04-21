@@ -23,7 +23,7 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
 /**
  * A choice of view tab from the View menu has been made.
- * TODO WOZERE will probably need the database and tab descriptor here?
+ * TODO: WOZERE will probably need the database and tab descriptor here?
  * 
  * @author matt
  *

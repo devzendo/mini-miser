@@ -88,7 +88,7 @@ public abstract class PluginUnittestCase extends SpringLoaderUnittestCase {
     private List<Plugin> loadPlugins(final List<String> pluginList) throws PluginException {
         final List<Plugin> loadedPlugins = new ArrayList<Plugin>(pluginList.size());
         for (String pluginClassName : pluginList) {
-            // TODO only Java, ATM
+            // TODO: only Java, ATM
             try {
                 LOGGER.info(String.format("Loading plugin from class %s", pluginClassName)); 
                 final Class<?> loadedClass = Class.forName(pluginClassName);
