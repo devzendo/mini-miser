@@ -18,8 +18,6 @@ package org.devzendo.minimiser.updatechecker;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.messagequeue.Message;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
@@ -28,6 +26,7 @@ import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
+import org.devzendo.minimiser.util.Pair;
 import org.devzendo.minimiser.util.Sleeper;
 import org.devzendo.minimiser.util.Today;
 import org.devzendo.minimiser.util.WorkerPool;
@@ -48,10 +47,7 @@ import org.junit.Test;
  * @author matt
  * 
  */
-public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
-    private static final Logger LOGGER = Logger
-            .getLogger(TestPeriodicUpdateCheckerLifecycle.class);
-
+public final class TestPeriodicUpdateCheckerLifecycle {
     private static final String VERSION_1_0_0 = "1.0.0";
     private static final String VERSION_0_9_0 = "0.9.0";
     private static final String NOT_TODAYS_DATE = "22/02/1999";
@@ -109,22 +105,28 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
         adapter.finished();
         EasyMock.replay(adapter);
 
-        final WaitForFinishUpdateProgressAdapterDecorator decoratedAdapter =
-            new WaitForFinishUpdateProgressAdapterDecorator(adapter);
-        final UpdateProgressAdapterFactory adapterFactory = new StubUpdateProgressAdapterFactory(decoratedAdapter);
-
+        final Pair<WaitForFinishUpdateProgressAdapterDecorator, UpdateProgressAdapterFactory> 
+            waitingAdapterAndFactory = createWaitingAdapterAndFactory(adapter);
         final PeriodicUpdateCheckerLifecycle periodicUpdateChecker =
-            new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, adapterFactory);
+            new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, waitingAdapterAndFactory.getSecond());
         periodicUpdateChecker.startup();
         
-        LOGGER.debug("sleeping");
         mSleeper.sleep(1000 * 60 * 61); // 61 minutes
-        LOGGER.debug("woken up");
-        decoratedAdapter.waitForFinished();
+        waitingAdapterAndFactory.getFirst().waitForFinished();
 
-        EasyMock.verify(adapter);
+        EasyMock.verify(adapter, waitingAdapterAndFactory.getSecond());
     }
 
+    private Pair<WaitForFinishUpdateProgressAdapterDecorator, UpdateProgressAdapterFactory>
+        createWaitingAdapterAndFactory(final UpdateProgressAdapter adapter) {
+        final WaitForFinishUpdateProgressAdapterDecorator decoratedAdapter =
+            new WaitForFinishUpdateProgressAdapterDecorator(adapter);
+        final UpdateProgressAdapterFactory adapterFactory = EasyMock.createMock(UpdateProgressAdapterFactory.class);
+        EasyMock.expect(adapterFactory.createBackgroundUpdateProgressAdapter()).andReturn(decoratedAdapter).anyTimes();
+        EasyMock.replay(adapterFactory);
+        return new Pair<WaitForFinishUpdateProgressAdapterDecorator, UpdateProgressAdapterFactory>(decoratedAdapter, adapterFactory);
+    }
+    
     /**
      * 
      */
@@ -146,22 +148,17 @@ public final class TestPeriodicUpdateCheckerLifecycle extends LoggingTestCase {
         adapter.finished();
         EasyMock.replay(adapter);
 
-        final WaitForFinishUpdateProgressAdapterDecorator decoratedAdapter =
-            new WaitForFinishUpdateProgressAdapterDecorator(adapter);
-        
-        final UpdateProgressAdapterFactory adapterFactory =
-            new StubUpdateProgressAdapterFactory(decoratedAdapter);
+        final Pair<WaitForFinishUpdateProgressAdapterDecorator, UpdateProgressAdapterFactory> 
+            waitingAdapterAndFactory = createWaitingAdapterAndFactory(adapter);
 
         final PeriodicUpdateCheckerLifecycle periodicUpdateChecker =
-            new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, adapterFactory);
+            new PeriodicUpdateCheckerLifecycle(mUpdateChecker, mSleeper, waitingAdapterAndFactory.getSecond());
         periodicUpdateChecker.startup();
         
-        LOGGER.debug("sleeping");
         mSleeper.sleep(1000 * 60 * 61); // 61 minutes
-        LOGGER.debug("woken up");
-        decoratedAdapter.waitForFinished();
+        waitingAdapterAndFactory.getFirst().waitForFinished();
 
-        EasyMock.verify(adapter);
+        EasyMock.verify(adapter, waitingAdapterAndFactory.getSecond());
 
         Assert.assertEquals(TODAYS_DATE, mPrefs.getDateOfLastUpdateAvailableCheck());
         Assert.assertEquals(VERSION_1_0_0, mPrefs.getLastRemoteUpdateVersion());

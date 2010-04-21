@@ -39,27 +39,27 @@ public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle
     private static final Logger LOGGER = Logger
             .getLogger(UpdateAllowedPrefsEventObserverLifecycle.class);
 
-    private final Prefs prefs;
-    private final UpdateChecker updateChecker;
-    private final UpdateProgressAdapterFactory updateProgressAdapterFactory;
-    private final Menu menu;
+    private final Prefs mPrefs;
+    private final UpdateChecker mUpdateChecker;
+    private final UpdateProgressAdapterFactory mUpdateProgressAdapterFactory;
+    private final Menu mMenu;
 
     /**
      * Construct the adapter given other system objects for interaction.
-     * @param leUpdateChecker the update checker
-     * @param lePrefs the prefs
-     * @param leAdapterFactory the update progress adapter factory
-     * @param leMenu the menu
+     * @param updateChecker the update checker
+     * @param prefs the prefs
+     * @param adapterFactory the update progress adapter factory
+     * @param menu the menu
      */
     public UpdateAllowedPrefsEventObserverLifecycle(
-            final UpdateChecker leUpdateChecker,
-            final Prefs lePrefs,
-            final UpdateProgressAdapterFactory leAdapterFactory,
-            final Menu leMenu) {
-        this.updateChecker = leUpdateChecker;
-        this.prefs = lePrefs;
-        this.updateProgressAdapterFactory = leAdapterFactory;
-        this.menu = leMenu;
+            final UpdateChecker updateChecker,
+            final Prefs prefs,
+            final UpdateProgressAdapterFactory adapterFactory,
+            final Menu menu) {
+        this.mUpdateChecker = updateChecker;
+        this.mPrefs = prefs;
+        this.mUpdateProgressAdapterFactory = adapterFactory;
+        this.mMenu = menu;
     }
     
     /**
@@ -70,14 +70,14 @@ public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle
         if (observableEvent.getPrefsSection() != Prefs.PrefsSection.BOOLEAN_FLAGS) {
             return;
         }
-        final boolean updatesAllowed = prefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED);
-        menu.setHelpCheckForUpdatesEnabled(updatesAllowed);
+        final boolean updatesAllowed = mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED);
+        mMenu.setHelpCheckForUpdatesEnabled(updatesAllowed);
         if (!updatesAllowed) {
             LOGGER.info("Prefs have changed, but update checks are disallowed");
             return;
         }
         LOGGER.info("Triggering update check");
-        updateChecker.triggerUpdateCheck(updateProgressAdapterFactory.createVisibleUpdateProgressAdapter());
+        mUpdateChecker.triggerUpdateCheck(mUpdateProgressAdapterFactory.createVisibleUpdateProgressAdapter());
     }
 
     /**
@@ -91,6 +91,6 @@ public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle
      * {@inheritDoc}
      */
     public void startup() {
-        prefs.addChangeListener(this);
+        mPrefs.addChangeListener(this);
     }
 }
