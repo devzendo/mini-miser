@@ -44,7 +44,6 @@ import org.devzendo.minimiser.util.InstanceSet;
 import org.h2.constant.ErrorCode;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 
 /**
@@ -87,73 +86,14 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         mPluginManager = pluginManager;
     }
 
-    private class DatabaseSetup {
-        private final String dbPassword;
-        private final String dbPath;
-        private String dbURL;
-        private final SingleConnectionDataSource dataSource;
-        private final SimpleJdbcTemplate jdbcTemplate;
-        public DatabaseSetup(final String databasePath,
-                final String password,
-                final boolean allowCreate,
-                final Observer<PersistenceObservableEvent> observer) {
-            LOGGER.debug("Validating arguments");
-            if (databasePath == null) {
-                throw new DataAccessResourceFailureException("Null database path");
-            }
-            dbPath = databasePath.trim();
-            if (dbPath.length() == 0) {
-                throw new DataAccessResourceFailureException(String.format("Incorrect database path '%s'", databasePath));
-            }
-            dbPassword = (password == null) ? "" : password;
-            dbURL = dbPassword.length() == 0 ?
-                    String.format("jdbc:h2:%s", dbPath) :
-                    String.format("jdbc:h2:%s;CIPHER=AES", dbPath);
-            if (!allowCreate) {
-                dbURL += ";IFEXISTS=TRUE";
-            }
-
-            if (observer != null) {
-                observer.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
-            }
-            LOGGER.debug("Obtaining data source bean");
-            final String driverClassName = "org.h2.Driver";
-            final String userName = "sa";
-            final boolean suppressClose = false;
-            dataSource = new SingleConnectionDataSource(driverClassName,
-                dbURL, userName, dbPassword + " userpwd", suppressClose);
-            LOGGER.debug("DataSource is " + dataSource);
-
-            if (observer != null) {
-                observer.eventOccurred(new PersistenceObservableEvent("Opening database"));
-            }
-            LOGGER.debug("Obtaining SimpleJdbcTemplate");
-            jdbcTemplate = new SimpleJdbcTemplate(dataSource);
-            if (observer != null) {
-                observer.eventOccurred(new PersistenceObservableEvent("Database opened"));
-            }
-            LOGGER.debug("Database setup done");
-        }
-        public String getDbPath() {
-            return dbPath;
-        }
-        public String getDbURL() {
-            return dbURL;
-        }
-        public SimpleJdbcTemplate getJdbcTemplate() {
-            return jdbcTemplate;
-        }
-        public SingleConnectionDataSource getDataSource() {
-            return dataSource;
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
     public InstanceSet<DAOFactory> openDatabase(final String databasePath, final String password) {
         LOGGER.info("Opening database at '" + databasePath + "'");
-        final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, false, IGNORING_LISTENER);
+        final JdbcTemplateAccessFactoryDatabaseBuilder dbSetup =
+            new JdbcTemplateAccessFactoryDatabaseBuilder(
+                databasePath, password, false, IGNORING_LISTENER);
         // Possible Spring bug: if the database isn't there, it doesn't throw
         // an (unchecked) exception. - it does detect it and logs voluminously,
         // but then doesn't pass the error on to me.
@@ -199,7 +139,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     }
 
     private void createDatabaseOpeningFacadeDAOFactories(
-            final DatabaseSetup dbSetup,
+            final JdbcTemplateAccessFactoryDatabaseBuilder dbSetup,
             final InstanceSet<DAOFactory> daoFactories) {
         // Now let the plugins create their own DAOFactory objects.
         final List<DatabaseOpening> databaseOpeningPlugins = mPluginManager.getPluginsImplementingFacade(DatabaseOpening.class);
@@ -248,7 +188,7 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         LOGGER.debug("Plugin properties are " + pluginProperties);
         // Don't forget to adjust STATIC_CREATION_STEPS if the creation steps change.
         // create the database
-        final DatabaseSetup dbSetup = new DatabaseSetup(databasePath, password, true, observer);
+        final JdbcTemplateAccessFactoryDatabaseBuilder dbSetup = new JdbcTemplateAccessFactoryDatabaseBuilder(databasePath, password, true, observer);
         try {
             if (dbSetup.getDataSource().getConnection().isClosed()) {
                 LOGGER.warn("DataSource/Connection reports connection closed");
@@ -278,9 +218,8 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
         return daoFactories;
     }
 
-    // TODO: move this to VersionsDao?
     private void createTables(
-            final DatabaseSetup dbDetails,
+            final JdbcTemplateAccessFactoryDatabaseBuilder dbDetails,
             final Observer<PersistenceObservableEvent> observer,
             final Map<String, Object> pluginProperties) {
         final SimpleJdbcTemplate jdbcTemplate = dbDetails.getJdbcTemplate();
@@ -304,14 +243,11 @@ public final class JdbcTemplateAccessFactoryImpl implements AccessFactory {
     }
 
     private void populateTables(
-            final DatabaseSetup dbDetails,
+            final JdbcTemplateAccessFactoryDatabaseBuilder dbDetails,
             final Observer<PersistenceObservableEvent> observer,
             final Map<String, Object> pluginProperties) {
         // Don't forget to adjust POPULATION_STEPS when we add steps to
         // the population.
-        // TODO: get this from Spring when we have a factory bean that can
-        // create a JdbcTemplate from a programatically created
-        // DataSource.
         final VersionsDao versionsDao = new JdbcTemplateVersionsDao(dbDetails.getJdbcTemplate());
         final ApplicationPlugin appPlugin = mPluginManager.getApplicationPlugin();
         for (final Plugin plugin : mPluginManager.getPlugins()) {
