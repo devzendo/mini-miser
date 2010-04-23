@@ -36,7 +36,7 @@ class JdbcTemplateAccessFactoryDatabaseBuilder {
     private static final Logger LOGGER = Logger.getLogger(JdbcTemplateAccessFactoryDatabaseBuilder.class);
     private final String mDbPassword;
     private final String mDbPath;
-    private String mDbURL;
+    private final String mDbURL;
     private final SingleConnectionDataSource mDataSource;
     private final SimpleJdbcTemplate mJdbcTemplate;
     
@@ -63,12 +63,13 @@ class JdbcTemplateAccessFactoryDatabaseBuilder {
             throw new DataAccessResourceFailureException(String.format("Incorrect database path '%s'", databasePath));
         }
         mDbPassword = (password == null) ? "" : password;
-        mDbURL = mDbPassword.length() == 0 ?
+        String dbURL = mDbPassword.length() == 0 ?
                 String.format("jdbc:h2:%s", mDbPath) :
                 String.format("jdbc:h2:%s;CIPHER=AES", mDbPath);
         if (!allowCreate) {
-            mDbURL += ";IFEXISTS=TRUE";
+            dbURL += ";IFEXISTS=TRUE";
         }
+        mDbURL = dbURL;
 
         if (observer != null) {
             observer.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
