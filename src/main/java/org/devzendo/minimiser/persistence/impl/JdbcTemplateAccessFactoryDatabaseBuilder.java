@@ -41,6 +41,16 @@ class JdbcTemplateAccessFactoryDatabaseBuilder {
     private final SimpleJdbcTemplate mJdbcTemplate;
     
     /**
+     * Throw away events.
+     *
+     */
+    private final class NullPersistenceObserver implements Observer<PersistenceObservableEvent> {
+        public void eventOccurred(final PersistenceObservableEvent observableEvent) {
+            // intentionally do nothing
+        }
+    }
+    
+    /**
      * Create the DataSource and SimpleJdbcTemplate for a given database.
      * 
      * @param databasePath the path to the database 
@@ -70,10 +80,10 @@ class JdbcTemplateAccessFactoryDatabaseBuilder {
             dbURL += ";IFEXISTS=TRUE";
         }
         mDbURL = dbURL;
-
-        if (observer != null) {
-            observer.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
-        }
+        final Observer<PersistenceObservableEvent> actualObserver =
+            observer == null ? new NullPersistenceObserver() : observer;
+            
+        actualObserver.eventOccurred(new PersistenceObservableEvent("Preparing database connectivity"));
         LOGGER.debug("Obtaining data source bean");
         final String driverClassName = "org.h2.Driver";
         final String userName = "sa";
@@ -82,14 +92,10 @@ class JdbcTemplateAccessFactoryDatabaseBuilder {
             mDbURL, userName, mDbPassword + " userpwd", suppressClose);
         LOGGER.debug("DataSource is " + mDataSource);
 
-        if (observer != null) {
-            observer.eventOccurred(new PersistenceObservableEvent("Opening database"));
-        }
+        actualObserver.eventOccurred(new PersistenceObservableEvent("Opening database"));
         LOGGER.debug("Obtaining SimpleJdbcTemplate");
         mJdbcTemplate = new SimpleJdbcTemplate(mDataSource);
-        if (observer != null) {
-            observer.eventOccurred(new PersistenceObservableEvent("Database opened"));
-        }
+        actualObserver.eventOccurred(new PersistenceObservableEvent("Database opened"));
         LOGGER.debug("Database setup done");
     }
     
