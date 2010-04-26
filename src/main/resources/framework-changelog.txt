@@ -55,6 +55,13 @@ v0.2.0 30/04/2010 second "foundations" release
   * Changed the database opening facade to take the same database objects as
     other database-related facades. (DataSource and SimpleJdbcTemplate).
   * Removed product-specific wording from the File/New intro wizard page.
+  * Upgrades of components:
+    * Upgraded to v1.2.128 of the H2 embedded database. This is not the most
+      recent version, but versions later than this remove support for the
+      H2 data format MiniMiser uses. Subsequent releases will add migration
+      support for the new format, but this was deemed too large a change
+      for this iteration.
+      
   * Statistics:
     * Lines of Java: 61018 (main: 32020; test: 28998)
     * Tests: 656, 4 ignored

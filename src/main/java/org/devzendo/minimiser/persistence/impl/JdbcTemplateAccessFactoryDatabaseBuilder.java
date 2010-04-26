@@ -79,6 +79,10 @@ class JdbcTemplateAccessFactoryDatabaseBuilder {
         if (!allowCreate) {
             dbURL += ";IFEXISTS=TRUE";
         }
+        dbURL += ";PAGE_STORE=FALSE"; // h2 1.2.128 is the last release
+        // that keeps the old format; 1.2.129 made the PAGE_STORE format
+        // the only one - but we want to keep the old format by default
+        // for now.
         mDbURL = dbURL;
         final Observer<PersistenceObservableEvent> actualObserver =
             observer == null ? new NullPersistenceObserver() : observer;
