@@ -35,14 +35,14 @@ import org.springframework.beans.factory.FactoryBean;
  * @author matt
  *
  */
-public final class DatabaseDescriptorFactory implements FactoryBean {
+public final class DatabaseDescriptorFactory implements FactoryBean<DatabaseDescriptor> {
     private static final Logger LOGGER = Logger.getLogger(DatabaseDescriptorFactory.class);
     private DatabaseDescriptor factoryDatabaseDescriptor;
 
     /**
      * {@inheritDoc}
      */
-    public Object getObject() throws Exception {
+    public DatabaseDescriptor getObject() throws Exception {
         LOGGER.debug(String.format("DatabaseDescriptorFactory returning %s as DatabaseDescriptor object", factoryDatabaseDescriptor));
         return factoryDatabaseDescriptor;
     }

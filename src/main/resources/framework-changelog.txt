@@ -67,4 +67,4 @@ v0.2.0 30/04/2010 second "foundations" release
     * Lines of Java: 61035 (main: 32199; test: 28836)
     * Tests: 656, 4 ignored
     * Test coverage: 71.6%
-    * Metric violations: 18
+    * Metric violations: 16

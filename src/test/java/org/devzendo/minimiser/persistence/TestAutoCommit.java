@@ -99,7 +99,7 @@ public final class TestAutoCommit extends LoggingTestCase {
         getSimpleJdbcTemplateForCreatedDatabase("autocommitdisabledintransaction");
         LOGGER.info("Starting transaction template");
         final boolean[] autoCommitActive = {true, true};
-        mTransactionTemplate.execute(new TransactionCallback() {
+        mTransactionTemplate.execute(new TransactionCallback<Object>() {
             public Object doInTransaction(final TransactionStatus ts) {
                 autoCommitActive[0] = isAutoCommitEnabled(mSimpleJdbcTemplate);
                 // create something for the transaction to be useful for
@@ -123,7 +123,7 @@ public final class TestAutoCommit extends LoggingTestCase {
         getSimpleJdbcTemplateForCreatedDatabase("autocommitenabledaftercommit");
         LOGGER.info("Starting transaction template");
         Assert.assertTrue("Didn't start out with autocommit enabled", isAutoCommitEnabled(mSimpleJdbcTemplate));
-        mTransactionTemplate.execute(new TransactionCallback() {
+        mTransactionTemplate.execute(new TransactionCallback<Object>() {
             public Object doInTransaction(final TransactionStatus ts) {
                 // create something for the transaction to be useful for
                 final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
@@ -147,7 +147,7 @@ public final class TestAutoCommit extends LoggingTestCase {
         Assert.assertTrue("Didn't start out with autocommit enabled", isAutoCommitEnabled(mSimpleJdbcTemplate));
         LOGGER.info("Starting transaction template");
         try {
-            mTransactionTemplate.execute(new TransactionCallback() {
+            mTransactionTemplate.execute(new TransactionCallback<Object>() {
                 public Object doInTransaction(final TransactionStatus ts) {
                     final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                     mVersionsDao.persistVersion(version);

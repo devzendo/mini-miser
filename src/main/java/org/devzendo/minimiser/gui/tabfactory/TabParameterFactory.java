@@ -36,14 +36,14 @@ import org.springframework.beans.factory.FactoryBean;
  * @author matt
  *
  */
-public final class TabParameterFactory implements FactoryBean {
+public final class TabParameterFactory implements FactoryBean<TabParameter> {
     private static final Logger LOGGER = Logger.getLogger(TabParameterFactory.class);
     private TabParameter mFactoryTabParameter;
 
     /**
      * {@inheritDoc}
      */
-    public Object getObject() throws Exception {
+    public TabParameter getObject() throws Exception {
         LOGGER.debug(String.format("TabParameterFactory returning %s as TabParameter object", mFactoryTabParameter));
         return mFactoryTabParameter;
     }

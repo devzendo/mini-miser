@@ -222,7 +222,7 @@ public final class DefaultOpener implements Opener {
                         daoFactories.getInstanceOf(MiniMiserDAOFactory.class).
                         getSQLAccess().createTransactionTemplate();
                     try {
-                        transaction.execute(new TransactionCallback() {
+                        transaction.execute(new TransactionCallback<Object>() {
                             public Object doInTransaction(final TransactionStatus ts) {
                                 try {
                                     openerAdapter.reportProgress(ProgressStage.MIGRATING, "Updating database");

@@ -35,14 +35,14 @@ import org.springframework.beans.factory.FactoryBean;
  * @author matt
  *
  */
-public final class ChangeCollectingPrefsFactory implements FactoryBean {
+public final class ChangeCollectingPrefsFactory implements FactoryBean<Prefs> {
     private static final Logger LOGGER = Logger.getLogger(ChangeCollectingPrefsFactory.class);
     private Prefs factoryPrefs;
 
     /**
      * {@inheritDoc}
      */
-    public Object getObject() throws Exception {
+    public Prefs getObject() throws Exception {
         LOGGER.debug(String.format("ChangeCollectingPrefsFactory returning %s as Prefs object", factoryPrefs));
         return factoryPrefs;
     }

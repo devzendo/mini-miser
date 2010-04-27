@@ -26,7 +26,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @author matt
  *
  */
-public final class MainFrameTitleFactory implements FactoryBean {
+public final class MainFrameTitleFactory implements FactoryBean<MainFrameTitle> {
     private static final Logger LOGGER = Logger
             .getLogger(MainFrameTitleFactory.class);
     private MainFrameTitle factoryMainFrameTitle;
@@ -34,7 +34,7 @@ public final class MainFrameTitleFactory implements FactoryBean {
     /**
      * {@inheritDoc}
      */
-    public Object getObject() throws Exception {
+    public MainFrameTitle getObject() throws Exception {
         LOGGER.debug("MainFrameTitleFactory returning main frame title as MainFrameTitle object");
         return factoryMainFrameTitle;
     }

@@ -77,7 +77,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         // setup
         createDatabase("commit");
         LOGGER.info("Starting transaction template");
-        final Boolean existsInTransaction = (Boolean) mTransactionTemplate.execute(new TransactionCallback() {
+        final Boolean existsInTransaction = (Boolean) mTransactionTemplate.execute(new TransactionCallback<Object>() {
             public Boolean doInTransaction(final TransactionStatus ts) {
                 final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                 mVersionsDao.persistVersion(version);
@@ -101,7 +101,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         boolean correctlyCaught = false;
         LOGGER.info("Starting transaction template");
         try {
-            mTransactionTemplate.execute(new TransactionCallback() {
+            mTransactionTemplate.execute(new TransactionCallback<Object>() {
                 public Object doInTransaction(final TransactionStatus ts) {
                     final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                     mVersionsDao.persistVersion(version);
@@ -134,7 +134,7 @@ public final class TestTransactionHandling extends LoggingTestCase {
         final boolean[] existsInTransaction = new boolean[] {false};
         LOGGER.info("Starting transaction template");
         try {
-            mTransactionTemplate.execute(new TransactionCallback() {
+            mTransactionTemplate.execute(new TransactionCallback<Object>() {
                 public Object doInTransaction(final TransactionStatus ts) {
                     final Version version = new Version(TESTPLUGIN, VersionableEntity.PLUGIN_CODE_VERSION, false, "1.0");
                     mVersionsDao.persistVersion(version);
