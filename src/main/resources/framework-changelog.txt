@@ -61,9 +61,10 @@ v0.2.0 30/04/2010 second "foundations" release
       H2 data format MiniMiser uses. Subsequent releases will add migration
       support for the new format, but this was deemed too large a change
       for this iteration.
-      
+    * Upgraded to Spring Context and JDBC 3.0.2.RELEASE.
+    * Upgraded to JRuby 1.4.
   * Statistics:
-    * Lines of Java: 61018 (main: 32020; test: 28998)
+    * Lines of Java: 61035 (main: 32199; test: 28836)
     * Tests: 656, 4 ignored
     * Test coverage: 71.6%
     * Metric violations: 18
