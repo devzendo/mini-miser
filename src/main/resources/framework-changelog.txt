@@ -64,7 +64,7 @@ v0.2.0 30/04/2010 second "foundations" release
     * Upgraded to Spring Context and JDBC 3.0.2.RELEASE.
     * Upgraded to JRuby 1.4.
   * Statistics:
-    * Lines of Java: 61035 (main: 32199; test: 28836)
+    * Lines of Java: 61034 (main: 32198; test: 28836)
     * Tests: 656, 4 ignored
     * Test coverage: 71.6%
     * Metric violations: 16
