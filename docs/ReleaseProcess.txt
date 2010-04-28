@@ -1,0 +1,22 @@
+Update TODO.txt
+Run count-lines-of-java.sh, get metric violations, #tests, coverage%.
+Update framework-changelog.txt
+Update Framework user guide.odt
+Set version in pom.xml, commit.
+mvn -DcreateChecksum=true install
+Copy org/devzendo/MiniMiser/{x.y.z|maven-metadata-local.xml} to
+  DevZendo.org Maven 2 Repository (svn working copy)
+Tag MiniMiser as x.y.z.
+
+Documentation release:
+    Find background graphic for the user guide cover sheet...
+    Add this to the user-guide dir.
+    Add credits to user-guide-graphics-credits.txt
+    Add into user-guide-cover-sheet.xcf with Gimp; modify release date.
+    Save user-guide-cover-sheet-x.y.z.png
+    Update cover sheet and document text in Framework user guide master.odm
+    Export to PDF as Framework user guide.x.y.z.pdf
+    Copy the PDF to DevZendo.org Maven 2 Repository (svn working copy)
+
+Commit DevZendo.org Maven 2 Repository (svn working copy).
+     
