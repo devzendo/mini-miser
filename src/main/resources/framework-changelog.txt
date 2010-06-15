@@ -70,6 +70,10 @@ v0.2.0 30/04/2010 second "foundations" release
     * Metric violations: 16
 
 v0.3.0 21/06/2010 third "foundations" release 
-  * Deployment, especially on Mac OS X
+  * Deployment, especially on Mac OS X.
+  * Upgrade to Quaqua 6.5.
+  * Make sample application a multi-module project to keep code and
+    platform-specific parts separate but managed within the same Mercurial
+    repository.
   * Move user guide and diagrams to separate internal Hg server to
     cut down on binary change size.
