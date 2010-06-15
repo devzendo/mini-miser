@@ -70,7 +70,7 @@
     <dependency> <!-- Not released in central -->
       <groupId>ch.randelshofer</groupId>
       <artifactId>quaqua</artifactId>
-      <version>5.2.1</version>
+      <version>6.5</version> <!--  started with 5.2.1 -->
     </dependency>
 
     <dependency>

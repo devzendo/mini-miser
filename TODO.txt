@@ -20,7 +20,7 @@ INFRASTRUCTURE AND RESOURCES FOR 0.2.0 RELEASE:
 BUGS:
 * Investigate size checks in ComparableVersion.compareTo - they may be
   superfluous.  
-* beancounter: clean out config, restart - about text says minimiser 
+* beanminder: clean out config, restart - about text says minimiser 
 * triggering an update check causes an NPE (that's correctly
   reported using the problem reporter). Closing the problem
   reporter, the status bar still says checking for updates. 

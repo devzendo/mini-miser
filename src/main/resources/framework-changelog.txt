@@ -68,3 +68,8 @@ v0.2.0 30/04/2010 second "foundations" release
     * Tests: 656, 4 ignored
     * Test coverage: 71.6%
     * Metric violations: 16
+
+v0.3.0 21/06/2010 third "foundations" release 
+  * Deployment, especially on Mac OS X
+  * Move user guide and diagrams to separate internal Hg server to
+    cut down on binary change size.
