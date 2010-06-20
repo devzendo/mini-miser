@@ -69,7 +69,7 @@ v0.2.0 30/04/2010 second "foundations" release
     * Test coverage: 71.6%
     * Metric violations: 16
 
-v0.3.0 21/06/2010 third "foundations" release 
+v0.2.1 21/06/2010 third "foundations" release 
   * A documentation and technology refresh release, since I spent most of the
     iteration learning Scala, not working on this project.
   * Deployment, especially on Mac OS X.
@@ -83,4 +83,3 @@ v0.3.0 21/06/2010 third "foundations" release
     * Tests: 656, 3 ignored
     * Test coverage: 71.5%
     * Metric violations: 16
-
