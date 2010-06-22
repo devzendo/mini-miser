@@ -19,4 +19,7 @@ Documentation release:
     Copy the PDF to DevZendo.org Maven 2 Repository (svn working copy)
 
 Commit DevZendo.org Maven 2 Repository (svn working copy).
-     
+Update changelog page on web site.
+Create story on main page announcing release.
+Add link to release notice on main page. 
+Change links to documentation on web site to point to new user guide.
