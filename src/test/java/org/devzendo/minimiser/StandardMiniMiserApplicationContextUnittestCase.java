@@ -30,7 +30,7 @@ import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
  * @author matt
  *
  */
-public abstract class StandardSpringLoaderUnittestCase extends SpringLoaderUnittestCase {
+public abstract class StandardMiniMiserApplicationContextUnittestCase extends SpringLoaderUnittestCase {
     /**
      * {@inheritDoc}
      */
