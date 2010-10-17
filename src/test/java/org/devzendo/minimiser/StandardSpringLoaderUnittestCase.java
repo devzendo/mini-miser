@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.devzendo.minimiser.springloader;
+package org.devzendo.minimiser;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.devzendo.minimiser.MiniMiserApplicationContexts;
+import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 
 
 /**
