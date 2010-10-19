@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.string.StringUtils;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -24,9 +24,9 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.gui.SwingWorker;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**

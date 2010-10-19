@@ -18,6 +18,8 @@ package org.devzendo.minimiser.gui.menu;
 
 import java.util.List;
 
+import org.devzendo.commonspring.springloader.SimpleSpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
@@ -26,8 +28,6 @@ import org.devzendo.minimiser.plugin.facade.providemenu.MenuProviding;
 import org.devzendo.minimiser.pluginmanager.DefaultPluginManager;
 import org.devzendo.minimiser.pluginmanager.DefaultPluginRegistry;
 import org.devzendo.minimiser.pluginmanager.PluginException;
-import org.devzendo.minimiser.springloader.SimpleSpringLoader;
-import org.devzendo.minimiser.springloader.SpringLoader;
 import org.devzendo.minimiser.wiring.databaseeventlistener.ApplicationMenuCreatingDatabaseEventListener;
 import org.junit.Assert;
 import org.junit.Before;

@@ -18,7 +18,7 @@ package org.devzendo.minimiser.plugin;
 
 import java.util.List;
 
-import org.devzendo.minimiser.springloader.SpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoader;
 
 
 /**

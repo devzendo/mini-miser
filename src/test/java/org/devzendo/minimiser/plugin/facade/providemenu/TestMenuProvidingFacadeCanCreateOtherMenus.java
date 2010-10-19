@@ -6,6 +6,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import org.devzendo.commonspring.springloader.SimpleSpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.gui.menu.FileMenu;
@@ -28,7 +29,6 @@ import org.devzendo.minimiser.pluginmanager.PluginManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
-import org.devzendo.minimiser.springloader.SimpleSpringLoader;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;

@@ -17,6 +17,7 @@
 package org.devzendo.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonspring.springloader.ApplicationContext;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
@@ -24,7 +25,6 @@ import org.devzendo.minimiser.persistence.AccessFactory;
 import org.devzendo.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
 import org.devzendo.minimiser.prefs.Prefs;
-import org.devzendo.minimiser.springloader.ApplicationContext;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 import org.junit.Assert;
 import org.junit.Before;

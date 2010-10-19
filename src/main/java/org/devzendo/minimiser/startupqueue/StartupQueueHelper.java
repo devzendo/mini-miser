@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.startupqueue;
 
-import org.devzendo.minimiser.springloader.SpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoader;
 
 /**
  * Toolkit for easily adding Runnables to the StartupQueue..

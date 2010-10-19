@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commonspring.springloader.ApplicationContext;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.opener.DatabaseOpenEvent;
 import org.devzendo.minimiser.opener.Opener;
@@ -32,7 +33,6 @@ import org.devzendo.minimiser.persistence.AccessFactory;
 import org.devzendo.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
 import org.devzendo.minimiser.prefs.Prefs;
-import org.devzendo.minimiser.springloader.ApplicationContext;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 import org.easymock.EasyMock;
 import org.junit.Assert;

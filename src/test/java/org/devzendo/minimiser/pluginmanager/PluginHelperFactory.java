@@ -16,9 +16,9 @@
 
 package org.devzendo.minimiser.pluginmanager;
 
+import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoaderFactory;
 import org.devzendo.minimiser.MiniMiserApplicationContexts;
-import org.devzendo.minimiser.springloader.SpringLoader;
-import org.devzendo.minimiser.springloader.SpringLoaderFactory;
 
 /**
  * A factory for PluginHelpers, allows creation of correctly-

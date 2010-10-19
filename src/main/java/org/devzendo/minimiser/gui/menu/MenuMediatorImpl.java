@@ -19,8 +19,8 @@ package org.devzendo.minimiser.gui.menu;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
-import org.devzendo.minimiser.springloader.SpringLoader;
+import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
+import org.devzendo.commonspring.springloader.SpringLoader;
 
 /**
  * Mediates between application events and menu updates.

@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.openlist;
 
-import org.devzendo.minimiser.springloader.SpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.junit.Assert;
 
 /**

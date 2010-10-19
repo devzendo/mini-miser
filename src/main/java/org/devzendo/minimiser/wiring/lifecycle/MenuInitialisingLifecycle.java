@@ -23,13 +23,13 @@ import javax.swing.JMenuBar;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuBuilder;
 import org.devzendo.minimiser.gui.menu.MenuMediator;
 import org.devzendo.minimiser.gui.menu.Menu.MenuIdentifier;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**

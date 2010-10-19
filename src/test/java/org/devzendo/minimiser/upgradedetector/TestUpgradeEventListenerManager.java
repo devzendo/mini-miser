@@ -16,10 +16,10 @@
 
 package org.devzendo.minimiser.upgradedetector;
 
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;

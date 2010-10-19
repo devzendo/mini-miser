@@ -18,13 +18,13 @@ package org.devzendo.minimiser.pluginmanager;
 
 import java.util.List;
 
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoadedBean;
+import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.plugin.AppPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.devzendo.minimiser.plugin.SpringContractPlugin;
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoadedBean;
-import org.devzendo.minimiser.springloader.SpringLoader;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -18,11 +18,11 @@ package org.devzendo.minimiser.plugin.internal;
 
 import java.util.List;
 
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.persistence.domain.CurrentSchemaVersion;
 import org.devzendo.minimiser.plugin.AbstractPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.devzendo.minimiser.pluginmanager.AppDetailsPropertiesLoader;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**

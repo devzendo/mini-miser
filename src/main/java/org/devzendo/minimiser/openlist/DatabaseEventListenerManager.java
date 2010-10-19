@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
-import org.devzendo.minimiser.springloader.SpringLoader;
+import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
+import org.devzendo.commonspring.springloader.SpringLoader;
 
 
 /**

@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
@@ -30,7 +31,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.DatabaseDescriptorFactory;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**

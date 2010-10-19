@@ -16,10 +16,10 @@
 
 package org.devzendo.minimiser.pluginmanager;
 
+import org.devzendo.commonspring.springloader.SpringLoadedBean;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.plugin.AppPlugin;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
-import org.devzendo.minimiser.springloader.SpringLoadedBean;
-import org.devzendo.minimiser.springloader.SpringLoader;
 import org.junit.Assert;
 import org.junit.Test;
 

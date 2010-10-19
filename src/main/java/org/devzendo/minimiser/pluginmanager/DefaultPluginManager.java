@@ -22,9 +22,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.commoncode.patterns.observer.ObserverList;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**

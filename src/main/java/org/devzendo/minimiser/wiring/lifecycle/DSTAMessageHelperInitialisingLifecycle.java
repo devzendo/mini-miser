@@ -16,9 +16,9 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageHelper;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 /**
  * Initialises the DSTA Message Helper toolkit.

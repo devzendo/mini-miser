@@ -20,10 +20,10 @@ import java.awt.Label;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.util.OrderMonitor;
 import org.junit.Assert;
 import org.junit.Before;

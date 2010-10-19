@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.MainFrameTitle;
 import org.devzendo.minimiser.gui.StubMainFrameTitle;
 import org.devzendo.minimiser.gui.tabfactory.StubTabFactory;
@@ -32,8 +34,6 @@ import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.junit.Before;
 
 

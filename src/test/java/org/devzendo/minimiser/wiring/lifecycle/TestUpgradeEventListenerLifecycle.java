@@ -19,14 +19,14 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import java.io.File;
 import java.io.IOException;
 
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.devzendo.minimiser.prefs.TestPrefs;
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.upgradedetector.FreshInstallEvent;
 import org.devzendo.minimiser.upgradedetector.StubRecordingUpgradeListener;
 import org.devzendo.minimiser.upgradedetector.UpgradeEvent;

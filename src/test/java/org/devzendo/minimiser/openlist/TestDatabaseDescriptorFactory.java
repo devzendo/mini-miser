@@ -18,8 +18,8 @@ package org.devzendo.minimiser.openlist;
 
 import java.io.IOException;
 
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

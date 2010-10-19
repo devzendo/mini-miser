@@ -19,11 +19,11 @@ package org.devzendo.minimiser.gui.dialog.toolsoptions;
 import java.awt.Label;
 import java.util.List;
 
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.prefs.ChangeCollectingPrefsFactory;
 import org.devzendo.minimiser.prefs.Prefs;
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

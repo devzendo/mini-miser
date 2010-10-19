@@ -20,9 +20,9 @@ import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
 
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.CursorManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**

@@ -7,6 +7,7 @@ import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.gui.menu.MenuFacade;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
@@ -15,7 +16,6 @@ import org.devzendo.minimiser.openlist.DatabaseEvent;
 import org.devzendo.minimiser.openlist.DatabaseOpenedEvent;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 /**
  * Test app plugin for menu providing facade.

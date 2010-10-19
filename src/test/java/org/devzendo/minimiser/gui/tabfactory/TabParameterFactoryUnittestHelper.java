@@ -16,8 +16,8 @@
 
 package org.devzendo.minimiser.gui.tabfactory;
 
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.tab.TabParameter;
-import org.devzendo.minimiser.springloader.SpringLoader;
 import org.junit.Assert;
 
 /**

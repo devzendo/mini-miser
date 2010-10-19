@@ -30,8 +30,8 @@ import javax.swing.WindowConstants;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.exception.AppException;
 import org.devzendo.commoncode.resource.ResourceLoader;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.tabpanemanager.TabPaneManager;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**

@@ -28,14 +28,14 @@ import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.commoncode.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.commoncode.string.StringUtils;
+import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoaderFactory;
 import org.devzendo.minimiser.gui.Beautifier;
 import org.devzendo.minimiser.gui.MainFrame;
 import org.devzendo.minimiser.gui.SqlConsoleFrame;
 import org.devzendo.minimiser.pluginmanager.AppDetailsPropertiesLoader;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.devzendo.minimiser.prefs.PrefsLocation;
-import org.devzendo.minimiser.springloader.SpringLoader;
-import org.devzendo.minimiser.springloader.SpringLoaderFactory;
 
 
 /**

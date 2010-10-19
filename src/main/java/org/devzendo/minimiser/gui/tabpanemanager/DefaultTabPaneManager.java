@@ -23,7 +23,7 @@ import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.gui.GUIUtils;
-import org.devzendo.minimiser.springloader.SpringLoader;
+import org.devzendo.commonspring.springloader.SpringLoader;
 
 
 /**

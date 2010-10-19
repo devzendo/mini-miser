@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.tab.IntegerTabParameter;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
@@ -32,8 +34,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptorFactoryUnittestHelper;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
 import org.devzendo.minimiser.opentablist.TabEvent;
-import org.devzendo.minimiser.springloader.ApplicationContext;
-import org.devzendo.minimiser.springloader.SpringLoaderUnittestCase;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;

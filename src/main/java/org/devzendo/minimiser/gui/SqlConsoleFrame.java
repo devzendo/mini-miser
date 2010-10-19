@@ -36,13 +36,13 @@ import org.apache.log4j.Logger;
 import org.devzendo.commoncode.exception.AppException;
 import org.devzendo.commoncode.gui.SwingWorker;
 import org.devzendo.commoncode.resource.ResourceLoader;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.tab.impl.sql.SQLTabPanel;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.AccessFactory;
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
-import org.devzendo.minimiser.springloader.SpringLoader;
 import org.devzendo.minimiser.util.InstanceSet;
 
 

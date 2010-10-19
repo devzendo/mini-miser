@@ -23,11 +23,11 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
+import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
 import org.devzendo.minimiser.prefs.ChangeCollectingPrefsFactory;
 import org.devzendo.minimiser.prefs.Prefs;
-import org.devzendo.minimiser.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
-import org.devzendo.minimiser.springloader.SpringLoader;
 
 
 /**
