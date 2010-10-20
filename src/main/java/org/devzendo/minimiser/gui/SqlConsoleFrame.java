@@ -24,7 +24,7 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -76,7 +76,7 @@ public final class SqlConsoleFrame {
      * @throws AppException upon fatal application failure
      */
     public SqlConsoleFrame(final SpringLoader springLoader, 
-            final ArrayList<String> argList)
+            final List<String> argList)
             throws AppException {
         super();
         mSpringLoader = springLoader;
@@ -101,7 +101,7 @@ public final class SqlConsoleFrame {
         mMainFrame.setVisible(true);
     }
 
-    private void validateArgs(final ArrayList<String> argList) throws AppException {
+    private void validateArgs(final List<String> argList) throws AppException {
         final int argLen = argList.size();
         dbPath = "";
         dbPassword = "";

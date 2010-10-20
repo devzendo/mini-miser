@@ -20,7 +20,7 @@ import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -55,7 +55,7 @@ public class MainFrame {
      * @throws AppException upon fatal application failure
      */
     public MainFrame(final SpringLoader springLoader, 
-            final ArrayList<String> argList)
+            final List<String> argList)
             throws AppException {
         super();
         mSpringLoader = springLoader;

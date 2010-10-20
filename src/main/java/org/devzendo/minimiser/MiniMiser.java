@@ -17,8 +17,8 @@
 package org.devzendo.minimiser;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -110,8 +110,7 @@ public final class MiniMiser {
      * @param args the command line args
      */
     public static void main(final String[] args) {
-        ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
-        argList = Logging.getInstance().setupLoggingFromArgs(argList);
+        final List<String> argList = Logging.getInstance().setupLoggingFromArgs(Arrays.asList(args));
         LOGGER.info("Framework starting...");
         
         final String javaLibraryPath = System.getProperty("java.library.path");
@@ -119,7 +118,6 @@ public final class MiniMiser {
         final File quaqua = new File(javaLibraryPath, "libquaqua.jnilib");
         LOGGER.debug("Quaqua JNI library exists there (for Mac OS X)? " + quaqua.exists());
         
-        final ArrayList<String> finalArgList = argList;
         final SpringLoader springLoader = initSpringLoader();
 
         // Not doing anything else with the framework name/version
@@ -146,8 +144,8 @@ public final class MiniMiser {
 
                     // Process command line
                     Operation op = Operation.MainWindow;
-                    for (int i = 0; i < finalArgList.size(); i++) {
-                        final String arg = finalArgList.get(i);
+                    for (int i = 0; i < argList.size(); i++) {
+                        final String arg = argList.get(i);
                         LOGGER.debug("arg " + i + " = '" + arg + "'");
                         if (arg.equals("-sqlconsole")) {
                             op = Operation.SqlConsole;
@@ -155,9 +153,9 @@ public final class MiniMiser {
                     }
 
                     if (op == Operation.MainWindow) {
-                        new MainFrame(springLoader, finalArgList);
+                        new MainFrame(springLoader, argList);
                     } else if (op == Operation.SqlConsole) {
-                        new SqlConsoleFrame(springLoader, finalArgList);
+                        new SqlConsoleFrame(springLoader, argList);
                     }
                 } catch (final AppException e) {
                     LOGGER.fatal(e.getMessage());
