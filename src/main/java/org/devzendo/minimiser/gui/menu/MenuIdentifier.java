@@ -13,42 +13,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
+ * 
+ */
 package org.devzendo.minimiser.gui.menu;
 
-import javax.swing.JMenu;
-
-
 /**
- * The Tools menu. Small, has no interesting functionality that couldn't be
- * implemented directly in MenuImpl, but encapsulated here to reduce the
- * coupling in MenuImpl.
+ * Identifiers for the various menu items.
  * 
  * @author matt
  *
  */
-public final class ToolsMenu extends AbstractMenuGroup {
-    private JMenu toolsMenu;
+public enum MenuIdentifier {
+    /**
+     *
+     */
+    FileNew,
+    /**
+     *
+     */
+    FileOpen,
+    /**
+     *
+     */
+    FileClose,
+    /**
+     *
+     */
+    FileCloseAll,
+    /**
+     *
+     */
+    FileImport,
+    /**
+     *
+     */
+    FileExport,
+    /**
+     *
+     */
+    FileExit,
+
+    // Window menu is handled internally by the menu
+    // View menu is handled internally by the menu
 
     /**
-     * Construct the tools menu
-     * 
-     * @param wiring the menu wiring
+     *
      */
-    public ToolsMenu(final MenuWiring wiring) {
-        super(wiring);
-
-        toolsMenu = new JMenu("Tools");
-        toolsMenu.setMnemonic('T');
-        
-        createMenuItem(MenuIdentifier.ToolsOptions, "Options...", 'O', toolsMenu);
-    }
-
+    ToolsOptions,
     /**
-     * {@inheritDoc}
+     *
      */
-    @Override
-    public JMenu getJMenu() {
-        return toolsMenu;
-    }
+    HelpWelcome,
+    /**
+     *
+     */
+    HelpWhatsNew,
+    /**
+     *
+     */
+    HelpAbout,
+    /**
+     *
+     */
+    HelpContents,
+    /**
+     *
+     */
+    HelpCheckForUpdates
 }

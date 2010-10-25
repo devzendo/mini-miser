@@ -31,8 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.resource.ResourceLoader;
 import org.devzendo.minimiser.gui.layout.CentredLayout;
+import org.devzendo.minimiser.gui.menu.MenuIdentifier;
 import org.devzendo.minimiser.gui.menu.MenuWiring;
-import org.devzendo.minimiser.gui.menu.Menu.MenuIdentifier;
 import org.devzendo.minimiser.gui.panel.ImagePanel;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 

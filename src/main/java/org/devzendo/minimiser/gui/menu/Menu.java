@@ -33,65 +33,6 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
  */
 public interface Menu {
 
-    public enum MenuIdentifier {
-        /**
-         *
-         */
-        FileNew,
-        /**
-         *
-         */
-        FileOpen,
-        /**
-         *
-         */
-        FileClose,
-        /**
-         *
-         */
-        FileCloseAll,
-        /**
-         *
-         */
-        FileImport,
-        /**
-         *
-         */
-        FileExport,
-        /**
-         *
-         */
-        FileExit,
-
-        // Window menu is handled internally by the menu
-        // View menu is handled internally by the menu
-
-        /**
-         *
-         */
-        ToolsOptions,
-        /**
-         *
-         */
-        HelpWelcome,
-        /**
-         *
-         */
-        HelpWhatsNew,
-        /**
-         *
-         */
-        HelpAbout,
-        /**
-         *
-         */
-        HelpContents,
-        /**
-         *
-         */
-        HelpCheckForUpdates
-    }
-
     /**
      * Initialise the menu after it has been loaded.
      */

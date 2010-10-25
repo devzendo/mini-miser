@@ -27,7 +27,6 @@ import javax.swing.JSeparator;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.commoncode.patterns.observer.ObserverList;
-import org.devzendo.minimiser.gui.menu.Menu.MenuIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
