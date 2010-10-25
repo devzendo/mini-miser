@@ -64,7 +64,7 @@ public final class HelpMenu extends AbstractRebuildableMenuGroup {
      * item
      */
     public boolean isHelpCheckForUpdatesEnabled() {
-        return getMenuWiring().isMenuItemEnabled(SystemMenuIdentifiers.HelpCheckForUpdates);
+        return getMenuWiring().isMenuItemEnabled(SystemMenuIdentifiers.HELP_CHECK_FOR_UPDATES);
     }
     
     /**
@@ -72,7 +72,7 @@ public final class HelpMenu extends AbstractRebuildableMenuGroup {
      * @param newEnabled true iff enabled
      */
     public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
-        getMenuWiring().setMenuItemEnabled(SystemMenuIdentifiers.HelpCheckForUpdates, newEnabled);
+        getMenuWiring().setMenuItemEnabled(SystemMenuIdentifiers.HELP_CHECK_FOR_UPDATES, newEnabled);
     }
 
     /**
@@ -93,12 +93,12 @@ public final class HelpMenu extends AbstractRebuildableMenuGroup {
         LOGGER.debug("Rebuilding the help menu with application name " + mApplicationName);
         mHelpmenu.removeAll();
         
-        replaceMenuItem(SystemMenuIdentifiers.HelpWelcome, "Welcome to " + mApplicationName, 'W', mHelpmenu);
-        createMenuItem(SystemMenuIdentifiers.HelpWhatsNew, "What's new in this release?", 'N', mHelpmenu);
+        replaceMenuItem(SystemMenuIdentifiers.HELP_WELCOME, "Welcome to " + mApplicationName, 'W', mHelpmenu);
+        createMenuItem(SystemMenuIdentifiers.HELP_WHATS_NEW, "What's new in this release?", 'N', mHelpmenu);
         mHelpmenu.add(new JSeparator());
         //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
-        replaceMenuItem(SystemMenuIdentifiers.HelpAbout, "About " + mApplicationName, 'A', mHelpmenu);
+        replaceMenuItem(SystemMenuIdentifiers.HELP_ABOUT, "About " + mApplicationName, 'A', mHelpmenu);
         mHelpmenu.add(new JSeparator());
-        createMenuItem(SystemMenuIdentifiers.HelpCheckForUpdates, "Check for updates", 'U', mHelpmenu);
+        createMenuItem(SystemMenuIdentifiers.HELP_CHECK_FOR_UPDATES, "Check for updates", 'U', mHelpmenu);
     }
 }

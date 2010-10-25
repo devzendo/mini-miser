@@ -76,13 +76,13 @@ public final class IntroPanel extends JPanel {
         c.gridx = 0;
 
         c.gridy = 0;
-        mButtonGridPanel.add(createButton("Create new database", SystemMenuIdentifiers.FileNew), c);
+        mButtonGridPanel.add(createButton("Create new database", SystemMenuIdentifiers.FILE_NEW), c);
 
         c.gridy = 2;
-        mButtonGridPanel.add(createButton("Open existing database", SystemMenuIdentifiers.FileOpen), c);
+        mButtonGridPanel.add(createButton("Open existing database", SystemMenuIdentifiers.FILE_OPEN), c);
 
         c.gridy = 4;
-        mButtonGridPanel.add(createButton("Exit", SystemMenuIdentifiers.FileExit), c);
+        mButtonGridPanel.add(createButton("Exit", SystemMenuIdentifiers.FILE_EXIT), c);
         add(mButtonGridPanel);
     }
 

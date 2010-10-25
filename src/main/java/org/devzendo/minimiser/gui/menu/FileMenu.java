@@ -79,14 +79,14 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     public void rebuildMenuGroup() {
         fileMenu.removeAll();
         // TODO: remove duplication of menu text
-        createMenuItem(SystemMenuIdentifiers.FileNew, "New...", 'N', fileMenu);
-        createMenuItem(SystemMenuIdentifiers.FileOpen, "Open...", 'O', fileMenu);
+        createMenuItem(SystemMenuIdentifiers.FILE_NEW, "New...", 'N', fileMenu);
+        createMenuItem(SystemMenuIdentifiers.FILE_OPEN, "Open...", 'O', fileMenu);
         fileMenu.add(buildRecentList());
 
         fileMenu.add(new JSeparator());
 
-        createMenuItem(SystemMenuIdentifiers.FileClose, "Close", 'C', fileMenu);
-        createMenuItem(SystemMenuIdentifiers.FileCloseAll, "Close all", 'l', fileMenu);
+        createMenuItem(SystemMenuIdentifiers.FILE_CLOSE, "Close", 'C', fileMenu);
+        createMenuItem(SystemMenuIdentifiers.FILE_CLOSE_ALL, "Close all", 'l', fileMenu);
 
         // TODO: enable import / export in 0.2
 //        fileMenu.add(new JSeparator());
@@ -96,7 +96,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
 
         fileMenu.add(new JSeparator());
 
-        createMenuItem(SystemMenuIdentifiers.FileExit, "Exit", 'x', fileMenu);
+        createMenuItem(SystemMenuIdentifiers.FILE_EXIT, "Exit", 'x', fileMenu);
     }
 
 
@@ -155,7 +155,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
     public void enableCloseAllMenuIfDatabasesOpen() {
         final int numberOfDatabases = openDatabaseList.getNumberOfDatabases();
         LOGGER.debug("Close All Menu - size of database list is "  + numberOfDatabases);
-        getMenuWiring().setMenuItemEnabled(SystemMenuIdentifiers.FileCloseAll, numberOfDatabases != 0);
+        getMenuWiring().setMenuItemEnabled(SystemMenuIdentifiers.FILE_CLOSE_ALL, numberOfDatabases != 0);
     }
 
     /**
@@ -164,7 +164,7 @@ public final class FileMenu extends AbstractRebuildableMenuGroup {
      */
     public void enableCloseMenu(final boolean enabled) {
         LOGGER.debug("Close menu is " + (enabled ? "enabled" : "disabled"));
-        getMenuWiring().setMenuItemEnabled(SystemMenuIdentifiers.FileClose, enabled);
+        getMenuWiring().setMenuItemEnabled(SystemMenuIdentifiers.FILE_CLOSE, enabled);
         // TODO: enable import / export in 0.2
         // getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileImport, enabled);
         // getMenuWiring().setMenuItemEnabled(MenuIdentifier.FileExport, enabled);

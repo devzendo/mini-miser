@@ -86,7 +86,7 @@ public final class MenuInitialisingLifecycle implements Lifecycle {
         // NOTE the view menu is initially populated via a lifecycle
         LOGGER.info("Got the menu");
         final ActionListener actionListener = mSpringLoader.getBean("mainFrameCloseActionListener", ActionListener.class);
-        menu.addMenuActionListener(SystemMenuIdentifiers.FileExit, actionListener);
+        menu.addMenuActionListener(SystemMenuIdentifiers.FILE_EXIT, actionListener);
         // wire up dependencies
         LOGGER.info("Wiring menu dependencies and adapters");
         mSpringLoader.getBean("menuMediator", MenuMediator.class);

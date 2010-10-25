@@ -25,31 +25,31 @@ public class SystemMenuIdentifiers {
     /**
      *
      */
-    public static MenuIdentifier FileNew = new MenuIdentifier("FileNew");
+    public static final MenuIdentifier FILE_NEW = new MenuIdentifier("FileNew");
     /**
      *
      */
-    public static MenuIdentifier FileOpen = new MenuIdentifier("FileOpen");
+    public static final MenuIdentifier FILE_OPEN = new MenuIdentifier("FileOpen");
     /**
      *
      */
-    public static MenuIdentifier FileClose = new MenuIdentifier("FileClose");
+    public static final MenuIdentifier FILE_CLOSE = new MenuIdentifier("FileClose");
     /**
      *
      */
-    public static MenuIdentifier FileCloseAll = new MenuIdentifier("FileCloseAll");
+    public static final MenuIdentifier FILE_CLOSE_ALL = new MenuIdentifier("FileCloseAll");
     /**
      *
      */
-    public static MenuIdentifier FileImport = new MenuIdentifier("FileImport");
+    public static final MenuIdentifier FILE_IMPORT = new MenuIdentifier("FileImport");
     /**
      *
      */
-    public static MenuIdentifier FileExport = new MenuIdentifier("FileExport");
+    public static final MenuIdentifier FILE_EXPORT = new MenuIdentifier("FileExport");
     /**
      *
      */
-    public static MenuIdentifier FileExit = new MenuIdentifier("FileExit");
+    public static final MenuIdentifier FILE_EXIT = new MenuIdentifier("FileExit");
 
     // Window menu is handled internally by the menu
     // View menu is handled internally by the menu
@@ -57,25 +57,25 @@ public class SystemMenuIdentifiers {
     /**
      *
      */
-    public static MenuIdentifier ToolsOptions = new MenuIdentifier("ToolsOptions");
+    public static final MenuIdentifier TOOLS_OPTIONS = new MenuIdentifier("ToolsOptions");
     /**
      *
      */
-    public static MenuIdentifier HelpWelcome = new MenuIdentifier("HelpWelcome");
+    public static final MenuIdentifier HELP_WELCOME = new MenuIdentifier("HelpWelcome");
     /**
      *
      */
-    public static MenuIdentifier HelpWhatsNew = new MenuIdentifier("HelpWhatsNew");
+    public static final MenuIdentifier HELP_WHATS_NEW = new MenuIdentifier("HelpWhatsNew");
     /**
      *
      */
-    public static MenuIdentifier HelpAbout = new MenuIdentifier("HelpAbout");
+    public static final MenuIdentifier HELP_ABOUT = new MenuIdentifier("HelpAbout");
     /**
      *
      */
-    public static MenuIdentifier HelpContents = new MenuIdentifier("HelpContents");
+    public static final MenuIdentifier HELP_CONTENTS = new MenuIdentifier("HelpContents");
     /**
      *
      */
-    public static MenuIdentifier HelpCheckForUpdates = new MenuIdentifier("HelpCheckForUpdates");
+    public static final MenuIdentifier HELP_CHECK_FOR_UPDATES = new MenuIdentifier("HelpCheckForUpdates");
 }
