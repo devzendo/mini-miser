@@ -41,7 +41,7 @@ public final class ToolsMenu extends AbstractMenuGroup {
         toolsMenu = new JMenu("Tools");
         toolsMenu.setMnemonic('T');
         
-        createMenuItem(MenuIdentifier.ToolsOptions, "Options...", 'O', toolsMenu);
+        createMenuItem(SystemMenuIdentifiers.ToolsOptions, "Options...", 'O', toolsMenu);
     }
 
     /**

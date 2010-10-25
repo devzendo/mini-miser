@@ -64,7 +64,7 @@ public final class HelpMenu extends AbstractRebuildableMenuGroup {
      * item
      */
     public boolean isHelpCheckForUpdatesEnabled() {
-        return getMenuWiring().isMenuItemEnabled(MenuIdentifier.HelpCheckForUpdates);
+        return getMenuWiring().isMenuItemEnabled(SystemMenuIdentifiers.HelpCheckForUpdates);
     }
     
     /**
@@ -72,7 +72,7 @@ public final class HelpMenu extends AbstractRebuildableMenuGroup {
      * @param newEnabled true iff enabled
      */
     public void setHelpCheckForUpdatesEnabled(final boolean newEnabled) {
-        getMenuWiring().setMenuItemEnabled(MenuIdentifier.HelpCheckForUpdates, newEnabled);
+        getMenuWiring().setMenuItemEnabled(SystemMenuIdentifiers.HelpCheckForUpdates, newEnabled);
     }
 
     /**
@@ -93,12 +93,12 @@ public final class HelpMenu extends AbstractRebuildableMenuGroup {
         LOGGER.debug("Rebuilding the help menu with application name " + mApplicationName);
         mHelpmenu.removeAll();
         
-        replaceMenuItem(MenuIdentifier.HelpWelcome, "Welcome to " + mApplicationName, 'W', mHelpmenu);
-        createMenuItem(MenuIdentifier.HelpWhatsNew, "What's new in this release?", 'N', mHelpmenu);
+        replaceMenuItem(SystemMenuIdentifiers.HelpWelcome, "Welcome to " + mApplicationName, 'W', mHelpmenu);
+        createMenuItem(SystemMenuIdentifiers.HelpWhatsNew, "What's new in this release?", 'N', mHelpmenu);
         mHelpmenu.add(new JSeparator());
         //createMenuItem(MenuIdentifier.HelpContents, "Help Contents", 'H', menu);
-        replaceMenuItem(MenuIdentifier.HelpAbout, "About " + mApplicationName, 'A', mHelpmenu);
+        replaceMenuItem(SystemMenuIdentifiers.HelpAbout, "About " + mApplicationName, 'A', mHelpmenu);
         mHelpmenu.add(new JSeparator());
-        createMenuItem(MenuIdentifier.HelpCheckForUpdates, "Check for updates", 'U', mHelpmenu);
+        createMenuItem(SystemMenuIdentifiers.HelpCheckForUpdates, "Check for updates", 'U', mHelpmenu);
     }
 }

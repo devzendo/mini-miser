@@ -48,17 +48,17 @@ public class MenuBuilderImpl implements MenuBuilder {
      * Build the menu by wiring it all up.
      */
     public void build() {
-        loadAndWire(MenuIdentifier.FileNew);
-        loadAndWire(MenuIdentifier.FileOpen);
-        loadAndWire(MenuIdentifier.FileClose);
-        loadAndWire(MenuIdentifier.FileCloseAll);
+        loadAndWire(SystemMenuIdentifiers.FileNew);
+        loadAndWire(SystemMenuIdentifiers.FileOpen);
+        loadAndWire(SystemMenuIdentifiers.FileClose);
+        loadAndWire(SystemMenuIdentifiers.FileCloseAll);
 
-        loadAndWire(MenuIdentifier.ToolsOptions);
+        loadAndWire(SystemMenuIdentifiers.ToolsOptions);
 
-        loadAndWire(MenuIdentifier.HelpAbout);
-        loadAndWire(MenuIdentifier.HelpWelcome);
-        loadAndWire(MenuIdentifier.HelpWhatsNew);
-        loadAndWire(MenuIdentifier.HelpCheckForUpdates);
+        loadAndWire(SystemMenuIdentifiers.HelpAbout);
+        loadAndWire(SystemMenuIdentifiers.HelpWelcome);
+        loadAndWire(SystemMenuIdentifiers.HelpWhatsNew);
+        loadAndWire(SystemMenuIdentifiers.HelpCheckForUpdates);
     }
 
     private void loadAndWire(final MenuIdentifier menuIdentifier) {

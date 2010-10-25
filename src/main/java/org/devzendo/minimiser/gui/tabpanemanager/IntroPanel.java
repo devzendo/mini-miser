@@ -33,6 +33,7 @@ import org.devzendo.commoncode.resource.ResourceLoader;
 import org.devzendo.minimiser.gui.layout.CentredLayout;
 import org.devzendo.minimiser.gui.menu.MenuIdentifier;
 import org.devzendo.minimiser.gui.menu.MenuWiring;
+import org.devzendo.minimiser.gui.menu.SystemMenuIdentifiers;
 import org.devzendo.minimiser.gui.panel.ImagePanel;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
@@ -75,13 +76,13 @@ public final class IntroPanel extends JPanel {
         c.gridx = 0;
 
         c.gridy = 0;
-        mButtonGridPanel.add(createButton("Create new database", MenuIdentifier.FileNew), c);
+        mButtonGridPanel.add(createButton("Create new database", SystemMenuIdentifiers.FileNew), c);
 
         c.gridy = 2;
-        mButtonGridPanel.add(createButton("Open existing database", MenuIdentifier.FileOpen), c);
+        mButtonGridPanel.add(createButton("Open existing database", SystemMenuIdentifiers.FileOpen), c);
 
         c.gridy = 4;
-        mButtonGridPanel.add(createButton("Exit", MenuIdentifier.FileExit), c);
+        mButtonGridPanel.add(createButton("Exit", SystemMenuIdentifiers.FileExit), c);
         add(mButtonGridPanel);
     }
 

@@ -26,8 +26,8 @@ import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuBuilder;
-import org.devzendo.minimiser.gui.menu.MenuIdentifier;
 import org.devzendo.minimiser.gui.menu.MenuMediator;
+import org.devzendo.minimiser.gui.menu.SystemMenuIdentifiers;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
 
@@ -86,7 +86,7 @@ public final class MenuInitialisingLifecycle implements Lifecycle {
         // NOTE the view menu is initially populated via a lifecycle
         LOGGER.info("Got the menu");
         final ActionListener actionListener = mSpringLoader.getBean("mainFrameCloseActionListener", ActionListener.class);
-        menu.addMenuActionListener(MenuIdentifier.FileExit, actionListener);
+        menu.addMenuActionListener(SystemMenuIdentifiers.FileExit, actionListener);
         // wire up dependencies
         LOGGER.info("Wiring menu dependencies and adapters");
         mSpringLoader.getBean("menuMediator", MenuMediator.class);
