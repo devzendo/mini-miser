@@ -20,8 +20,12 @@
 
 	<bean id="cursorManager" class="org.devzendo.minimiser.gui.CursorManager" />
 
+    <bean id="windowGeometryStorePersistence" class="org.devzendo.minimiser.gui.WindowGeometryStorePrefsPersistence" >
+        <constructor-arg ref="prefs" />
+    </bean>
+
 	<bean id="windowGeometryStore" class="org.devzendo.minimiser.gui.WindowGeometryStore" >
-		<constructor-arg ref="prefs" />
+		<constructor-arg ref="windowGeometryStorePersistence" />
 	</bean>
 
 	<bean id="opener" class="org.devzendo.minimiser.opener.DefaultOpener" >
