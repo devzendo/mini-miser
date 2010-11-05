@@ -123,6 +123,12 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.devzendo</groupId>
+      <artifactId>CommonGui</artifactId>
+      <version>0.3.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   
   <build>
