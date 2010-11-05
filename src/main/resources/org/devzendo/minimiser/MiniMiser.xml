@@ -431,7 +431,10 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="prefsLocation" class="org.devzendo.minimiser.prefs.PrefsLocation" />
+	<bean id="prefsLocation" class="org.devzendo.minimiser.prefs.PrefsLocation">
+		<constructor-arg name="prefsDir" value=".minimiser" />
+		<constructor-arg name="prefsFile" value="minimiser.prefs" />
+	</bean>
 
 	<bean id="tabListPrefs" class="org.devzendo.minimiser.gui.tabpanemanager.TabListPrefs">
 		<constructor-arg ref="prefs" />
