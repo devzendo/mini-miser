@@ -23,7 +23,8 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commoncode.gui.SwingWorker;
+import org.devzendo.commongui.CursorManager;
+import org.devzendo.commongui.SwingWorker;
 import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 

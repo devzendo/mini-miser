@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.gui.CursorManager;
+import org.devzendo.commongui.CursorManager;
+import org.devzendo.commongui.menu.actionlisteners.SnailActionListener;
 import org.devzendo.minimiser.gui.menu.actionlisteners.filenew.FileNewResult;
 import org.devzendo.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardChooseFolderPage;
 import org.devzendo.minimiser.gui.menu.actionlisteners.filenew.FileNewWizardIntroPage;

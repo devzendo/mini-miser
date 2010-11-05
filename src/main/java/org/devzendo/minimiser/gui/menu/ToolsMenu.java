@@ -18,6 +18,9 @@ package org.devzendo.minimiser.gui.menu;
 
 import javax.swing.JMenu;
 
+import org.devzendo.commongui.menu.AbstractMenuGroup;
+import org.devzendo.commongui.menu.MenuWiring;
+
 
 /**
  * The Tools menu. Small, has no interesting functionality that couldn't be

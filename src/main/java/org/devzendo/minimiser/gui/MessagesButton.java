@@ -22,8 +22,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.JButton;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.commoncode.string.StringUtils;
+import org.devzendo.commongui.GUIUtils;
 import org.devzendo.minimiser.util.Sleeper;
 
 

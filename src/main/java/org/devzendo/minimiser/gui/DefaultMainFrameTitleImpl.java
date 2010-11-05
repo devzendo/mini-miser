@@ -19,7 +19,7 @@ package org.devzendo.minimiser.gui;
 import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commongui.GUIUtils;
 
 
 /**

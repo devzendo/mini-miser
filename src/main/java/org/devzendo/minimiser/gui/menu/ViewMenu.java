@@ -31,6 +31,8 @@ import javax.swing.JMenu;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.commoncode.patterns.observer.ObserverList;
+import org.devzendo.commongui.menu.AbstractRebuildableMenuGroup;
+import org.devzendo.commongui.menu.MenuWiring;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;

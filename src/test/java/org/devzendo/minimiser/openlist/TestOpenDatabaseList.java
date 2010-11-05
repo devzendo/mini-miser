@@ -20,11 +20,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -34,10 +35,18 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestOpenDatabaseList extends LoggingTestCase {
+public final class TestOpenDatabaseList {
     private static final Logger LOGGER = Logger
             .getLogger(TestOpenDatabaseList.class);
     private OpenDatabaseList list;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * Get the ODL

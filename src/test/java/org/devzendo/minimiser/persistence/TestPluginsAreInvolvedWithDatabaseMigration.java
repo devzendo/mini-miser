@@ -19,7 +19,7 @@ package org.devzendo.minimiser.persistence;
 import java.io.File;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.migrator.DatabaseMigrationNewAppPlugin;
 import org.devzendo.minimiser.migrator.DatabaseMigrationNewFailMigrationAppPlugin;
 import org.devzendo.minimiser.migrator.PersistenceMigratorHelper;
@@ -34,6 +34,7 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 
@@ -50,7 +51,7 @@ import org.springframework.dao.DataAccessException;
  * @author matt
  *
  */
-public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTestCase {
+public final class TestPluginsAreInvolvedWithDatabaseMigration {
     private static final Logger LOGGER = Logger
             .getLogger(TestPluginsAreInvolvedWithDatabaseMigration.class);
     private static final String MIGRATIONDB = "openermigration";
@@ -58,6 +59,14 @@ public final class TestPluginsAreInvolvedWithDatabaseMigration extends LoggingTe
     private PersistencePluginHelper mPersistencePluginHelper;
     private PersistencePluginOpenerHelper mPersistencePluginOpenerHelper;
     private PersistenceMigratorHelper mPersistenceMigratorHelper;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      *

@@ -16,8 +16,9 @@
 
 package org.devzendo.minimiser.openlist;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -27,10 +28,17 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestDatabaseEvent extends LoggingTestCase {
+public final class TestDatabaseEvent {
     private static final DatabaseDescriptor ONE = new DatabaseDescriptor("one");
     private static final DatabaseDescriptor TWO = new DatabaseDescriptor("two");
-    
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      * 
      */

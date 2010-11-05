@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.commoncode.string.StringUtils;
-import org.devzendo.minimiser.gui.CursorManager;
+import org.devzendo.commongui.CursorManager;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.persistence.AccessFactory;

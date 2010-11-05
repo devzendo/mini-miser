@@ -15,6 +15,8 @@
  */
 package org.devzendo.minimiser.gui.menu;
 
+import org.devzendo.commongui.menu.MenuIdentifier;
+
 /**
  * Identifiers for the various menu items.
  * 

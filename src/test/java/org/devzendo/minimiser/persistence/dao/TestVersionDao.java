@@ -19,7 +19,7 @@ package org.devzendo.minimiser.persistence.dao;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
 import org.devzendo.minimiser.persistence.PersistencePluginHelper;
 import org.devzendo.minimiser.persistence.domain.Version;
@@ -31,6 +31,7 @@ import org.devzendo.minimiser.pluginmanager.PluginHelperFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -41,12 +42,20 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestVersionDao extends LoggingTestCase {
+public final class TestVersionDao {
     private static final Logger LOGGER = Logger.getLogger(TestVersionDao.class);
     
     private PluginHelper mPluginHelper;
     private PersistencePluginHelper mPersistencePluginHelper;
     
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      * 
      */
@@ -67,7 +76,7 @@ public final class TestVersionDao extends LoggingTestCase {
 
     private Plugin getNormalPlugin() {
         final List<Plugin> plugins = mPluginHelper.getPluginManager().getPlugins();
-        for (Plugin plugin : plugins) {
+        for (final Plugin plugin : plugins) {
             if (!(plugin instanceof ApplicationPlugin)) {
                 return plugin;
             }

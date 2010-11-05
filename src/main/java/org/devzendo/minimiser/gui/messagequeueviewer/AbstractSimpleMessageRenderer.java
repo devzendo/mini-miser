@@ -18,6 +18,7 @@ package org.devzendo.minimiser.gui.messagequeueviewer;
 
 import java.awt.Component;
 
+import org.devzendo.commongui.panel.HTMLPanel;
 import org.devzendo.minimiser.messagequeue.Message;
 
 /**

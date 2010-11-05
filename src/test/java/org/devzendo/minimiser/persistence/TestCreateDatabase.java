@@ -1,11 +1,12 @@
 package org.devzendo.minimiser.persistence;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.pluginmanager.PluginHelper;
 import org.devzendo.minimiser.pluginmanager.PluginHelperFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -14,10 +15,18 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestCreateDatabase extends LoggingTestCase {
+public final class TestCreateDatabase {
 
     private PluginHelper mPluginHelper;
     private PersistencePluginHelper mPersistencePluginHelper;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      *

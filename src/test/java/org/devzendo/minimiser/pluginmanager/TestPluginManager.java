@@ -19,8 +19,8 @@ package org.devzendo.minimiser.pluginmanager;
 import java.util.List;
 import java.util.Map;
 
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.devzendo.minimiser.plugin.facade.FacadeA;
@@ -29,6 +29,7 @@ import org.devzendo.minimiser.plugin.facade.FacadeNeverImplemented;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -37,9 +38,17 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestPluginManager extends LoggingTestCase {
+public final class TestPluginManager {
     private DefaultPluginManager mDefaultPluginManager;
     private PluginRegistry mPluginRegistry;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      *

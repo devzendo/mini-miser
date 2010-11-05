@@ -18,9 +18,10 @@ package org.devzendo.minimiser.gui;
 
 import java.awt.Color;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -29,9 +30,17 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestColorTransform extends LoggingTestCase {
+public final class TestColorTransform {
     private ColorTransform transform;
     
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      * 
      */

@@ -22,7 +22,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commongui.GUIUtils;
 import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
 import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;

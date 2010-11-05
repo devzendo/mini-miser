@@ -10,7 +10,7 @@
 	</bean>
 
 	<!-- gui layer -->
-	<bean id="mainFrame" class="org.devzendo.minimiser.gui.MainFrameFactory" />
+	<bean id="mainFrame" class="org.devzendo.commongui.MainFrameFactory" />
 
 	<bean id="mainFrameCloseActionListener" class="org.devzendo.minimiser.gui.MainFrameCloseActionListener">
 		<constructor-arg ref="springLoader" />
@@ -18,13 +18,13 @@
 
 	<bean id="mainFrameTitle" class="org.devzendo.minimiser.gui.MainFrameTitleFactory" />
 
-	<bean id="cursorManager" class="org.devzendo.minimiser.gui.CursorManager" />
+	<bean id="cursorManager" class="org.devzendo.commongui.CursorManager" />
 
     <bean id="windowGeometryStorePersistence" class="org.devzendo.minimiser.gui.WindowGeometryStorePrefsPersistence" >
         <constructor-arg ref="prefs" />
     </bean>
 
-	<bean id="windowGeometryStore" class="org.devzendo.minimiser.gui.WindowGeometryStore" >
+	<bean id="windowGeometryStore" class="org.devzendo.commongui.WindowGeometryStore" >
 		<constructor-arg ref="windowGeometryStorePersistence" />
 	</bean>
 

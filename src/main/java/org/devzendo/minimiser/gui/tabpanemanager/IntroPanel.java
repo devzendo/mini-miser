@@ -30,11 +30,11 @@ import javax.swing.JPanel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.resource.ResourceLoader;
-import org.devzendo.minimiser.gui.layout.CentredLayout;
-import org.devzendo.minimiser.gui.menu.MenuIdentifier;
-import org.devzendo.minimiser.gui.menu.MenuWiring;
+import org.devzendo.commongui.layout.CentredLayout;
+import org.devzendo.commongui.menu.MenuIdentifier;
+import org.devzendo.commongui.menu.MenuWiring;
+import org.devzendo.commongui.panel.ImagePanel;
 import org.devzendo.minimiser.gui.menu.SystemMenuIdentifiers;
-import org.devzendo.minimiser.gui.panel.ImagePanel;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
 

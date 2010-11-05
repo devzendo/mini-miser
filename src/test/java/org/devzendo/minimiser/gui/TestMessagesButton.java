@@ -20,11 +20,12 @@ import java.awt.Color;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.util.Sleeper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -34,12 +35,20 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestMessagesButton extends LoggingTestCase {
+public final class TestMessagesButton {
     private static final Logger LOGGER = Logger
             .getLogger(TestMessagesButton.class);
     private MessagesButton button;
     private Sleeper sleeper; 
         
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      * 
      */

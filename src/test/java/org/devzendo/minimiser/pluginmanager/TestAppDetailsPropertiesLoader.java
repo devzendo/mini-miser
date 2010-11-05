@@ -16,9 +16,10 @@
 
 package org.devzendo.minimiser.pluginmanager;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -28,8 +29,16 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestAppDetailsPropertiesLoader extends LoggingTestCase {
+public final class TestAppDetailsPropertiesLoader {
     private AppDetailsPropertiesLoader mAppDetailsPropertiesLoader;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * 

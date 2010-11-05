@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.gui.CursorManager;
+import org.devzendo.commongui.CursorManager;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 
 /**

@@ -27,8 +27,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
-import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.commoncode.logging.Logging;
+import org.devzendo.commongui.Beautifier;
+import org.devzendo.commongui.CursorManager;
+import org.devzendo.commongui.GUIUtils;
 import org.devzendo.minimiser.gui.dialog.welcome.WelcomeDialog;
 import org.devzendo.minimiser.pluginmanager.DummyAppPluginRegistry;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;

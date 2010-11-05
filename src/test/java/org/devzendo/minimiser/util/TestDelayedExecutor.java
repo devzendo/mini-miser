@@ -23,12 +23,13 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.concurrency.ThreadUtils;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.util.DelayedExecutor.Executable;
 import org.devzendo.minimiser.util.DelayedExecutor.ExecutableReplaced;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -39,11 +40,19 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestDelayedExecutor extends LoggingTestCase {
+public final class TestDelayedExecutor {
     private static final Logger LOGGER = Logger
             .getLogger(TestDelayedExecutor.class);
     private static final String TEST_KEY = "test";
     private DelayedExecutor delayedExecutor;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * All tests need one...

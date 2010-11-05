@@ -24,13 +24,13 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.exception.AppException;
-import org.devzendo.commoncode.gui.GUIUtils;
-import org.devzendo.commoncode.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.commoncode.string.StringUtils;
+import org.devzendo.commongui.Beautifier;
+import org.devzendo.commongui.GUIUtils;
+import org.devzendo.commongui.ThreadCheckingRepaintManager;
 import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.commonspring.springloader.SpringLoaderFactory;
-import org.devzendo.minimiser.gui.Beautifier;
 import org.devzendo.minimiser.gui.MainFrame;
 import org.devzendo.minimiser.gui.SqlConsoleFrame;
 import org.devzendo.minimiser.pluginmanager.AppDetailsPropertiesLoader;

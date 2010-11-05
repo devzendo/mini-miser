@@ -16,8 +16,8 @@
 
 package org.devzendo.minimiser.upgradedetector;
 
-import org.devzendo.commoncode.gui.GUIUtils;
 import org.devzendo.commoncode.patterns.observer.Observer;
+import org.devzendo.commongui.GUIUtils;
 import org.devzendo.minimiser.gui.dialog.welcome.WelcomeDialogHelper;
 import org.devzendo.minimiser.startupqueue.StartupQueue;
 

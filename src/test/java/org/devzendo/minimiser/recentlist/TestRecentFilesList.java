@@ -21,14 +21,15 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 import org.easymock.EasyMock;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -39,9 +40,17 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestRecentFilesList extends LoggingTestCase {
+public final class TestRecentFilesList  {
     private static final Logger LOGGER = Logger
             .getLogger(TestRecentFilesList.class);
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      * 
      */

@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
-import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commongui.GUIUtils;
 import org.devzendo.minimiser.gui.wizard.MiniMiserWizardPage;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.prefs.Prefs;

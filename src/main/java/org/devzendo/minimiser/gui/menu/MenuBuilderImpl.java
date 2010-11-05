@@ -19,6 +19,8 @@ package org.devzendo.minimiser.gui.menu;
 import java.awt.event.ActionListener;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commongui.menu.MenuIdentifier;
+import org.devzendo.commongui.menu.MenuWiring;
 import org.devzendo.commonspring.springloader.SpringLoader;
 
 

@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commoncode.gui.GUIUtils;
+import org.devzendo.commongui.GUIUtils;
 import org.devzendo.commonspring.springloader.SpringLoader;
 
 

@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.string.StringUtils;
-import org.devzendo.minimiser.gui.CursorManager;
+import org.devzendo.commongui.CursorManager;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 
 

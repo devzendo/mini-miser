@@ -18,12 +18,13 @@ package org.devzendo.minimiser.wiring.databaseeventlistener;
 
 import javax.swing.JTabbedPane;
 
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.gui.tabpanemanager.HeadlessTabPaneManager;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -38,11 +39,18 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestTabPaneManagerDatabaseEventListener extends LoggingTestCase {
-
+public final class TestTabPaneManagerDatabaseEventListener {
     private OpenDatabaseList openDatabaseList;
     private HeadlessTabPaneManager tabPaneManager;
     private TabPaneManagerDatabaseEventListener adapter;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      *

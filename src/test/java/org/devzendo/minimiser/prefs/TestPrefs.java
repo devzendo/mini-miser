@@ -19,12 +19,13 @@ package org.devzendo.minimiser.prefs;
 import java.io.File;
 import java.io.IOException;
 
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.prefs.Prefs.PrefsSection;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -35,11 +36,19 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestPrefs extends LoggingTestCase {
+public final class TestPrefs {
     private static final String WINDOW_GEOMETRY = "20,20,700,500";
     private static final String WIZARD_PANEL_SIZE = "200,300";
     private static final String FOO = "foo";
     private Prefs prefs;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * Create a temporary file to hold prefs data, that's deleted after

@@ -21,8 +21,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -32,7 +33,15 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestTabIdentifier extends LoggingTestCase {
+public final class TestTabIdentifier {
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      *
      */

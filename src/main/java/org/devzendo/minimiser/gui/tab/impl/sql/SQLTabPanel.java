@@ -24,9 +24,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import org.devzendo.commoncode.gui.SwingWorker;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.gui.CursorManager;
+import org.devzendo.commongui.CursorManager;
+import org.devzendo.commongui.SwingWorker;
 import org.devzendo.minimiser.gui.console.input.InputConsoleEvent;
 import org.devzendo.minimiser.gui.console.input.InputConsoleEventError;
 import org.devzendo.minimiser.gui.console.input.TextAreaInputConsole;

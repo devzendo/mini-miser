@@ -24,14 +24,14 @@ import java.util.concurrent.Callable;
 import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commoncode.gui.GUIUtils;
-import org.devzendo.commoncode.gui.GUIValueObtainer;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
+import org.devzendo.commongui.GUIUtils;
+import org.devzendo.commongui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tabfactory.StubRecordingTab;
 import org.devzendo.minimiser.gui.tabfactory.StubTabFactory;
 import org.devzendo.minimiser.gui.tabfactory.TabFactory;
 import org.devzendo.minimiser.gui.tabpanemanager.TabListPrefs;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.opentablist.OpenTabList;
@@ -41,6 +41,7 @@ import org.devzendo.minimiser.tabcontroller.TabController;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -65,7 +66,7 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestCase {
+public final class TestTabPaneCreatingDatabaseEventListener {
     private static final Logger LOGGER = Logger
             .getLogger(TestTabPaneCreatingDatabaseEventListener.class);
     private static final String DATABASE = "db";
@@ -80,6 +81,14 @@ public final class TestTabPaneCreatingDatabaseEventListener extends LoggingTestC
     private volatile boolean component1IsLabel = false;
     private volatile boolean tab0NameOk = false;
     private volatile boolean tab1NameOk = false;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      *

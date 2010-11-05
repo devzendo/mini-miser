@@ -20,6 +20,8 @@ import javax.swing.JMenu;
 import javax.swing.JSeparator;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commongui.menu.AbstractRebuildableMenuGroup;
+import org.devzendo.commongui.menu.MenuWiring;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
 

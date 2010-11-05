@@ -18,9 +18,10 @@ package org.devzendo.minimiser.upgradedetector;
 
 import junit.framework.Assert;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.easymock.EasyMock;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -30,9 +31,16 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestUpgradeDetector extends LoggingTestCase {
-    
+public final class TestUpgradeDetector {
     private static final String CURRENT_VERSION = "1.1.2";
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * 

@@ -17,7 +17,7 @@
 package org.devzendo.minimiser.persistence;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.persistence.dao.VersionsDao;
 import org.devzendo.minimiser.persistence.domain.Version;
 import org.devzendo.minimiser.persistence.domain.VersionableEntity;
@@ -26,6 +26,7 @@ import org.devzendo.minimiser.util.InstanceSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,7 +42,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author matt
  *
  */
-public final class TestTransactionHandling extends LoggingTestCase {
+public final class TestTransactionHandling {
     private static final Logger LOGGER = Logger
             .getLogger(TestTransactionHandling.class);
     private static final String TESTPLUGIN = "testplugin";
@@ -51,6 +52,14 @@ public final class TestTransactionHandling extends LoggingTestCase {
     private SQLAccess mSqlAccess;
     private VersionsDao mVersionsDao;
     private SimpleJdbcTemplate mSimpleJdbcTemplate;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * 

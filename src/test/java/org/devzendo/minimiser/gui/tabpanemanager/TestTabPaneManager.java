@@ -18,10 +18,11 @@ package org.devzendo.minimiser.gui.tabpanemanager;
 
 import javax.swing.JTabbedPane;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -31,9 +32,16 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestTabPaneManager extends LoggingTestCase {
-    
+public final class TestTabPaneManager {
     private HeadlessTabPaneManager tabPaneManager;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * Marsupial! Have you got what's there for my enjoyment?

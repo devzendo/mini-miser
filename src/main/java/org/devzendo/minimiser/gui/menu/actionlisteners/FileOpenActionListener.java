@@ -19,7 +19,8 @@ package org.devzendo.minimiser.gui.menu.actionlisteners;
 import java.awt.event.ActionEvent;
 import java.util.Map;
 
-import org.devzendo.minimiser.gui.CursorManager;
+import org.devzendo.commongui.CursorManager;
+import org.devzendo.commongui.menu.actionlisteners.SnailActionListener;
 import org.devzendo.minimiser.gui.menu.actionlisteners.fileopen.FileOpenResult;
 import org.devzendo.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardChooseFolderPage;
 import org.devzendo.minimiser.gui.menu.actionlisteners.fileopen.FileOpenWizardIntroPage;

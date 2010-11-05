@@ -21,10 +21,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.updatechecker.ChangeLogSectionParser.Section;
 import org.devzendo.minimiser.version.ComparableVersion;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -36,10 +37,18 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestChangeLogSectionParser extends LoggingTestCase {
+public final class TestChangeLogSectionParser {
     private static final Logger LOGGER = Logger
             .getLogger(TestChangeLogSectionParser.class);
     private ChangeLogSectionParser sectionParser;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * @throws IOException

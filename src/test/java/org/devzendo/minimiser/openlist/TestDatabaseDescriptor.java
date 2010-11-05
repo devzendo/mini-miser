@@ -16,10 +16,11 @@
 
 package org.devzendo.minimiser.openlist;
 
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -30,8 +31,15 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestDatabaseDescriptor extends LoggingTestCase {
-    
+public final class TestDatabaseDescriptor  {
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      * 
      */

@@ -21,9 +21,10 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.updatechecker.ChangeLogSectionParser.Section;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -34,10 +35,18 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestCurrentChangeLogParses extends LoggingTestCase {
+public final class TestCurrentChangeLogParses {
     private static final Logger LOGGER = Logger
             .getLogger(TestCurrentChangeLogParses.class);
     private ChangeLogSectionParser sectionParser;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * @throws ParseException never, unless the change log is bad

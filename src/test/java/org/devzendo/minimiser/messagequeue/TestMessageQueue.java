@@ -18,14 +18,15 @@ package org.devzendo.minimiser.messagequeue;
 
 import java.io.IOException;
 
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageId;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -35,10 +36,18 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestMessageQueue extends LoggingTestCase {
+public final class TestMessageQueue {
 
     private Prefs prefs;
     private MessageQueue messageQueue;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * @throws IOException on failure, never.

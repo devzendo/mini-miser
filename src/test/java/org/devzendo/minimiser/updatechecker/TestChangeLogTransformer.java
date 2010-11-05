@@ -21,10 +21,11 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.version.ComparableVersion;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -36,9 +37,17 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestChangeLogTransformer extends LoggingTestCase {
+public final class TestChangeLogTransformer {
     private DefaultChangeLogTransformer changeLogTransformer;
     private File testLog;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * @throws ParseException never

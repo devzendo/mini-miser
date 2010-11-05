@@ -24,9 +24,10 @@ import java.io.IOException;
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -37,7 +38,7 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestRemoteFileRetriever extends LoggingTestCase {
+public final class TestRemoteFileRetriever {
     private static final String CHANGELOG_CONTENTS = "example text";
     private static final String CHANGELOG_TXT = "changelog.txt";
     private static final int PORT = 9876;
@@ -47,6 +48,14 @@ public final class TestRemoteFileRetriever extends LoggingTestCase {
     private RemoteFileRetriever remoteFileRetriever;
     private WebServer webServer;
     
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
+
     /**
      * @throws IOException hopefully never
      */

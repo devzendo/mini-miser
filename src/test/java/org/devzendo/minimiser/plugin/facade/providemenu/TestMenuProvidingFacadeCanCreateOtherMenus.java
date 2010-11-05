@@ -6,6 +6,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import org.devzendo.commongui.menu.MenuWiring;
 import org.devzendo.commonspring.springloader.SimpleSpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
@@ -14,7 +15,6 @@ import org.devzendo.minimiser.gui.menu.HelpMenu;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuFacadeImpl;
 import org.devzendo.minimiser.gui.menu.MenuImpl;
-import org.devzendo.minimiser.gui.menu.MenuWiring;
 import org.devzendo.minimiser.gui.menu.StubRecentFilesList;
 import org.devzendo.minimiser.gui.menu.ToolsMenu;
 import org.devzendo.minimiser.gui.menu.ViewMenu;

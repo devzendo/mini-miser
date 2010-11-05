@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.migrator;
 
-import org.devzendo.minimiser.logging.LoggingTestCase;
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.persistence.DAOFactory;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
 import org.devzendo.minimiser.persistence.PersistencePluginHelper;
@@ -27,6 +27,7 @@ import org.devzendo.minimiser.util.InstanceSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -38,12 +39,20 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestMigrator extends LoggingTestCase {
+public final class TestMigrator {
     private static final String MIGRATIONDB = "migrator";
     private PluginHelper mPluginHelper;
     private PersistencePluginHelper mPersistencePluginHelper;
     private PersistenceMigratorHelper mPersistenceMigratorHelper;
     private Migrator mMigrator;
+
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      *

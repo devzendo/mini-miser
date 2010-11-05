@@ -21,14 +21,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
-import org.devzendo.minimiser.logging.LoggingTestCase;
 import org.devzendo.minimiser.prefs.Prefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -38,11 +39,18 @@ import org.junit.Test;
  * @author matt
  *
  */
-public final class TestTabListPrefs extends LoggingTestCase {
+public final class TestTabListPrefs {
     private Prefs prefs;
     private File prefsFile;
 
     private TabListPrefs tabListPrefs;
+    /**
+     * 
+     */
+    @BeforeClass
+    public static void setupLogging() {
+        LoggingUnittestHelper.setupLogging();
+    }
 
     /**
      * @throws IOException on prefs creation failure
