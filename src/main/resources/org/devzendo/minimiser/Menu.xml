@@ -5,7 +5,7 @@
 	default-lazy-init="true" >
 
 	<!-- gui layer -->
-	<bean id="menuWiring" class="org.devzendo.minimiser.gui.menu.MenuWiring" />
+	<bean id="menuWiring" class="org.devzendo.commongui.menu.MenuWiring" />
 	
 	<bean id="menu" class="org.devzendo.minimiser.gui.menu.MenuImpl">
 		<constructor-arg ref="springLoader" />
