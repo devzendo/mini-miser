@@ -15,19 +15,16 @@
  */
 package org.devzendo.minimiser.prefs;
 
-import javax.swing.JOptionPane;
-
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.GUIUtils;
 
 /**
  * A helper class for starting up the Prefs location and factory.
  * @author matt
  *
  */
-public final class PrefsStartupHelper {
+public abstract class AbstractPrefsStartupHelper {
     private static final Logger LOGGER = Logger
-            .getLogger(PrefsStartupHelper.class);
+            .getLogger(AbstractPrefsStartupHelper.class);
     private final PrefsFactory mPrefsFactory;
     private final PrefsLocation mPrefsLocation;
 
@@ -36,7 +33,7 @@ public final class PrefsStartupHelper {
      * @param prefsLocation the location of the prefs
      * @param prefsFactory the factory where the prefs object will be stored
      */
-    public PrefsStartupHelper(final PrefsLocation prefsLocation, final PrefsFactory prefsFactory) {
+    public AbstractPrefsStartupHelper(final PrefsLocation prefsLocation, final PrefsFactory prefsFactory) {
         mPrefsLocation = prefsLocation;
         mPrefsFactory = prefsFactory;
     }
@@ -45,7 +42,7 @@ public final class PrefsStartupHelper {
      * Initialise the prefs. If this fails, the user wil be notified, and the
      * program will exit. You can't continue without prefs.
      */
-    public void initialisePrefs() {
+    public final void initialisePrefs() {
         LOGGER.debug("Prefs directory is " + mPrefsLocation.getPrefsDir().getAbsolutePath());
         LOGGER.debug("Prefs file is " + mPrefsLocation.getPrefsFile().getAbsolutePath());
         if (!mPrefsLocation.prefsDirectoryExists()) {
@@ -53,11 +50,8 @@ public final class PrefsStartupHelper {
                 mPrefsLocation.getPrefsDir().getAbsolutePath()));
             if (!mPrefsLocation.createPrefsDirectory()) {
                 LOGGER.warn("Failed to create prefs directory");
-                GUIUtils.runOnEventThread(new Runnable() {
-                    public void run() {
-                        showPrefsDirCreationFailureMessage();
-                    }
-                });
+                warnUserOfPrefsDirCreationFailure();
+                
             } else {
                 LOGGER.info("Created prefs directory OK");
             }
@@ -65,17 +59,21 @@ public final class PrefsStartupHelper {
         mPrefsFactory.setPrefs(mPrefsLocation.getPrefsFile().getAbsolutePath());
     }
 
-    private void showPrefsDirCreationFailureMessage() {
-        JOptionPane.showMessageDialog(null, 
-            // NOTE user-centric message
-            // I18N
-            String.format("The '%s' folder cannot be created - the application cannot continue.\n"
-                + "This folder would be used to remember your options and settings.\n\n"
-                + "Failure to create this folder may be be due to security permissions, or a full disk.",
-                mPrefsLocation.getPrefsDir().getAbsolutePath()),
-            "Could not create settings folder",
-            JOptionPane.ERROR_MESSAGE);
-        
-        System.exit(0);
+    /**
+     * Warn the user either via GUI or log output of a failure to create the
+     * prefs directory.
+     */
+    protected abstract void warnUserOfPrefsDirCreationFailure();
+
+    /**
+     * @return an error message explaining the problem
+     */
+    protected final String[] createErrorMessage() {
+        return new String[] {
+                String.format("The '%s' folder cannot be created - the application cannot continue.\n",
+                    mPrefsLocation.getPrefsDir().getAbsolutePath()),
+            "This folder would be used to remember your options and settings.\n\n",
+            "Failure to create this folder may be be due to security permissions, or a full disk.",
+        };
     }
 }

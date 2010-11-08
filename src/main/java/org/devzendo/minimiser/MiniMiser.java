@@ -32,9 +32,9 @@ import org.devzendo.commonspring.springloader.SpringLoaderFactory;
 import org.devzendo.minimiser.gui.MainFrame;
 import org.devzendo.minimiser.gui.SqlConsoleFrame;
 import org.devzendo.minimiser.pluginmanager.AppDetailsPropertiesLoader;
+import org.devzendo.minimiser.prefs.GuiPrefsStartupHelper;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.devzendo.minimiser.prefs.PrefsLocation;
-import org.devzendo.minimiser.prefs.PrefsStartupHelper;
 
 
 /**
@@ -103,7 +103,7 @@ public final class MiniMiser {
         
         final PrefsLocation prefsLocation = springLoader.getBean("prefsLocation", PrefsLocation.class);
         final PrefsFactory prefsFactory = springLoader.getBean("&prefs", PrefsFactory.class);
-        new PrefsStartupHelper(prefsLocation, prefsFactory).initialisePrefs();
+        new GuiPrefsStartupHelper(prefsLocation, prefsFactory).initialisePrefs();
         
         GUIUtils.runOnEventThread(new Runnable() {
             public void run() {
