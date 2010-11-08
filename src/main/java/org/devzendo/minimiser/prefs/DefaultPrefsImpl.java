@@ -16,6 +16,7 @@
 
 package org.devzendo.minimiser.prefs;
 
+import org.apache.log4j.Logger;
 import org.devzendo.commoncode.file.INIFile;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.commoncode.patterns.observer.ObserverList;
@@ -27,8 +28,10 @@ import org.devzendo.commoncode.patterns.observer.ObserverList;
  *
  */
 public final class DefaultPrefsImpl implements Prefs {
-    private String prefsFilePath;
-    private INIFile iniFile;
+    private static final Logger LOGGER = Logger
+            .getLogger(DefaultPrefsImpl.class);
+    private final String prefsFilePath;
+    private final INIFile iniFile;
     private final ObserverList<PrefsEvent> observerList;
 
 
@@ -69,6 +72,7 @@ public final class DefaultPrefsImpl implements Prefs {
      */
     public DefaultPrefsImpl(final String prefsFile) {
         prefsFilePath = prefsFile;
+        LOGGER.info("Creating default prefs file at " + prefsFile);
         iniFile = new INIFile(prefsFilePath);
         observerList = new ObserverList<PrefsEvent>();
     }
@@ -101,6 +105,7 @@ public final class DefaultPrefsImpl implements Prefs {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
         return prefsFilePath;
     }
