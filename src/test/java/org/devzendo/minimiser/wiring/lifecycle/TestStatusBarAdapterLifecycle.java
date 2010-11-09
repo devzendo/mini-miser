@@ -22,7 +22,7 @@ import org.devzendo.minimiser.gui.HeadlessStatusBar;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.SimpleMessage;
-import org.devzendo.minimiser.messagequeue.StubMessageQueuePrefs;
+import org.devzendo.minimiser.messagequeue.StubMessageQueueMiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public final class TestStatusBarAdapterLifecycle extends SpringLoaderUnittestCas
         Assert.assertNotNull(headlessStatusBar);
 
         final PrefsFactory prefsFactory = getSpringLoader().getBean("&prefs", PrefsFactory.class);
-        prefsFactory.setPrefs(new StubMessageQueuePrefs());
+        prefsFactory.setPrefs(new StubMessageQueueMiniMiserPrefs());
 
         messageQueue = getSpringLoader().getBean("messageQueue", MessageQueue.class);
         Assert.assertNotNull(messageQueue);

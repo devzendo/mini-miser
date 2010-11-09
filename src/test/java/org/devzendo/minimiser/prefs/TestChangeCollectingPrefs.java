@@ -39,7 +39,7 @@ public final class TestChangeCollectingPrefs {
         final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
         ccp.commit();
         
         EasyMock.verify(mockPrefs);
@@ -54,7 +54,7 @@ public final class TestChangeCollectingPrefs {
         mockPrefs.setTabHidden(EasyMock.eq("SQL"));
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial
         // setting - but don't do that here...
@@ -75,7 +75,7 @@ public final class TestChangeCollectingPrefs {
         mockPrefs.setTabHidden(EasyMock.eq("SQL"));
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial setting
         ccp.isTabHidden("SQL");
@@ -95,7 +95,7 @@ public final class TestChangeCollectingPrefs {
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.FALSE);
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial setting
         ccp.isTabHidden("SQL");
@@ -116,7 +116,7 @@ public final class TestChangeCollectingPrefs {
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial setting
         ccp.isTabHidden("SQL");
@@ -138,7 +138,7 @@ public final class TestChangeCollectingPrefs {
         mockPrefs.clearTabHidden(EasyMock.eq("SQL"));
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial setting
         ccp.isTabHidden("SQL");
@@ -158,7 +158,7 @@ public final class TestChangeCollectingPrefs {
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.FALSE);
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial setting
         ccp.isTabHidden("SQL");
@@ -178,7 +178,7 @@ public final class TestChangeCollectingPrefs {
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial setting
         ccp.isTabHidden("SQL");
@@ -198,7 +198,7 @@ public final class TestChangeCollectingPrefs {
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
 
         // The data has to be read through ccp first to create its initial setting
         ccp.isTabHidden("SQL");
@@ -215,7 +215,7 @@ public final class TestChangeCollectingPrefs {
         final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.replay(mockPrefs);
         
-        final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
+        final ChangeCollectingMiniMiserPrefs ccp = new ChangeCollectingMiniMiserPrefs(mockPrefs);
         ccp.clearLastActiveFile(); // for example
     }
 }

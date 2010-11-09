@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package org.devzendo.minimiser.messagequeue;
+package org.devzendo.minimiser.wiring.lifecycle;
 
-import java.util.HashSet;
-
-import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.BooleanFlag;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;
@@ -26,15 +23,13 @@ import org.devzendo.minimiser.prefs.PrefsEvent;
 
 
 /**
- * Prefs that get/set the "don't show this again" flags and
- * "upgrade check" flag from memory.
+ * Prefs that get/set the database list from memory.
  * @author matt
  *
  */
-public final class StubMessageQueuePrefs implements MiniMiserPrefs {
-    private static final Logger LOGGER = Logger.getLogger(StubMessageQueuePrefs.class);
-    private HashSet<String> dstaFlags = new HashSet<String>();
-    private HashSet<BooleanFlag> setBooleanFlags = new HashSet<BooleanFlag>();
+public final class StubOpenListMiniMiserPrefs implements MiniMiserPrefs {
+    private String[] openFiles = new String[0];
+    private String lastActiveFile = null;
     
     /**
      * {@inheritDoc}
@@ -86,32 +81,36 @@ public final class StubMessageQueuePrefs implements MiniMiserPrefs {
      * {@inheritDoc}
      */
     public String[] getOpenFiles() {
-        return new String[0];
+        return openFiles;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setOpenFiles(final String[] paths) {
+        openFiles = paths == null ? new String[0] : paths;
+        
     }
 
     /**
      * {@inheritDoc}
      */
     public String getLastActiveFile() {
-        return null;
+        return lastActiveFile;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setLastActiveFile(final String name) {
+        lastActiveFile = name;
     }
 
     /**
      * {@inheritDoc}
      */
     public void clearLastActiveFile() {
+        lastActiveFile = null;
     }
 
     /**
@@ -189,43 +188,32 @@ public final class StubMessageQueuePrefs implements MiniMiserPrefs {
      * {@inheritDoc}
      */
     public void clearDontShowThisAgainFlag(final String messageId) {
-        LOGGER.debug("Clearing DSTA flag " + messageId);
-        dstaFlags.remove(messageId);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isDontShowThisAgainFlagSet(final String messageId) {
-        final boolean contained = dstaFlags.contains(messageId);
-        LOGGER.debug("Value of DSTA flag " + messageId + " is " + contained);
-        return contained;
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setDontShowThisAgainFlag(final String messageId) {
-        LOGGER.debug("Setting DSTA flag " + messageId);
-        dstaFlags.add(messageId);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isBooleanFlagSet(final BooleanFlag flagName) {
-        return setBooleanFlags.contains(flagName);
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
     public void setBooleanFlag(final BooleanFlag flagName, final boolean allowed) {
-        if (allowed) {
-            setBooleanFlags.add(flagName);
-        } else {
-            setBooleanFlags.remove(flagName);
-        }
     }
 
     /**

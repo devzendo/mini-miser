@@ -70,7 +70,7 @@ public final class TestPrefs {
     public static MiniMiserPrefs createUnitTestPrefsFile() throws IOException {
         final File tempFile = File.createTempFile("minimiser-unit-test", "prefs").getAbsoluteFile();
         tempFile.deleteOnExit();
-        return new DefaultPrefsImpl(tempFile.getAbsolutePath());
+        return new DefaultMiniMiserPrefsImpl(tempFile.getAbsolutePath());
     }
 
     /**

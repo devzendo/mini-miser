@@ -53,7 +53,7 @@ public final class TestToolsOptionsTabFactory extends SpringLoaderUnittestCase {
     public void getTabFactoryPrerequisites() {
         tabFactory = getSpringLoader().getBean("toolsOptionsTabFactory", ToolsOptionsTabFactory.class);
         problemReporter = getSpringLoader().getBean("problemReporter", StubProblemReporter.class);
-        stubPrefs = new StubTabHidingPrefs();
+        stubPrefs = new StubTabHidingMiniMiserPrefs();
     }
 
 

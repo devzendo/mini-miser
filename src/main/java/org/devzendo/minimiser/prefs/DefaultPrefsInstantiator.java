@@ -25,13 +25,13 @@ public final class DefaultPrefsInstantiator implements PrefsInstantiator {
      * {@inheritDoc}
      */
     public MiniMiserPrefs instantiatePrefs(final PrefsLocation prefsLocation) {
-        return new DefaultPrefsImpl(prefsLocation.getPrefsFile().getAbsolutePath());
+        return new DefaultMiniMiserPrefsImpl(prefsLocation.getPrefsFile().getAbsolutePath());
     }
 
     /**
      * {@inheritDoc}
      */
     public Class<? extends MiniMiserPrefs> getPrefsClass() {
-        return DefaultPrefsImpl.class;
+        return DefaultMiniMiserPrefsImpl.class;
     }
 }

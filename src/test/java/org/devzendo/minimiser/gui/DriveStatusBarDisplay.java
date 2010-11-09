@@ -42,7 +42,7 @@ import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import org.devzendo.minimiser.messagequeue.SimpleDSTAMessage;
 import org.devzendo.minimiser.messagequeue.SimpleMessage;
-import org.devzendo.minimiser.messagequeue.StubMessageQueuePrefs;
+import org.devzendo.minimiser.messagequeue.StubMessageQueueMiniMiserPrefs;
 import org.devzendo.minimiser.pluginmanager.DummyAppPluginRegistry;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
@@ -142,7 +142,7 @@ public final class DriveStatusBarDisplay {
         
         frame.add(buttonPanel, BorderLayout.NORTH);
 
-        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(new StubMessageQueuePrefs()));
+        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(new StubMessageQueueMiniMiserPrefs()));
         
         final MainFrameStatusBar mainFrameStatusBar = new MainFrameStatusBar(new DelayedExecutor());
         frame.add(mainFrameStatusBar.getPanel(), BorderLayout.SOUTH);

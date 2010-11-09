@@ -22,7 +22,7 @@ import org.devzendo.minimiser.gui.messagequeueviewer.MessageQueueViewerFactory;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import org.devzendo.minimiser.messagequeue.SimpleMessage;
-import org.devzendo.minimiser.messagequeue.StubMessageQueuePrefs;
+import org.devzendo.minimiser.messagequeue.StubMessageQueueMiniMiserPrefs;
 import org.devzendo.minimiser.util.DelayedExecutor;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public final class TestStatusBarAdapters {
     @Before
     public void getPrerequisites() {
         headlessStatusBar = new HeadlessStatusBar(new DelayedExecutor());
-        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(new StubMessageQueuePrefs()));
+        messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(new StubMessageQueueMiniMiserPrefs()));
         headlessMessageQueueViewerFactory = new HeadlessMessageQueueViewerFactory(headlessStatusBar);
         new StatusBarMessageQueueAdapter(headlessStatusBar, messageQueue, headlessMessageQueueViewerFactory).wireAdapter();
         

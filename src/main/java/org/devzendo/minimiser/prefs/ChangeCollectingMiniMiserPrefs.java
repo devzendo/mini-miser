@@ -36,7 +36,7 @@ import org.devzendo.commoncode.patterns.observer.Observer;
  * @author matt
  * 
  */
-public final class ChangeCollectingPrefs implements MiniMiserPrefs {
+public final class ChangeCollectingMiniMiserPrefs implements MiniMiserPrefs {
     private final TabHidingStateChangeCollector mTabHidingStateChangeCollector;
 
     /**
@@ -45,7 +45,7 @@ public final class ChangeCollectingPrefs implements MiniMiserPrefs {
      * @param realPrefs
      *        the real Prefs that'll be updated when commit() is called.
      */
-    public ChangeCollectingPrefs(final MiniMiserPrefs realPrefs) {
+    public ChangeCollectingMiniMiserPrefs(final MiniMiserPrefs realPrefs) {
         mTabHidingStateChangeCollector = new TabHidingStateChangeCollector(realPrefs);
     }
 

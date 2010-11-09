@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public final class TestMessageQueueBorderGuard {
     
-    private StubMessageQueuePrefs prefs;
+    private StubMessageQueueMiniMiserPrefs prefs;
     private MessageQueueBorderGuardFactory borderGuardFactory;
 
     /**
@@ -39,7 +39,7 @@ public final class TestMessageQueueBorderGuard {
      */
     @Before
     public void getPrerequisites() {
-        prefs = new StubMessageQueuePrefs();
+        prefs = new StubMessageQueueMiniMiserPrefs();
         borderGuardFactory = new MessageQueueBorderGuardFactory(prefs);
     }
     

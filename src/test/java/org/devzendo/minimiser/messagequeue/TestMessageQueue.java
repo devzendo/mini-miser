@@ -55,7 +55,7 @@ public final class TestMessageQueue {
      */
     @Before
     public void getPrerequisites() throws IOException {
-        prefs = new StubMessageQueuePrefs();
+        prefs = new StubMessageQueueMiniMiserPrefs();
         messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(prefs));
     }
     

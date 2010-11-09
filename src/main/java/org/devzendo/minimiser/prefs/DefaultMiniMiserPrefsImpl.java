@@ -27,9 +27,9 @@ import org.devzendo.commoncode.patterns.observer.ObserverList;
  * @author matt
  *
  */
-public final class DefaultPrefsImpl implements MiniMiserPrefs {
+public final class DefaultMiniMiserPrefsImpl implements MiniMiserPrefs {
     private static final Logger LOGGER = Logger
-            .getLogger(DefaultPrefsImpl.class);
+            .getLogger(DefaultMiniMiserPrefsImpl.class);
     private final String prefsFilePath;
     private final INIFile iniFile;
     private final ObserverList<PrefsEvent> observerList;
@@ -70,7 +70,7 @@ public final class DefaultPrefsImpl implements MiniMiserPrefs {
      * Create a Prefs object backed by a file
      * @param prefsFile the file path
      */
-    public DefaultPrefsImpl(final String prefsFile) {
+    public DefaultMiniMiserPrefsImpl(final String prefsFile) {
         prefsFilePath = prefsFile;
         LOGGER.info("Creating default prefs file at " + prefsFile);
         iniFile = new INIFile(prefsFilePath);

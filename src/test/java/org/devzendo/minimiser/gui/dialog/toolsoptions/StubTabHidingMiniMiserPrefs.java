@@ -30,7 +30,7 @@ import org.devzendo.minimiser.prefs.PrefsEvent;
  * @author matt
  *
  */
-public final class StubTabHidingPrefs implements MiniMiserPrefs {
+public final class StubTabHidingMiniMiserPrefs implements MiniMiserPrefs {
     private final Map<String, Boolean> tabHiddenFlags = new HashMap<String, Boolean>();
 
     /**

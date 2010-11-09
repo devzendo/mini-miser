@@ -21,7 +21,7 @@ import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import org.devzendo.minimiser.messagequeue.MessageQueueEvent;
 import org.devzendo.minimiser.messagequeue.MessageQueueModifiedEvent;
-import org.devzendo.minimiser.messagequeue.StubMessageQueuePrefs;
+import org.devzendo.minimiser.messagequeue.StubMessageQueueMiniMiserPrefs;
 import org.devzendo.minimiser.pluginmanager.DummyAppPluginRegistry;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
@@ -49,7 +49,7 @@ public final class TestQueueUpdateAvailableFlagSettingMessageListener {
      */
     @Before
     public void getPrerequisites() {
-        prefs = new StubMessageQueuePrefs();
+        prefs = new StubMessageQueueMiniMiserPrefs();
         messageQueue = new MessageQueue(new MessageQueueBorderGuardFactory(prefs));
         recorder = new MessageQueueModifiedRecorder();
         messageQueue.addMessageQueueEventObserver(recorder);

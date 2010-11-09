@@ -27,7 +27,7 @@ import org.devzendo.commongui.CursorManager;
 import org.devzendo.commongui.GUIUtils;
 import org.devzendo.commongui.SwingWorker;
 import org.devzendo.commongui.dialog.snaildialog.AbstractSnailDialog;
-import org.devzendo.minimiser.prefs.ChangeCollectingPrefs;
+import org.devzendo.minimiser.prefs.ChangeCollectingMiniMiserPrefs;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
@@ -46,7 +46,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
     private final MiniMiserPrefs prefs;
     private final ToolsOptionsTabFactory toolsOptionsTabFactory;
 
-    private ChangeCollectingPrefs ccp;
+    private ChangeCollectingMiniMiserPrefs ccp;
     private ToolsOptionsDialogPanel toolsOptionsDialogPanel;
 
     /**
@@ -117,7 +117,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
         return new SwingWorker() {
             @Override
             public Object construct() {
-                ccp = new ChangeCollectingPrefs(prefs);
+                ccp = new ChangeCollectingMiniMiserPrefs(prefs);
                 return toolsOptionsTabFactory.loadTabs(ccp);
             }
             
