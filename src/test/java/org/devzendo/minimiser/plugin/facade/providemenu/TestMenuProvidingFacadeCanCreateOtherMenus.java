@@ -27,7 +27,7 @@ import org.devzendo.minimiser.persistence.DefaultPluginManagerPersistenceUnittes
 import org.devzendo.minimiser.pluginmanager.PluginException;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -56,7 +56,7 @@ public class TestMenuProvidingFacadeCanCreateOtherMenus extends
     private WindowMenu mWindowMenu;
     private HelpMenu mHelpMenu;
 
-    private Prefs mPrefs;
+    private MiniMiserPrefs mPrefs;
     private ViewMenu mViewMenu;
     private ApplicationMenu mGlobalApplicationMenu;
     private MenuProvidingHelper mMenuProvidingHelper;

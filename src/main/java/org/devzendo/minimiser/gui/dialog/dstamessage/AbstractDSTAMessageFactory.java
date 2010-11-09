@@ -18,7 +18,7 @@ package org.devzendo.minimiser.gui.dialog.dstamessage;
 
 import java.awt.Component;
 
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * Provides the basic prefs interaction for DSTAMessageFactories.
@@ -26,14 +26,14 @@ import org.devzendo.minimiser.prefs.Prefs;
  *
  */
 public abstract class AbstractDSTAMessageFactory implements DSTAMessageFactory {
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
 
     /**
      * Construct the AbstractDSTAMessageFactory given the prefs used to store
      * the DSTA flags.
      * @param preferences the prefs in which the DSTA flags are stored.
      */
-    public AbstractDSTAMessageFactory(final Prefs preferences) {
+    public AbstractDSTAMessageFactory(final MiniMiserPrefs preferences) {
         this.prefs = preferences;
     }
 

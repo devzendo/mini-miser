@@ -27,7 +27,7 @@ import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.SimpleMessage;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.util.Today;
 import org.devzendo.minimiser.util.WorkerPool;
 import org.devzendo.minimiser.version.ComparableVersion;
@@ -45,7 +45,7 @@ public final class DefaultUpdateChecker implements UpdateChecker {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultUpdateChecker.class);
 
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
     private final MessageQueue mMessageQueue;
     private final RemoteFileRetriever mRemoteFileRetriever;
     private final ChangeLogTransformer mChangeLogTransformer;
@@ -68,7 +68,7 @@ public final class DefaultUpdateChecker implements UpdateChecker {
      * be queued
      * @param pluginRegistry used to find out the application's version
      */
-    public DefaultUpdateChecker(final Prefs preferences, final MessageQueue msgQueue,
+    public DefaultUpdateChecker(final MiniMiserPrefs preferences, final MessageQueue msgQueue,
             final RemoteFileRetriever retriever, final ChangeLogTransformer logXform,
             final Today today, final WorkerPool pool,
             final PluginRegistry pluginRegistry) {

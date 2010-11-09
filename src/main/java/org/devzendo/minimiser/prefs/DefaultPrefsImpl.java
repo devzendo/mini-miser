@@ -27,7 +27,7 @@ import org.devzendo.commoncode.patterns.observer.ObserverList;
  * @author matt
  *
  */
-public final class DefaultPrefsImpl implements Prefs {
+public final class DefaultPrefsImpl implements MiniMiserPrefs {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultPrefsImpl.class);
     private final String prefsFilePath;

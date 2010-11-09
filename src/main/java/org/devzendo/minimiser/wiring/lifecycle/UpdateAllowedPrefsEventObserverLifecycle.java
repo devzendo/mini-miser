@@ -21,7 +21,7 @@ import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 import org.devzendo.minimiser.updatechecker.UpdateChecker;
 import org.devzendo.minimiser.updatechecker.UpdateProgressAdapterFactory;
@@ -39,7 +39,7 @@ public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle
     private static final Logger LOGGER = Logger
             .getLogger(UpdateAllowedPrefsEventObserverLifecycle.class);
 
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
     private final UpdateChecker mUpdateChecker;
     private final UpdateProgressAdapterFactory mUpdateProgressAdapterFactory;
     private final Menu mMenu;
@@ -53,7 +53,7 @@ public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle
      */
     public UpdateAllowedPrefsEventObserverLifecycle(
             final UpdateChecker updateChecker,
-            final Prefs prefs,
+            final MiniMiserPrefs prefs,
             final UpdateProgressAdapterFactory adapterFactory,
             final Menu menu) {
         this.mUpdateChecker = updateChecker;
@@ -67,7 +67,7 @@ public final class UpdateAllowedPrefsEventObserverLifecycle implements Lifecycle
      */
     public void eventOccurred(final PrefsEvent observableEvent) {
         LOGGER.debug("Prefs event: " + observableEvent.getPrefsSection());
-        if (observableEvent.getPrefsSection() != Prefs.PrefsSection.BOOLEAN_FLAGS) {
+        if (observableEvent.getPrefsSection() != MiniMiserPrefs.PrefsSection.BOOLEAN_FLAGS) {
             return;
         }
         final boolean updatesAllowed = mPrefs.isBooleanFlagSet(CoreBooleanFlags.UPDATE_CHECK_ALLOWED);

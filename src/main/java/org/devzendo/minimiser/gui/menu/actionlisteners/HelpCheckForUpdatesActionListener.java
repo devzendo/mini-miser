@@ -21,7 +21,7 @@ import java.awt.event.ActionListener;
 
 import org.apache.log4j.Logger;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.updatechecker.UpdateChecker;
 import org.devzendo.minimiser.updatechecker.UpdateProgressAdapterFactory;
 
@@ -36,7 +36,7 @@ import org.devzendo.minimiser.updatechecker.UpdateProgressAdapterFactory;
 public final class HelpCheckForUpdatesActionListener implements ActionListener {
     private static final Logger LOGGER = Logger
             .getLogger(HelpCheckForUpdatesActionListener.class);
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private final UpdateChecker updateChecker;
     private final UpdateProgressAdapterFactory updateProgressAdapterFactory;
 
@@ -47,7 +47,7 @@ public final class HelpCheckForUpdatesActionListener implements ActionListener {
      */
     public HelpCheckForUpdatesActionListener(
             final UpdateChecker leUpdateChecker,
-            final Prefs lePrefs,
+            final MiniMiserPrefs lePrefs,
             final UpdateProgressAdapterFactory leAdapterFactory) {
         this.updateChecker = leUpdateChecker;
         this.prefs = lePrefs;

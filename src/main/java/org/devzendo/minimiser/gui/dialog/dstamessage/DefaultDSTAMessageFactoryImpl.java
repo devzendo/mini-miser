@@ -21,7 +21,7 @@ import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
 
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * A DSTAMessageFactory that creates real DSTA messages (i.e. backed by GUI
@@ -39,7 +39,7 @@ public final class DefaultDSTAMessageFactoryImpl extends AbstractDSTAMessageFact
      * @param preferences the prefs for storage
      * @param mainFrame the main application frame
      */
-    public DefaultDSTAMessageFactoryImpl(final Prefs preferences, final Frame mainFrame) {
+    public DefaultDSTAMessageFactoryImpl(final MiniMiserPrefs preferences, final Frame mainFrame) {
         super(preferences);
         this.frame = mainFrame;
     }

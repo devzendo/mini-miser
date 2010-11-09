@@ -45,7 +45,7 @@ public final class PrefsInitialiser {
      * @param prefs a preferences object
      * @return the same object, modified.
      */
-    public static Prefs initialisePrefs(final Prefs prefs) {
+    public static MiniMiserPrefs initialisePrefs(final MiniMiserPrefs prefs) {
         LOGGER.info("Initialising non-default prefs");
         prefs.setTabHidden(SystemTabIdentifiers.SQL.getTabName());
 

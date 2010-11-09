@@ -21,7 +21,7 @@ import java.util.HashSet;
 import org.apache.log4j.Logger;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.BooleanFlag;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
 
@@ -31,7 +31,7 @@ import org.devzendo.minimiser.prefs.PrefsEvent;
  * @author matt
  *
  */
-public final class StubMessageQueuePrefs implements Prefs {
+public final class StubMessageQueuePrefs implements MiniMiserPrefs {
     private static final Logger LOGGER = Logger.getLogger(StubMessageQueuePrefs.class);
     private HashSet<String> dstaFlags = new HashSet<String>();
     private HashSet<BooleanFlag> setBooleanFlags = new HashSet<BooleanFlag>();

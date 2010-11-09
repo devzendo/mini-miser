@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.commongui.Beautifier;
 import org.devzendo.commongui.GUIUtils;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 
 
@@ -46,7 +46,7 @@ public final class DriveDSTAMessage {
     private static final Logger LOGGER = Logger
             .getLogger(DriveDSTAMessage.class);
     
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private final File prefsFile;
     private final DSTAMessageFactory messageFactory;
     

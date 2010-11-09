@@ -23,7 +23,7 @@ import org.devzendo.minimiser.messagequeue.Message;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -36,7 +36,7 @@ import org.devzendo.minimiser.prefs.Prefs;
 public final class QueueUpdateAvailableFlagSettingMessageListener implements Observer<UpgradeEvent> {
     private static final Logger LOGGER = Logger
             .getLogger(QueueUpdateAvailableFlagSettingMessageListener.class);
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
     private final MessageQueue mMessageQueue;
     private final PluginRegistry mPluginRegistry;
 
@@ -48,7 +48,7 @@ public final class QueueUpdateAvailableFlagSettingMessageListener implements Obs
      * @param pluginRegistry the plugin registry
      */
     public QueueUpdateAvailableFlagSettingMessageListener(
-            final Prefs preferences,
+            final MiniMiserPrefs preferences,
             final MessageQueue queue,
             final PluginRegistry pluginRegistry) {
         mPrefs = preferences;

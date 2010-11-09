@@ -19,7 +19,7 @@ package org.devzendo.minimiser.upgradedetector;
 import junit.framework.Assert;
 
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.easymock.EasyMock;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public final class TestUpgradeDetector {
      */
     @Test(expected = IllegalArgumentException.class)
     public void cantDetectWithNull() {
-        final Prefs prefs = EasyMock.createMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(null);
         EasyMock.replay(prefs);
 
@@ -61,7 +61,7 @@ public final class TestUpgradeDetector {
      */
     @Test
     public void freshInstallDetects() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(null);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(null);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(null);
@@ -81,7 +81,7 @@ public final class TestUpgradeDetector {
      */
     @Test
     public void differentStoredVersionDetects() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
@@ -101,7 +101,7 @@ public final class TestUpgradeDetector {
      */
     @Test
     public void sameStoredVersionDoesNotDetect() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(CURRENT_VERSION);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(CURRENT_VERSION);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(CURRENT_VERSION);
@@ -122,7 +122,7 @@ public final class TestUpgradeDetector {
      */
     @Test(expected = IllegalArgumentException.class)
     public void cantStoreNullVersion() {
-        final Prefs prefs = EasyMock.createMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createMock(MiniMiserPrefs.class);
         EasyMock.replay(prefs);
 
         final UpgradeDetector detector = new UpgradeDetector(prefs);
@@ -134,7 +134,7 @@ public final class TestUpgradeDetector {
      */
     @Test
     public void freshInstallDoesntDetectAfterStore() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(null);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(null);
         prefs.setCurrentSoftwareVersion(EasyMock.eq(CURRENT_VERSION));
@@ -162,7 +162,7 @@ public final class TestUpgradeDetector {
      */
     @Test
     public void differentStoredVersionDoesntDetectAfterStore() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         prefs.setCurrentSoftwareVersion(EasyMock.eq(CURRENT_VERSION));
@@ -191,7 +191,7 @@ public final class TestUpgradeDetector {
      */
     @Test
     public void sameStoredVersionDoesntDetectAfterStore() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(CURRENT_VERSION);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(CURRENT_VERSION);
         prefs.setCurrentSoftwareVersion(EasyMock.eq(CURRENT_VERSION));

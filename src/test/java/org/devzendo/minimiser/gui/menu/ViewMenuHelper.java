@@ -5,7 +5,7 @@ import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.wiring.databaseeventlistener.ApplicationMenuCreatingDatabaseEventListener;
 
 /**
@@ -18,7 +18,7 @@ import org.devzendo.minimiser.wiring.databaseeventlistener.ApplicationMenuCreati
 public final class ViewMenuHelper {
     private final OpenDatabaseList mOpenDatabaseList;
     private final OpenTabList mOpenTabList;
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
     private final ApplicationMenu mGlobalApplicationMenu;
     private final ApplicationMenuCombiner mApplicationMenuCombiner;
     private final MenuWiring mMenuWiring;
@@ -29,7 +29,7 @@ public final class ViewMenuHelper {
      * @param openTabList the open tab list
      * @param prefs the prefs
      */
-    public ViewMenuHelper(final OpenDatabaseList openDatabaseList, final OpenTabList openTabList, final Prefs prefs) {
+    public ViewMenuHelper(final OpenDatabaseList openDatabaseList, final OpenTabList openTabList, final MiniMiserPrefs prefs) {
         mOpenDatabaseList = openDatabaseList;
         mOpenTabList = openTabList;
         mPrefs = prefs;

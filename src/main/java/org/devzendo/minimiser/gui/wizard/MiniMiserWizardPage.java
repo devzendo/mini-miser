@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.netbeans.spi.wizard.WizardPage;
 
 
@@ -85,7 +85,7 @@ public abstract class MiniMiserWizardPage extends WizardPage {
      * @param prefs the prefs, to store the dimension in, for future runs
      * @return the dimension of the panel
      */
-    public static Dimension getPanelDimension(final Prefs prefs) {
+    public static Dimension getPanelDimension(final MiniMiserPrefs prefs) {
         synchronized (MiniMiserWizardPage.class) {
             if (pageDimension == null) {
                 final String wizardPanelSize = prefs.getWizardPanelSize();

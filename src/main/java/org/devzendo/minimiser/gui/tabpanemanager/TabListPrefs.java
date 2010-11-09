@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tab.TabIdentifierToolkit;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * Sits atop Prefs to provide a higher-level storage mechanism for open
@@ -40,13 +40,13 @@ import org.devzendo.minimiser.prefs.Prefs;
 public final class TabListPrefs {
     private static final Logger LOGGER = Logger.getLogger(TabListPrefs.class);
 
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
 
     /**
      * Construct a TabListPrefs.
      * @param prefstore the Prefs to read and write from
      */
-    public TabListPrefs(final Prefs prefstore) {
+    public TabListPrefs(final MiniMiserPrefs prefstore) {
         this.prefs = prefstore;
     }
 

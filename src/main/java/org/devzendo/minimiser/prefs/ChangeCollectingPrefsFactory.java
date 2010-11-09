@@ -35,14 +35,14 @@ import org.springframework.beans.factory.FactoryBean;
  * @author matt
  *
  */
-public final class ChangeCollectingPrefsFactory implements FactoryBean<Prefs> {
+public final class ChangeCollectingPrefsFactory implements FactoryBean<MiniMiserPrefs> {
     private static final Logger LOGGER = Logger.getLogger(ChangeCollectingPrefsFactory.class);
-    private Prefs factoryPrefs;
+    private MiniMiserPrefs factoryPrefs;
 
     /**
      * {@inheritDoc}
      */
-    public Prefs getObject() throws Exception {
+    public MiniMiserPrefs getObject() throws Exception {
         LOGGER.debug(String.format("ChangeCollectingPrefsFactory returning %s as Prefs object", factoryPrefs));
         return factoryPrefs;
     }
@@ -51,7 +51,7 @@ public final class ChangeCollectingPrefsFactory implements FactoryBean<Prefs> {
      * {@inheritDoc}
      */
     public Class<?> getObjectType() {
-        return Prefs.class;
+        return MiniMiserPrefs.class;
     }
 
     /**
@@ -65,7 +65,7 @@ public final class ChangeCollectingPrefsFactory implements FactoryBean<Prefs> {
      * Factory population method
      * @param prefs the Prefs to return
      */
-    public void setChangeCollectingPrefs(final Prefs prefs) {
+    public void setChangeCollectingPrefs(final MiniMiserPrefs prefs) {
         LOGGER.debug(String.format("ChangeCollectingPrefsFactory being populated with %s as Prefs object", prefs));
         factoryPrefs = prefs;
     }

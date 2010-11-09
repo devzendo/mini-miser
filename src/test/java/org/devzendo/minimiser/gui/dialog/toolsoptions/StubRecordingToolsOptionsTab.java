@@ -22,7 +22,7 @@ import java.awt.Label;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * A Tools->Options Tab that's given a (change-collecting) prefs, and allows it
@@ -35,7 +35,7 @@ import org.devzendo.minimiser.prefs.Prefs;
 public final class StubRecordingToolsOptionsTab implements ToolsOptionsTab {
     private static final Logger LOGGER = Logger
             .getLogger(StubRecordingToolsOptionsTab.class);
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private volatile Label label;
     private final boolean constructedOnEventThread;
     private boolean initComponentCalledOnEventThread = false;
@@ -51,7 +51,7 @@ public final class StubRecordingToolsOptionsTab implements ToolsOptionsTab {
      * Construct with prefs given from factory via app context
      * @param preferences the change-collecting prefs
      */
-    public StubRecordingToolsOptionsTab(final Prefs preferences) {
+    public StubRecordingToolsOptionsTab(final MiniMiserPrefs preferences) {
         LOGGER.debug("Creating StubRecordingToolsOptionsTab for " + preferences);
         this.prefs = preferences;
         constructedOnEventThread = SwingUtilities.isEventDispatchThread();
@@ -87,7 +87,7 @@ public final class StubRecordingToolsOptionsTab implements ToolsOptionsTab {
      * Get the Prefs injected in
      * @return the Prefs
      */
-    public Prefs getPrefs() {
+    public MiniMiserPrefs getPrefs() {
         return prefs;
     }
     

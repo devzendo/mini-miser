@@ -39,7 +39,7 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -55,7 +55,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     private final JMenu viewMenu;
     private final OpenDatabaseList openDatabaseList;
     private final OpenTabList openTabList;
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private final ObserverList<ViewMenuChoice> viewMenuChoiceObservers;
     private final ApplicationMenuCombiner mApplicationMenuCombiner;
 
@@ -71,7 +71,7 @@ public final class ViewMenu extends AbstractRebuildableMenuGroup {
     public ViewMenu(final MenuWiring wiring,
             final OpenDatabaseList databaseList,
             final OpenTabList tabList,
-            final Prefs preferences,
+            final MiniMiserPrefs preferences,
             final ApplicationMenuCombiner applicationMenuCombiner) {
         super(wiring);
         this.openDatabaseList = databaseList;

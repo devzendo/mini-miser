@@ -24,7 +24,7 @@ import java.util.List;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.junit.After;
 import org.junit.Assert;
@@ -40,7 +40,7 @@ import org.junit.Test;
  *
  */
 public final class TestTabListPrefs {
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private File prefsFile;
 
     private TabListPrefs tabListPrefs;

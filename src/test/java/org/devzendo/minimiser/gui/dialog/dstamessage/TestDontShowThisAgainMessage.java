@@ -25,7 +25,7 @@ import junit.framework.Assert;
 
 import org.devzendo.commonspring.springloader.ApplicationContext;
 import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.junit.Before;
@@ -42,7 +42,7 @@ import org.junit.Test;
 @ApplicationContext("org/devzendo/minimiser/gui/dialog/dstamessage/DSTATestCase.xml")
 public final class TestDontShowThisAgainMessage extends SpringLoaderUnittestCase {
 
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private File prefsFile;
     private DSTAMessageFactory messageFactory;
     private final DSTAMessageId messageId = DSTAMessageId.TEST;

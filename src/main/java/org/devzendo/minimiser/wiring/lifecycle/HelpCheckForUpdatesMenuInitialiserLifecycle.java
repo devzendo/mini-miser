@@ -20,7 +20,7 @@ import org.devzendo.commongui.GUIUtils;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -32,7 +32,7 @@ import org.devzendo.minimiser.prefs.Prefs;
  */
 public final class HelpCheckForUpdatesMenuInitialiserLifecycle implements Lifecycle {
     private final Menu mMenu;
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
 
     /**
      * Construct the initialiser
@@ -40,7 +40,7 @@ public final class HelpCheckForUpdatesMenuInitialiserLifecycle implements Lifecy
      * @param menu the menu to initialise on startup
      */
     public HelpCheckForUpdatesMenuInitialiserLifecycle(
-            final Prefs prefs,
+            final MiniMiserPrefs prefs,
             final Menu menu) {
         this.mPrefs = prefs;
         this.mMenu = menu;

@@ -18,7 +18,7 @@ package org.devzendo.minimiser.messagequeue;
 
 import org.apache.log4j.Logger;
 import org.devzendo.minimiser.prefs.BooleanFlag;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * A simple factory for greating MessageQueueBorderGuards.
@@ -28,13 +28,13 @@ import org.devzendo.minimiser.prefs.Prefs;
 public final class MessageQueueBorderGuardFactory {
     private static final Logger LOGGER = Logger
             .getLogger(MessageQueueBorderGuardFactory.class);
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
 
     /**
      * Create the factory, given its prerequisites
      * @param preferences the preferences, for the DSTA flags
      */
-    public MessageQueueBorderGuardFactory(final Prefs preferences) {
+    public MessageQueueBorderGuardFactory(final MiniMiserPrefs preferences) {
         this.prefs = preferences;
     }
     

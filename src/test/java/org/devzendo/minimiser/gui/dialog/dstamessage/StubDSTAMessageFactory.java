@@ -18,7 +18,7 @@ package org.devzendo.minimiser.gui.dialog.dstamessage;
 
 import java.awt.Component;
 
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * A DSTAMessageFactory that creates StubDSTAMessages, not real GUI ones.
@@ -31,7 +31,7 @@ public final class StubDSTAMessageFactory extends AbstractDSTAMessageFactory {
      * Construct the stub DSTA Message factory
      * @param preferences the prefs used to store the DSTA flags
      */
-    public StubDSTAMessageFactory(final Prefs preferences) {
+    public StubDSTAMessageFactory(final MiniMiserPrefs preferences) {
         super(preferences);
     }
 

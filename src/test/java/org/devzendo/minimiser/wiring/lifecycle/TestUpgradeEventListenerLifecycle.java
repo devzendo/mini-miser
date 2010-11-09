@@ -24,7 +24,7 @@ import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.upgradedetector.FreshInstallEvent;
@@ -44,7 +44,7 @@ import org.junit.Test;
 @ApplicationContext("org/devzendo/minimiser/wiring/lifecycle/UpgradeEventListenerLifecycleTestCase.xml")
 public final class TestUpgradeEventListenerLifecycle extends SpringLoaderUnittestCase {
 
-    private Prefs mPrefs;
+    private MiniMiserPrefs mPrefs;
     private File mPrefsFile;
     private LifecycleManager mLifecycleManager;
     private StubRecordingUpgradeListener mStubUpgradeListener;

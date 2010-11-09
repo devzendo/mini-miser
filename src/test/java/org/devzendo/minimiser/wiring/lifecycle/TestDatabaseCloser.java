@@ -24,7 +24,7 @@ import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.persistence.AccessFactory;
 import org.devzendo.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public final class TestDatabaseCloser extends DummyAppPluginManagerPersistenceUn
     private AccessFactory accessFactory;
     private OpenDatabaseList openDatabaseList;
     private LifecycleManager lifecycleManager;
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private final DatabaseOpenDetails[] dbDetails = new DatabaseOpenDetails[] {
             new DatabaseOpenDetails("one", ""),
             new DatabaseOpenDetails("two", ""),
@@ -61,7 +61,7 @@ public final class TestDatabaseCloser extends DummyAppPluginManagerPersistenceUn
         accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
         openDatabaseList = getSpringLoader().getBean("openDatabaseList", OpenDatabaseList.class);
         lifecycleManager = getSpringLoader().getBean("closeLifecycleManager", LifecycleManager.class);
-        prefs = getSpringLoader().getBean("prefs", Prefs.class);
+        prefs = getSpringLoader().getBean("prefs", MiniMiserPrefs.class);
     }
 
     /**

@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 
 import org.devzendo.minimiser.gui.dialog.toolsoptions.ToolsOptionsTab;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * The Advanced Tools->Options tab holds settings suitable for gurus.
@@ -37,7 +37,7 @@ import org.devzendo.minimiser.prefs.Prefs;
  *
  */
 public final class AdvancedTab implements ToolsOptionsTab {
-    private Prefs changeCollectingPrefs;
+    private MiniMiserPrefs changeCollectingPrefs;
     private JPanel mainPanel;
     private final Object lock;
 
@@ -46,7 +46,7 @@ public final class AdvancedTab implements ToolsOptionsTab {
      * @param collectingPrefs the Prefs that will collect changes until
      * committed.
      */
-    public AdvancedTab(final Prefs collectingPrefs) {
+    public AdvancedTab(final MiniMiserPrefs collectingPrefs) {
         lock = new Object();
         synchronized (lock) {
             this.changeCollectingPrefs = collectingPrefs;

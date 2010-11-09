@@ -30,7 +30,7 @@ import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.recentlist.RecentFilesList;
@@ -53,7 +53,7 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
     private StubOpener stubOpener;
     private StubOpenerAdapterFactory stubOpenerAdapterFactory;
     private MainFrameTitle mainFrameTitle;
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private File prefsFile;
     private TabFactory tabFactory;
     private PluginManager pluginManager;
@@ -125,7 +125,7 @@ public abstract class MenuMediatorUnittestCase extends SpringLoaderUnittestCase 
     /**
      * @return the temporary prefs
      */
-    protected final Prefs getPrefs() {
+    protected final MiniMiserPrefs getPrefs() {
         return prefs;
     }
 

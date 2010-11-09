@@ -18,7 +18,7 @@ package org.devzendo.minimiser.upgradedetector;
 
 import org.devzendo.commonspring.springloader.ApplicationContext;
 import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsFactory;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -41,7 +41,7 @@ public final class TestUpgradeEventListenerManager extends SpringLoaderUnittestC
     /**
      * @param prefs the mock prefs
      */
-    public void setupTestPrerequisites(final Prefs prefs) {
+    public void setupTestPrerequisites(final MiniMiserPrefs prefs) {
         final PrefsFactory prefsFactory = getSpringLoader().getBean("&prefs", PrefsFactory.class);
         prefsFactory.setPrefs(prefs);
 
@@ -57,7 +57,7 @@ public final class TestUpgradeEventListenerManager extends SpringLoaderUnittestC
      */
     @Test
     public void detectFreshInstallation() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn(null);
         prefs.setCurrentSoftwareVersion(EasyMock.eq("1.0.0"));
         EasyMock.replay(prefs);
@@ -83,7 +83,7 @@ public final class TestUpgradeEventListenerManager extends SpringLoaderUnittestC
      */
     @Test
     public void detectUpgradeInstallation() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
@@ -112,7 +112,7 @@ public final class TestUpgradeEventListenerManager extends SpringLoaderUnittestC
      */
     @Test
     public void detectSameInstallation() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         EasyMock.expect(prefs.getCurrentSoftwareVersion()).andReturn("1.0.0");
         EasyMock.replay(prefs);

@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 import org.easymock.EasyMock;
@@ -56,7 +56,7 @@ public final class TestRecentFilesList  {
      */
     @Test
     public void shouldBeEmptyOnStartup() {
-        final Prefs prefs = EasyMock.createMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getRecentFiles()).andReturn(new String[0]);
         EasyMock.replay(prefs);
         
@@ -76,7 +76,7 @@ public final class TestRecentFilesList  {
      */
     @Test
     public void instantiateShouldLoadPrefs() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         prefs.getRecentFiles();
         EasyMock.expectLastCall().andReturn((new String[0]));
         EasyMock.replay(prefs);
@@ -92,7 +92,7 @@ public final class TestRecentFilesList  {
     public void addOneShouldHaveOneInPrefs() {
         final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
 
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
         EasyMock.replay(prefs);
 
@@ -113,7 +113,7 @@ public final class TestRecentFilesList  {
     public void addOneShouldFireListener() {
         final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
 
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
         EasyMock.replay(prefs);
 
@@ -136,7 +136,7 @@ public final class TestRecentFilesList  {
     public void addNonReorderingOneShouldNotFireListenerTwice() {
         final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
 
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
         EasyMock.replay(prefs);
 
@@ -162,7 +162,7 @@ public final class TestRecentFilesList  {
         final String oneExpectedEscapedPair = DatabasePairEncapsulator.escape("one", "/tmp/foo");
         final String twoExpectedEscapedPair = DatabasePairEncapsulator.escape("two", "/tmp/foo");
 
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {oneExpectedEscapedPair}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {twoExpectedEscapedPair, oneExpectedEscapedPair}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {oneExpectedEscapedPair, twoExpectedEscapedPair}));
@@ -183,8 +183,8 @@ public final class TestRecentFilesList  {
         EasyMock.verify(obs);
     }
 
-    private Prefs getInitiallyEmptyPrefs() {
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+    private MiniMiserPrefs getInitiallyEmptyPrefs() {
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getRecentFiles()).andReturn((new String[0]));
         return prefs;
     }
@@ -194,7 +194,7 @@ public final class TestRecentFilesList  {
      */
     @Test
     public void addSameOneOnlyYieldsOneButDoesntSaveTwiceSinceNoReordering() {
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         
         final String expectedEscapedPair = DatabasePairEncapsulator.escape("one", "");
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {expectedEscapedPair}));
@@ -216,7 +216,7 @@ public final class TestRecentFilesList  {
      */
     @Test
     public void addTwoStoresTwoInPrefs() {
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("one", "")}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("two", ""), 
@@ -242,7 +242,7 @@ public final class TestRecentFilesList  {
      */
     @Test
     public void listHasPositiveMaximumSize() {
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         EasyMock.replay(prefs);
         
         final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);
@@ -255,7 +255,7 @@ public final class TestRecentFilesList  {
     @Test
     public void addingNewToAFullListPushesLastOut() {
         LOGGER.debug("*** addingNewToAFullListPushesLastOut");
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         // generate expected prefs storage
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("1", "")}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("2", ""),
@@ -308,7 +308,7 @@ public final class TestRecentFilesList  {
     @Test
     public void addingSameToFullListDoesntPushAnythingOut() {
         LOGGER.debug("*** addingSameToFullListDoesntPushAnythingOut");
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         // generate expected prefs storage
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("1", "")}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("2", ""),
@@ -358,7 +358,7 @@ public final class TestRecentFilesList  {
     @Test
     public void addingSameLaterReordersToHaveItFirst() {
         LOGGER.debug("*** addingSameLaterReordersToHaveItFirst");
-        final Prefs prefs = getInitiallyEmptyPrefs();
+        final MiniMiserPrefs prefs = getInitiallyEmptyPrefs();
         // generate expected prefs storage
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("1", "")}));
         prefs.setRecentFiles(EasyMock.aryEq(new String[] {DatabasePairEncapsulator.escape("2", ""),
@@ -410,7 +410,7 @@ public final class TestRecentFilesList  {
      */
     @Test
     public void saveAndLoadRestoresOK() throws IOException {
-        final Prefs prefs = TestPrefs.createUnitTestPrefsFile();
+        final MiniMiserPrefs prefs = TestPrefs.createUnitTestPrefsFile();
         final File prefsFile = new File(prefs.getAbsolutePath());
         try {
             final RecentFilesList recentFilesList = new DefaultRecentFilesListImpl(prefs);

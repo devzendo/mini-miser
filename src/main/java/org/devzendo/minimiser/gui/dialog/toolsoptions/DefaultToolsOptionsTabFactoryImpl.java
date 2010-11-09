@@ -27,7 +27,7 @@ import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoad
 import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
 import org.devzendo.minimiser.prefs.ChangeCollectingPrefsFactory;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -84,7 +84,7 @@ public final class DefaultToolsOptionsTabFactoryImpl implements ToolsOptionsTabF
     /**
      * {@inheritDoc}
      */
-    public List<ToolsOptionsTab> loadTabs(final Prefs prefs) {
+    public List<ToolsOptionsTab> loadTabs(final MiniMiserPrefs prefs) {
         LOGGER.info("Initialising Tools->Options tab beans");
         assert !SwingUtilities.isEventDispatchThread();
 

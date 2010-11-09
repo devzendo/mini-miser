@@ -36,7 +36,7 @@ import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.tabcontroller.TabController;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -111,7 +111,7 @@ public final class TestTabPaneCreatingDatabaseEventListener {
         // Just test that OVERVIEW is still permanent first
         Assert.assertTrue(SystemTabIdentifiers.OVERVIEW.isTabPermanent());
 
-        final Prefs prefs = EasyMock.createMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {"SQL"});
         EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");
 
@@ -180,7 +180,7 @@ public final class TestTabPaneCreatingDatabaseEventListener {
      */
     @Test
     public void closingOpenDatabaseRemovesFromTheOpenTabList() {
-        final Prefs prefs = EasyMock.createMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(new String[] {"SQL"});
         EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");
 
@@ -231,7 +231,7 @@ public final class TestTabPaneCreatingDatabaseEventListener {
         LOGGER.debug("** openTabsAndPreviouslyActiveTabIsPersistedOnDatabaseClose start");
 
         LOGGER.debug("Creating prefs");
-        final Prefs prefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs prefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(prefs.getOpenTabs(DATABASE)).andReturn(
             new String[] {SystemTabIdentifiers.SQL.getTabName(), SystemTabIdentifiers.CATEGORIES.getTabName()});
         EasyMock.expect(prefs.getActiveTab(DATABASE)).andReturn("SQL");

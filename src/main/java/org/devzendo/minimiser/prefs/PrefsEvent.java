@@ -17,7 +17,7 @@
 package org.devzendo.minimiser.prefs;
 
 import org.devzendo.commoncode.patterns.observer.ObservableEvent;
-import org.devzendo.minimiser.prefs.Prefs.PrefsSection;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs.PrefsSection;
 
 
 /**

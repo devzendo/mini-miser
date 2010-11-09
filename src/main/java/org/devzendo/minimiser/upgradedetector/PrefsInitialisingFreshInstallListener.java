@@ -17,7 +17,7 @@
 package org.devzendo.minimiser.upgradedetector;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsInitialiser;
 
 
@@ -29,13 +29,13 @@ import org.devzendo.minimiser.prefs.PrefsInitialiser;
  */
 public final class PrefsInitialisingFreshInstallListener implements Observer<UpgradeEvent> {
 
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     
     /**
      * Store the prefs for use if a fresh installation is detected.
      * @param preferences the prefs
      */
-    public PrefsInitialisingFreshInstallListener(final Prefs preferences) {
+    public PrefsInitialisingFreshInstallListener(final MiniMiserPrefs preferences) {
         this.prefs = preferences;
     }
 

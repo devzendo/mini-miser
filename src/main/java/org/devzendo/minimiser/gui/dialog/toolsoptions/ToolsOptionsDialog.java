@@ -28,7 +28,7 @@ import org.devzendo.commongui.GUIUtils;
 import org.devzendo.commongui.SwingWorker;
 import org.devzendo.commongui.dialog.snaildialog.AbstractSnailDialog;
 import org.devzendo.minimiser.prefs.ChangeCollectingPrefs;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -43,7 +43,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
      * 
      */
     private static final long serialVersionUID = 1685823419193743569L;
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private final ToolsOptionsTabFactory toolsOptionsTabFactory;
 
     private ChangeCollectingPrefs ccp;
@@ -60,7 +60,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
      * @param tabFactory the Tools->Options Tab Factory
      */
     public ToolsOptionsDialog(final Frame parentFrame, final CursorManager cursor,
-            final Prefs preferences, final ToolsOptionsTabFactory tabFactory) {
+            final MiniMiserPrefs preferences, final ToolsOptionsTabFactory tabFactory) {
         super(parentFrame, cursor, "Options");
         prefs = preferences;
         toolsOptionsTabFactory = tabFactory;
@@ -157,7 +157,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
      * @param tabFactory the Tab Factory
      */
     public static void showOptions(final Frame parentFrame,
-            final CursorManager cursorManager, final Prefs prefs,
+            final CursorManager cursorManager, final MiniMiserPrefs prefs,
             final ToolsOptionsTabFactory tabFactory) {
         GUIUtils.invokeLaterOnEventThread(new Runnable() {
             public void run() {

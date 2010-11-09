@@ -23,7 +23,7 @@ import org.devzendo.commongui.CursorManager;
 import org.devzendo.commongui.menu.actionlisteners.SnailActionListener;
 import org.devzendo.minimiser.gui.dialog.toolsoptions.ToolsOptionsDialog;
 import org.devzendo.minimiser.gui.dialog.toolsoptions.ToolsOptionsTabFactory;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * Triggers display of the tools->options dialog.
@@ -33,7 +33,7 @@ import org.devzendo.minimiser.prefs.Prefs;
  */
 public final class ToolsOptionsActionListener extends SnailActionListener {
     private final Frame mainFrame;
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private final ToolsOptionsTabFactory toolsOptionsTabFactory;
 
     /**
@@ -43,7 +43,7 @@ public final class ToolsOptionsActionListener extends SnailActionListener {
      * @param tabFactory the Tools->Options tab factory
      */
     public ToolsOptionsActionListener(final Frame frame, final CursorManager cursor,
-            final Prefs preferences, final ToolsOptionsTabFactory tabFactory) {
+            final MiniMiserPrefs preferences, final ToolsOptionsTabFactory tabFactory) {
         super(cursor);
         this.mainFrame = frame;
         this.prefs = preferences;

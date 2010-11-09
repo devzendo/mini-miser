@@ -27,7 +27,7 @@ import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.opentablist.OpenTabList;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public final class TestViewMenu {
 
     private ViewMenu mViewMenu;
     private OpenDatabaseList mOpenDatabaseList;
-    private Prefs mPrefs;
+    private MiniMiserPrefs mPrefs;
     private ApplicationMenu mGlobalApplicationMenu;
 
     /**
@@ -55,7 +55,7 @@ public final class TestViewMenu {
         final MenuWiring menuWiring = new MenuWiring();
         mOpenDatabaseList = new OpenDatabaseList();
         final OpenTabList openTabList = new OpenTabList();
-        mPrefs = EasyMock.createMock(Prefs.class);
+        mPrefs = EasyMock.createMock(MiniMiserPrefs.class);
         mGlobalApplicationMenu = new ApplicationMenu();
         final ApplicationMenuCombiner applicationMenuCombiner = new ApplicationMenuCombiner(mGlobalApplicationMenu, mOpenDatabaseList);
         mViewMenu = new ViewMenu(menuWiring, mOpenDatabaseList, openTabList, mPrefs, applicationMenuCombiner);

@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.devzendo.commoncode.concurrency.ThreadUtils;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,7 +36,7 @@ import org.junit.Test;
  *
  */
 public final class TestWizardPageInitialisingLifecycle {
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private File prefsFile;
     private WizardPageInitialisingLifecycle mWizardPageInitialisingLifecycle;
 

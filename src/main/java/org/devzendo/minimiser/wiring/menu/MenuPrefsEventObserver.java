@@ -21,7 +21,7 @@ import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuWiringAdapter;
 import org.devzendo.minimiser.gui.menu.helpers.ViewMenuHelper;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
 
@@ -36,7 +36,7 @@ public final class MenuPrefsEventObserver implements MenuWiringAdapter, Observer
             .getLogger(MenuPrefsEventObserver.class);
 
     private final Menu menu;
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
 
     /**
      * Construct the adapter given other system objects for interaction.
@@ -45,7 +45,7 @@ public final class MenuPrefsEventObserver implements MenuWiringAdapter, Observer
      */
     public MenuPrefsEventObserver(
             final Menu leMenu,
-            final Prefs lePrefs) {
+            final MiniMiserPrefs lePrefs) {
                 this.menu = leMenu;
                 this.prefs = lePrefs;
     }
@@ -63,7 +63,7 @@ public final class MenuPrefsEventObserver implements MenuWiringAdapter, Observer
      */
     public void eventOccurred(final PrefsEvent observableEvent) {
         LOGGER.debug("Prefs event: " + observableEvent.getPrefsSection());
-        if (observableEvent.getPrefsSection() != Prefs.PrefsSection.HIDDEN_TABS) {
+        if (observableEvent.getPrefsSection() != MiniMiserPrefs.PrefsSection.HIDDEN_TABS) {
             return;
         }
         ViewMenuHelper.updateViewMenuFromPrefsHiddenTabs(prefs, menu);

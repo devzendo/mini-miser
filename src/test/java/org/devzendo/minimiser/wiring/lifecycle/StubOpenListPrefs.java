@@ -18,7 +18,7 @@ package org.devzendo.minimiser.wiring.lifecycle;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.BooleanFlag;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
 
@@ -27,7 +27,7 @@ import org.devzendo.minimiser.prefs.PrefsEvent;
  * @author matt
  *
  */
-public final class StubOpenListPrefs implements Prefs {
+public final class StubOpenListPrefs implements MiniMiserPrefs {
     private String[] openFiles = new String[0];
     private String lastActiveFile = null;
     

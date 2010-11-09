@@ -16,7 +16,7 @@
 package org.devzendo.minimiser.gui;
 
 import org.devzendo.commongui.WindowGeometryStorePersistence;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * Adapter implementation that stores window geometry information in prefs.
@@ -26,14 +26,14 @@ import org.devzendo.minimiser.prefs.Prefs;
  */
 public final class WindowGeometryStorePrefsPersistence implements
         WindowGeometryStorePersistence {
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
 
     /**
      * Create an adapter that stores in prefs.
      * 
      * @param prefs the prefs in which to store the geometry info
      */
-    public WindowGeometryStorePrefsPersistence(final Prefs prefs) {
+    public WindowGeometryStorePrefsPersistence(final MiniMiserPrefs prefs) {
         mPrefs = prefs;
     }
 

@@ -24,7 +24,7 @@ import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
 import org.devzendo.minimiser.pluginmanager.DummyAppPluginRegistry;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.util.Pair;
 import org.devzendo.minimiser.util.Sleeper;
@@ -53,7 +53,7 @@ public final class TestPeriodicUpdateCheckerLifecycle {
     private static final String NOT_TODAYS_DATE = "22/02/1999";
     private static final String TODAYS_DATE = "08/12/2008";
 
-    private Prefs mPrefs;
+    private MiniMiserPrefs mPrefs;
     private MessageQueue mMessageQueue;
     private UpdateChecker mUpdateChecker;
     private StubRemoteFileRetriever mRemoteFileRetriever;

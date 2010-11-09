@@ -19,7 +19,7 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import org.devzendo.commongui.GUIUtils;
 import org.devzendo.minimiser.gui.wizard.MiniMiserWizardPage;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -33,12 +33,12 @@ import org.devzendo.minimiser.prefs.Prefs;
  */
 public final class WizardPageInitialisingLifecycle implements Lifecycle {
 
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
 
     /**
      * @param prefs the preferences
      */
-    public WizardPageInitialisingLifecycle(final Prefs prefs) {
+    public WizardPageInitialisingLifecycle(final MiniMiserPrefs prefs) {
         mPrefs = prefs;
     }
     

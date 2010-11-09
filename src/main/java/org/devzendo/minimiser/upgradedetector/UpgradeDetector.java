@@ -17,7 +17,7 @@
 package org.devzendo.minimiser.upgradedetector;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * The UpgradeDetector detects whether the software has just beed installed,
@@ -34,13 +34,13 @@ public final class UpgradeDetector {
     private static final Logger LOGGER = Logger
             .getLogger(UpgradeDetector.class);
     
-    private final Prefs preferences;
+    private final MiniMiserPrefs preferences;
 
     /**
      * Construct the UpgradeDetector given prefs
      * @param prefs the preferences
      */
-    public UpgradeDetector(final Prefs prefs) {
+    public UpgradeDetector(final MiniMiserPrefs prefs) {
         this.preferences = prefs;
     }
 

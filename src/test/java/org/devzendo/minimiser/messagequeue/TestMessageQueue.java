@@ -22,7 +22,7 @@ import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +38,7 @@ import org.junit.Test;
  */
 public final class TestMessageQueue {
 
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private MessageQueue messageQueue;
 
     /**

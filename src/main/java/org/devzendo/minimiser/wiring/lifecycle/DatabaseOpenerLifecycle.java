@@ -22,7 +22,7 @@ import org.devzendo.minimiser.opener.Opener;
 import org.devzendo.minimiser.opener.OpenerAdapter;
 import org.devzendo.minimiser.opener.OpenerAdapterFactory;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.util.DatabasePair;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 
@@ -39,7 +39,7 @@ public final class DatabaseOpenerLifecycle implements Lifecycle {
             .getLogger(DatabaseOpenerLifecycle.class);
     private final Opener opener;
     private final OpenerAdapterFactory openerAdapterFactory;
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private final OpenDatabaseList openDatabaseList;
 
     /**
@@ -53,7 +53,7 @@ public final class DatabaseOpenerLifecycle implements Lifecycle {
     public DatabaseOpenerLifecycle(final Opener openr,
             final OpenerAdapterFactory adapterFactory,
             final OpenDatabaseList openList,
-            final Prefs prefstore) {
+            final MiniMiserPrefs prefstore) {
         this.opener = openr;
         this.openerAdapterFactory = adapterFactory;
         this.openDatabaseList = openList;

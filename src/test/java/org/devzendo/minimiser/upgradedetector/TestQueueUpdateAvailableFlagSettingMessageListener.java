@@ -25,7 +25,7 @@ import org.devzendo.minimiser.messagequeue.StubMessageQueuePrefs;
 import org.devzendo.minimiser.pluginmanager.DummyAppPluginRegistry;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ import org.junit.Test;
  *
  */
 public final class TestQueueUpdateAvailableFlagSettingMessageListener {
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private MessageQueue messageQueue;
     private QueueUpdateAvailableFlagSettingMessageListener listener;
     private MessageQueueModifiedRecorder recorder;

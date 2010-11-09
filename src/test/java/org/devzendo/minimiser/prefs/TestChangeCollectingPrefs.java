@@ -36,7 +36,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void noTabHidingCausesNoChanges() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.replay(mockPrefs);
         
         final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);
@@ -50,7 +50,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test(expected = IllegalStateException.class)
     public void tabHidingWithoutPriorReadThrows() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         mockPrefs.setTabHidden(EasyMock.eq("SQL"));
         EasyMock.replay(mockPrefs);
         
@@ -70,7 +70,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void tabHidingAfterPriorReadCausesChanges() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.FALSE);
         mockPrefs.setTabHidden(EasyMock.eq("SQL"));
         EasyMock.replay(mockPrefs);
@@ -91,7 +91,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void tabRepeatedTogglingFromClearedAfterPriorReadCausesNoChanges() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.FALSE);
         EasyMock.replay(mockPrefs);
         
@@ -112,7 +112,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void tabRepeatedTogglingFromHiddenAfterPriorReadCausesNoChanges() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
         EasyMock.replay(mockPrefs);
         
@@ -133,7 +133,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void clearingHiddenTabAfterPriorReadCausesChanges() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
         mockPrefs.clearTabHidden(EasyMock.eq("SQL"));
         EasyMock.replay(mockPrefs);
@@ -154,7 +154,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void clearingAlreadyClearedTabAfterPriorReadCausesNoChange() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.FALSE);
         EasyMock.replay(mockPrefs);
         
@@ -174,7 +174,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void hidingAlreadyHiddenTabAfterPriorReadCausesNoChange() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
         EasyMock.replay(mockPrefs);
         
@@ -194,7 +194,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test
     public void makingNoChangeToAlreadyHiddenTabAfterPriorReadCausesNoChange() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.expect(mockPrefs.isTabHidden("SQL")).andReturn(Boolean.TRUE);
         EasyMock.replay(mockPrefs);
         
@@ -212,7 +212,7 @@ public final class TestChangeCollectingPrefs {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void changingPrefsOptionThatsNotUsedByToolsOptionsThrows() {
-        final Prefs mockPrefs = EasyMock.createStrictMock(Prefs.class);
+        final MiniMiserPrefs mockPrefs = EasyMock.createStrictMock(MiniMiserPrefs.class);
         EasyMock.replay(mockPrefs);
         
         final ChangeCollectingPrefs ccp = new ChangeCollectingPrefs(mockPrefs);

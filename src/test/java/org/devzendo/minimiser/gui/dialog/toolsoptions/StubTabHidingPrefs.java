@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.prefs.BooleanFlag;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.PrefsEvent;
 
 
@@ -30,7 +30,7 @@ import org.devzendo.minimiser.prefs.PrefsEvent;
  * @author matt
  *
  */
-public final class StubTabHidingPrefs implements Prefs {
+public final class StubTabHidingPrefs implements MiniMiserPrefs {
     private final Map<String, Boolean> tabHiddenFlags = new HashMap<String, Boolean>();
 
     /**

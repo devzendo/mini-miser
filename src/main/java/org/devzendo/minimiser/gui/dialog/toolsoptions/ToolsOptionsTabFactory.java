@@ -18,7 +18,7 @@ package org.devzendo.minimiser.gui.dialog.toolsoptions;
 
 import java.util.List;
 
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -43,7 +43,7 @@ public interface ToolsOptionsTabFactory {
      * modify.
      * @return the list of loaded ToolsOptionsTabss
      */
-    List<ToolsOptionsTab> loadTabs(Prefs prefs);
+    List<ToolsOptionsTab> loadTabs(MiniMiserPrefs prefs);
 
     /**
      * Close a list of tabs.

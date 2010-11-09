@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.minimiser.prefs.Prefs.PrefsSection;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs.PrefsSection;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,7 +40,7 @@ public final class TestPrefs {
     private static final String WINDOW_GEOMETRY = "20,20,700,500";
     private static final String WIZARD_PANEL_SIZE = "200,300";
     private static final String FOO = "foo";
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
 
     /**
      * 
@@ -67,7 +67,7 @@ public final class TestPrefs {
      * @return a new Prefs object.
      * @throws IOException on failure
      */
-    public static Prefs createUnitTestPrefsFile() throws IOException {
+    public static MiniMiserPrefs createUnitTestPrefsFile() throws IOException {
         final File tempFile = File.createTempFile("minimiser-unit-test", "prefs").getAbsoluteFile();
         tempFile.deleteOnExit();
         return new DefaultPrefsImpl(tempFile.getAbsolutePath());

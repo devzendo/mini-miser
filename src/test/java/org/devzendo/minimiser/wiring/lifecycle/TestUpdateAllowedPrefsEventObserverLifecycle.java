@@ -23,7 +23,7 @@ import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.StubMenu;
 import org.devzendo.minimiser.prefs.CoreBooleanFlags;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.updatechecker.StubUpdateChecker;
 import org.devzendo.minimiser.updatechecker.UpdateProgressAdapter;
@@ -44,7 +44,7 @@ import org.junit.Test;
  *
  */
 public final class TestUpdateAllowedPrefsEventObserverLifecycle {
-    private Prefs mPrefs;
+    private MiniMiserPrefs mPrefs;
     private File mPrefsFile;
     private StubUpdateChecker mUpdateChecker;
     private UpdateAllowedPrefsEventObserverLifecycle mObserver;

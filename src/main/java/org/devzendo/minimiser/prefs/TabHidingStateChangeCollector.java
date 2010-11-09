@@ -38,12 +38,12 @@ import java.util.Map;
 public final class TabHidingStateChangeCollector {
     private final Map<String, Boolean> hiddenTabs;
     private final Map<String, Boolean> readHiddenTabs;
-    private final Prefs mPrefs;
+    private final MiniMiserPrefs mPrefs;
 
     /**
      * @param realPrefs the prefs that store the hidden tab state
      */
-    public TabHidingStateChangeCollector(final Prefs realPrefs) {
+    public TabHidingStateChangeCollector(final MiniMiserPrefs realPrefs) {
         mPrefs = realPrefs;
         hiddenTabs = new HashMap<String, Boolean>();
         readHiddenTabs = new HashMap<String, Boolean>();

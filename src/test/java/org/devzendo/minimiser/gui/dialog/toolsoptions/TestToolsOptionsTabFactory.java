@@ -23,7 +23,7 @@ import org.devzendo.commonspring.springloader.ApplicationContext;
 import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.prefs.ChangeCollectingPrefsFactory;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public final class TestToolsOptionsTabFactory extends SpringLoaderUnittestCase {
 
     // Used by tests that make use of setUpStubRecordingTest
     private StubRecordingToolsOptionsTab stubTab;
-    private Prefs stubPrefs;
+    private MiniMiserPrefs stubPrefs;
 
     /**
      * {@inheritDoc}
@@ -70,8 +70,8 @@ public final class TestToolsOptionsTabFactory extends SpringLoaderUnittestCase {
      * Get the change-collecting prefs
      * @return the change-collecting prefs
      */
-    private Prefs getChangeCollectingPrefs() {
-        return getSpringLoader().getBean("changeCollectingPrefs", Prefs.class);
+    private MiniMiserPrefs getChangeCollectingPrefs() {
+        return getSpringLoader().getBean("changeCollectingPrefs", MiniMiserPrefs.class);
     }
 
     private List<ToolsOptionsTab> setUpStubRecordingTest() {

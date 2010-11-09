@@ -7,7 +7,7 @@ import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.devzendo.minimiser.pluginmanager.PluginException;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 
@@ -32,8 +32,8 @@ public class MenuProvidingHelper {
     /**
      * @return a mock Prefs suitable for menu tests
      */
-    public Prefs createMockPrefs() {
-        final Prefs prefs = EasyMock.createMock(Prefs.class);
+    public MiniMiserPrefs createMockPrefs() {
+        final MiniMiserPrefs prefs = EasyMock.createMock(MiniMiserPrefs.class);
         for (final TabIdentifier systemTabIdentifier : SystemTabIdentifiers.values()) {
             EasyMock.expect(prefs.isTabHidden(systemTabIdentifier.getTabName())).andReturn(Boolean.FALSE);
         }

@@ -19,7 +19,7 @@ import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.persistence.DefaultPluginManagerPersistenceUnittestCase;
 import org.devzendo.minimiser.pluginmanager.PluginException;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,7 +37,7 @@ public class TestMenuProvidingFacadeCanPopulateViewMenu extends
     private static final String PLUGINDBNAME = "pluginmenudb";
 
     private OpenDatabaseList mOpenDatabaseList;
-    private Prefs mPrefs;
+    private MiniMiserPrefs mPrefs;
     private ViewMenu mViewMenu;
     private ApplicationMenu mGlobalApplicationMenu;
 

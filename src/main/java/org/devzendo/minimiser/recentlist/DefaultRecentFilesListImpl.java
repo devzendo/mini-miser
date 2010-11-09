@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.util.DatabasePair;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 
@@ -34,13 +34,13 @@ import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 public final class DefaultRecentFilesListImpl extends AbstractRecentFilesListImpl {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultRecentFilesListImpl.class);
-    private final Prefs preferences;
+    private final MiniMiserPrefs preferences;
 
     /**
      * Construct a recent files list
      * @param prefs the prefs in which to store the recent files list
      */
-    public DefaultRecentFilesListImpl(final Prefs prefs) {
+    public DefaultRecentFilesListImpl(final MiniMiserPrefs prefs) {
         super();
         preferences = prefs;
         setDatabaseList(load());

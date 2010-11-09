@@ -24,7 +24,7 @@ import org.devzendo.minimiser.closer.Closer;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 
 /**
@@ -37,7 +37,7 @@ public final class DatabaseCloserLifecycle implements Lifecycle {
     private static final Logger LOGGER = Logger
             .getLogger(DatabaseCloserLifecycle.class);
     private final OpenDatabaseList openDatabaseList;
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
 
     /**
      * We need to store the open database list so we know what to close on
@@ -45,7 +45,7 @@ public final class DatabaseCloserLifecycle implements Lifecycle {
      * @param openList the OpenDatabaseList
      * @param prefstore the prefs store
      */
-    public DatabaseCloserLifecycle(final OpenDatabaseList openList, final Prefs prefstore) {
+    public DatabaseCloserLifecycle(final OpenDatabaseList openList, final MiniMiserPrefs prefstore) {
         this.openDatabaseList = openList;
         this.prefs = prefstore;
     }

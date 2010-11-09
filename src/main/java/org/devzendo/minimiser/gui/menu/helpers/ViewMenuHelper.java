@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 
 /**
@@ -44,7 +44,7 @@ public final class ViewMenuHelper {
      * @param prefs the prefs
      * @param menu the menu
      */
-    public static void updateViewMenuFromPrefsHiddenTabs(final Prefs prefs, final Menu menu) {
+    public static void updateViewMenuFromPrefsHiddenTabs(final MiniMiserPrefs prefs, final Menu menu) {
         LOGGER.debug("Setting hidden tabs");
         for (final TabIdentifier tabId : SystemTabIdentifiers.values()) {
             final boolean tabHidden = prefs.isTabHidden(tabId.getTabName());

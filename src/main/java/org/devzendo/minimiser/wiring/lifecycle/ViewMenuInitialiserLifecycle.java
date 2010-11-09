@@ -19,7 +19,7 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.helpers.ViewMenuHelper;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**
  * A Lifecycle that reads the current hidden tab settings from
@@ -29,7 +29,7 @@ import org.devzendo.minimiser.prefs.Prefs;
  *
  */
 public final class ViewMenuInitialiserLifecycle implements Lifecycle {
-    private final Prefs prefs;
+    private final MiniMiserPrefs prefs;
     private final Menu menu;
 
     /**
@@ -37,7 +37,7 @@ public final class ViewMenuInitialiserLifecycle implements Lifecycle {
      * @param p the prefs
      * @param m the menu
      */
-    public ViewMenuInitialiserLifecycle(final Prefs p, final Menu m) {
+    public ViewMenuInitialiserLifecycle(final MiniMiserPrefs p, final Menu m) {
         prefs = p;
         menu = m;
     }

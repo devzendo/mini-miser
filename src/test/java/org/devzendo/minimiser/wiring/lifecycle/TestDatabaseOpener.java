@@ -32,7 +32,7 @@ import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.persistence.AccessFactory;
 import org.devzendo.minimiser.persistence.DummyAppPluginManagerPersistenceUnittestCase;
 import org.devzendo.minimiser.persistence.MiniMiserDAOFactory;
-import org.devzendo.minimiser.prefs.Prefs;
+import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.util.DatabasePairEncapsulator;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -55,7 +55,7 @@ public final class TestDatabaseOpener extends DummyAppPluginManagerPersistenceUn
     private AccessFactory accessFactory;
     private OpenDatabaseList openDatabaseList;
     private LifecycleManager lifecycleManager;
-    private Prefs prefs;
+    private MiniMiserPrefs prefs;
     private Opener opener;
     private final DatabaseOpenDetails[] dbDetails = new DatabaseOpenDetails[] {
             new DatabaseOpenDetails("one", ""),
@@ -71,7 +71,7 @@ public final class TestDatabaseOpener extends DummyAppPluginManagerPersistenceUn
         accessFactory = getSpringLoader().getBean("accessFactory", AccessFactory.class);
         openDatabaseList = getSpringLoader().getBean("openDatabaseList", OpenDatabaseList.class);
         lifecycleManager = getSpringLoader().getBean("openLifecycleManager", LifecycleManager.class);
-        prefs = getSpringLoader().getBean("prefs", Prefs.class);
+        prefs = getSpringLoader().getBean("prefs", MiniMiserPrefs.class);
         opener = getSpringLoader().getBean("opener", Opener.class);
 
         // wire up the opener to the opendatabaselist as
