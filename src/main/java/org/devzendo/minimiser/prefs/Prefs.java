@@ -21,5 +21,5 @@ package org.devzendo.minimiser.prefs;
  * @author matt
  *
  */
-public interface PrefsMarker {
+public interface Prefs {
 }
