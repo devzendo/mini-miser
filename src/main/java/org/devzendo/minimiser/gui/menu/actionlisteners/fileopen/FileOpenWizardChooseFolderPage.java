@@ -48,10 +48,10 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
     public static final String PATH_NAME = "pathName";
     private static final Logger LOGGER = Logger
             .getLogger(FileOpenWizardChooseFolderPage.class);
-    private JFileChooser fileChooser;
-    private File chosenDirectory;
-    private JTextField hiddenPathName;
-    private final OpenDatabaseList openDatabaseList;
+    private JFileChooser mFileChooser;
+    private File mChosenDirectory;
+    private JTextField mHiddenPathName;
+    private final transient OpenDatabaseList mOpenDatabaseList;
 
     /**
      * Construct the wizard page
@@ -59,8 +59,8 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
      * is a possible open candidate, since you can't have the same db open twice.
      */
     public FileOpenWizardChooseFolderPage(final OpenDatabaseList databaseList) {
-        openDatabaseList = databaseList;
-        chosenDirectory = null;
+        mOpenDatabaseList = databaseList;
+        mChosenDirectory = null;
         initComponents();
     }
     
@@ -74,17 +74,18 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String validateContents(final Component component, final Object object) {
-        LOGGER.debug("validateContents called for chosenDirectory " + chosenDirectory);
-        final String validDirectory = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(chosenDirectory);
+        LOGGER.debug("validateContents called for chosenDirectory " + mChosenDirectory);
+        final String validDirectory = DatabaseDirectoryValidator.validateDirectoryForOpeningExistingDatabase(mChosenDirectory);
         if (validDirectory != null) {
             LOGGER.debug("Not valid for open: " + validDirectory);
             return validDirectory;
         }
-        final String dbName = chosenDirectory.getName();
+        final String dbName = mChosenDirectory.getName();
         LOGGER.debug("valid database '" + dbName + "', checking ODL to see if it's already open");
-        LOGGER.debug("Open DBs: " + openDatabaseList.getOpenDatabases());
-        if (openDatabaseList.containsDatabase(new DatabaseDescriptor(dbName))) {
+        LOGGER.debug("Open DBs: " + mOpenDatabaseList.getOpenDatabases());
+        if (mOpenDatabaseList.containsDatabase(new DatabaseDescriptor(dbName))) {
             LOGGER.debug("it is already open");
             return "A database called '" + dbName + "' is already open";
         }
@@ -98,33 +99,33 @@ public final class FileOpenWizardChooseFolderPage extends MiniMiserWizardPage {
         // Add a hidden text field to receive the valid contents of the
         // file chooser, since those contents don't get populated in the
         // wizard's output map.
-        hiddenPathName = new JTextField();
-        hiddenPathName.setVisible(false);
-        hiddenPathName.setName(PATH_NAME);
-        add(hiddenPathName);
+        mHiddenPathName = new JTextField();
+        mHiddenPathName.setVisible(false);
+        mHiddenPathName.setName(PATH_NAME);
+        add(mHiddenPathName);
 
         final JPanel panel = createNicelySizedPanel();
         
-        fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setControlButtonsAreShown(false);
-        fileChooser.addPropertyChangeListener(new PropertyChangeListener() {
+        mFileChooser = new JFileChooser();
+        mFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        mFileChooser.setMultiSelectionEnabled(false);
+        mFileChooser.setControlButtonsAreShown(false);
+        mFileChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(final PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
-                    final File selectedFile = fileChooser.getSelectedFile();
+                    final File selectedFile = mFileChooser.getSelectedFile();
                     if (selectedFile == null) {
                         LOGGER.debug("selected file is null"); // happens on the mac with a Temp folder
                         return;
                     }
                     LOGGER.debug("propertyChange gave me: " + selectedFile);
-                    chosenDirectory = selectedFile;
-                    hiddenPathName.setText(selectedFile.getAbsolutePath());
+                    mChosenDirectory = selectedFile;
+                    mHiddenPathName.setText(selectedFile.getAbsolutePath());
                 }
             }
         });
-        panel.add(fileChooser);
-        add(fileChooser);
+        panel.add(mFileChooser);
+        add(mFileChooser);
         
         
         panel.validate();
