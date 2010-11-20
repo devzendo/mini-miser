@@ -60,9 +60,9 @@ public final class AboutDialog extends JDialog implements
     private final JOptionPane optionPane;
     private final String btnString1 = "Continue";
     private final ArrayList<SwingWorker> mWorkers;
-    private final AWTEventListener awtEventListener;
-    private final CursorManager mCursorManager;
-    private final PluginRegistry mPluginRegistry;
+    private final AWTEventListener mAWTEventListener;
+    private final transient CursorManager mCursorManager;
+    private final transient PluginRegistry mPluginRegistry;
 
     /**
      * Creates the reusable dialog.
@@ -124,7 +124,7 @@ public final class AboutDialog extends JDialog implements
 
         // Load and display the about texts after the window has been
         // made visible. Performance legerdemain...
-        awtEventListener = new AWTEventListener() {
+        mAWTEventListener = new AWTEventListener() {
                             public void eventDispatched(final AWTEvent event) {
                                 if (event.getID() == WindowEvent.WINDOW_OPENED) {
                                     for (final SwingWorker worker : mWorkers) {
@@ -133,7 +133,7 @@ public final class AboutDialog extends JDialog implements
                                 }
                             }
                             };
-        Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener, AWTEvent.WINDOW_EVENT_MASK);
+        Toolkit.getDefaultToolkit().addAWTEventListener(mAWTEventListener, AWTEvent.WINDOW_EVENT_MASK);
     }
 
     private Component getLicenseComponent() {
@@ -254,8 +254,8 @@ public final class AboutDialog extends JDialog implements
 
     /** This method clears the dialog and hides it. */
     public void clearAndHide() {
-        if (awtEventListener != null) {
-            Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
+        if (mAWTEventListener != null) {
+            Toolkit.getDefaultToolkit().removeAWTEventListener(mAWTEventListener);
         }
         setVisible(false);
         mCursorManager.normal("AboutDialog");
