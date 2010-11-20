@@ -50,10 +50,10 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
     public static final String PATH_NAME = "pathName";
     private static final Logger LOGGER = Logger
             .getLogger(FileNewWizardChooseFolderPage.class);
-    private JFileChooser fileChooser;
-    private File chosenDirectory;
-    private JTextField hiddenPathName;
-    private final OpenDatabaseList openDatabaseList;
+    private JFileChooser mFileChooser;
+    private File mChosenDirectory;
+    private JTextField mHiddenPathName;
+    private final transient OpenDatabaseList mOpenDatabaseList;
 
     /**
      * Construct the wizard page
@@ -61,8 +61,8 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
      * is a possible open candidate, since you can't have the same db open twice.
      */
     public FileNewWizardChooseFolderPage(final OpenDatabaseList databaseList) {
-        openDatabaseList = databaseList;
-        chosenDirectory = null;
+        mOpenDatabaseList = databaseList;
+        mChosenDirectory = null;
         initComponents();
     }
     
@@ -76,13 +76,14 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected String validateContents(final Component component, final Object object) {
-        final String validDirectory = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(chosenDirectory);
+        final String validDirectory = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(mChosenDirectory);
         if (validDirectory != null) {
             return validDirectory;
         }
-        final String dbName = chosenDirectory.getName();
-        if (openDatabaseList.containsDatabase(new DatabaseDescriptor(dbName))) {
+        final String dbName = mChosenDirectory.getName();
+        if (mOpenDatabaseList.containsDatabase(new DatabaseDescriptor(dbName))) {
             return "A database called '" + dbName + "' is already open";
         }
         return null;
@@ -93,28 +94,28 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
         
         final JPanel panel = createNicelySizedPanel();
         
-        fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setControlButtonsAreShown(false);
-        fileChooser.addPropertyChangeListener(new PropertyChangeListener() {
+        mFileChooser = new JFileChooser();
+        mFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        mFileChooser.setMultiSelectionEnabled(false);
+        mFileChooser.setControlButtonsAreShown(false);
+        mFileChooser.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(final PropertyChangeEvent evt) {
                 LOGGER.info("Type: " + evt.getPropertyName());
                 LOGGER.info(evt);
                 if (evt.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
-                    setChosenDirectory(fileChooser.getSelectedFile());
+                    setChosenDirectory(mFileChooser.getSelectedFile());
                 }
             }
         });
-        panel.add(fileChooser);
+        panel.add(mFileChooser);
         
         // Add a hidden text field to receive the valid contents of the
         // file chooser, since those contents don't get populated in the
         // wizard's output map.
-        hiddenPathName = new JTextField();
-        hiddenPathName.setVisible(false);
-        hiddenPathName.setName(PATH_NAME);
-        add(hiddenPathName);
+        mHiddenPathName = new JTextField();
+        mHiddenPathName.setVisible(false);
+        mHiddenPathName.setName(PATH_NAME);
+        add(mHiddenPathName);
         
         panel.validate();
         add(panel);
@@ -135,9 +136,9 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
             LOGGER.debug("chose null directory"); // happens on Mac
             return;
         }
-        chosenDirectory = chosenDir;
-        LOGGER.info("Chosen directory:" + chosenDirectory);
-        final String problem = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(chosenDirectory);
+        mChosenDirectory = chosenDir;
+        LOGGER.info("Chosen directory:" + mChosenDirectory);
+        final String problem = DatabaseDirectoryValidator.validateDirectoryForDatabaseCreation(mChosenDirectory);
         if (problem != null) {
             LOGGER.warn(problem);
             setProblem(problem);
@@ -145,7 +146,7 @@ public final class FileNewWizardChooseFolderPage extends MiniMiserWizardPage {
         } else {
             setProblem(null); //"The " + chosenDirectory.getName() + " folder can be used to hold the new database");
             setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
-            hiddenPathName.setText(chosenDirectory.getAbsolutePath());
+            mHiddenPathName.setText(mChosenDirectory.getAbsolutePath());
         }
     }
 }
