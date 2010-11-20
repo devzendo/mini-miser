@@ -39,15 +39,12 @@ import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 public final class ToolsOptionsDialog extends AbstractSnailDialog {
     private static final Logger LOGGER = Logger
             .getLogger(ToolsOptionsDialog.class);
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1685823419193743569L;
-    private final MiniMiserPrefs prefs;
+    private final MiniMiserPrefs mPrefs;
     private final ToolsOptionsTabFactory toolsOptionsTabFactory;
 
-    private ChangeCollectingMiniMiserPrefs ccp;
-    private ToolsOptionsDialogPanel toolsOptionsDialogPanel;
+    private transient ChangeCollectingMiniMiserPrefs mChangeCollectingPrefs;
+    private ToolsOptionsDialogPanel mToolsOptionsDialogPanel;
 
     /**
      * Create the Tools -> Options Dialog
@@ -62,7 +59,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
     public ToolsOptionsDialog(final Frame parentFrame, final CursorManager cursor,
             final MiniMiserPrefs preferences, final ToolsOptionsTabFactory tabFactory) {
         super(parentFrame, cursor, "Options");
-        prefs = preferences;
+        mPrefs = preferences;
         toolsOptionsTabFactory = tabFactory;
     }
 
@@ -71,8 +68,8 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
      */
     @Override
     protected Container createMainComponent() {
-        toolsOptionsDialogPanel = new ToolsOptionsDialogPanel(this);
-        return toolsOptionsDialogPanel;
+        mToolsOptionsDialogPanel = new ToolsOptionsDialogPanel(this);
+        return mToolsOptionsDialogPanel;
     }
 
     /**
@@ -88,7 +85,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
             public Object construct() {
                 Thread.currentThread().setName("ToolsOptions OK Worker");
                 LOGGER.info("Committing Tools->Options changes");
-                ccp.commit();
+                mChangeCollectingPrefs.commit();
                 return null;
             }
         };
@@ -117,8 +114,8 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
         return new SwingWorker() {
             @Override
             public Object construct() {
-                ccp = new ChangeCollectingMiniMiserPrefs(prefs);
-                return toolsOptionsTabFactory.loadTabs(ccp);
+                mChangeCollectingPrefs = new ChangeCollectingMiniMiserPrefs(mPrefs);
+                return toolsOptionsTabFactory.loadTabs(mChangeCollectingPrefs);
             }
             
             @Override
@@ -126,7 +123,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
             public void finished() {
                final List<ToolsOptionsTab> loadedTabs = (List<ToolsOptionsTab>) get();
                for (final ToolsOptionsTab tab : loadedTabs) {
-                   toolsOptionsDialogPanel.addTab(tab.getName(), tab.getComponent());
+                   mToolsOptionsDialogPanel.addTab(tab.getName(), tab.getComponent());
                }
             }
         };
@@ -141,7 +138,7 @@ public final class ToolsOptionsDialog extends AbstractSnailDialog {
             
             @Override
             public void finished() {
-                toolsOptionsDialogPanel.enableButtons();
+                mToolsOptionsDialogPanel.enableButtons();
             }
         };
     }
