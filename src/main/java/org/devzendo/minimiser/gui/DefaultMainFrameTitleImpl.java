@@ -88,7 +88,7 @@ public final class DefaultMainFrameTitleImpl implements MainFrameTitle {
                     if (mApplicationName != null) {
                         title.append(mApplicationName);
                     }
-                    if (mApplicationName != null & mDatabaseName != null) {
+                    if (mApplicationName != null && mDatabaseName != null) {
                         title.append(" - ");
                     }
                     if (mDatabaseName != null) {
