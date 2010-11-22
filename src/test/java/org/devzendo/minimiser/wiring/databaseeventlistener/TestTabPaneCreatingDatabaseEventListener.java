@@ -24,9 +24,9 @@ import java.util.concurrent.Callable;
 import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.GUIValueObtainer;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tabfactory.StubRecordingTab;
 import org.devzendo.minimiser.gui.tabfactory.StubTabFactory;

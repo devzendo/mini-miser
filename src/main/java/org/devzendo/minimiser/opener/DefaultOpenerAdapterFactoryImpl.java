@@ -19,8 +19,8 @@ package org.devzendo.minimiser.opener;
 import java.awt.Frame;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commoncode.concurrency.ThreadUtils;
-import org.devzendo.commongui.CursorManager;
 import org.devzendo.minimiser.gui.MainFrameStatusBar;
 
 

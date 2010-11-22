@@ -15,7 +15,7 @@
  */
 package org.devzendo.minimiser.gui;
 
-import org.devzendo.commongui.WindowGeometryStorePersistence;
+import org.devzendo.commonapp.gui.WindowGeometryStorePersistence;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 
 /**

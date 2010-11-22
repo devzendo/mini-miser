@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.commonspring.springloader.ApplicationContext;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.opener.DatabaseOpenEvent;
 import org.devzendo.minimiser.opener.Opener;

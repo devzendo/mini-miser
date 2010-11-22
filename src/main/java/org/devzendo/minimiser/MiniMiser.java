@@ -21,21 +21,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.Beautifier;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
+import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
+import org.devzendo.commonapp.prefs.PrefsFactory;
+import org.devzendo.commonapp.prefs.PrefsInstantiator;
+import org.devzendo.commonapp.prefs.PrefsLocation;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderFactory;
 import org.devzendo.commoncode.exception.AppException;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.commoncode.string.StringUtils;
-import org.devzendo.commongui.Beautifier;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.ThreadCheckingRepaintManager;
-import org.devzendo.commonspring.springloader.SpringLoader;
-import org.devzendo.commonspring.springloader.SpringLoaderFactory;
 import org.devzendo.minimiser.gui.MainFrame;
 import org.devzendo.minimiser.gui.SqlConsoleFrame;
 import org.devzendo.minimiser.pluginmanager.AppDetailsPropertiesLoader;
-import org.devzendo.minimiser.prefs.GuiPrefsStartupHelper;
-import org.devzendo.minimiser.prefs.PrefsFactory;
-import org.devzendo.minimiser.prefs.PrefsInstantiator;
-import org.devzendo.minimiser.prefs.PrefsLocation;
 
 
 /**

@@ -1,6 +1,6 @@
 package org.devzendo.minimiser.gui.menu;
 
-import org.devzendo.commongui.menu.MenuWiring;
+import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.opentablist.OpenTabList;

@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.messagequeue.MessageQueueHelper;
 

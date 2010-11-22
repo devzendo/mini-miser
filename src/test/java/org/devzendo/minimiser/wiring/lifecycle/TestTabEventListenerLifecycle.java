@@ -19,8 +19,8 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import java.awt.Label;
 import java.util.List;
 
-import org.devzendo.commonspring.springloader.ApplicationContext;
-import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;

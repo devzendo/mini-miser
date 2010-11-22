@@ -28,7 +28,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.GUIUtils;
+import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.minimiser.util.DelayedExecutor;
 import org.devzendo.minimiser.util.Sleeper;
 

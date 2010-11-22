@@ -22,9 +22,9 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.spring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
 import org.devzendo.minimiser.prefs.ChangeCollectingPrefsFactory;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;

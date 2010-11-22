@@ -15,6 +15,10 @@
  */
 package org.devzendo.minimiser.prefs;
 
+import org.devzendo.commonapp.prefs.Prefs;
+import org.devzendo.commonapp.prefs.PrefsInstantiator;
+import org.devzendo.commonapp.prefs.PrefsLocation;
+
 /**
  * Instantiates the MiniMiser prefs.
  * @author matt

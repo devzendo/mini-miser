@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.persistence;
 
-import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 

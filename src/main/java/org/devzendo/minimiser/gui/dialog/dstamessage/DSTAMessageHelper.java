@@ -18,7 +18,7 @@ package org.devzendo.minimiser.gui.dialog.dstamessage;
 
 import java.awt.Component;
 
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 
 /**
  * Toolkit for easily creating DSTA Messages.

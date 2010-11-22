@@ -39,10 +39,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 import org.apache.commons.lang.StringUtils;
+import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.SwingWorker;
 import org.devzendo.commoncode.resource.ResourceLoader;
-import org.devzendo.commongui.CursorManager;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.SwingWorker;
 import org.devzendo.minimiser.pluginmanager.ApplicationPluginDescriptor;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 

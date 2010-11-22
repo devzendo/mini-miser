@@ -24,6 +24,6 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 	
-	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" />
+	<bean id="prefs" class="org.devzendo.commonapp.prefs.PrefsFactory" />
 
 </beans>

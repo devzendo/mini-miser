@@ -4,8 +4,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenuBar;
 
+import org.devzendo.commonapp.gui.menu.MenuIdentifier;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.commongui.menu.MenuIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
 /**

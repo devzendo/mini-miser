@@ -19,7 +19,7 @@ package org.devzendo.minimiser.gui.tabfactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.devzendo.commongui.GUIUtils;
+import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tab.TabParameter;

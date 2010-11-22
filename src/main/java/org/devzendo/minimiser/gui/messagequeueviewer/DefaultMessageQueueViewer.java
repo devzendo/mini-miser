@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.panel.HTMLPanel;
+import org.devzendo.commonapp.gui.panel.HTMLPanel;
 import org.devzendo.minimiser.messagequeue.Message;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 

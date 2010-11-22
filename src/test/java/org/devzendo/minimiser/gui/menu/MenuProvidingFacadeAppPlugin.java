@@ -18,7 +18,7 @@ package org.devzendo.minimiser.gui.menu;
 
 import java.util.List;
 
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.plugin.ApplicationPlugin;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProviding;
 import org.devzendo.minimiser.plugin.facade.providemenu.MenuProvidingFacade;

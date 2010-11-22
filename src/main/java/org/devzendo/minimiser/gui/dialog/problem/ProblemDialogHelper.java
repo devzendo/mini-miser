@@ -18,8 +18,8 @@ package org.devzendo.minimiser.gui.dialog.problem;
 
 import java.awt.Frame;
 
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
 

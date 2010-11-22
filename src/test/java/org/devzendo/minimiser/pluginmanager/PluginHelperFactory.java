@@ -16,8 +16,8 @@
 
 package org.devzendo.minimiser.pluginmanager;
 
-import org.devzendo.commonspring.springloader.SpringLoader;
-import org.devzendo.commonspring.springloader.SpringLoaderFactory;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderFactory;
 import org.devzendo.minimiser.MiniMiserApplicationContexts;
 
 /**

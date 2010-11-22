@@ -19,8 +19,8 @@ package org.devzendo.minimiser.gui.menu.actionlisteners;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
-import org.devzendo.commongui.CursorManager;
-import org.devzendo.commongui.menu.actionlisteners.SnailActionListener;
+import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.menu.actionlisteners.SnailActionListener;
 import org.devzendo.minimiser.gui.dialog.toolsoptions.ToolsOptionsDialog;
 import org.devzendo.minimiser.gui.dialog.toolsoptions.ToolsOptionsTabFactory;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;

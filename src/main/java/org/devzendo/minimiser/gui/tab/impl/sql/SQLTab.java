@@ -18,7 +18,7 @@ package org.devzendo.minimiser.gui.tab.impl.sql;
 
 import java.awt.Component;
 
-import org.devzendo.commongui.CursorManager;
+import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageHelper;
 import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import org.devzendo.minimiser.gui.tab.Tab;

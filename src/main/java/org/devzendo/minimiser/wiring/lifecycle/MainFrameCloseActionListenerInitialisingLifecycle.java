@@ -24,8 +24,8 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 
 

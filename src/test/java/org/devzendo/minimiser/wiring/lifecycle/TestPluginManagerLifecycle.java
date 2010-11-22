@@ -18,9 +18,9 @@ package org.devzendo.minimiser.wiring.lifecycle;
 
 import java.util.List;
 
-import org.devzendo.commonspring.springloader.ApplicationContext;
-import org.devzendo.commonspring.springloader.SpringLoadedBean;
-import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.SpringLoadedBean;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
 import org.devzendo.minimiser.plugin.AppPlugin;
 import org.devzendo.minimiser.plugin.BadShutdownPlugin;

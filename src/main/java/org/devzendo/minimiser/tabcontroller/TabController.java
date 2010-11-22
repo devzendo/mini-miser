@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.GUIValueObtainer;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.gui.tab.TabIdentifierToolkit;

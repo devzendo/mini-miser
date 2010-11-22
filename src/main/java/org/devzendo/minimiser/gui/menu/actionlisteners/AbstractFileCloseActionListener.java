@@ -19,7 +19,7 @@ package org.devzendo.minimiser.gui.menu.actionlisteners;
 import java.awt.event.ActionListener;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.CursorManager;
+import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.minimiser.closer.Closer;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;

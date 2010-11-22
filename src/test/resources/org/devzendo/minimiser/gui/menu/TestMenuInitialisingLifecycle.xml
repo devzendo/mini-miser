@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
 	default-lazy-init="true" >
 
-	<bean id="mainFrame" class="org.devzendo.commongui.MainFrameFactory" />
+	<bean id="mainFrame" class="org.devzendo.commonapp.gui.MainFrameFactory" />
 	<bean id="mainFrameCloseActionListener" class="org.devzendo.minimiser.wiring.lifecycle.StubMainFrameCloseActionListener" />
 	<bean id="menuBuilder" class="org.devzendo.minimiser.wiring.lifecycle.StubMenuBuilder" />
 	

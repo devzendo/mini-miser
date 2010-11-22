@@ -20,7 +20,7 @@ import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
 
-import org.devzendo.commongui.CursorManager;
+import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.minimiser.gui.StatusBar;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;

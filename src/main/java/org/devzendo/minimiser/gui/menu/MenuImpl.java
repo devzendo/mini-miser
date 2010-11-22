@@ -23,12 +23,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.menu.AbstractMenuGroup;
+import org.devzendo.commonapp.gui.menu.MenuIdentifier;
+import org.devzendo.commonapp.gui.menu.MenuWiring;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.menu.AbstractMenuGroup;
-import org.devzendo.commongui.menu.MenuIdentifier;
-import org.devzendo.commongui.menu.MenuWiring;
-import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 
 

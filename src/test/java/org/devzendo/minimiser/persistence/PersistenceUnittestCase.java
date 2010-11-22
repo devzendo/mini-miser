@@ -26,11 +26,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.commoncode.os.OSTypeDetect;
 import org.devzendo.commoncode.os.OSTypeDetect.OSType;
 import org.devzendo.commoncode.string.StringUtils;
-import org.devzendo.commonspring.springloader.ApplicationContext;
-import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.config.UnittestingConfig;
 import org.devzendo.minimiser.util.OpenFilesDetector;
 import org.junit.After;

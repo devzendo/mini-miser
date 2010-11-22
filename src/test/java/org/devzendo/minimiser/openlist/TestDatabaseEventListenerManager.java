@@ -19,8 +19,8 @@ package org.devzendo.minimiser.openlist;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commonspring.springloader.ApplicationContext;
-import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.util.OrderMonitor;
 import org.junit.Assert;
 import org.junit.Before;

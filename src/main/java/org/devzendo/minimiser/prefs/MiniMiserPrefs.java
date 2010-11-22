@@ -16,6 +16,7 @@
 
 package org.devzendo.minimiser.prefs;
 
+import org.devzendo.commonapp.prefs.Prefs;
 import org.devzendo.commoncode.patterns.observer.Observer;
 
 /**

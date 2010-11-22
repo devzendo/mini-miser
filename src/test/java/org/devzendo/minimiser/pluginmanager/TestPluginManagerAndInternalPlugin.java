@@ -19,8 +19,8 @@ package org.devzendo.minimiser.pluginmanager;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.devzendo.commonspring.springloader.ApplicationContext;
-import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.persistence.domain.CurrentSchemaVersion;
 import org.junit.Assert;
 import org.junit.Before;

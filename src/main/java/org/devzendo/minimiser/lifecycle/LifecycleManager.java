@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.lifecycle;
 
-import org.devzendo.commonspring.springbeanlistloader.SpringBeanListLoader;
+import org.devzendo.commonapp.spring.springbeanlistloader.SpringBeanListLoader;
 
 
 /**

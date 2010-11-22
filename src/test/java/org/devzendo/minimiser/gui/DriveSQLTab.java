@@ -25,10 +25,10 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.Beautifier;
+import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commoncode.logging.Logging;
-import org.devzendo.commongui.Beautifier;
-import org.devzendo.commongui.CursorManager;
-import org.devzendo.commongui.GUIUtils;
 import org.devzendo.minimiser.gui.tab.impl.sql.SQLTab;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.AccessFactory;

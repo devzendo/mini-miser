@@ -18,8 +18,8 @@ package org.devzendo.minimiser.wiring.lifecycle;
 
 import javax.swing.JFrame;
 
-import org.devzendo.commongui.MainFrameFactory;
-import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonapp.gui.MainFrameFactory;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 import org.devzendo.minimiser.gui.menu.MenuMediatorUnittestCase;
 import org.junit.Assert;
 import org.junit.Test;

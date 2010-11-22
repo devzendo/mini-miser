@@ -6,8 +6,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.gui.menu.MenuFacade;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;

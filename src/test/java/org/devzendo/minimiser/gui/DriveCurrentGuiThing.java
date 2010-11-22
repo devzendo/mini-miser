@@ -28,9 +28,9 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.devzendo.commoncode.logging.Logging;
-import org.devzendo.commongui.Beautifier;
 import org.devzendo.minimiser.util.DelayedExecutor;
 
 

@@ -19,7 +19,7 @@ package org.devzendo.minimiser.gui.dialog.passwordentry;
 import java.awt.Frame;
 import java.util.concurrent.CountDownLatch;
 
-import org.devzendo.commongui.GUIUtils;
+import org.devzendo.commonapp.gui.GUIUtils;
 
 
 /**

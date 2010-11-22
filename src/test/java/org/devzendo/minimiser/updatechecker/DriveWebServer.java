@@ -27,10 +27,10 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.Beautifier;
+import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.commoncode.resource.ResourceLoader;
-import org.devzendo.commongui.Beautifier;
-import org.devzendo.commongui.GUIUtils;
 
 
 /**

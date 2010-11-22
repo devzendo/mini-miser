@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.persistence;
 
-import org.devzendo.commonspring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 
 /**
  * Persistent tests that don't need real plugins and can make do

@@ -21,7 +21,7 @@ import java.awt.Component;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.devzendo.commongui.menu.MenuWiring;
+import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
 import org.devzendo.minimiser.gui.tab.TabIdentifier;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;

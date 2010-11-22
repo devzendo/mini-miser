@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.messagequeue;
 
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 
 /**
  * Toolkit for easily adding Messages to the MessageQueue..

@@ -21,9 +21,9 @@ import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.CursorManager;
 import org.devzendo.commoncode.concurrency.ThreadUtils;
 import org.devzendo.commoncode.string.StringUtils;
-import org.devzendo.commongui.CursorManager;
 import org.devzendo.minimiser.opener.AbstractOpenerAdapter;
 import org.devzendo.minimiser.opener.Opener;
 import org.devzendo.minimiser.opener.OpenerAdapter;

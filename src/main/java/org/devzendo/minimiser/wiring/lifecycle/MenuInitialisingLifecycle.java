@@ -22,8 +22,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.menu.Menu;
 import org.devzendo.minimiser.gui.menu.MenuBuilder;
 import org.devzendo.minimiser.gui.menu.MenuMediator;

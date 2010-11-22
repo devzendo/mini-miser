@@ -19,7 +19,7 @@
 	</bean>
 	<bean id="pluginManager" class="org.devzendo.minimiser.pluginmanager.DummyAppPluginManager" />
 
-	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" lazy-init="true" />
+	<bean id="prefs" class="org.devzendo.commonapp.prefs.PrefsFactory" lazy-init="true" />
 	
 	<bean id="pluginRegistry" class="org.devzendo.minimiser.pluginmanager.DefaultPluginRegistry" />
 	

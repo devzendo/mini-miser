@@ -20,9 +20,9 @@ import java.awt.Label;
 import java.util.Arrays;
 import java.util.List;
 
+import org.devzendo.commonapp.spring.springloader.ApplicationContext;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.commonspring.springloader.ApplicationContext;
-import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.tab.IntegerTabParameter;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;

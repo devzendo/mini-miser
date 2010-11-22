@@ -23,10 +23,10 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.CursorManager;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.SwingWorker;
-import org.devzendo.commongui.dialog.snaildialog.AbstractSnailDialog;
+import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.SwingWorker;
+import org.devzendo.commonapp.gui.dialog.snaildialog.AbstractSnailDialog;
 import org.devzendo.minimiser.prefs.ChangeCollectingMiniMiserPrefs;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 

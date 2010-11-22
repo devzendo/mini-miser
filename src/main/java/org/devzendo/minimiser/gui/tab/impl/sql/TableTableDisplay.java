@@ -18,7 +18,7 @@ package org.devzendo.minimiser.gui.tab.impl.sql;
 
 import java.util.List;
 
-import org.devzendo.commongui.GUIUtils;
+import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.minimiser.tabledisplay.TableDisplay;
 
 

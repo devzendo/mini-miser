@@ -18,8 +18,8 @@ package org.devzendo.minimiser.gui.menu;
 
 import javax.swing.JMenu;
 
-import org.devzendo.commongui.menu.AbstractMenuGroup;
-import org.devzendo.commongui.menu.MenuWiring;
+import org.devzendo.commonapp.gui.menu.AbstractMenuGroup;
+import org.devzendo.commonapp.gui.menu.MenuWiring;
 
 
 /**

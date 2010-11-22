@@ -18,8 +18,8 @@ package org.devzendo.minimiser.wiring.lifecycle;
 
 import java.util.List;
 
-import org.devzendo.commonspring.springloader.SimpleSpringLoader;
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springloader.SimpleSpringLoader;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.problem.StubProblemReporter;
 import org.devzendo.minimiser.gui.menu.ApplicationMenu;
 import org.devzendo.minimiser.gui.menu.MenuFacadeImpl;

@@ -18,7 +18,7 @@ package org.devzendo.minimiser.wiring.lifecycle;
 
 import javax.swing.JFrame;
 
-import org.devzendo.commongui.WindowGeometryStore;
+import org.devzendo.commonapp.gui.WindowGeometryStore;
 import org.devzendo.minimiser.lifecycle.Lifecycle;
 
 /**

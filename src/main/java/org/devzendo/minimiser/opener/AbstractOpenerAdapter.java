@@ -22,9 +22,9 @@ import java.util.concurrent.Callable;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commongui.CursorManager;
-import org.devzendo.commongui.GUIUtils;
-import org.devzendo.commongui.GUIValueObtainer;
+import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.GUIUtils;
+import org.devzendo.commonapp.gui.GUIValueObtainer;
 import org.devzendo.minimiser.gui.dialog.passwordentry.PasswordEntryDialogHelper;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemDialogHelper;
 import org.springframework.dao.DataAccessException;

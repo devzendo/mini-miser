@@ -22,8 +22,8 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commoncode.concurrency.ThreadUtils;
-import org.devzendo.commongui.GUIUtils;
 
 
 /**

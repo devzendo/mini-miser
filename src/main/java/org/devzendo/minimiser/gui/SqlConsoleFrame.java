@@ -33,13 +33,13 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.MainFrameFactory;
+import org.devzendo.commonapp.gui.SwingWorker;
+import org.devzendo.commonapp.gui.WindowGeometryStore;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.exception.AppException;
 import org.devzendo.commoncode.resource.ResourceLoader;
-import org.devzendo.commongui.CursorManager;
-import org.devzendo.commongui.MainFrameFactory;
-import org.devzendo.commongui.SwingWorker;
-import org.devzendo.commongui.WindowGeometryStore;
-import org.devzendo.commonspring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.tab.impl.sql.SQLTabPanel;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.persistence.AccessFactory;

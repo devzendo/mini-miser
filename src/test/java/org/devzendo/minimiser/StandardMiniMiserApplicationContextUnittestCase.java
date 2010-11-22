@@ -19,7 +19,7 @@ package org.devzendo.minimiser;
 import java.util.Arrays;
 import java.util.List;
 
-import org.devzendo.commonspring.springloader.SpringLoaderUnittestCase;
+import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.MiniMiserApplicationContexts;
 
 

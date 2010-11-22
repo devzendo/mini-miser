@@ -19,8 +19,8 @@ package org.devzendo.minimiser.lifecycle;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
-import org.devzendo.commonspring.springloader.SpringLoader;
+import org.devzendo.commonapp.spring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 
 /**
  * Default impl of LifecycleManager. Loads Lifecycle implementors using the

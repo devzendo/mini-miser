@@ -25,10 +25,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.menu.AbstractRebuildableMenuGroup;
+import org.devzendo.commonapp.gui.menu.MenuWiring;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.commoncode.patterns.observer.ObserverList;
-import org.devzendo.commongui.menu.AbstractRebuildableMenuGroup;
-import org.devzendo.commongui.menu.MenuWiring;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.recentlist.RecentFilesList;

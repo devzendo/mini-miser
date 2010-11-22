@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
 	default-lazy-init="true" >
 
-	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" lazy-init="true" />
+	<bean id="prefs" class="org.devzendo.commonapp.prefs.PrefsFactory" lazy-init="true" />
 	
 	<bean id="dstaMessageFactory" class="org.devzendo.minimiser.gui.dialog.dstamessage.StubDSTAMessageFactory">
 		<constructor-arg ref="prefs" />

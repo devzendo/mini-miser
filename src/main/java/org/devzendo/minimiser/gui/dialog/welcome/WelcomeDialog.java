@@ -40,10 +40,10 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.SwingWorker;
+import org.devzendo.commonapp.gui.dialog.snaildialog.AbstractSnailDialog;
 import org.devzendo.commoncode.resource.ResourceLoader;
-import org.devzendo.commongui.CursorManager;
-import org.devzendo.commongui.SwingWorker;
-import org.devzendo.commongui.dialog.snaildialog.AbstractSnailDialog;
 import org.devzendo.minimiser.pluginmanager.ApplicationPluginDescriptor;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.updatechecker.DefaultChangeLogTransformer;

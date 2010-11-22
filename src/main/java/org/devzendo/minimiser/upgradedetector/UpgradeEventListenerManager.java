@@ -19,9 +19,9 @@ package org.devzendo.minimiser.upgradedetector;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.spring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
+import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commoncode.patterns.observer.Observer;
-import org.devzendo.commonspring.springbeanlistloader.AbstractSpringBeanListLoaderImpl;
-import org.devzendo.commonspring.springloader.SpringLoader;
 
 
 /**
