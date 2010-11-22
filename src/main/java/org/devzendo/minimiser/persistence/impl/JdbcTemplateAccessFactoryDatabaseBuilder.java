@@ -44,7 +44,7 @@ class JdbcTemplateAccessFactoryDatabaseBuilder {
      * Throw away events.
      *
      */
-    private final class NullPersistenceObserver implements Observer<PersistenceObservableEvent> {
+    private static final class NullPersistenceObserver implements Observer<PersistenceObservableEvent> {
         public void eventOccurred(final PersistenceObservableEvent observableEvent) {
             // intentionally do nothing
         }
