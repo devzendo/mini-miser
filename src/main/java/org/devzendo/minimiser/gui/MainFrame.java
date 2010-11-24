@@ -22,7 +22,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -98,7 +97,7 @@ public class MainFrame {
     private void createMainFrame() {
         mMainFrame = new JFrame();
 
-        mMainFrame.setIconImage(createImageIcon("icons/application.gif").getImage());
+        mMainFrame.setIconImage(ResourceLoader.createResourceImageIcon("icons/application.gif").getImage());
         mMainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setMainFrameInFactory();
@@ -109,19 +108,6 @@ public class MainFrame {
         mMainFrame.setLayout(new BorderLayout());
     }
 
-    /**
-     *  Returns an ImageIcon, or null if the path was invalid.
-     */
-    private ImageIcon createImageIcon(final String path) {
-        final java.net.URL imgURL = ResourceLoader.getResourceURL(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        } else {
-            LOGGER.warn("Couldn't find file: " + path);
-            return null;
-        }
-    }
-    
     private void createAndSetMainFrameTitleInFactory() {
         final MainFrameTitleFactory mainFrameTitleFactory = mSpringLoader.getBean("&mainFrameTitle", MainFrameTitleFactory.class);
         mainFrameTitleFactory.setMainFrameTitle(
