@@ -64,7 +64,8 @@ public final class SQLViewChoiceObserver implements MenuWiringAdapter, Observer<
                         + "please consult the Technical Guide.\n\n"
                         + "The SQL view is not intended for day-to-day use.\n"
                     );
-                }});
+                } }
+            );
         }
     }
 }
