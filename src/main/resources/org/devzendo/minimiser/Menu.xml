@@ -5,7 +5,7 @@
 	default-lazy-init="true" >
 
 	<!-- gui layer -->
-	<bean id="menuWiring" class="org.devzendo.commongui.menu.MenuWiring" />
+	<bean id="menuWiring" class="org.devzendo.commonapp.gui.menu.MenuWiring" />
 	
 	<bean id="menu" class="org.devzendo.minimiser.gui.menu.MenuImpl">
 		<constructor-arg ref="springLoader" />
@@ -39,6 +39,7 @@
 			    <value>menuDatabaseOpenEventObserver</value>
 			    <value>menuPrefsEventObserver</value>
 			    <value>menuViewChoiceObserver</value>
+				<value>sqlViewChoiceObserver</value>
 			    <value>menuPluginLoadedObserver</value>
 			</list>
 		</property>
@@ -84,6 +85,10 @@
 		<constructor-arg ref="tabFactory" />
 		<constructor-arg ref="tabController" />
 	</bean>
+
+    <bean id="sqlViewChoiceObserver" class="org.devzendo.minimiser.wiring.menu.SQLViewChoiceObserver">
+        <constructor-arg ref="menu" />
+    </bean>
 		
 	<bean id="menuPluginLoadedObserver" class="org.devzendo.minimiser.wiring.menu.MenuPluginLoadedObserver">
 		<constructor-arg ref="menu" />

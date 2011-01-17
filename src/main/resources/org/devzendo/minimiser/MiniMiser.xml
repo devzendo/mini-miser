@@ -10,7 +10,7 @@
 	</bean>
 
 	<!-- gui layer -->
-	<bean id="mainFrame" class="org.devzendo.commongui.MainFrameFactory" />
+	<bean id="mainFrame" class="org.devzendo.commonapp.gui.MainFrameFactory" />
 
 	<bean id="mainFrameCloseActionListener" class="org.devzendo.minimiser.gui.MainFrameCloseActionListener">
 		<constructor-arg ref="springLoader" />
@@ -18,13 +18,13 @@
 
 	<bean id="mainFrameTitle" class="org.devzendo.minimiser.gui.MainFrameTitleFactory" />
 
-	<bean id="cursorManager" class="org.devzendo.commongui.CursorManager" />
+	<bean id="cursorManager" class="org.devzendo.commonapp.gui.CursorManager" />
 
     <bean id="windowGeometryStorePersistence" class="org.devzendo.minimiser.gui.WindowGeometryStorePrefsPersistence" >
         <constructor-arg ref="prefs" />
     </bean>
 
-	<bean id="windowGeometryStore" class="org.devzendo.commongui.WindowGeometryStore" >
+	<bean id="windowGeometryStore" class="org.devzendo.commonapp.gui.WindowGeometryStore" >
 		<constructor-arg ref="windowGeometryStorePersistence" />
 	</bean>
 
@@ -431,7 +431,7 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="prefsLocation" class="org.devzendo.minimiser.prefs.PrefsLocation">
+	<bean id="prefsLocation" class="org.devzendo.commonapp.prefs.PrefsLocation">
 		<constructor-arg name="prefsDir" value=".minimiser" />
 		<constructor-arg name="prefsFile" value="minimiser.prefs" />
 	</bean>
@@ -440,7 +440,7 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="prefs" class="org.devzendo.minimiser.prefs.PrefsFactory" />
+	<bean id="prefs" class="org.devzendo.commonapp.prefs.PrefsFactory" />
 	
 	<bean id="prefsInstantiator" class="org.devzendo.minimiser.prefs.DefaultPrefsInstantiator" />
 
