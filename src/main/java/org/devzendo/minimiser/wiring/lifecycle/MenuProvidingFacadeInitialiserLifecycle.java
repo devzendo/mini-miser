@@ -16,8 +16,8 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.minimiser.gui.menu.MenuProvidingFacadeInitialiser;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
 
 /**
  * Initialises any plugins' MenuProvidingFacades.

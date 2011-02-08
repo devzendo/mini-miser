@@ -19,11 +19,11 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import java.io.File;
 import java.io.IOException;
 
+import org.devzendo.commonapp.lifecycle.LifecycleManager;
 import org.devzendo.commonapp.prefs.PrefsFactory;
 import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
-import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;

@@ -17,9 +17,9 @@
 package org.devzendo.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.commoncode.patterns.observer.Observer;
 import org.devzendo.minimiser.gui.MainFrameTitle;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.pluginmanager.ApplicationPluginLoadedEvent;
 import org.devzendo.minimiser.pluginmanager.PluginDescriptor;
 import org.devzendo.minimiser.pluginmanager.PluginEvent;

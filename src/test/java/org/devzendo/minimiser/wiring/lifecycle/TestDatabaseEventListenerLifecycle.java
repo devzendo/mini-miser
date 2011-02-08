@@ -18,12 +18,12 @@ package org.devzendo.minimiser.wiring.lifecycle;
 
 import java.util.List;
 
+import org.devzendo.commonapp.lifecycle.LifecycleManager;
 import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
-import org.devzendo.minimiser.lifecycle.LifecycleManager;
+import org.devzendo.commonapp.util.OrderMonitor;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
-import org.devzendo.minimiser.util.OrderMonitor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

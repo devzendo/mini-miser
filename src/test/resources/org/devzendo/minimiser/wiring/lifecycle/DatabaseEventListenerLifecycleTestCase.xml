@@ -13,7 +13,7 @@
 		</property>
 	</bean>
 	
-	<bean id="lifecycleManager" class="org.devzendo.minimiser.lifecycle.DefaultLifecycleManagerImpl">
+	<bean id="lifecycleManager" class="org.devzendo.commonapp.lifecycle.DefaultLifecycleManagerImpl">
 		<constructor-arg ref="springLoader" />
 		<constructor-arg ref="lifecycleList" />	
 	</bean>
@@ -42,7 +42,7 @@
 		<constructor-arg value="dave" />
 	</bean>
 	
-	<bean id="orderMonitor" class="org.devzendo.minimiser.util.OrderMonitor" />
+	<bean id="orderMonitor" class="org.devzendo.commonapp.util.OrderMonitor" />
 
 	<bean id="openDatabaseList" class="org.devzendo.minimiser.openlist.OpenDatabaseList" />
 

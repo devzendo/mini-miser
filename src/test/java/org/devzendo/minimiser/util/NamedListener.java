@@ -16,6 +16,7 @@
 
 package org.devzendo.minimiser.util;
 
+import org.devzendo.commonapp.util.OrderMonitor;
 import org.devzendo.commoncode.patterns.observer.ObservableEvent;
 import org.devzendo.commoncode.patterns.observer.Observer;
 

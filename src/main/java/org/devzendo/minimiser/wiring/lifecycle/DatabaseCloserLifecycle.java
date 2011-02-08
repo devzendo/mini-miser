@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.minimiser.closer.Closer;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.openlist.OpenDatabaseList;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;
@@ -86,7 +86,7 @@ public final class DatabaseCloserLifecycle implements Lifecycle {
     private void closeDatabases() {
         LOGGER.info("Closing open databases");
         final List<DatabaseDescriptor> openDatabases = openDatabaseList.getOpenDatabases();
-        for (DatabaseDescriptor descriptor : openDatabases) {
+        for (final DatabaseDescriptor descriptor : openDatabases) {
             LOGGER.debug("Closing database " + descriptor.getDatabaseName());
             Closer.close(descriptor);
             LOGGER.debug("Removing database " + descriptor.getDatabaseName() + " from open database list");

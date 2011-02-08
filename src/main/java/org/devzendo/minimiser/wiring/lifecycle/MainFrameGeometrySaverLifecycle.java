@@ -19,7 +19,7 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import javax.swing.JFrame;
 
 import org.devzendo.commonapp.gui.WindowGeometryStore;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 
 /**
  * A Lifecycle that saves the geometry of the main window.

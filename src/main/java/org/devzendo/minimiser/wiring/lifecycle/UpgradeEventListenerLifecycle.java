@@ -16,7 +16,7 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
-import org.devzendo.minimiser.lifecycle.Lifecycle;
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 import org.devzendo.minimiser.upgradedetector.UpgradeEventListenerManager;
 

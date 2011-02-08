@@ -17,7 +17,7 @@
 package org.devzendo.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.minimiser.opener.Opener;
 import org.devzendo.minimiser.opener.OpenerAdapter;
 import org.devzendo.minimiser.opener.OpenerAdapterFactory;

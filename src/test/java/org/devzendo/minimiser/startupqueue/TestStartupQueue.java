@@ -18,8 +18,8 @@ package org.devzendo.minimiser.startupqueue;
 
 import java.util.List;
 
+import org.devzendo.commonapp.util.OrderMonitor;
 import org.devzendo.commoncode.logging.LoggingUnittestHelper;
-import org.devzendo.minimiser.util.OrderMonitor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;

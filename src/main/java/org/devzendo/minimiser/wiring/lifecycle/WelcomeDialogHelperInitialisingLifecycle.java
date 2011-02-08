@@ -16,9 +16,9 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.minimiser.gui.dialog.welcome.WelcomeDialogHelper;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
 
 /**
  * Initialises the Welcome Dialog Helper toolkit.
