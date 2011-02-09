@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -180,7 +181,7 @@ public final class DriveStatusBarDisplay {
      */
     public static void main(final String[] args) {
         BasicConfigurator.configure();
-        ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
+        List<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         
 
