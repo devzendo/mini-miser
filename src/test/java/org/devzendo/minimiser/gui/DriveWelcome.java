@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.BasicConfigurator;
 import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.DefaultCursorManager;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.minimiser.gui.dialog.welcome.WelcomeDialog;
@@ -63,7 +64,7 @@ public final class DriveWelcome {
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setPreferredSize(new Dimension(800, 600));
                 
-                final CursorManager cursorManager = new CursorManager();
+                final CursorManager cursorManager = new DefaultCursorManager();
                 cursorManager.setMainFrame(frame);
                 
                 final JButton launch = new JButton("Launch Welcome");

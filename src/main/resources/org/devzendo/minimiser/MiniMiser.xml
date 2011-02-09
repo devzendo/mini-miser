@@ -18,7 +18,7 @@
 
 	<bean id="mainFrameTitle" class="org.devzendo.minimiser.gui.MainFrameTitleFactory" />
 
-	<bean id="cursorManager" class="org.devzendo.commonapp.gui.CursorManager" />
+	<bean id="cursorManager" class="org.devzendo.commonapp.gui.DefaultCursorManager" />
 
     <bean id="windowGeometryStorePersistence" class="org.devzendo.minimiser.gui.WindowGeometryStorePrefsPersistence" >
         <constructor-arg ref="prefs" />
