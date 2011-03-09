@@ -27,6 +27,7 @@ import org.devzendo.commonapp.gui.ThreadCheckingRepaintManager;
 import org.devzendo.commonapp.prefs.GuiPrefsStartupHelper;
 import org.devzendo.commonapp.prefs.PrefsFactory;
 import org.devzendo.commonapp.prefs.PrefsInstantiator;
+import org.devzendo.commonapp.prefs.DefaultPrefsLocation;
 import org.devzendo.commonapp.prefs.PrefsLocation;
 import org.devzendo.commonapp.spring.springloader.SpringLoader;
 import org.devzendo.commonapp.spring.springloader.SpringLoaderFactory;
@@ -102,7 +103,7 @@ public final class MiniMiser {
         //
         ThreadCheckingRepaintManager.initialise();
         
-        final PrefsLocation prefsLocation = springLoader.getBean("prefsLocation", PrefsLocation.class);
+        final PrefsLocation prefsLocation = springLoader.getBean("prefsLocation", DefaultPrefsLocation.class);
         final PrefsFactory prefsFactory = springLoader.getBean("&prefs", PrefsFactory.class);
         final PrefsInstantiator prefsInstantiator = springLoader.getBean("prefsInstantiator", PrefsInstantiator.class);
         new GuiPrefsStartupHelper(prefsLocation, prefsFactory, prefsInstantiator).initialisePrefs();

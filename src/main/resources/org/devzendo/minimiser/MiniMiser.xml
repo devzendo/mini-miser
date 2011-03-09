@@ -431,7 +431,7 @@
 		<constructor-arg ref="prefs" />
 	</bean>
 
-	<bean id="prefsLocation" class="org.devzendo.commonapp.prefs.PrefsLocation">
+	<bean id="prefsLocation" class="org.devzendo.commonapp.prefs.DefaultPrefsLocation">
 		<constructor-arg name="prefsDir" value=".minimiser" />
 		<constructor-arg name="prefsFile" value="minimiser.prefs" />
 	</bean>
