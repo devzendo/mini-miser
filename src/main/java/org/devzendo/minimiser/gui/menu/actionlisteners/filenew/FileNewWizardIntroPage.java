@@ -21,6 +21,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.minimiser.gui.wizard.MiniMiserWizardPage;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
 
@@ -46,8 +47,8 @@ public final class FileNewWizardIntroPage extends MiniMiserWizardPage {
     private void initComponents() {
         final JPanel sizedPanel = createNicelySizedPanel();
         sizedPanel.setLayout(new BorderLayout());
-        final JTextArea textArea = new JTextArea(getText());
-        textArea.setEditable(false);
+        final JTextArea textArea = GUIUtils.createNonEditableJTextAreaWithParentBackground(sizedPanel);
+        textArea.setText(getText());
         sizedPanel.add(textArea, BorderLayout.WEST);
         add(sizedPanel);
     }
