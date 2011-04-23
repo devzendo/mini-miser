@@ -83,3 +83,18 @@ v0.2.1 21/06/2010 third "foundations" release
     * Tests: 656, 3 ignored
     * Test coverage: 71.5%
     * Metric violations: 16
+
+v0.2.2 30/04/2011 fourth "foundations" release
+  * A technology refresh release, several classes have been moved to the
+    org.devzendo:CommonApp and CommonCode projects, for reuse.
+  * Several small bugs fixed, as suggested by FindBugs.
+  * No functionality changes, since I've been concentrating on other projects
+    and learning more Scala.
+  * Upgraded to a more recent Quaqua look and feel, 7.3.4.
+  Statistics:
+    * Lines of Java: 57374 (main: 30190; test: 27184)
+    * Tests: 613, 3 ignored (several tests have moved to CommonApp/CommonCode)
+    * Test coverage: 72.3% 
+    * Metric violations: 17
+    
+   

@@ -4,7 +4,7 @@
   <groupId>org.devzendo</groupId>
   <artifactId>MiniMiser</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.2</version>
   <name>MiniMiser</name> <!-- stored as the entity name in schema versions - do not change! -->
   <url>http://devzendo.org/minimiser</url>
   <description>Framework for building embedded database-backed Swing applications.
