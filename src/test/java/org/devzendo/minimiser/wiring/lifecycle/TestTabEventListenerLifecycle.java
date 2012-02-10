@@ -19,15 +19,15 @@ package org.devzendo.minimiser.wiring.lifecycle;
 import java.awt.Label;
 import java.util.List;
 
+import org.devzendo.commonapp.lifecycle.LifecycleManager;
 import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
+import org.devzendo.commonapp.util.OrderMonitor;
 import org.devzendo.minimiser.gui.tab.SystemTabIdentifiers;
-import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.opentablist.OpenTabList;
 import org.devzendo.minimiser.opentablist.StubTab;
 import org.devzendo.minimiser.opentablist.TabDescriptor;
-import org.devzendo.minimiser.util.OrderMonitor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

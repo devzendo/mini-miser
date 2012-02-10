@@ -29,7 +29,7 @@
 		<constructor-arg value="two" />
 	</bean>
 	
-	<bean id="orderMonitor" class="org.devzendo.minimiser.util.OrderMonitor" />
+	<bean id="orderMonitor" class="org.devzendo.commonapp.util.OrderMonitor" />
 
 	<bean id="openTabList" class="org.devzendo.minimiser.opentablist.OpenTabList" />
 

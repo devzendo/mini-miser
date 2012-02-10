@@ -17,8 +17,8 @@
 package org.devzendo.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.minimiser.gui.dialog.problem.ProblemReporter;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
 import org.devzendo.minimiser.plugin.Plugin;
 import org.devzendo.minimiser.pluginmanager.PluginManager;
 
@@ -60,7 +60,7 @@ public final class PluginManagerLifecycle implements Lifecycle {
      */
     public void shutdown() {
         LOGGER.info("Shutting down plugins");
-        for (Plugin plugin : mPluginManager.getPlugins()) {
+        for (final Plugin plugin : mPluginManager.getPlugins()) {
             try {
                 plugin.shutdown();
                 // This throws PluginException, but plugins

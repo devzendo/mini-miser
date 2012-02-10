@@ -16,8 +16,8 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
+import org.devzendo.commonapp.lifecycle.Lifecycle;
 import org.devzendo.minimiser.gui.StatusBarMessageQueueAdapter;
-import org.devzendo.minimiser.lifecycle.Lifecycle;
 
 /**
  * A Lifecycle that receives the adapter between Status Bar and Message Queue,

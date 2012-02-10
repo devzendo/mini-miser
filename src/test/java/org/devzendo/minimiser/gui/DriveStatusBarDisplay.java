@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +33,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.DefaultCursorManager;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageId;
@@ -147,7 +149,7 @@ public final class DriveStatusBarDisplay {
         final MainFrameStatusBar mainFrameStatusBar = new MainFrameStatusBar(new DelayedExecutor());
         frame.add(mainFrameStatusBar.getPanel(), BorderLayout.SOUTH);
 
-        final CursorManager cursorManager = new CursorManager();
+        final CursorManager cursorManager = new DefaultCursorManager();
         cursorManager.setMainFrame(frame);
         
         final PluginRegistry pluginRegistry = new DummyAppPluginRegistry();
@@ -179,7 +181,7 @@ public final class DriveStatusBarDisplay {
      */
     public static void main(final String[] args) {
         BasicConfigurator.configure();
-        ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
+        List<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
         
 

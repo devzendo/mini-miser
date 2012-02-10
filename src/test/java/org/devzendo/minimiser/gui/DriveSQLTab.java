@@ -18,8 +18,10 @@ package org.devzendo.minimiser.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -27,6 +29,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.devzendo.commonapp.gui.Beautifier;
 import org.devzendo.commonapp.gui.CursorManager;
+import org.devzendo.commonapp.gui.DefaultCursorManager;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commoncode.logging.Logging;
 import org.devzendo.minimiser.gui.tab.impl.sql.SQLTab;
@@ -58,8 +61,10 @@ public final class DriveSQLTab {
      */
     public static void main(final String[] args) {
         BasicConfigurator.configure();
-        ArrayList<String> argList = new ArrayList<String>(Arrays.asList(args));
+        List<String> argList = new ArrayList<String>(Arrays.asList(args));
         argList = Logging.getInstance().setupLoggingFromArgs(argList);
+        final String dbPath = getDbPathFromCommandLine(argList);
+        final String dbPassword = getDbPasswordFromCommandLine(argList);
         
         GUIUtils.runOnEventThread(new Runnable() {
 
@@ -72,18 +77,17 @@ public final class DriveSQLTab {
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setPreferredSize(new Dimension(800, 600));
                 
-                final CursorManager cursorManager = new CursorManager();
+                final CursorManager cursorManager = new DefaultCursorManager();
                 cursorManager.setMainFrame(frame);
                 
                 LOGGER.info("Opening database");
                 final PluginManager dummyPluginManager = new DummyAppPluginManager();
                 final AccessFactory accessFactory = new JdbcTemplateAccessFactoryImpl(dummyPluginManager);
-                final String dbPath = "/home/matt/Desktop/crap/clear-test-1/clear-test-1";
-                final InstanceSet<DAOFactory> daoFactories = accessFactory.openDatabase(dbPath, "");
+                final InstanceSet<DAOFactory> daoFactories = accessFactory.openDatabase(dbPath, dbPassword);
                 final DatabaseDescriptor databaseDescriptor = new DatabaseDescriptor("clear-test-1", dbPath);
                 // Add the MiniMiserDAOFactory and other plugins'
                 // DAOFactories to the DatabaseDescriptor
-                for (InstancePair<DAOFactory> daoFactoryPair : daoFactories.asList()) {
+                for (final InstancePair<DAOFactory> daoFactoryPair : daoFactories.asList()) {
                     databaseDescriptor.setDAOFactory(daoFactoryPair.getClassOfInstance(), daoFactoryPair.getInstance());
                 }
                 
@@ -99,5 +103,36 @@ public final class DriveSQLTab {
             }
             
         });
+    }
+
+    private static String getDbPasswordFromCommandLine(final List<String> argList) {
+        String dbPassword = "";
+        for (final String arg : argList) {
+            final File dbDir = new File(arg);
+            if (dbDir.exists() && dbDir.isDirectory()) {
+                continue; // it's the db path
+            } else {
+                dbPassword = arg;
+            }
+        }
+        LOGGER.info("Using '" + dbPassword + "' as the password");
+        return dbPassword;
+    }
+
+    private static String getDbPathFromCommandLine(final List<String> argList) {
+        String dbPath = null;
+        for (final String arg : argList) {
+            final File dbDir = new File(arg);
+            if (dbDir.exists() && dbDir.isDirectory()) {
+                dbPath = new File(dbDir, dbDir.getName()).getAbsolutePath();
+                LOGGER.info("Opening " + dbPath + " in the SQL console");
+                return dbPath;
+            }
+        }
+        if (dbPath == null) {
+            LOGGER.warn("No database directory specified on command line");
+            System.exit(1);
+        }
+        return null;
     }
 }

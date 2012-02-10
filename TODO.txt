@@ -254,6 +254,11 @@ NIGGLES:
 * Intro panel is shown briefly when closing (since the
   OpenDatabaseList reaches empty during close). Crowbar?
 
+* Need to ship a standalone sql console gui app - take DriveSQLTab as a start.
+  e.g. try to open an older db that doesn't have the plugin details stored in
+  Versions - it can't be opened. /Users/matt/crap/encrypted-test-1/encrypted-test-1
+  but can be opened in the standalone SQL console.
+  
 DOCUMENTATION:
 * fill in the rest of the acks in credits.html
 

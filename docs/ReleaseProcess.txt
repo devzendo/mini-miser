@@ -10,7 +10,7 @@ Tag MiniMiser as x.y.z.
 
 Documentation release:
     Find background graphic for the user guide cover sheet...
-    Add this to the user-guide dir.
+    Add this to the user-guide dir. (Currently in the devzendo.org svn repo)
     Add credits to user-guide-graphics-credits.txt
     Add into user-guide-cover-sheet.xcf with Gimp; modify release date.
     Save user-guide-cover-sheet-x.y.z.png

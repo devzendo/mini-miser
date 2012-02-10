@@ -19,8 +19,6 @@ package org.devzendo.minimiser.gui.tab.impl.sql;
 import java.awt.Component;
 
 import org.devzendo.commonapp.gui.CursorManager;
-import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageHelper;
-import org.devzendo.minimiser.gui.dialog.dstamessage.DSTAMessageId;
 import org.devzendo.minimiser.gui.tab.Tab;
 import org.devzendo.minimiser.openlist.DatabaseDescriptor;
 import org.devzendo.minimiser.pluginmanager.PluginRegistry;
@@ -67,13 +65,6 @@ public final class SQLTab implements Tab {
      */
     public void initComponent() {
         mainPanel = new SQLTabPanel(mDatabaseDescriptor, mCursorManager, mPluginRegistry);
-        
-        DSTAMessageHelper.possiblyShowMessage(DSTAMessageId.SQL_TAB_INTRO, 
-            "The SQL view is intended to aid developers in diagnosing\n"
-            + "problems with databases. For further information on its use,\n"
-            + "please consult the Technical Guide.\n\n"
-            + "The SQL view is not intended for day-to-day use.\n"
-        );
     }
 
     /**

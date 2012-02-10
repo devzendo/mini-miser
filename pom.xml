@@ -4,7 +4,7 @@
   <groupId>org.devzendo</groupId>
   <artifactId>MiniMiser</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.2</version>
   <name>MiniMiser</name> <!-- stored as the entity name in schema versions - do not change! -->
   <url>http://devzendo.org/minimiser</url>
   <description>Framework for building embedded database-backed Swing applications.
@@ -58,7 +58,7 @@
     <dependency> <!-- Not released in central -->
       <groupId>ch.randelshofer</groupId>
       <artifactId>quaqua</artifactId>
-      <version>6.5</version> <!--  started with 5.2.1 -->
+      <version>7.3.4</version> <!--  started with 5.2.1, 6.5 -->
     </dependency>
 
     <dependency>
@@ -101,13 +101,13 @@
 	<dependency>
       <groupId>org.devzendo</groupId>
       <artifactId>CommonCode</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.devzendo</groupId>
       <artifactId>CommonCode</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -121,13 +121,13 @@
     <dependency>
       <groupId>org.devzendo</groupId>
       <artifactId>CommonApp</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.3.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.devzendo</groupId>
       <artifactId>CommonApp</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>0.3.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

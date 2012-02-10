@@ -16,11 +16,11 @@
 
 package org.devzendo.minimiser.wiring.lifecycle;
 
+import org.devzendo.commonapp.lifecycle.LifecycleManager;
 import org.devzendo.commonapp.prefs.PrefsFactory;
 import org.devzendo.commonapp.spring.springloader.ApplicationContext;
 import org.devzendo.commonapp.spring.springloader.SpringLoaderUnittestCase;
 import org.devzendo.minimiser.gui.HeadlessStatusBar;
-import org.devzendo.minimiser.lifecycle.LifecycleManager;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.SimpleMessage;
 import org.devzendo.minimiser.messagequeue.StubMessageQueueMiniMiserPrefs;
