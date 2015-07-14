@@ -1,173 +1,203 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.devzendo</groupId>
-  <artifactId>MiniMiser</artifactId>
-  <packaging>jar</packaging>
-  <version>0.2.3-SNAPSHOT</version>
-  <name>MiniMiser</name> <!-- stored as the entity name in schema versions - do not change! -->
-  <url>http://devzendo.org/minimiser</url>
-  <description>Framework for building embedded database-backed Swing applications.
-  (Apache License v2) 2008-2010 Matt Gumbley, DevZendo.org</description>
-  
-  <parent>
-  	<groupId>org.devzendo</groupId>
-    <artifactId>GroupParent</artifactId>
-	<version>1.0.1</version>
-  </parent>
-  
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
-    </dependency>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.devzendo</groupId>
+    <artifactId>mini-miser</artifactId>
+    <packaging>jar</packaging>
+    <version>1.1.0-SNAPSHOT</version>
+    <name>MiniMiser</name> <!-- stored as the entity name in schema versions - do not change! -->
+    <url>http://devzendo.org/minimiser</url>
+    <description>Framework for building embedded database-backed Swing applications.
+        (Apache License v2) 2008-2015 Matt Gumbley, DevZendo.org</description>
 
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>3.0</version>
-      <scope>test</scope>
-    </dependency>
+    <parent>
+        <groupId>org.devzendo</groupId>
+        <artifactId>group-parent</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+    </parent>
+    <url>http://www.devzendo.org/content/minimiser</url>
 
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-    </dependency>
-    
-    <dependency> <!--  needed for JRuby, and Spring -->
-      <groupId>backport-util-concurrent</groupId>
-      <artifactId>backport-util-concurrent</artifactId>
-      <version>3.0</version>
-    </dependency>
-    
-    <dependency> <!--  needed for JRuby, and Spring -->
-      <groupId>asm</groupId>
-      <artifactId>asm-all</artifactId>
-      <version>2.2.3</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.jgoodies</groupId>
-      <artifactId>looks</artifactId>
-      <version>2.2.2</version>
-    </dependency>
-	
-    <dependency> <!-- Not released in central -->
-      <groupId>ch.randelshofer</groupId>
-      <artifactId>quaqua</artifactId>
-      <version>7.3.4</version> <!--  started with 5.2.1, 6.5 -->
-    </dependency>
+    <organization>
+        <name>DevZendo.org</name>
+        <url>http://devzendo.org/</url>
+    </organization>
 
-    <dependency>
-      <groupId>org.netbeans</groupId>
-      <artifactId>wizard</artifactId>
-      <version>0.998.1</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>1.2.128</version> <!-- started the project using 1.0.69, then 1.0.79, 1.1.118 -->
-    </dependency>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://bitbucket.org/devzendo/mini-miser</url>
+        <connection>scm:hg:https://bitbucket.org/devzendo/mini-miser
+        </connection>
+        <developerConnection>
+            scm:hg:https://bitbucket.org/devzendo/mini-miser
+        </developerConnection>
+    </scm>
 
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.5</version>
-    </dependency>
+    <developers>
+        <developer>
+            <id>matt.gumbley</id>
+            <name>Matt Gumbley</name>
+            <email>matt.gumbley@devzendo.org</email>
+        </developer>
+    </developers>
 
-	<dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <version>3.1</version>
-    </dependency>
-    
-	<dependency>
-	    <groupId>org.simpleframework</groupId>
-	    <artifactId>simple</artifactId>
-	    <version>4.1.20</version>
-	    <scope>test</scope>
-	</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
 
-	<dependency>
-	    <groupId>org.jruby</groupId>
-	    <artifactId>jruby</artifactId>
-	    <version>1.4.0</version>
-	</dependency> 
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.3.1</version>
+            <scope>test</scope>
+        </dependency>
 
-	<dependency>
-      <groupId>org.devzendo</groupId>
-      <artifactId>CommonCode</artifactId>
-      <version>1.0.1</version>
-    </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.devzendo</groupId>
-      <artifactId>CommonCode</artifactId>
-      <version>1.0.1</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.devzendo</groupId>
-      <artifactId>BsdThirdParty</artifactId>
-      <version>1.0.1</version>
-    </dependency>
+        <dependency> <!--  needed for JRuby, and Spring -->
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>3.0</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.devzendo</groupId>
-      <artifactId>CommonApp</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-    </dependency>
+        <dependency> <!--  needed for JRuby, and Spring -->
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>2.2.3</version>
+        </dependency>
 
-    <dependency>
-      <groupId>org.devzendo</groupId>
-      <artifactId>CommonApp</artifactId>
-      <version>0.4.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  
-  <build>
-    <plugins>
-  	  <plugin>
-  	  	<groupId>org.apache.maven.plugins</groupId>
-  	  	<artifactId>maven-jar-plugin</artifactId>
-  	  	<version>2.2</version>
-  	  	<executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-            <configuration>
-              <forceCreation>true</forceCreation>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-        	<include>org/devzendo/minimiser/pluginmanager/framework.properties</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>false</filtering>
-        <excludes>
-        	<exclude>org/devzendo/minimiser/pluginmanager/framework.properties</exclude>
-        </excludes>
-      </resource>
-    </resources>
-  </build>
-  
+        <dependency>
+            <groupId>com.jgoodies</groupId>
+            <artifactId>looks</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+
+        <dependency> <!-- Not released in central -->
+            <groupId>ch.randelshofer</groupId>
+            <artifactId>quaqua</artifactId>
+            <version>7.3.4</version> <!--  started with 5.2.1, 6.5 -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.netbeans</groupId>
+            <artifactId>wizard</artifactId>
+            <version>0.998.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.2.128</version> <!-- started the project using 1.0.69, then 1.0.79, 1.1.118 -->
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.simpleframework</groupId>
+            <artifactId>simple</artifactId>
+            <version>4.1.20</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>common-code</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>common-code</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>bsd-third-party</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>common-app</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.devzendo</groupId>
+            <artifactId>common-app</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                        <configuration>
+                            <forceCreation>true</forceCreation>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>org/devzendo/minimiser/pluginmanager/framework.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>org/devzendo/minimiser/pluginmanager/framework.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
+
 </project>
