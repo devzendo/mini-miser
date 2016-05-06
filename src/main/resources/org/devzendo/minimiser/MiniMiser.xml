@@ -446,7 +446,7 @@
 
 	<bean id="today" class="org.devzendo.minimiser.util.DefaultToday" />
 
-	<bean id="sleeper" class="org.devzendo.minimiser.util.Sleeper" />
+	<bean id="sleeper" class="org.devzendo.commoncode.time.Sleeper" />
 
 	<!-- threading -->
 	<bean id="delayedExecutor" class="org.devzendo.minimiser.util.DelayedExecutor" />

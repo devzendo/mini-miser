@@ -18,6 +18,7 @@ package org.devzendo.minimiser.updatechecker;
 
 import java.io.IOException;
 
+import org.devzendo.commoncode.time.Sleeper;
 import org.devzendo.minimiser.messagequeue.Message;
 import org.devzendo.minimiser.messagequeue.MessageQueue;
 import org.devzendo.minimiser.messagequeue.MessageQueueBorderGuardFactory;
@@ -27,7 +28,6 @@ import org.devzendo.minimiser.prefs.CoreBooleanFlags;
 import org.devzendo.minimiser.prefs.MiniMiserPrefs;
 import org.devzendo.minimiser.prefs.TestPrefs;
 import org.devzendo.minimiser.util.Pair;
-import org.devzendo.minimiser.util.Sleeper;
 import org.devzendo.minimiser.util.Today;
 import org.devzendo.minimiser.util.WorkerPool;
 import org.devzendo.minimiser.wiring.lifecycle.PeriodicUpdateCheckerLifecycle;

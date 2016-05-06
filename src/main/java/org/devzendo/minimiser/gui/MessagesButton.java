@@ -24,7 +24,7 @@ import javax.swing.JButton;
 import org.apache.log4j.Logger;
 import org.devzendo.commonapp.gui.GUIUtils;
 import org.devzendo.commoncode.string.StringUtils;
-import org.devzendo.minimiser.util.Sleeper;
+import org.devzendo.commoncode.time.Sleeper;
 
 
 /**

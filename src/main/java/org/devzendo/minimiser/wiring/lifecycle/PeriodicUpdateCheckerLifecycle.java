@@ -18,10 +18,10 @@ package org.devzendo.minimiser.wiring.lifecycle;
 
 import org.apache.log4j.Logger;
 import org.devzendo.commonapp.lifecycle.Lifecycle;
+import org.devzendo.commoncode.time.Sleeper;
 import org.devzendo.minimiser.updatechecker.UpdateChecker;
 import org.devzendo.minimiser.updatechecker.UpdateProgressAdapter;
 import org.devzendo.minimiser.updatechecker.UpdateProgressAdapterFactory;
-import org.devzendo.minimiser.util.Sleeper;
 
 
 /**
