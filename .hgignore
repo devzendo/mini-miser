@@ -1,6 +1,0 @@
-syntax: glob
-**/.scala_dependencies
-**/target/ 
-syntax: glob 
-.cache 
-*.iml 

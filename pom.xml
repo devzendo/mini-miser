@@ -30,12 +30,9 @@
         </license>
     </licenses>
     <scm>
-        <url>https://bitbucket.org/devzendo/mini-miser</url>
-        <connection>scm:hg:https://bitbucket.org/devzendo/mini-miser
-        </connection>
-        <developerConnection>
-            scm:hg:https://bitbucket.org/devzendo/mini-miser
-        </developerConnection>
+        <url>https://github.com/devzendo/mini-miser.git</url>
+        <connection>scm:git:https://github.com/devzendo/mini-miser.git</connection>
+        <developerConnection>scm:git:git@github.com:devzendo/mini-miser.git</developerConnection>
     </scm>
 
     <developers>
